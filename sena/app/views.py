@@ -12,6 +12,10 @@ producto ={
 
 def vista1(request):
     producto = Categoria.objects.all()
+    nombre= {
+        'nombre': 'categoria'
+    }
+    
     return render(request, "body.html", {'producto': producto})
 
 def vista2(request):
