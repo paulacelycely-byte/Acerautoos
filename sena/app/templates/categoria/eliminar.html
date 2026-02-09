@@ -1,0 +1,32 @@
+{% extends 'body.html' %}
+{% block contenido %}
+
+<form method="post">
+    {% csrf_token %}
+    <div class="card card-danger">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-trash"></i> {{ titulo }}
+            </h3>
+        </div>
+
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <h5><i class="icon fas fa-exclamation-triangle"></i> Advertencia</h5>
+                ¿Deseas eliminar el registro #{{ object.id }} | {{ object.nombre }}?
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-check"></i> Sí, eliminar
+            </button>
+
+            <a href="{{ listar_url }}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

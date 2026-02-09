@@ -21,7 +21,6 @@ from app.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("vista1/", include('app.urls')),
-    path("vista2/", include('app.urls')),
+
     path("principal/", include(('app.urls', 'app'), namespace='app'))
 ]

@@ -1,10 +1,11 @@
 from django.db import models
 from datetime import datetime
 from decimal import Decimal
+from app.models import*
 
 # Create your models here.
 class Categoria(models.Model):
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=100,unique=True)
     descripcion = models.TextField()
 
     def __str__(self):

@@ -1,7 +1,8 @@
 {% extends "index.html" %}
 {%block body %}
 {% load static %}
-  <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
+  <body class="
+   sidebar-expand-lg sidebar-open bg-body-tertiary">
     <!--begin::App Wrapper-->
     <div class="app-wrapper">
       <!--begin::Header-->
@@ -215,7 +216,7 @@
             <!--begin::Row-->
             <div class="row">
               <div class="col-sm-6"><h3 class="mb-0">Fixed Layout</h3></div>
-              <a href ="{% url 'app:vista2' %}">Ir a la vista 2</a>
+              
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
                   <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -238,28 +239,15 @@
                 <!-- Default box -->
                 <div class="card">
                   <div class="card-header">
-                    <h3 class="card-title">Title</h3>
-                    <div class="card-tools">
-                      <button
-                        type="button"
-                        class="btn btn-tool"
-                        data-lte-toggle="card-collapse"
-                        title="Collapse"
-                      >
-                        <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
-                        <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-tool"
-                        data-lte-toggle="card-remove"
-                        title="Remove"
-                      >
-                        <i class="bi bi-x-lg"></i>
-                      </button>
-                    </div>
+                    <h3 class="card-title"></h3>
+                    
+                   
+                    
                   </div>
-                  <div class="card-body">Start creating your amazing application!</div>
+                  <div class="card-body"></div>
+{% block contenido %}
+
+{% endblock%}
                   <!-- /.card-body -->
                   <div class="card-footer">Footer</div>
                   <!-- /.card-footer-->
@@ -281,6 +269,7 @@
     <!--end::App Wrapper-->
     <!--begin::Script-->
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
+    <script src="{% static "lib/sweetalert2/sweetalert2.all.min.js" %}">
     <script
       src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
       crossorigin="anonymous"
@@ -320,6 +309,11 @@
     </script>
     <!--end::OverlayScrollbars Configure-->
     <!--end::Script-->
+
   </body>
+
+  {% block js %}
+
+  {%endblock%}
 
 {%endblock%}

@@ -1,0 +1,54 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block contenido %}
+
+<table class="table" id="tabla">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Opciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in object_list %}
+    <tr>
+      <td>{{ c.id }}</td>
+      <td>{{ c.nombre }}</td>
+      <td>
+        <a href ="{% url 'app:editar_categoria' c.id %}" class="btn btn-primary btn-xs">
+          <i class="fas fa-edit"></i>
+        </a>
+        <a href ="{% url 'app:eliminar_categoria' c.id %}" class="btn btn-primary btn-xs">
+          <i class="fas fa-trash"></i>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<div class = "card-footer">
+  <a href="{{crear_url}}" class="btn btn-primary btn-xs">
+    <i class="fas fa-plus"></i>crear nueva categoria 
+  </a>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'lib/jquery/jquery-3.6.0.min.js' %}"></script>
+
+<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+
+<script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+
+<script>
+  $(document).ready(function () {
+    $('#tabla').DataTable({
+      responsive: true,
+      autoWidth: false,
+    });
+  });
+</script>
+{% endblock %}

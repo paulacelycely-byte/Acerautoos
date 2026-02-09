@@ -1,12 +1,18 @@
-      <footer class="app-footer">
-        <!--begin::To the end-->
-        <div class="float-end d-none d-sm-inline">Anything you want</div>
-        <!--end::To the end-->
-        <!--begin::Copyright-->
-        <strong>
-          Copyright &copy; 2015-2025&nbsp;
-          <a href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
-        </strong>
-        All rights reserved.
-        <!--end::Copyright-->
-      </footer>
+{% load static %}
+
+<footer class="app-footer">
+    <div class="float-end d-none d-sm-inline">Anything you want</div>
+    <strong>
+        Copyright &copy; 2015-2025&nbsp;
+        <a href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
+    </strong>
+    All rights reserved.
+</footer>
+
+<!-- ================= SCRIPTS ================= -->
+
+<!-- OverlayScrollbars JS -->
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"></script>
+
+<!-- AdminLTE JS -->
+<script src="{% static 'js/adminlte.min.js' %}"></script>
