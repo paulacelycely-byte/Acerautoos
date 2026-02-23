@@ -1,0 +1,72 @@
+{% extends 'body.html' %}
+{% load widget_tweaks %}
+
+{% block contenido %}
+
+<form method="post" action=".">
+    {% csrf_token %}
+
+    <div class="card card-default">
+
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-car"></i>
+                {{ titulo }}
+            </h3>
+        </div>
+
+        <div class="card-body">
+
+            
+            {% if form.errors %}
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-bs-dismiss="alert">
+                    
+                </button>
+                <h5>
+                    <i class="icon fas fa-ban"></i>
+                    Error al guardar el cliente
+                </h5>
+                {{ form.errors }}
+            </div>
+            {% endif %}
+
+
+            
+            {% for field in form.visible_fields %}
+                <div class="form-group mb-3">
+                    <label>{{ field.label }}:</label>
+                    {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                </div>
+            {% endfor %}
+
+        </div>
+
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">
+                </i> Guardar cliente
+            </button>
+
+            <a href="{{ listar_url }}" class="btn btn-secondary">
+                </i> Cancelar
+            </a>
+        </div>
+
+    </div>
+
+</form>
+
+{% endblock %}
+
+
+{% block js %}
+{% if not form.errors and form.is_bound %}
+<script>
+Swal.fire({
+    icon: "success",
+    title: "Cliente guardado",
+    text: "El cliente se guardó correctamente",
+});
+</script>
+{% endif %}
+{% endblock %}

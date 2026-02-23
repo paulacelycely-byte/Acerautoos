@@ -1,0 +1,67 @@
+{% extends 'body.html' %}
+{% load widget_tweaks %}
+
+{% block contenido %}
+
+<form method="post" action=".">
+    {% csrf_token %}
+
+    <div class="card card-default">
+
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-bell"></i>
+                {{ titulo }}
+            </h3>
+        </div>
+
+        <div class="card-body">
+
+            {% if form.errors %}
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-bs-dismiss="alert"></button>
+                <h5>
+                    <i class="icon fas "></i>
+                    Error al guardar la notificación
+                </h5>
+                {{ form.errors }}
+            </div>
+            {% endif %}
+
+            {% for field in form.visible_fields %}
+                <div class="form-group mb-3">
+                    <label>{{ field.label }}:</label>
+                    {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                </div>
+            {% endfor %}
+
+        </div>
+
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas "></i> Guardar Notificación
+            </button>
+
+            <a href="{{ listar_url }}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
+        </div>
+
+    </div>
+
+</form>
+
+{% endblock %}
+
+
+{% block js %}
+{% if not form.errors and form.is_bound %}
+<script>
+Swal.fire({
+    icon: "success",
+    title: "Notificación guardada",
+    text: "La notificación se guardó correctamente",
+});
+</script>
+{% endif %}
+{% endblock %}
