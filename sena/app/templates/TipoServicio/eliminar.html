@@ -1,0 +1,84 @@
+{% extends 'body.html' %}
+
+{% block contenido %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-danger">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-trash-alt"></i> Confirmar Eliminación de Servicio
+                    </h3>
+                </div>
+                
+                <div class="card-body">
+                    <form method="post" id="formEliminar">
+                        {% csrf_token %}
+                        <div class="alert alert-danger shadow-sm">
+                            <h5><i class="icon fas fa-exclamation-triangle"></i> ¡Advertencia!</h5>
+                            ¿Estás seguro de que deseas eliminar permanentemente el servicio: 
+                            <strong>{{ object.nombre }}</strong>?
+                        </div>
+                        
+                        <div class="mt-4">
+                            <button type="button" id="btnConfirmarBorrado" class="btn btn-danger btn-flat">
+                                <i class="fas fa-check"></i> Sí, eliminar registro
+                            </button>
+                            
+                            <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')" class="btn btn-secondary btn-flat">
+                                <i class="fas fa-times"></i> No, cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(function () {
+        // 1. Alerta para CONFIRMAR ELIMINACIÓN
+        $('#btnConfirmarBorrado').on('click', function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: '¿Estás completamente seguro?',
+                text: "Esta acción borrará el servicio {{ object.nombre }} y no se puede deshacer.",
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#d33', // Rojo
+                cancelButtonColor: '#3085d6', // Azul
+                confirmButtonText: '¡Sí, bórralo!',
+                cancelButtonText: 'No, mantenerlo',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#formEliminar').submit();
+                }
+            });
+        });
+    });
+
+    // botón CANCELAR
+    function confirmarCancelacion(url) {
+        Swal.fire({
+            title: '¿Deseas regresar?',
+            text: "No se realizará ningún cambio en la base de datos.",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#6c757d',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, volver al listado',
+            cancelButtonText: 'Quedarme aquí',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+</script>
+{% endblock %}

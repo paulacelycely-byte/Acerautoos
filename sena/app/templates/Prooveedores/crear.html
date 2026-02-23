@@ -1,0 +1,129 @@
+{% extends 'body.html' %}
+{% load widget_tweaks %}
+
+{% block css %}
+<style>
+    /* 1. Eliminar línea azul y resplandor de los campos */
+    .form-control:focus {
+        border-color: #dee2e6 !important;
+        box-shadow: none !important;
+    }
+
+    /* 2. Estética para el campo de Estado (si es un select o texto) */
+    .input-group-text {
+        background-color: #f8f9fa !important;
+        border-right: none !important;
+        color: #6c757d !important;
+    }
+    
+    .form-control.border-left-0 {
+        border-left: none !important;
+    }
+
+    /* 3. Animación suave */
+    .animate__fadeIn {
+        animation-duration: 0.6s;
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid animate__animated animate__fadeIn">
+    <form method="post" action="." id="formProveedor">
+        {% csrf_token %}
+        <div class="card shadow-sm border-0">
+            <div class="card-header {% if 'editar' in request.path %}bg-warning{% else %}bg-primary{% endif %} py-2">
+                <h3 class="card-title font-weight-bold text-white">
+                    <i class="fas {% if 'editar' in request.path %}fa-edit{% else %}fa-plus-circle{% endif %} mr-2"></i>
+                    {% if 'editar' in request.path %}Editar Proveedor{% else %}Crear Nuevo Proveedor{% endif %}
+                </h3>
+            </div>
+
+            <div class="card-body p-4">
+                {% if form.errors %}
+                <div class="alert alert-danger border-0 shadow-sm">
+                    <h6 class="font-weight-bold"><i class="fas fa-exclamation-triangle mr-2"></i> Hay errores en el formulario:</h6>
+                    <ul class="mb-0 small">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>
+                                    <strong>{{ field.label }}:</strong> 
+                                    {% if 'email' in field.name and 'valid' in error %}
+                                        Por favor, ingresa un correo electrónico válido (ejemplo@correo.com).
+                                    {% elif 'required' in error %}
+                                        Este campo es obligatorio.
+                                    {% else %}
+                                        {{ error }}
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="row">
+                    {% for field in form.visible_fields %}
+                        <div class="col-md-6 mb-3">
+                            <label class="font-weight-bold text-dark small mb-1">{{ field.label }}</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" style="width: 42px; justify-content: center;">
+                                        {% if 'nombre' in field.name %}<i class="fas fa-user"></i>
+                                        {% elif 'documento' in field.name %}<i class="fas fa-id-card"></i>
+                                        {% elif 'telefono' in field.name %}<i class="fas fa-phone"></i>
+                                        {% elif 'email' in field.name %}<i class="fas fa-envelope"></i>
+                                        {% elif 'direccion' in field.name %}<i class="fas fa-map-marker-alt"></i>
+                                        {% elif 'mercancia' in field.name %}<i class="fas fa-box"></i>
+                                        {% else %}<i class="fas fa-tag"></i>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                {{ field|add_class:'form-control border-left-0'|attr:'autocomplete:off' }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card-footer bg-light d-flex justify-content-end py-3">
+                <button type="button" onclick="window.location.href='{{ listar_url }}'" class="btn btn-default border px-4 mx-2 shadow-sm">
+                    <i class="fas fa-times text-danger mr-1"></i> Cancelar
+                </button>
+                <button type="submit" class="btn {% if 'editar' in request.path %}btn-warning{% else %}btn-primary{% endif %} px-4 shadow-sm">
+                    <i class="fas fa-save mr-1"></i> 
+                    {% if 'editar' in request.path %}Actualizar Proveedor{% else %}Guardar Proveedor{% endif %}
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(function () {
+        // Notificación de guardado con SweetAlert2
+        $('#formProveedor').on('submit', function (e) {
+            e.preventDefault();
+            var formulario = this;
+
+            Swal.fire({
+                title: '¿Confirmar registro?',
+                text: "Se guardará la información del proveedor.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, guardar',
+                cancelButtonText: 'Revisar',
+                confirmButtonColor: '#007bff',
+                cancelButtonColor: '#6c757d',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    formulario.submit();
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

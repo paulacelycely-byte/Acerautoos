@@ -1,0 +1,150 @@
+{% extends 'body.html' %}
+{% load widget_tweaks %}
+
+{% block css %}
+<style>
+    /* Estilo para el Switch de Estado (Sin la línea azul) */
+    .custom-switch .custom-control-label::before {
+        height: 1.5rem;
+        width: 2.75rem;
+        border-radius: 2rem;
+        cursor: pointer;
+    }
+    .custom-switch .custom-control-label::after {
+        width: calc(1.5rem - 4px);
+        height: calc(1.5rem - 4px);
+        border-radius: 2rem;
+        cursor: pointer;
+    }
+    /* Color verde cuando está activo */
+    .custom-control-input:checked ~ .custom-control-label::before {
+        background-color: #28a745 !important;
+        border-color: #28a745 !important;
+    }
+    /* Quitar el resplandor azul al hacer clic */
+    .custom-control-input:focus ~ .custom-control-label::before {
+        box-shadow: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid animate__animated animate__fadeIn">
+    <form method="post" action="." id="formServicio">
+        {% csrf_token %}
+        <div class="card shadow-sm border-0">
+            <div class="card-header {% if 'editar' in request.path %}bg-warning{% else %}bg-primary{% endif %} py-2">
+                <h3 class="card-title font-weight-bold text-white">
+                    <i class="fas {% if 'editar' in request.path %}fa-edit{% else %}fa-plus-circle{% endif %} mr-2"></i>
+                    {% if 'editar' in request.path %}Editar Tipo de Servicio{% else %}Nuevo Tipo de Servicio{% endif %}
+                </h3>
+            </div>
+
+            <div class="card-body p-4">
+                {% if form.errors %}
+                <div class="alert alert-danger border-0 shadow-sm animate__animated animate__shakeX">
+                    <h6 class="font-weight-bold"><i class="fas fa-ban mr-2"></i> Por favor, corrige los siguientes errores:</h6>
+                    <ul class="mb-0">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="row">
+                    {% for field in form.visible_fields %}
+                        <div class="col-md-6 mb-3">
+                            <label class="font-weight-bold text-dark small mb-1">{{ field.label }}</label>
+                            
+                            {% if field.field.widget.input_type == 'checkbox' %}
+                                <div class="custom-control custom-switch mt-2">
+                                    {{ field|add_class:'custom-control-input' }}
+                                    <label class="custom-control-label text-muted font-weight-normal" for="{{ field.id_for_label }}">
+                                        Marcar como activo para mostrar en el sistema
+                                    </label>
+                                </div>
+                            {% else %}
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light border-right-0" style="width: 40px; justify-content: center;">
+                                            {% if 'nombre' in field.name %}<i class="fas fa-wrench text-muted"></i>
+                                            {% elif 'duracion' in field.name %}<i class="fas fa-calendar-alt text-muted"></i>
+                                            {% elif 'categoria' in field.name %}<i class="fas fa-th-large text-muted"></i>
+                                            {% elif 'descripcion' in field.name %}<i class="fas fa-align-left text-muted"></i>
+                                            {% else %}<i class="fas fa-tag text-muted"></i>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    {{ field|add_class:'form-control border-left-0'|attr:'autocomplete:off' }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card-footer bg-light d-flex justify-content-end py-3">
+                <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')" class="btn btn-default border px-4 mx-2 shadow-sm">
+                    <i class="fas fa-times text-danger mr-1"></i> Cancelar
+                </button>
+                
+                <button type="submit" class="btn {% if 'editar' in request.path %}btn-warning{% else %}btn-primary{% endif %} px-4 shadow-sm">
+                    <i class="fas fa-save mr-1"></i> {% if 'editar' in request.path %}Guardar Cambios{% else %}Guardar Servicio{% endif %}
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(function () {
+        // Alerta al Guardar
+        $('#formServicio').on('submit', function (e) {
+            e.preventDefault();
+            var formulario = this;
+
+            Swal.fire({
+                title: '¿Guardar cambios?',
+                text: "La información será validada y procesada.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, guardar',
+                cancelButtonText: 'No, revisar',
+                confirmButtonColor: '#28a745', 
+                cancelButtonColor: '#6c757d',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    formulario.submit();
+                }
+            });
+        });
+    });
+
+    // Alerta al Cancelar
+    function confirmarCancelacion(url) {
+        Swal.fire({
+            title: '¿Salir sin guardar?',
+            text: "Se perderán los datos no guardados.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'Quedarme',
+            confirmButtonColor: '#d33',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+</script>
+{% endblock %}

@@ -4,13 +4,13 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from app.models import Categoria
+from app.models import Categorias
 from app.forms import CategoriaForm
 
 
 
 class categoriaListView(ListView):
-    model = Categoria
+    model = Categorias
     template_name = 'categoria/listar.html'
     context_object_name = 'categorias'
 
@@ -25,7 +25,7 @@ class categoriaListView(ListView):
         return context
 
 class CategoriaCreateView(CreateView):
-    model = Categoria
+    model = Categorias
     form_class = CategoriaForm
     template_name = 'categoria/crear.html'
     success_url = reverse_lazy('app:listar_categoria')
@@ -43,7 +43,7 @@ class CategoriaCreateView(CreateView):
 
 
 class CategoriaUpdateView(UpdateView):
-    model = Categoria
+    model = Categorias
     form_class = CategoriaForm
     template_name = 'categoria/crear.html'
     success_url = reverse_lazy('app:listar_categoria')
@@ -61,7 +61,7 @@ class CategoriaUpdateView(UpdateView):
 
 
 class CategoriaDeleteView(DeleteView):
-    model = Categoria
+    model = Categorias
     template_name = 'categoria/eliminar.html'
     success_url = reverse_lazy('app:listar_categoria')
 

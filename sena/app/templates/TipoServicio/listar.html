@@ -1,0 +1,132 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block css %}
+<style>
+    .badge-status {
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        display: inline-block;
+    }
+
+    .status-active {
+        background-color: #e1f7e3;
+        color: #1e7e34;
+        border: 1px solid #c3e6cb;
+    }
+
+    .status-inactive {
+        background-color: #fceaea;
+        color: #bd2130;
+        border: 1px solid #f5c6cb;
+    }
+
+    .table-custom tbody td {
+        vertical-align: middle;
+        padding: 12px 8px;
+    }
+
+    .table-custom thead th {
+        background-color: #f8f9fa;
+        color: #333;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .text-service-name {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #333;
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid animate__animated animate__fadeIn">
+    <div class="mb-3">
+        <h1 class="h3 mb-0 text-gray-800">Gestión de Tipos de Servicio</h1>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-tools mr-2"></i> {{ titulo }}</h6>
+            <a href="{{ crear_url }}" class="btn btn-primary btn-sm shadow-sm">
+                <i class="fas fa-plus"></i> Nuevo Servicio
+            </a>
+        </div>
+        
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-custom" id="tabla">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 50px;">#</th>
+                            <th>Nombre del Servicio</th>
+                            <th>Categoría</th>
+                            <th>Duración</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center" style="width: 120px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in object_list %}
+                        <tr>
+                            <td class="text-center text-muted">{{ forloop.counter }}</td>
+                            <td>
+                                <span class="text-service-name">{{ s.nombre }}</span>
+                                <small class="text-muted d-block">{{ s.descripcion|truncatechars:60 }}</small>
+                            </td>
+                            <td>
+                                <span class="badge badge-light border text-muted px-2 py-1">
+                                    <i class="fas fa-tag fa-xs mr-1"></i> {{ s.categoria }}
+                                </span>
+                            </td>
+                            <td class="small text-muted">
+                                <i class="far fa-calendar-alt mr-1"></i> {{ s.duracion_estimada|date:"d/m/Y" }}
+                            </td>
+                            <td class="text-center">
+                                {% if s.estado %}
+                                    <span class="badge-status status-active">Activo</span>
+                                {% else %}
+                                    <span class="badge-status status-inactive">Inactivo</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="{% url 'app:editar_servicio' s.id %}" class="btn btn-sm border bg-white mx-1 shadow-sm">
+                                        <i class="fas fa-pencil-alt text-warning"></i>
+                                    </a>
+                                    <a href="{% url 'app:eliminar_servicio' s.id %}" class="btn btn-sm border bg-white mx-1 shadow-sm">
+                                        <i class="fas fa-trash text-danger"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function () {
+        $('#tabla').DataTable({
+            responsive: true,
+            autoWidth: false,
+            language: {
+                "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
+            }
+        });
+    });
+</script>
+{% endblock %}
