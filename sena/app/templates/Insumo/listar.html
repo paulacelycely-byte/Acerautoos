@@ -1,0 +1,74 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block contenido %}
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Listado de Insumos</h3>
+  </div>
+
+  <div class="card-body">
+    <table class="table table-bordered table-hover" id="tabla">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Cantidad</th>
+          <th>Precio unitario</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in object_list %}
+        <tr>
+          <td>{{ c.id }}</td>
+          <td>{{ c.nombre }}</td>
+          <td>{{ c.cantidad }}</td>
+          <td>{{ c.precio_unitario }}</td>
+          <td>
+            <!-- EDITAR -->
+            <a href="{% url 'app:editar_insumo' c.id %}"
+               class="btn btn-warning btn-sm">
+              <i class="fas fa-edit"></i>
+            </a>
+
+            <!-- ELIMINAR -->
+            <a href="{% url 'app:eliminar_insumo' c.id %}"
+               class="btn btn-danger btn-sm">
+              <i class="fas fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-footer">
+    <!-- CREAR -->
+    <a href="{% url 'app:crear_insumo' %}"
+       class="btn btn-primary">
+      <i class="fas fa-plus"></i> Nuevo Insumo    
+    </a>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'lib/jquery/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+
+<script>
+  $(document).ready(function () {
+    $('#tabla').DataTable({
+      responsive: true,
+      autoWidth: false,
+      language: {
+        url: "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+      }
+    });
+  });
+</script>
+{% endblock %}

@@ -215,7 +215,7 @@
           <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-              <div class="col-sm-6"><h3 class="mb-0">Fixed Layout</h3></div>
+              <div class="col-sm-6"><h3 class="mb-0">{{ titulo }}</h3></div>
               
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
@@ -306,6 +306,20 @@
           });
         }
       });
+    </script>
+    <script>
+      {% if messages %}
+      document.addEventListener('DOMContentLoaded', function () {
+        {% for message in messages %}
+        Swal.fire({
+          icon:"{{message.tags}}",
+          title:"{{message|escapejs}}",
+          showConfirmButton: false,
+          timer: 3000
+        })
+        {% endfor %}
+      });
+      {% endif %}
     </script>
     <!--end::OverlayScrollbars Configure-->
     <!--end::Script-->

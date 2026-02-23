@@ -1,0 +1,54 @@
+{% extends 'body.html' %}
+{%load widget_tweaks%}
+{% block contenido %}
+<form method="post" action=".">
+    <div class="card card-default">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-search"></i>
+                {{ titulo }}
+            </h3>
+        </div>
+
+        <div class="card-body">
+            {% csrf_token %}
+            
+            
+            {% for field  in form.visible_fields %}
+                <div class='form-group'>
+                    <label for ='name'> {{field.label}}:</label>
+                    {{ field|add_class:'form-control'|attr:'autocomplete:off'}}
+                </div>
+            {%endfor%}
+
+        
+
+            <div class="card-footer mt-3">
+                <button type="submit" class="btn btn-primary btn-xs">
+                    <i class="fas fa-plus"></i> Guardar servicio
+                </button>
+                <a href="{{ listar_url }}" class="btn btn-primary btn-xs">
+                    <i class="fas fa-arrow-left"></i> Volver al listado
+                </a>
+                </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{%block js %}
+<script>
+{% if form.is_bound and form.errors %}
+    console.log("Hola")
+    document.addEventListener("DOMContentLoaded", function() {
+        Swal.fire({
+            title: 'Error',
+            text: 'Por favor corrige los errores en el formulario.',
+            icon: 'error',
+        });
+    });    
+</script>
+{% endif %}
+    
+
+{% endblock %}
