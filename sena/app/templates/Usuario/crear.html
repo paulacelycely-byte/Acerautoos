@@ -13,23 +13,28 @@
 
         <div class="card-body">
             {% csrf_token %}
-            {% for field in form.visible_fields %}
-                <div class="form-group">
-                    <label>{{ field.label }}:</label>
-                    {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+            
+            
+            {% for field  in form.visible_fields %}
+                <div class='form-group'></div>
+                    <label for ='name'> {{field.label}}:</label>
+                    {{ field|add_class:'form-control'|attr:'autocomplete:off'}}
                     {% if field.errors %}
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-bs-dismiss="alert">×</button>
-                    {% for error in field.errors  %}
-                    {{error}}
-                    {% endfor %}
-                    </div>
+                        <div class="text-danger">
+                            <button type="button" class="close" data-dismiss="alert">x</button>
+                            {% for error in field.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
                     {% endif %}
                 </div>
-            {% endfor %}
+            {%endfor%}
+
+            
+
         </div>
 
-        <div class="card-footer">
+        <div class="card-footer m-3">
             <button type="submit" class="btn btn-primary btn-xs">
                 <i class="fas fa-plus"></i> Guardar registro
             </button>
@@ -39,11 +44,6 @@
 {% endblock %}
 
 {%block js %}
-    <script>
-    Swal.fire({
-    title: "Registro guardado con exito",
-    icon: "success"
-    });
-</script>
+
 
 {% endblock %}

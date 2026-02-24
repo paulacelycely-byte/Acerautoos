@@ -8,19 +8,27 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Nombre</th>
+      <th scope="col">Rol</th>
+      <th scope="col">Telefono</th>
+      <th scope="col">Email</th>
       <th scope="col">Opciones</th>
     </tr>
   </thead>
   <tbody>
     {% for c in object_list %}
     <tr>
-      <td>{{ c.id_categoria }}</td>
-      <td>{{ c.nombre_categoria }}</td>
+      <td>{{ c.id }}</td>
+      <td>{{ c.nombre }}</td>
+      <td>{{ c.rol}}</td>
+      <td>{{ c.telefono}}</td>
+      <td>{{ c.email}}</td>
+      
+
       <td>
-        <a href ="{% url "app:editar_categoria" c.id_categoria %}" class="btn btn-primary btn-xs">
+        <a href ="{% url 'app:editar_Usuario' c.id %}" class="btn btn-primary btn-xs">
           <i class="fas fa-edit"></i>
         </a>
-        <a href ="{% url "app:eliminar_categoria" c.id_categoria %}" class="btn btn-primary btn-xs">
+        <a href ="{% url 'app:eliminar_Usuario' c.id %}" class="btn btn-primary btn-xs">
           <i class="fas fa-trash"></i>
         </a>
       </td>
@@ -30,7 +38,7 @@
 </table>
 <div class = "card-footer">
   <a href="{{crear_url}}" class="btn btn-primary btn-xs">
-    <i class="fas fa-plus"></i>crear nueva categoria 
+    <i class="fas fa-plus"></i>crear nuevo Usuario
   </a>
 {% endblock %}
 

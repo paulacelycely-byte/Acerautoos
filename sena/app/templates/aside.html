@@ -11,7 +11,7 @@
             />
             <!--end::Brand Image-->
             <!--begin::Brand Text-->
-            <span class="brand-text fw-light">AdminLTE 4</span>
+            <span class="brand-text fw-light">ACERAUTOS</span>
             <!--end::Brand Text-->
           </a>
           <!--end::Brand Link-->
@@ -94,10 +94,11 @@
                 </ul>
               </li>
               <li class="nav-item menu-open">
-                <a href="#" class="nav-link active">
+                <a href="{% url "app:crear_entrada_vehiculo" %}" class="nav-link active">
+
                   <i class="nav-icon bi bi-clipboard-fill"></i>
                   <p>
-                    Layout Options
+                    Entrada Vehiculo
                     <span class="nav-badge badge text-bg-secondary me-3"></span>
                     <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
@@ -140,9 +141,9 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="../layout/sidebar-mini.html" class="nav-link">
+                    <a href="{% url "app:listar_Ventas" %}" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
-                      <p>Sidebar Mini</p>
+                      <p> Ventas</p>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -166,10 +167,10 @@
                 </ul>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{% url "app:crear_Usuario" %}" class="nav-link">
                   <i class="nav-icon bi bi-tree-fill"></i>
                   <p>
-                    UI Elements
+                    Usuario
                     <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
                 </a>

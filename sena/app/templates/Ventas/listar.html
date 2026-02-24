@@ -1,0 +1,109 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block contenido %}
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Ventas</h3>
+  </div>
+
+  <div class="card-body">
+    <table class="table table-bordered table-hover" id="tabla">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Cliente</th>
+          <th>Documento</th>
+          <th>Fecha Entrada</th>
+          <th>salida vehiculo</th>
+          <th>Producto</th>
+          <th>Usuario</th>
+          <th>Total</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in object_list %}
+        <tr>
+          <td>{{ c.id }}</td>
+          <td>{{ c.cliente}}</td>
+          <td>{{ c.documento}}</td>
+          <td>{{ c.fecha}}</td>
+          <td>{{ c.salida}}</td>
+          <td>{{ c.productos}}</td>
+          <td>{{ c.usuario}}</td>
+          <td>{{ c.total}}</td>
+          <td>
+            <!-- EDITAR -->
+            <a href="{% url 'app:editar_Ventas' c.id %}"
+               class="btn btn-warning btn-sm">
+              <i class="fas fa-edit"></i>
+            </a>
+
+            <!-- ELIMINAR -->
+            <a href="{% url 'app:eliminar_Ventas' c.id %}"
+               class="btn btn-danger btn-sm">
+              <i class="fas fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-footer">
+    <a href="{% url 'app:crear_Ventas' %}"
+       class="btn btn-primary">
+      <i class="fas fa-plus"></i> Nueva Venta
+    </a>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'lib/jquery/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+
+<script>
+  $(document).ready(function () {
+    $('#tabla').DataTable({
+      responsive: true,
+      autoWidth: false,
+      language: {
+        search: "Buscar:",
+        lengthMenu: "Mostrar _MENU_ registros",
+        info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+        infoEmpty: "Mostrando 0 a 0 de 0 registros",
+        zeroRecords: "No se encontraron resultados",
+        paginate: {
+          first: "Primero",
+          last: "Último",
+          next: "Siguiente",
+          previous: "Anterior"
+        }
+      }
+    });
+  });
+</script>
+
+<script>
+  {% if messages %}
+    console.log("Hola Mundo")
+    document.addEventListener('DOMContentLoaded',function(){
+      {% for messege in messages  %}
+        Swal.fire({
+          icon:"{{messege.tags}}",
+          title:"{{messege|escapejs}}",
+          showConfirmButton:false,
+          timer:2500
+        });
+      {% endfor %}
+    });
+  {% endif %}
+</script>
+
+{% endblock %}
