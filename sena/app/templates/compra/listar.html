@@ -1,0 +1,42 @@
+{% extends 'body.html' %}
+{% block contenido %}
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-shopping-cart"></i> {{ titulo }}</h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered" id="tabla">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Proveedor</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in compras %}
+                <tr>
+                    <td>{{ c.id_compra }}</td>
+                    <td>{{ c.fecha }}</td>
+                    <td>{{ c.fk_proveedor.nombre }}</td>
+                    <td>${{ c.total }}</td>
+                    <td>{{ c.estado }}</td>
+                    <td>
+                        <a href="{% url 'app:editar_compra' c.id_compra %}" class="btn btn-warning btn-xs"><i class="fas fa-edit"></i></a>
+                        <a href="{% url 'app:eliminar_compra' c.id_compra %}" class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <a href="{% url 'app:crear_compra' %}" class="btn btn-primary btn-flat">
+            <i class="fas fa-plus"></i> Nueva Compra
+        </a>
+    </div>
+</div>
+{% endblock %}

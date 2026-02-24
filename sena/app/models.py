@@ -74,7 +74,8 @@ class tipo_servicio(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
     categoria = models.CharField(max_length=100)
-    duracion_estimada = models.DateField()
+    hora_entrada_estimada = models.TimeField(null=True, blank=True)
+    hora_salida_estimada = models.TimeField(null=True, blank=True)
     estado = models.BooleanField(default=True)
     
     def __str__(self):
@@ -114,7 +115,6 @@ class Proveedor(models.Model):
     email = models.EmailField()
     direccion = models.CharField(max_length=100)
     estado = models.BooleanField(default=True,choices=estado)
-    # Correcto: 'Producto'
     mercancia = models.ForeignKey(Producto, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -148,7 +148,6 @@ class Categorias(models.Model):
     id_categoria = models.AutoField(primary_key=True)
     nombre_categoria = models.CharField(max_length=45)
     descripcion = models.CharField(max_length=45)
-    # Correcto: 'Producto'
     fk_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -161,7 +160,7 @@ class Categorias(models.Model):
 
 
 class Salida_Vehiculo(models.Model):
-    # Correcto: 'Entrada_Vehiculo'
+
     entrada = models.ForeignKey('Entrada_Vehiculo', on_delete=models.CASCADE)
     fecha_hora_salida = models.DateTimeField()
     total_a_pagar = models.DecimalField(max_digits=10, decimal_places=2)

@@ -1,7 +1,9 @@
-from django.urls import path
+from django.urls import path, include
 from .views.categorias.views import *
 from .views.Proveedores.views import *
-from .views.tipo_servicio.views import *  
+from .views.tipo_servicio.views import *
+from .views.compra.views import *
+from .views.factura.views import *
 
 app_name = 'app'
 
@@ -23,4 +25,17 @@ urlpatterns = [
     path('tipo_servicio/crear/', TipoServicioCreateView.as_view(), name='crear_servicio'),
     path('tipo_servicio/editar/<int:pk>/', TipoServicioUpdateView.as_view(), name='editar_servicio'),
     path('tipo_servicio/eliminar/<int:pk>/', TipoServicioDeleteView.as_view(), name='eliminar_servicio'),
+
+    # --- MÓDULO DE COMPRAS (CRUD COMPLETO) ---
+    path('compra/listar/', CompraListView.as_view(), name='listar_compras'),
+    path('compra/crear/', CompraCreateView.as_view(), name='crear_compra'),
+    path('compra/editar/<int:pk>/', CompraUpdateView.as_view(), name='editar_compra'),
+    path('compra/eliminar/<int:pk>/', CompraDeleteView.as_view(), name='eliminar_compra'),
+
+    # --- MÓDULO DE FACTURAS (SOLO CONSULTA) ---
+    path('factura/listar/', FacturaListView.as_view(), name='listar_facturas'),
+    path('factura/detalle/<int:pk>/', FacturaDetailView.as_view(), name='detalle_factura'),
+    
+    # --- MÓDULO DE LOGIN ---
+    path('acceso/', include(('login.urls', 'login'), namespace='login')),
 ]
