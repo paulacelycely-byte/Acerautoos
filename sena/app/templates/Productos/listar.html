@@ -17,10 +17,10 @@
       <td>{{ c.id_categoria }}</td>
       <td>{{ c.nombre_categoria }}</td>
       <td>
-        <a href ="{% url "app:editar_categoria" c.id_categoria %}" class="btn btn-primary btn-xs">
+        <a href ="{% url 'app:editar_productos' c.id %}" class="btn btn-primary btn-xs">
           <i class="fas fa-edit"></i>
         </a>
-        <a href ="{% url "app:eliminar_categoria" c.id_categoria %}" class="btn btn-primary btn-xs">
+        <a href ="{% url 'app:eliminar_productos' c.id %}" class="btn btn-primary btn-xs">
           <i class="fas fa-trash"></i>
         </a>
       </td>
@@ -30,7 +30,7 @@
 </table>
 <div class = "card-footer">
   <a href="{{crear_url}}" class="btn btn-primary btn-xs">
-    <i class="fas fa-plus"></i>crear nueva categoria 
+    <i class="fas fa-plus"></i>Crear producto
   </a>
 {% endblock %}
 

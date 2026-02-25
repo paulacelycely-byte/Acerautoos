@@ -228,20 +228,20 @@ class Factura(models.Model):
         db_table = "Factura"
 
 
-class GestionNotificacion(models.Model):
+class Notificacion(models.Model):
     id_notificacion = models.AutoField(primary_key=True)
     mensaje = models.CharField(max_length=45)
     fecha_envio = models.CharField(max_length=45)
-    # CORREGIDO: 'Venta' -> 'Ventas' (Nombre de la clase)
+    
     fk_ventas = models.ForeignKey('Ventas', on_delete=models.CASCADE)
 
-    def _str_(self):
+    def __str__(self):
         return f"Notificación {self.id_notificacion} - {self.mensaje}"
 
     class Meta:
-        verbose_name = "Gestión de Notificación"
-        verbose_name_plural = "Gestión de Notificaciones"
-        db_table = "gestion_notificacion"
+        verbose_name = "Notificación"
+        verbose_name_plural = "Notificaciones"
+        db_table = "notificacion"
 
 
 class Servicio(models.Model):

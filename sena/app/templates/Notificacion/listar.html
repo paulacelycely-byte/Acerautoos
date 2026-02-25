@@ -1,0 +1,100 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block contenido %}
+
+<div class="card">
+
+  <div class="card-header">
+    <h3 class="card-title">
+      <i class="fas fa-bell"></i> Listado de Notificaciones
+    </h3>
+  </div>
+
+  <div class="card-body">
+    <table class="table table-bordered table-hover" id="tabla">
+
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Mensaje</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for n in object_list %}
+        <tr>
+
+          <td>{{ n.id_notificacion }}</td>
+
+          <td>{{ n.mensaje }}</td>
+
+          <td>{{ n.fecha_envio }}</td>
+          <td>{{ n.fk_ventas }}</td>
+
+          <td>
+
+            <a href="{% url 'app:editar_notificacion' n.id_notificacion %}"
+               class="btn btn-warning btn-sm">
+               <i class="fas fa-edit"></i>
+            </a>
+
+            <a href="{% url 'app:eliminar_notificacion' n.id_notificacion %}"
+               class="btn btn-danger btn-sm">
+               <i class="fas fa-trash"></i>
+            </a>
+
+          </td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+
+  <div class="card-footer">
+
+    <a href="{% url 'app:crear_notificacion' %}"
+       class="btn btn-primary">
+
+       <i class="fas fa-plus"></i> Nueva Notificación
+
+    </a>
+
+  </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+
+<script src="{% static 'lib/jquery/jquery-3.6.0.min.js' %}"></script>
+
+<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>
+
+<script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+
+<script>
+$(document).ready(function () {
+
+    $('#tabla').DataTable({
+
+        responsive: true,
+        autoWidth: false,
+
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+        }
+
+    });
+
+});
+</script>
+
+{% endblock %}

@@ -3,9 +3,11 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from app.views.Categorias.views import *
+from app.views import *
 
 from app.models import Categorias
-from app.forms import CategoriaForm
+from app.forms import CategoriasForm
 
 
 
@@ -21,7 +23,7 @@ class categoriaListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Listado de Categorías'
-        context['crear_url'] = reverse_lazy('app:crear_categoria')
+        context['crear_url'] = reverse_lazy('app:crear_categorias')
         return context
 
 from django.urls import reverse_lazy
@@ -29,7 +31,7 @@ from django.contrib import messages
 
 class CategoriaCreateView(CreateView):
     model = Categorias
-    form_class = CategoriaForm
+    form_class = CategoriasForm
     template_name = 'categoria/crear.html'
     success_url = reverse_lazy('app:listar_categoria')
 
@@ -40,7 +42,7 @@ class CategoriaCreateView(CreateView):
 
 class CategoriaUpdateView(UpdateView):
     model = Categorias
-    form_class = CategoriaForm
+    form_class = CategoriasForm
     template_name = 'categoria/crear.html'
     success_url = reverse_lazy('app:listar_categoria')
 
@@ -50,8 +52,8 @@ class CategoriaUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Editar Categoría'
-        context['listar_url'] = reverse_lazy('app:listar_categoria')
+        context['titulo'] = 'Editar Categorías'
+        context['listar_url'] = reverse_lazy('app:listar_categorias')
         return context
 
 
@@ -67,6 +69,6 @@ class CategoriaDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar Categoría'
-        context['listar_url'] = reverse_lazy('app:listar_categoria')
+        context['titulo'] = 'Eliminar Categorías'
+        context['listar_url'] = reverse_lazy('app:listar_categorias')
         return context
