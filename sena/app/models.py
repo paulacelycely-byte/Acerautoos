@@ -1,7 +1,7 @@
 from django.db import models
 from datetime import datetime
 from decimal import Decimal
-from app.models import*
+from app.models import *
 
 
 # --- MODELOS BASE ---
@@ -88,8 +88,6 @@ class tipo_servicio(models.Model):
         db_table = "tipo_servicio"
 
 
-
-
 class Entrada_vehiculo(models.Model):
     documento = models.IntegerField(unique=True)
     fecha_hora_entrada = models.DateTimeField(auto_now_add=True)
@@ -128,13 +126,13 @@ class Proveedores(models.Model):
 class Compra(models.Model):
     id_compra = models.AutoField(primary_key=True)
     fecha = models.DateField()
-    total = models.DecimalField(max_digits=10, decimal_places=2)
     estado = models.CharField(max_length=10)
 
     # CORREGIDO: 'Proveedor' -> 'Proveedores' (Nombre de la clase)
     fk_proveedor = models.ForeignKey('Proveedores', on_delete=models.CASCADE)
     # CORREGIDO: 'Insumo' -> 'insumo' (Nombre de la clase)
     fk_insumo = models.ForeignKey('insumo', on_delete=models.CASCADE)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
 
     def _str_(self):
         return f"Compra {self.id_compra} - {self.estado}"
@@ -168,7 +166,7 @@ class Salida_Vehiculo(models.Model):
     total_a_pagar = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f" {self.entrada} - {self.fecha_hora_salida}"
+        return f" {self.entrada}"
 
     class Meta:
         db_table = "salida_vehiculos"
@@ -176,14 +174,13 @@ class Salida_Vehiculo(models.Model):
         verbose_name_plural = "Salidas de Vehículos"
 
 
-
 class Cliente(models.Model):
     nombre = models.CharField(max_length=100)
     documento = models.CharField(max_length=10, unique=True)
-    
+
     def __str__(self):
         return f" {self.nombre}"
-    
+
     class Meta:
         db_table = "Cliente"
         verbose_name = "Cliente"
@@ -199,7 +196,7 @@ class Ventas(models.Model):
     # Correcto: 'Salida_Vehiculo'
     salida = models.ForeignKey('Salida_Vehiculo', on_delete=models.CASCADE)
     # Correcto: 'Producto'
-    productos = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    productos = models.ManyToManyField(Producto)
     # Correcto: 'Usuario'
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
 
@@ -258,9 +255,11 @@ class Servicio(models.Model):
     # CORREGIDO: 'Insumos' -> 'insumo' (Nombre de la clase)
     insumo = models.ForeignKey('insumo', on_delete=models.SET_NULL, null=True)
     # Correcto: 'Usuario'
-    usuario = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True)
+    usuario = models.ForeignKey(
+        'Usuario', on_delete=models.SET_NULL, null=True)
     # CORREGIDO: 'TipoServicio' -> 'tipo_servicio' (Nombre de la clase)
-    tipo_servicio = models.ForeignKey('tipo_servicio', on_delete=models.CASCADE)
+    tipo_servicio = models.ForeignKey(
+        'tipo_servicio', on_delete=models.CASCADE)
 
     def _str_(self):
         return f"Servicio {self.descripcion} (${self.precio})"

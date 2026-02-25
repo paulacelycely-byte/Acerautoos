@@ -1,74 +1,81 @@
-{% extends 'body.html' %}
+ {% extends 'body.html' %}
 {% load widget_tweaks %}
 
 {% block contenido %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form method="post" action=".">
+                <div class="card border-0 shadow-lg" style="border-radius: 20px;">
+                    <div class="card-header bg-primary py-3" style="border-radius: 20px 20px 0 0;">
+                        <h3 class="card-title text-white m-0">
+                            <i class="fas fa-edit me-2"></i> {{ titulo }}
+                        </h3>
+                    </div>
 
-<form method="post" action=".">
-    <div class="card card-default">
-        
-        <div class="card-header">
-            <h3 class="card-title">
-                <i class="fas fa-search"></i>
-                {{ titulo }}
-            </h3>
-        </div>
+                    <div class="card-body p-4">
+                        {% csrf_token %}
+                        {% if form.errors %}
+                            <div class="alert alert-danger shadow-sm">
+                                <h6 class="fw-bold"><i class="fas fa-ban me-2"></i> Errores encontrados:</h6>
+                                <ul class="mb-0">
+                                    {% for field in form %}{% for error in field.errors %}
+                                        <li>{{ field.label }}: {{ error }}</li>
+                                    {% endfor %}{% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
 
-        <div class="card-body">
-            {% csrf_token %}
-            
-            {% for field in form.visible_fields %}
-                <div class="form-group mb-3">
-                    
-                    <label for="{{ field.id_for_label }}">
-                        {{ field.label }}:
-                    </label>
-
-                    {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
-                    {% if field.errors %}
-                        <div class="text-danger">
-                            <button type="button" class="close" data-dismiss="alert">x</button>
-                            {% for error in field.errors %}
-                            {{ error }}
-                            {% endfor %}
+                        {% for field in form.visible_fields %}
+                        <div class="form-group mb-4">
+                            <label class="fw-bold text-dark mb-1" for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                            </label>
+                            {{ field|add_class:'form-control rounded-pill border-light-subtle shadow-sm'|attr:'autocomplete:off' }}
                         </div>
-                    {% endif %}
+                        {% endfor %}
+                    </div>
 
-
+                    <div class="card-footer bg-light p-3 text-end" style="border-radius: 0 0 20px 20px;">
+                        <button type="submit" class="btn btn-primary px-4 rounded-pill shadow">
+                            <i class="fas fa-save me-1"></i> Guardar registro
+                        </button>
+                        <a href="{{ listar_url }}" class="btn btn-outline-secondary px-4 rounded-pill ms-2">
+                            <i class="fas fa-times me-1"></i> Cancelar
+                        </a>
+                    </div>
                 </div>
-            {% endfor %}
-
+            </form>
         </div>
-
-        <div class="card-footer mt-3">
-            <button type="submit" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus"></i> Guardar registro
-            </button>
-
-            <a href="{{ listar_url }}" class="btn btn-secondary btn-sm">
-                <i class="fas fa-arrow-left"></i> Devolver
-            </a>
-        </div>
-
     </div>
-</form>
-
-{% endblock %}
-
-
-{% block js %}
+</div>
 <script>
+document.addEventListener("DOMContentLoaded", function () {
 
-{% if form.is_bound and form.errors %}
-document.addEventListener('DOMContentLoaded', function () {
-    Swal.fire({
-        title: '¡Atención!',
-        text: 'Por favor corrige los errores en el formulario',
-        icon: 'warning',
-        confirmButtonColor: '#3085d6',
-        confirmButtonText: 'Entendido'
-    });
+  // OJO: Django suele usar id_productos
+  const productos = document.getElementById("id_productos");
+  const total = document.getElementById("id_total");
+
+  if (!productos || !total) {
+    console.error("No se encontraron los elementos del formulario");
+    return;
+  }
+
+  function calcularTotal() {
+    let suma = 0;
+
+    for (let option of productos.selectedOptions) {
+      // Extrae el número después del $
+      const texto = option.text;
+      const precio = texto.split('$')[1];
+
+      if (precio) {
+        suma += parseFloat(precio);
+      }
+    }
+
+    total.value = suma.toFixed(2);
+  productos.addEventListener("change", calcularTotal);
 });
-{% endif %}
-
 </script>
 {% endblock %}

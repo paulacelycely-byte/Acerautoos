@@ -2,32 +2,34 @@ import re
 from django.forms import ModelForm
 from app.models import Categorias
 from app.models import Entrada_vehiculo
-from django import forms  
+from django import forms
 from app.models import Ventas
 from app.models import Usuario
+from django.utils import timezone
+
 
 class CategoriaForm(ModelForm):
     class Meta:
         model = Categorias
         fields = '__all__'
         widgets = {
-            'nombre' : forms.TextInput(attrs={
-                'placeholder':'Ingrese el nombre de la categoria '}),
+            'nombre': forms.TextInput(attrs={
+                'placeholder': 'Ingrese el nombre de la categoria '}),
             'descripcion':
             forms.Textarea(attrs={
-                'placeholder':'ingrese la descripcion de la categoria ',
-                'rows':15,
-                'cols':17}),
+                'placeholder': 'ingrese la descripcion de la categoria ',
+                'rows': 15,
+                'cols': 17}),
         }
-        
+
     def clean_nombre_categoria(self):
-        nombre= self.cleaned_data.get('nombre_categoria')
+        nombre = self.cleaned_data.get('nombre_categoria')
         print(nombre)
         if not re.match(r'^[a-zA-Z\s]+$', nombre):
             print("En el error")
-            raise forms.ValidationError('El nombre solo puede contener letras y espacios')
+            raise forms.ValidationError(
+                'El nombre solo puede contener letras y espacios')
         return nombre
-    
 
 
 class Entrada_vehiculoForm(forms.ModelForm):
@@ -68,24 +70,31 @@ class Entrada_vehiculoForm(forms.ModelForm):
 
     def clean_placa(self):
         placa = self.cleaned_data.get('placa')
-        print("PLACA:", placa)
 
-        if not re.match(r'^[A-Za-z0-9\-]+$', placa):
-            print(" ERROR PLACA")
+        if placa:
+            placa = placa.upper()
+
+        if not re.match(r'^[A-Z]{3}[0-9]{3}$', placa):
             raise forms.ValidationError(
-                'La placa solo puede contener letras y números'
+                'La placa debe tener 3 letras mayúsculas y 3 números '
             )
 
-        print(" PLACA VALIDA")
         return placa
 
 
-    
 class VentasForm(forms.ModelForm):
 
     class Meta:
         model = Ventas
-        fields = '__all__'
+        fields = [
+            'fecha',
+            'documento',
+            'cliente',
+            'usuario',
+            'productos',
+            'salida',
+            'total',
+        ]
         widgets = {
             'fecha': forms.DateInput(attrs={'type': 'date'}),
             'total': forms.NumberInput(attrs={
@@ -97,9 +106,10 @@ class VentasForm(forms.ModelForm):
             'contrasena': forms.PasswordInput(attrs={
                 'placeholder': 'Ingrese la contraseña'
             }),
+            'producto': forms.SelectMultiple(attrs={
+            }),
         }
 
-    
     def clean_documento(self):
         documento = self.cleaned_data.get('documento')
         print("DOCUMENTO:", documento)
@@ -109,11 +119,11 @@ class VentasForm(forms.ModelForm):
             raise forms.ValidationError(
                 'El documento solo puede contener números'
             )
-
-        print(" DOCUMENTO OK")
+        if len(documento) > 10 or len(documento) < 10:
+            raise forms.ValidationError(
+                "El documento tiene que tener 10 digitos")
         return documento
 
-   
     def clean_total(self):
         total = self.cleaned_data.get('total')
         print("TOTAL:", total)
@@ -127,10 +137,34 @@ class VentasForm(forms.ModelForm):
         print(" TOTAL OK")
         return total
 
+    def clean_fecha(self):
+        fecha = self.cleaned_data['fecha']
+        fecha_actual = timezone.now().date()
+        print(fecha)
+        print(fecha_actual)
+        if fecha != fecha_actual:
+            raise forms.ValidationError(
+                "La fecha tiene que ser la del dia de hoy")
+        return fecha
 
 
+    def clean(self):
+        cleaned_data = super().clean()
+        productos = cleaned_data.get('productos')
 
-        
+        if productos:
+            cleaned_data['total'] = sum(p.precio for p in productos)
+
+        return cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # total solo lectura
+        self.fields['total'].widget.attrs['readonly'] = True
+        self.fields['productos'].choices = [
+            (p.id, f"{p.nombre} - ${p.precio}") for p in self.fields['productos'].queryset
+        ]
 
 
 class UsuarioForm(ModelForm):
