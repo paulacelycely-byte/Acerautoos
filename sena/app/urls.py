@@ -4,10 +4,15 @@ from .views.Proveedores.views import *
 from .views.tipo_servicio.views import *
 from .views.compra.views import *
 from .views.factura.views import *
+# Agregamos esta importación para el Dashboard
+from .views.dashboard.views import DashboardView 
 
 app_name = 'app'
 
 urlpatterns = [
+    # --- PANEL PRINCIPAL (DASHBOARD) ---
+    path('dashboard/', DashboardView.as_view(), name='dashboard'),
+
     # --- MÓDULO DE CATEGORÍAS ---
     path('listar_categorias/', categoriaListView.as_view(), name='listar_categoria'),
     path('crear_categoria/', CategoriaCreateView.as_view(), name='crear_categoria'),

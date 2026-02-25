@@ -127,9 +127,10 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# --- CONFIGURACIÓN DE REDIRECCIONES DE LOGIN ---
-# Al loguearse con éxito, lo enviamos al listado
-LOGIN_REDIRECT_URL = '/principal/listar_categorias/'
+# --- CONFIGURACIÓN DE REDIRECCIONES DE LOGIN (ACTUALIZADO) ---
+
+# Al loguearse con éxito, lo enviamos al Dashboard (Panel de Control)
+LOGIN_REDIRECT_URL = '/principal/dashboard/'
 
 # Al cerrar sesión, lo enviamos de vuelta al login
 LOGOUT_REDIRECT_URL = '/principal/acceso/'

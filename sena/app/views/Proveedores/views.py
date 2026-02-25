@@ -4,9 +4,10 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin 
 from ...models import Proveedor
 from ...forms import ProveedorForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # LISTAR
-class ProveedorListView(ListView):
+class ProveedorListView(LoginRequiredMixin, ListView): # Mixin agregado
     model = Proveedor
     template_name = 'Prooveedores/listar.html'
     context_object_name = 'object_list'
@@ -19,7 +20,7 @@ class ProveedorListView(ListView):
         return context
 
 # CREAR
-class ProveedorCreateView(SuccessMessageMixin, CreateView):
+class ProveedorCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView): # Mixin agregado al inicio
     model = Proveedor
     form_class = ProveedorForm
     template_name = 'Prooveedores/crear.html'
@@ -37,7 +38,7 @@ class ProveedorCreateView(SuccessMessageMixin, CreateView):
         return super().form_invalid(form)
 
 # EDITAR
-class ProveedorUpdateView(SuccessMessageMixin, UpdateView):
+class ProveedorUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView): # Mixin agregado al inicio
     model = Proveedor
     form_class = ProveedorForm
     template_name = 'Prooveedores/crear.html'
@@ -55,7 +56,7 @@ class ProveedorUpdateView(SuccessMessageMixin, UpdateView):
         return super().form_invalid(form)
 
 # ELIMINAR
-class ProveedorDeleteView(DeleteView):
+class ProveedorDeleteView(LoginRequiredMixin, DeleteView): # Mixin agregado
     model = Proveedor
     template_name = 'Prooveedores/eliminar.html'
     success_url = reverse_lazy('app:listar_proveedores')
@@ -65,7 +66,6 @@ class ProveedorDeleteView(DeleteView):
         context['titulo'] = 'Eliminar Proveedor'
         context['listar_url'] = reverse_lazy('app:listar_proveedores')
         return context
-    
     
     def post(self, request, *args, **kwargs):
         messages.success(self.request, '🗑️ Proveedor eliminado exitosamente')

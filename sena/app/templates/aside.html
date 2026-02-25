@@ -1,66 +1,66 @@
-<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
-  <div class="sidebar-brand">
-    <a href="/" class="brand-link">
-      <img
-        src="../assets/img/AdminLTELogo.png"
-        alt="AdminLTE Logo"
-        class="brand-image opacity-75 shadow"
-      />
-      <span class="brand-text fw-light">AdminLTE 4</span>
-    </a>
-  </div>
-  <div class="sidebar-wrapper">
-    <nav class="mt-2">
-      <ul
-        class="nav sidebar-menu flex-column"
-        data-lte-toggle="treeview"
-        role="navigation"
-        aria-label="Main navigation"
-        data-accordion="false"
-        id="navigation"
-      >
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon bi bi-speedometer"></i>
-            <p>
-              Dashboard
-              <i class="nav-arrow bi bi-chevron-right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/" class="nav-link">
-                <i class="nav-icon bi bi-circle"></i>
-                <p>Resumen General</p>
-              </a>
-            </li>
-          </ul>
-        </li>
+{% load static %}
+<aside class="app-sidebar shadow-lg">
+    <div class="p-4 mb-2 d-flex align-items-center border-bottom border-white border-opacity-10">
+        <div class="bg-primary bg-gradient rounded-3 p-2 me-3 shadow-sm animate__animated animate__fadeIn">
+            <i class="fas fa-car-side text-white fs-5"></i>
+        </div>
+        <span class="text-white fw-bold fs-5" style="letter-spacing: 1.5px;">ACERAUTOOS</span>
+    </div>
 
-        <li class="nav-header">MÓDULOS PRINCIPALES</li>
+    <div class="sidebar-wrapper px-2">
+        <nav class="mt-2">
+            <ul class="nav sidebar-menu flex-column">
+                
+                <li class="nav-item">
+                    <a href="{% url 'app:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                        <i class="nav-icon fas fa-th-large text-primary-emphasis"></i>
+                        <span>Panel de Control</span>
+                    </a>
+                </li>
 
-        <li class="nav-item">
-          <a href="{% url 'app:listar_proveedores' %}" class="nav-link {% if 'proveedores' in request.path %}active{% endif %}">
-            <i class="nav-icon bi bi-truck"></i>
-            <p>Proveedores</p>
-          </a>
-        </li>
+                <div class="px-4 mt-4 mb-2 text-uppercase fw-bold" style="color: #64748b; letter-spacing: 2px; font-size: 0.65rem;">
+                    Módulos Operativos
+                </div>
 
-        <li class="nav-item">
-          <a href="{% url 'app:listar_servicio' %}" class="nav-link {% if 'tipo_servicio' in request.path %}active{% endif %}">
-            <i class="nav-icon bi bi-wrench-adjustable"></i>
-            <p>Servicios</p>
-          </a>
-        </li>
+                <li class="nav-item">
+                    <a href="{% url 'app:listar_proveedores' %}" class="nav-link">
+                        <i class="nav-icon fas fa-user-friends" style="color: #0ea5e9;"></i>
+                        <span>Proveedores</span>
+                    </a>
+                </li>
 
-        <li class="nav-header">DOCUMENTACIÓN</li>
-        <li class="nav-item">
-          <a href="../docs/introduction.html" class="nav-link">
-            <i class="nav-icon bi bi-download"></i>
-            <p>Instalación</p>
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-  </aside>
+                <li class="nav-item">
+                    <a href="{% url 'app:listar_servicio' %}" class="nav-link">
+                        <i class="nav-icon fas fa-tools" style="color: #10b981;"></i>
+                        <span>Servicios de Taller</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'app:listar_compras' %}" class="nav-link">
+                        <i class="nav-icon fas fa-box" style="color: #f59e0b;"></i>
+                        <span>Compras / Stock</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'app:listar_facturas' %}" class="nav-link">
+                        <i class="nav-icon fas fa-file-invoice-dollar" style="color: #ef4444;"></i>
+                        <span>Facturación</span>
+                    </a>
+                </li>
+
+                <div class="px-4 mt-4 mb-2 text-uppercase fw-bold" style="color: #64748b; letter-spacing: 2px; font-size: 0.65rem;">
+                    Configuración
+                </div>
+
+                <li class="nav-item">
+                    <a href="{% url 'admin:logout' %}" class="nav-link text-danger-emphasis">
+                        <i class="nav-icon fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</aside>
