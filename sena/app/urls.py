@@ -1,6 +1,6 @@
 from django.urls import path
 from app.views.Ventas.views import Ventas_delete
-from app.views.categorias.views import *
+from app.views.Categorias.views import *
 from app.views.Entrada_vehiculo.views import *
 from app.views.Ventas.views import *
 from app.views.Usuario.views import *
