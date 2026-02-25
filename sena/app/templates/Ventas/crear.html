@@ -52,7 +52,6 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-  // OJO: Django suele usar id_productos
   const productos = document.getElementById("id_productos");
   const total = document.getElementById("id_total");
 
@@ -65,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let suma = 0;
 
     for (let option of productos.selectedOptions) {
-      // Extrae el número después del $
       const texto = option.text;
       const precio = texto.split('$')[1];
 
@@ -75,7 +73,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     total.value = suma.toFixed(2);
+  }
+
+  // El listener va fuera de la función
   productos.addEventListener("change", calcularTotal);
+
 });
 </script>
 {% endblock %}
