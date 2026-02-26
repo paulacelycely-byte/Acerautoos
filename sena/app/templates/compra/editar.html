@@ -1,0 +1,100 @@
+{% extends 'body.html' %}
+{% load widget_tweaks %}
+
+{% block css %}
+<style>
+    /* Tu estilo personalizado para el switch */
+    .custom-switch .custom-control-label::before { height: 1.5rem; width: 2.75rem; border-radius: 2rem; cursor: pointer; }
+    .custom-switch .custom-control-label::after { width: calc(1.5rem - 4px); height: calc(1.5rem - 4px); border-radius: 2rem; cursor: pointer; }
+    .custom-control-input:checked ~ .custom-control-label::before { background-color: #28a745 !important; border-color: #28a745 !important; }
+    .custom-control-input:focus ~ .custom-control-label::before { box-shadow: none !important; }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid animate__animated animate__fadeIn">
+    <form method="post" action="." id="formCompra">
+        {% csrf_token %}
+        <div class="card shadow-sm border-0">
+            <div class="card-header {% if 'editar' in request.path %}bg-warning{% else %}bg-primary{% endif %} py-2">
+                <h3 class="card-title font-weight-bold text-white">
+                    <i class="fas {% if 'editar' in request.path %}fa-edit{% else %}fa-cart-plus{% endif %} mr-2"></i>
+                    {% if 'editar' in request.path %}Editar Registro de Compra{% else %}Nueva Compra de Insumos{% endif %}
+                </h3>
+            </div>
+
+            <div class="card-body p-4">
+                {% if form.errors %}
+                <div class="alert alert-danger border-0 shadow-sm">
+                    <h6 class="font-weight-bold"><i class="fas fa-ban mr-2"></i> Errores encontrados:</h6>
+                    <ul class="mb-0">
+                        {% for field in form %}{% for error in field.errors %}<li><strong>{{ field.label }}:</strong> {{ error }}</li>{% endfor %}{% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="row">
+                    {% for field in form.visible_fields %}
+                        <div class="col-md-6 mb-3">
+                            <label class="font-weight-bold text-dark small mb-1">{{ field.label }}</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-light" style="width: 40px; justify-content: center;">
+                                        {% if 'fecha' in field.name %}<i class="fas fa-calendar-alt text-muted"></i>
+                                        {% elif 'proveedor' in field.name %}<i class="fas fa-truck text-muted"></i>
+                                        {% elif 'insumo' in field.name %}<i class="fas fa-box text-muted"></i>
+                                        {% elif 'total' in field.name %}<i class="fas fa-dollar-sign text-muted"></i>
+                                        {% else %}<i class="fas fa-info-circle text-muted"></i>{% endif %}
+                                    </span>
+                                </div>
+                                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card-footer bg-light d-flex justify-content-end py-3">
+                <button type="button" onclick="confirmarCancelacion('{% url 'app:listar_compras' %}')" class="btn btn-default border px-4 mx-2 shadow-sm">
+                    <i class="fas fa-times text-danger mr-1"></i> Cancelar
+                </button>
+                <button type="submit" class="btn {% if 'editar' in request.path %}btn-warning{% else %}btn-primary{% endif %} px-4 shadow-sm">
+                    <i class="fas fa-save mr-1"></i> Guardar Compra
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(function () {
+        $('#formCompra').on('submit', function (e) {
+            e.preventDefault();
+            var formulario = this;
+            Swal.fire({
+                title: '¿Confirmar registro?',
+                text: "Se actualizará el inventario de insumos.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, guardar',
+                cancelButtonText: 'Revisar',
+                confirmButtonColor: '#28a745',
+            }).then((result) => { if (result.isConfirmed) { formulario.submit(); } });
+        });
+    });
+
+    function confirmarCancelacion(url) {
+        Swal.fire({
+            title: '¿Salir?',
+            text: "Los cambios no se guardarán.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, salir',
+            confirmButtonColor: '#d33',
+            reverseButtons: true
+        }).then((result) => { if (result.isConfirmed) { window.location.href = url; } });
+    }
+</script>
+{% endblock %}

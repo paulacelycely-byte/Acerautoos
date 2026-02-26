@@ -4,8 +4,6 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
-from app.models import Entrada_vehiculo
-from app.forms import Entrada_vehiculoForm
 from app.models import Ventas 
 from app.forms import VentasForm
 from django.urls import reverse_lazy

@@ -1,0 +1,43 @@
+{% extends 'body.html' %}
+{% block contenido %}
+<div class="card card-info"> <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-file-invoice-dollar"></i> {{ titulo }}</h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped" id="tabla">
+            <thead>
+                <tr>
+                    <th>ID Factura</th>
+                    <th>Fecha</th>
+                    <th>Venta</th>
+                    <th>Subtotal</th>
+                    <th>IVA (19%)</th>
+                    <th>Total</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in facturas %}
+                <tr>
+                    <td>{{ f.id }}</td>
+                    <td>{{ f.fecha }}</td>
+                    <td>Venta #{{ f.venta.id }}</td>
+                    <td>${{ f.subtotal }}</td>
+                    <td>${{ f.iva }}</td>
+                    <td class="text-bold">${{ f.total }}</td>
+                    <td class="text-center">
+                        <a href="{% url 'app:detalle_factura' f.id %}" class="btn btn-info btn-xs">
+                            <i class="fas fa-eye"></i> Ver Detalle
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">No hay facturas registradas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

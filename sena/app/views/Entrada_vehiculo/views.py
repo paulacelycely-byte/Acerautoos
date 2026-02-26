@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
-from app.models import Entrada_vehiculo
+from app.models import Entrada_Vehiculo
 from app.forms import Entrada_vehiculoForm
 from app.models import Ventas
 from app.forms import VentasForm
@@ -13,7 +13,7 @@ from app.forms import VentasForm
 
 
 class Entrada_vehiculoListView(ListView):
-    model = Entrada_vehiculo
+    model = Entrada_Vehiculo
     template_name = 'Entrada_vehiculo/listar.html'
     context_object_name = 'Entrada_vehiculo'
 
@@ -29,7 +29,7 @@ class Entrada_vehiculoListView(ListView):
 
 
 class Entrada_vehiculoCreateViews(CreateView):
-    model = Entrada_vehiculo
+    model = Entrada_Vehiculo
     form_class = Entrada_vehiculoForm
     template_name = 'Entrada_vehiculo/crear.html'
     success_url = reverse_lazy('app:listar_entrada_vehiculo')
@@ -46,7 +46,7 @@ class Entrada_vehiculoCreateViews(CreateView):
 
     
 class Entrada_vehiculoUpdateView(UpdateView):
-    model = Entrada_vehiculo
+    model = Entrada_Vehiculo
     form_class = Entrada_vehiculoForm
     template_name = 'Entrada_vehiculo/crear.html'
     success_url = reverse_lazy('app:listar_entrada_vehiculo')
@@ -63,7 +63,7 @@ class Entrada_vehiculoUpdateView(UpdateView):
 
 
 class EntradaVehiculoDeleteView(DeleteView):
-    model = Entrada_vehiculo
+    model = Entrada_Vehiculo
     template_name = 'Entrada_vehiculo/eliminar.html'
     success_url = reverse_lazy('app:listar_entrada_vehiculo')
 
