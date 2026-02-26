@@ -55,10 +55,10 @@
                 </div>
 
                 <li class="nav-item">
-                    <a href="{% url 'admin:logout' %}" class="nav-link text-danger-emphasis">
-                        <i class="nav-icon fas fa-sign-out-alt"></i>
-                        <span>Cerrar Sesión</span>
-                    </a>
+                  <form action="{% url "login:logout" %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Cerrar Sesion</button>
+                  </form>
                   </li>
                 </ul>
               </li>

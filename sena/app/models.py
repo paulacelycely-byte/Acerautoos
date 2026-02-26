@@ -1,7 +1,6 @@
 from django.db import models
 from datetime import datetime
 from decimal import Decimal
-from app.models import *
 
 # --- MODELOS BASE ---
 
@@ -14,7 +13,7 @@ class Usuario(models.Model):
     direccion = models.CharField(max_length=100)
 
     def __str__(self):
-        return f" {self.nombre}"
+        return f"{self.nombre}"
 
     class Meta:
         verbose_name = "Usuario"
@@ -29,7 +28,7 @@ class Producto(models.Model):
     existencia = models.IntegerField()
 
     def __str__(self):
-        return f" {self.nombre}"
+        return f"{self.nombre} (${self.precio})"
 
     class Meta:
         verbose_name = "Producto"
@@ -38,17 +37,15 @@ class Producto(models.Model):
 
 
 class Vehiculo(models.Model):
+    documento = models.CharField(max_length=10)
     tipo_vehiculo = models.CharField(max_length=100)
     placa = models.CharField(max_length=6)
     marca = models.CharField(max_length=100)
     modelo = models.CharField(max_length=100)
-    anio = models.DateField()
     kilometraje = models.IntegerField()
-    documento = models.CharField(max_length=10)
-
+    
     def __str__(self):
-        
-        return f"{self.marca} {self.modelo}"
+        return f"{self.marca} {self.modelo} ({self.placa})"
 
     class Meta:
         verbose_name = "Vehiculo"
@@ -62,7 +59,6 @@ class insumo(models.Model):
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        
         return f"{self.nombre} (${self.precio_unitario})"
 
     class Meta:
@@ -85,7 +81,7 @@ class tipo_servicio(models.Model):
         verbose_name = "tipo_servicio"
         verbose_name_plural = "tipo_servicios"
         db_table = "tipo_servicio"
-       
+        
 
 class Entrada_Vehiculo(models.Model):
     documento = models.IntegerField()
@@ -102,10 +98,9 @@ class Entrada_Vehiculo(models.Model):
 
 
 # --- MODELOS CON RELACIONES ---
-estado = [
+ESTADO_CHOICES = [
     (True,'Activo'),
     (False,'Inactivo'),
-    
 ]
 
 class Proveedor(models.Model):
@@ -114,7 +109,7 @@ class Proveedor(models.Model):
     telefono = models.CharField(max_length=15)
     email = models.EmailField()
     direccion = models.CharField(max_length=100)
-    estado = models.BooleanField(default=True,choices=estado)
+    estado = models.BooleanField(default=True, choices=ESTADO_CHOICES)
     mercancia = models.ForeignKey(Producto, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -131,12 +126,11 @@ class Compra(models.Model):
     fecha = models.DateField()
     total = models.DecimalField(max_digits=10, decimal_places=2)
     estado = models.CharField(max_length=10)
-
     fk_proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     fk_insumo = models.ForeignKey('insumo', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Compra {self.id_compra} - {self.estado}"
+        return f"Compra {self.id_compra}"
 
     class Meta:
         verbose_name = "Compra"
@@ -148,10 +142,9 @@ class Categoria(models.Model):
     id_categoria = models.AutoField(primary_key=True)
     nombre_categoria = models.CharField(max_length=45)
     descripcion = models.CharField(max_length=45)
-    # Correcto: 'Producto'
     fk_producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
 
-    def _str_(self):
+    def __str__(self):
         return self.nombre_categoria
 
     class Meta:
@@ -161,13 +154,12 @@ class Categoria(models.Model):
 
 
 class Salida_Vehiculo(models.Model):
-    # Correcto: 'Entrada_Vehiculo'
     entrada = models.ForeignKey('Entrada_Vehiculo', on_delete=models.CASCADE)
     fecha_hora_salida = models.DateTimeField()
     total_a_pagar = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f" {self.entrada}"
+        return f"Salida: {self.entrada.placa}"
 
     class Meta:
         db_table = "salida_vehiculos"
@@ -180,7 +172,7 @@ class Cliente(models.Model):
     documento = models.CharField(max_length=10, unique=True)
 
     def __str__(self):
-        return f" {self.nombre}"
+        return f"{self.nombre}"
 
     class Meta:
         db_table = "Cliente"
@@ -190,20 +182,22 @@ class Cliente(models.Model):
 
 class Ventas(models.Model):
     fecha = models.DateField()
-    total = models.DecimalField(max_digits=10, decimal_places=2)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     documento = models.CharField(max_length=10)
-    # Correcto: 'Cliente' (Se asumió la creación del modelo Cliente)
     cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
-    # Correcto: 'Salida_Vehiculo'
     salida = models.ForeignKey('Salida_Vehiculo', on_delete=models.CASCADE)
-    # Correcto: 'Producto'
     productos = models.ManyToManyField(Producto)
-    # Correcto: 'Usuario'
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
 
-    def _str_(self):
-        # Corregido: Retorna una sola cadena.
-        return f"Venta del {self.fecha} a {self.cliente} {self.salida}"
+    def __str__(self):
+        return f"Venta {self.id} - {self.fecha}"
+
+    # Lógica de auto-cálculo de total
+    def calcular_total(self):
+        # Suma los precios de los productos seleccionados
+        total_venta = sum(p.precio for p in self.productos.all())
+        self.total = total_venta
+        self.save(update_fields=['total'])
 
     class Meta:
         verbose_name = "Venta"
@@ -216,12 +210,10 @@ class Factura(models.Model):
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
     iva = models.DecimalField(max_digits=10, decimal_places=2)
     total = models.DecimalField(max_digits=10, decimal_places=2)
-    # CORREGIDO: 'Venta' -> 'Ventas' (Nombre de la clase)
     venta = models.ForeignKey('Ventas', on_delete=models.CASCADE)
 
-    def _str_(self):
-        # Corregido: Retorna una sola cadena.
-        return f"Factura #{self.id} por ${self.total}"
+    def __str__(self):
+        return f"Factura #{self.id}"
 
     class Meta:
         verbose_name = "Factura"
@@ -233,11 +225,10 @@ class Notificacion(models.Model):
     id_notificacion = models.AutoField(primary_key=True)
     mensaje = models.CharField(max_length=45)
     fecha_envio = models.CharField(max_length=45)
-    
     fk_ventas = models.ForeignKey('Ventas', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Notificación {self.id_notificacion} - {self.mensaje}"
+        return f"Notificación {self.id_notificacion}"
 
     class Meta:
         verbose_name = "Notificación"
@@ -250,20 +241,13 @@ class Servicio(models.Model):
     duracion = models.IntegerField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     documento = models.IntegerField()
-
-    # Correcto: 'Entrada_Vehiculo'
     entrada = models.ForeignKey('Entrada_Vehiculo', on_delete=models.CASCADE)
-    # CORREGIDO: 'Insumos' -> 'insumo' (Nombre de la clase)
     insumo = models.ForeignKey('insumo', on_delete=models.SET_NULL, null=True)
-    # Correcto: 'Usuario'
-    usuario = models.ForeignKey(
-        'Usuario', on_delete=models.SET_NULL, null=True)
-    # CORREGIDO: 'TipoServicio' -> 'tipo_servicio' (Nombre de la clase)
-    tipo_servicio = models.ForeignKey(
-        'tipo_servicio', on_delete=models.CASCADE)
+    usuario = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True)
+    tipo_servicio = models.ForeignKey('tipo_servicio', on_delete=models.CASCADE)
 
-    def _str_(self):
-        return f"Servicio {self.descripcion} (${self.precio})"
+    def __str__(self):
+        return f"Servicio: {self.descripcion}"
 
     class Meta:
         db_table = "servicios"

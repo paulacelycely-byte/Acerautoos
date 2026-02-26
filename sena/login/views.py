@@ -8,5 +8,5 @@ class LoginFormView(LoginView):
     success_url = reverse_lazy('app:listar_categorias')
 
 class LogoutFormView(LogoutView):
-    next_page = reverse_lazy('login :login')
+    next_page = reverse_lazy('login:login')
         

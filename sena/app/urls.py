@@ -12,7 +12,7 @@ from app.views.Vehiculo.views import *
 from app.views.Cliente.views import *
 from app.views.Notificacion.views import *
 from django.urls import path, include
-from .views.categorias.views import *
+from .views.Categorias.views import *
 from .views.Proveedores.views import *
 from .views.tipo_servicio.views import *
 from .views.compra.views import *
@@ -39,7 +39,7 @@ urlpatterns = [
     path('listar_entrada_vehiculo/', Entrada_vehiculoListView.as_view(), name='listar_entrada_vehiculo'),
     path('crear_entrada_vehiculo/', Entrada_vehiculoCreateViews.as_view(), name='crear_entrada_vehiculo'),
     path('editar_entrada_vehiculo/<int:pk>/', Entrada_vehiculoUpdateView.as_view(), name='editar_entrada_vehiculo'),
-    #path('eliminar_entrada_vehiculo/<int:pk>/', EntradaVehiculoDeleteView.as_view(), name='eliminar_entrada_vehiculo'),
+    path('eliminar_entrada_vehiculo/<int:pk>/', EntradaVehiculoDeleteView.as_view(), name='eliminar_entrada_vehiculo'),
     
     #  Ventas
     path('listar_Ventas/', VentasListView.as_view(), name='listar_Ventas'),

@@ -13,12 +13,12 @@
       <thead>
         <tr>
           <th>#</th>
+          <th>Documento</th>
           <th>Tipo Vehículo</th>
           <th>Placa</th>
           <th>Marca</th>
           <th>Modelo</th>
           <th>Kilometraje</th>
-          <th>Documento</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -26,12 +26,13 @@
         {% for v in vehiculo %}
         <tr>
           <td>{{ v.id }}</td>
+          <td>{{ v.documento }}</td>
           <td>{{ v.tipo_vehiculo }}</td>
           <td>{{ v.placa }}</td>
           <td>{{ v.marca }}</td>
           <td>{{ v.modelo }}</td>
           <td>{{ v.kilometraje }}</td>
-          <td>{{ v.documento }}</td>
+
           <td>
             
             <a href="{% url 'app:editar_vehiculo' v.id %}"

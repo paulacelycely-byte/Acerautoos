@@ -32,12 +32,12 @@
           <form method = "post">
              {% csrf_token %}
             <div class="input-group mb-3">
-              {{form.user.name|add_class:'form-control'|attr:'autocomplete:off'|attr:'placerholder:contraseña'}}
+              {{form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'placerholder:usuario'}}
               <input type="text" class="form-control" placeholder="texto" />
               <div class="input-group-text"><span class="bi bi-envelope"></span></div>
             </div>
             <div class="input-group mb-3">
-              <input type="password" class="form-control" placeholder="Password" />
+               {{form.password|add_class:'form-control'|attr:'autocomplete:off'|attr:'placerholder:contraseña'}}
               <div class="input-group-text"><span class="bi bi-lock-fill"></span></div>
             </div>
             <!--begin::Row-->

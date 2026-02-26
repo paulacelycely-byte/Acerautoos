@@ -3,7 +3,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from app.views.categorias.views import *
+from app.views.Categorias.views import *
 from app.views import *
 
 from app.models import Categoria
@@ -13,7 +13,7 @@ from app.forms import CategoriaForm
 
 class CategoriaListView(ListView):
     model = Categoria
-    template_name = 'categoria/listar.html'
+    template_name = 'categorias/listar.html'
     context_object_name = 'categorias'
 
     def get_context_data(self, **kwargs):

@@ -15,14 +15,8 @@
   <tbody>
     {% for c in Categoria %}
     <tr>
-<<<<<<< HEAD:sena/app/templates/Categorias/listar.html
       <td>{{ c.id_categorias }}</td>
       <td>{{ c.nombre_categorias }}</td>
-=======
-      <td>{{ c.id }}</td>
-      <td>{{ c.nombre }}</td>
-      <td>{{ c.descripcion }}</td>
->>>>>>> Yuliana:sena/app/templates/categoria/listar.html
       <td>
         <a href ="{% url 'app:editar_categorias' c.id_categorias %}" class="btn btn-primary btn-xs">
           <i class="fas fa-edit"></i>
