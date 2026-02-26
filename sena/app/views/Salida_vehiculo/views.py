@@ -4,12 +4,12 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from app.models import Salida_vehiculo
-from app.forms import Salida_vehiculoForm
+from app.models import Salida_Vehiculo
+from app.forms import Salida_VehiculoForm
 from django.contrib import messages
 
-class Salida_vehiculoListView(ListView):
-    model = Salida_vehiculo
+class Salida_VehiculoListView(ListView):
+    model = Salida_Vehiculo
     template_name = 'Salida_vehiculo/listar.html'
     context_object_name = 'Salida_vehiculo'
 
@@ -24,9 +24,9 @@ class Salida_vehiculoListView(ListView):
         return context
 
 
-class Salida_vehiculoCreateView(CreateView):
-    model = Salida_vehiculo
-    form_class = Salida_vehiculoForm
+class Salida_VehiculoCreateView(CreateView):
+    model = Salida_Vehiculo
+    form_class = Salida_VehiculoForm
     template_name = 'Salida_vehiculo/crear.html'
     success_url = reverse_lazy('app:listar_salida_vehiculo')
 
@@ -45,9 +45,9 @@ class Salida_vehiculoCreateView(CreateView):
     
 
 
-class Salida_vehiculoUpdateView(UpdateView):
-    model = Salida_vehiculo
-    form_class = Salida_vehiculoForm
+class Salida_VehiculoUpdateView(UpdateView):
+    model = Salida_Vehiculo
+    form_class = Salida_VehiculoForm
     template_name = 'Salida_vehiculo/crear.html'
     success_url = reverse_lazy('app:listar_salida_vehiculo')
 
@@ -62,8 +62,8 @@ class Salida_vehiculoUpdateView(UpdateView):
         return context
 
 
-class Salida_vehiculoDeleteView(DeleteView):
-    model = Salida_vehiculo
+class Salida_VehiculoDeleteView(DeleteView):
+    model = Salida_Vehiculo
     template_name = 'Salida_vehiculo/eliminar.html'
     success_url = reverse_lazy('app:listar_salida_vehiculo')
 
