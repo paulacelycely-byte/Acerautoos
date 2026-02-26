@@ -1,6 +1,6 @@
 import re
 from django.forms import ModelForm
-from app.models import categorias
+from app.models import Categoria
 from app.models import Entrada_Vehiculo
 from django import forms
 from app.models import Ventas
@@ -8,7 +8,11 @@ from app.models import Usuario
 from django.utils import timezone
 from django import forms
 from django.forms import ModelForm
-from app.models import categorias, Proveedor, tipo_servicio, Compra ,Factura
+from app.models import Categoria, Proveedor, tipo_servicio, Compra ,Factura
+from app.models import Salida_Vehiculo
+from app.models import insumo
+from app.models import Servicio
+from django import forms  
 
 # --- FUNCIONES DE VALIDACIÓN ---
 def validar_solo_letras(valor):
@@ -26,9 +30,9 @@ from app.models import Notificacion
 
 from django import forms
 
-class CategoriasForm(ModelForm):
+class CategoriaForm(ModelForm):
     class Meta:
-        model = categorias
+        model = Categoria
         fields = '__all__'
         widgets = {
             'nombre': forms.TextInput(attrs={

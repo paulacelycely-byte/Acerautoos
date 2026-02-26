@@ -1,7 +1,6 @@
 {% extends 'body.html' %}
 {%load widget_tweaks%}
 {% block contenido %}
-
 <form method="post" action=".">
     <div class="card card-default">
         <div class="card-header">
@@ -14,11 +13,9 @@
         <div class="card-body">
             {% csrf_token %}
             
-            <div class="alert alert-danger alert-dismissible"><button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">×</button>
-           <h5><i class="icon fas fa-ban"></i> Alert! {{form.errors}}</h5>
-          </div>
+            
             {% for field  in form.visible_fields %}
-                <div class='form-group'></div>
+                <div class='form-group'>
                     <label for ='name'> {{field.label}}:</label>
                     {{ field|add_class:'form-control'|attr:'autocomplete:off'}}
                     {% if field.errors %}
@@ -29,30 +26,25 @@
                             {% endfor %}
                         </div>
                     {% endif %}
-
                 </div>
             {%endfor%}
 
-            
+        
 
-        </div>
-
-        <div class="card-footer">
-            <button type="submit" class="btn btn-primary btn-xs">
-                <i class="fas fa-plus"></i> Guardar registro
-            </button>
+            <div class="card-footer mt-3">
+                <button type="submit" class="btn btn-primary btn-xs">
+                    <i class="fas fa-plus"></i> Guardar servicio
+                </button>
+                <a href="{{ listar_url }}" class="btn btn-primary btn-xs">
+                    <i class="fas fa-arrow-left"></i> Volver al listado
+                </a>
+                </div>
         </div>
     </div>
 </form>
 {% endblock %}
 
 {%block js %}
-    <script>
-    Swal.fire({
-    title: "Good job!",
-    text: "You clicked the button!",
-    icon: "success"
-    });
-</script>
+    
 
 {% endblock %}

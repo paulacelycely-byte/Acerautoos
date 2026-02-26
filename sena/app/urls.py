@@ -12,7 +12,7 @@ from app.views.Vehiculo.views import *
 from app.views.Cliente.views import *
 from app.views.Notificacion.views import *
 from django.urls import path, include
-from .views.Categorias.views import *
+from .views.categorias.views import *
 from .views.Proveedores.views import *
 from .views.tipo_servicio.views import *
 from .views.compra.views import *
@@ -27,7 +27,7 @@ urlpatterns = [
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
 
     # --- MÓDULO DE CATEGORÍAS ---
-    path('listar_categorias/', categoriaListView.as_view(), name='listar_categoria'),
+    path('listar_categorias/', CategoriaListView.as_view(), name='listar_categoria'),
     path('crear_categoria/', CategoriaCreateView.as_view(), name='crear_categoria'),
     path('editar_categoria/<int:pk>/', CategoriaUpdateView.as_view(), name='editar_categoria'),
     path('eliminar_categoria/<int:pk>/', CategoriaDeleteView.as_view(), name='eliminar_categoria'),
@@ -36,7 +36,7 @@ urlpatterns = [
     path('listar_entrada_vehiculo/', Entrada_vehiculoListView.as_view(), name='listar_entrada_vehiculo'),
     path('crear_entrada_vehiculo/', Entrada_vehiculoCreateViews.as_view(), name='crear_entrada_vehiculo'),
     path('editar_entrada_vehiculo/<int:pk>/', Entrada_vehiculoUpdateView.as_view(), name='editar_entrada_vehiculo'),
-    path('eliminar_entrada_vehiculo/<int:pk>/', EntradaVehiculoDeleteView.as_view(), name='eliminar_entrada_vehiculo'),
+    #path('eliminar_entrada_vehiculo/<int:pk>/', EntradaVehiculoDeleteView.as_view(), name='eliminar_entrada_vehiculo'),
     
     #  Ventas
     path('listar_Ventas/', VentasListView.as_view(), name='listar_Ventas'),
@@ -49,7 +49,7 @@ urlpatterns = [
     path('crear_Usuario/', UsuarioCreateView.as_view(), name='crear_Usuario'),
     path('editar_Usuario/<int:pk>/', UsuarioUpdateView.as_view(), name='editar_Usuario'),
     path('eliminar_Usuario/<int:pk>/',UsuarioDeleteView.as_view(), name='eliminar_Usuario'),
-    path('listar_categorias/', categoriaListView.as_view(), name='listar_categorias'),
+    path('listar_categorias/', CategoriaListView.as_view(), name='listar_categorias'),
     path('crear_categorias/', CategoriaCreateView.as_view(), name='crear_categorias'),
     path('editar_categorias/<int:pk>/', CategoriaUpdateView.as_view(), name='editar_categorias'),
     path('eliminar_categorias/<int:pk>/', CategoriaDeleteView.as_view(), name='eliminar_categorias'),

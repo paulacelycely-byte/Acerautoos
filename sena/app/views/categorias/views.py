@@ -3,16 +3,16 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from app.views.Categorias.views import *
+from app.views.categorias.views import *
 from app.views import *
 
-from app.models import categorias
-from app.forms import CategoriasForm
+from app.models import Categoria
+from app.forms import CategoriaForm
 
 
 
-class categoriaListView(ListView):
-    model = categorias
+class CategoriaListView(ListView):
+    model = Categoria
     template_name = 'categoria/listar.html'
     context_object_name = 'categorias'
 
@@ -26,8 +26,8 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 
 class CategoriaCreateView(CreateView):
-    model = Categorias
-    form_class = CategoriasForm
+    model = Categoria
+    form_class = CategoriaForm
     template_name = 'Categorias/crear.html'
     success_url = reverse_lazy('app:listar_categoria')
 
@@ -37,8 +37,8 @@ class CategoriaCreateView(CreateView):
 
 
 class CategoriaUpdateView(UpdateView):
-    model = Categorias
-    form_class = CategoriasForm
+    model = Categoria
+    form_class = CategoriaForm
     template_name = 'categoria/crear.html'
     success_url = reverse_lazy('app:listar_categoria')
 
@@ -51,7 +51,7 @@ class CategoriaUpdateView(UpdateView):
 
 
 class CategoriaDeleteView(DeleteView):
-    model = Categorias
+    model = Categoria
     template_name = 'categoria/eliminar.html'
     success_url = reverse_lazy('app:listar_categoria')
 

@@ -144,7 +144,7 @@ class Compra(models.Model):
         db_table = "compra"
 
 
-class categorias(models.Model):
+class Categoria(models.Model):
     id_categoria = models.AutoField(primary_key=True)
     nombre_categoria = models.CharField(max_length=45)
     descripcion = models.CharField(max_length=45)

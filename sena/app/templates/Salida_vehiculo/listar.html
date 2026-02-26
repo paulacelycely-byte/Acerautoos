@@ -1,0 +1,93 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block contenido %}
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Listado de Salida de Vehículos</h3>
+  </div>
+
+  <div class="card-body">
+    <table class="table table-bordered table-hover" id="tabla">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Vehículo</th>
+          <th>Fecha / Hora Salida</th>
+          <th>Total a Pagar</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in Salida_vehiculo %}
+        <tr>
+          <td>{{ c.id }}</td>
+          <td>{{ c.entrada.placa }}</td>
+          <td>{{ c.fecha_hora_salida }}</td>
+          <td>{{ c.total_a_pagar }}</td>
+          <td>
+            <!-- EDITAR -->
+            <a href="{% url 'app:editar_salida_vehiculo' c.id %}"
+               class="btn btn-warning btn-sm">
+              <i class="fas fa-edit"></i>
+            </a>
+
+            <!-- ELIMINAR -->
+            <a href="{% url 'app:eliminar_salida_vehiculo' c.id %}"
+               class="btn btn-danger btn-sm">
+              <i class="fas fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-footer">
+    <!-- CREAR -->
+    <a href="{% url 'app:crear_salida_vehiculo' %}"
+       class="btn btn-primary">
+      <i class="fas fa-plus"></i> Nueva Salida de Vehículo
+    </a>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'lib/jquery/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+
+
+// ESTE SCRIPT ES PARA CONFIGURAR EL DATATABLE Y CAMBIAR LOS MENSAJES AL ESPAÑOL
+<script>
+  $(document).ready(function () {
+    $('#tabla').DataTable({
+      responsive: true,
+      autoWidth: false,
+      language: {
+        // ESTO CAMBIA EL MENSAJE DE QUE NO SE ENCUENTRAN REGISTROS QUE COINCIDAN CON LA BÚSQUEDA
+        "zeroRecords": "La busqueda no coincide con ninguna salida de vehículo", 
+        
+        // ESTO CAMBIA EL MENSAJE CUANDO LA TABLA ESTÁ VACÍA (SIN DATOS)
+        "emptyTable": "No hay salidas de vehículo para mostrar",
+
+        // Esto es para que los campos de esa tabla del listado sigan en español:
+        
+        "search": "Buscar:",
+        "info": "Mostrando _START_ de _TOTAL_ registros",
+        "infoFiltered": "",
+        "infoEmpty": "No hay registros de salida de vehículo para mostrar",
+        'lengthMenu': 'Mostrar _MENU_ registros',
+        "paginate": {
+            "next": "Siguiente",
+            "previous": "Anterior"
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}
