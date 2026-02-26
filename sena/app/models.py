@@ -60,7 +60,7 @@ class Vehiculo(models.Model):
 class insumo(models.Model):
     nombre = models.CharField(max_length=100)
     cantidad = models.IntegerField()
-    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=0)
 
     def _str_(self):
         # Corregido: Se usa _str_. Retorna una sola cadena.

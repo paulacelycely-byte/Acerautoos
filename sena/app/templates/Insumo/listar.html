@@ -3,9 +3,14 @@
 
 {% block contenido %}
 
+<h3 class="mb-3">Gestión de Insumos</h3>
+
 <div class="card">
-  <div class="card-header">
-    <h3 class="card-title">Listado de Insumos</h3>
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span><i class="fas fa-th-list"></i> Listado Registrado</span>
+    <a href="{% url 'app:crear_insumo' %}" class="btn btn-primary btn-sm">
+      <i class="fas fa-plus"></i> Nuevo Insumo
+    </a>
   </div>
 
   <div class="card-body">
@@ -13,9 +18,10 @@
       <thead>
         <tr>
           <th>#</th>
+          <th>Nombre</th>
           <th>Cantidad</th>
           <th>Precio unitario</th>
-          <th>Opciones</th>
+          <th class="text-right">Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -25,16 +31,13 @@
           <td>{{ c.nombre }}</td>
           <td>{{ c.cantidad }}</td>
           <td>{{ c.precio_unitario }}</td>
-          <td>
+          <td class="text-right">
             <!-- EDITAR -->
-            <a href="{% url 'app:editar_insumo' c.id %}"
-               class="btn btn-warning btn-sm">
+            <a href="{% url 'app:editar_insumo' c.id %}" class="btn btn-warning btn-sm">
               <i class="fas fa-edit"></i>
             </a>
-
             <!-- ELIMINAR -->
-            <a href="{% url 'app:eliminar_insumo' c.id %}"
-               class="btn btn-danger btn-sm">
+            <a href="{% url 'app:eliminar_insumo' c.id %}" class="btn btn-danger btn-sm">
               <i class="fas fa-trash"></i>
             </a>
           </td>
@@ -42,14 +45,6 @@
         {% endfor %}
       </tbody>
     </table>
-  </div>
-
-  <div class="card-footer">
-    <!-- CREAR -->
-    <a href="{% url 'app:crear_insumo' %}"
-       class="btn btn-primary">
-      <i class="fas fa-plus"></i> Nuevo Insumo    
-    </a>
   </div>
 </div>
 
@@ -66,9 +61,20 @@
       responsive: true,
       autoWidth: false,
       language: {
-        url: "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+        "zeroRecords": "La busqueda no coincide con ningún insumo",
+        "emptyTable": "No hay insumos para mostrar",
+        "search": "Buscar:",
+        "info": "Mostrando _START_ de _TOTAL_ registros",
+        "infoFiltered": "",
+        "infoEmpty": "No hay registros de insumo para mostrar",
+        'lengthMenu': 'Mostrar _MENU_ registros',
+        "paginate": {
+            "next": "Siguiente",
+            "previous": "Anterior"
+        }
       }
     });
   });
 </script>
+
 {% endblock %}

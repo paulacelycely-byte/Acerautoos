@@ -101,14 +101,22 @@ class InsumoForm(ModelForm):
         if precio_unitario <= 0:
             raise forms.ValidationError('El precio unitario debe ser un número positivo.')
         return precio_unitario
-        
-        
+    
+    
     
         
 class ServicioForm(ModelForm):
     class Meta:
         model = Servicio
-        fields = '__all__'
+        fields = fields = [
+            'tipo_servicio',   
+            'entrada',
+            'descripcion',
+            'duracion',
+            'precio',
+            'insumo',
+            'usuario',
+        ]
         widgets = {
     
             'descripcion': forms.Textarea(attrs={
@@ -120,7 +128,7 @@ class ServicioForm(ModelForm):
                 'placeholder': 'Ingrese el precio del servicio'
             }),
             'duracion': forms.TimeInput(
-                format='%H:%M',
+                format='%I:%M %p',
                 attrs={
                     'type': 'time'
                 }
@@ -134,3 +142,9 @@ class ServicioForm(ModelForm):
         if len(descripcion) < 10:
             raise forms.ValidationError('La descripción debe tener al menos 10 caracteres.')
         return descripcion
+    
+    def clean_precio(self):
+        precio = self.cleaned_data.get('precio')
+        if precio <= 0:
+            raise forms.ValidationError('El precio debe ser un número positivo.')
+        return precio

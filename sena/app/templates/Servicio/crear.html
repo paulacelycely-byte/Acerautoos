@@ -18,6 +18,14 @@
                 <div class='form-group'>
                     <label for ='name'> {{field.label}}:</label>
                     {{ field|add_class:'form-control'|attr:'autocomplete:off'}}
+                    {% if field.errors %}
+                        <div class="text-danger">
+                            <button type="button" class="close" data-dismiss="alert">x</button>
+                            {% for error in field.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
             {%endfor%}
 
@@ -37,18 +45,6 @@
 {% endblock %}
 
 {%block js %}
-<script>
-{% if form.is_bound and form.errors %}
-    console.log("Hola")
-    document.addEventListener("DOMContentLoaded", function() {
-        Swal.fire({
-            title: 'Error',
-            text: 'Por favor corrige los errores en el formulario.',
-            icon: 'error',
-        });
-    });    
-</script>
-{% endif %}
     
 
 {% endblock %}

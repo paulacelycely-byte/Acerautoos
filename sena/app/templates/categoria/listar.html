@@ -45,11 +45,32 @@
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
 
+
+// ESTE SCRIPT ES PARA CONFIGURAR EL DATATABLE Y CAMBIAR LOS MENSAJES AL ESPAÑOL
 <script>
   $(document).ready(function () {
     $('#tabla').DataTable({
       responsive: true,
       autoWidth: false,
+      language: {
+        // ESTO CAMBIA EL MENSAJE DE QUE NO SE ENCUENTRAN REGISTROS QUE COINCIDAN CON LA BÚSQUEDA
+        "zeroRecords": "La busqueda no coincide con ninguna categoría", 
+        
+        // ESTO CAMBIA EL MENSAJE CUANDO LA TABLA ESTÁ VACÍA (SIN DATOS)
+        "emptyTable": "No hay categorías para mostrar",
+
+        // Esto es para que los campos de esa tabla del listado sigan en español:
+        
+        "search": "Buscar:",
+        "info": "Mostrando _START_ de _TOTAL_ registros",
+        "infoFiltered": "",
+        "infoEmpty": "No hay registros de categoría para mostrar",
+        'lengthMenu': 'Mostrar _MENU_ registros',
+        "paginate": {
+            "next": "Siguiente",
+            "previous": "Anterior"
+        }
+      }
     });
   });
 </script>

@@ -61,13 +61,31 @@
 <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
 
+
+// ESTE SCRIPT ES PARA CONFIGURAR EL DATATABLE Y CAMBIAR LOS MENSAJES AL ESPAÑOL
 <script>
   $(document).ready(function () {
     $('#tabla').DataTable({
       responsive: true,
       autoWidth: false,
       language: {
-        url: "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+        // ESTO CAMBIA EL MENSAJE DE QUE NO SE ENCUENTRAN REGISTROS QUE COINCIDAN CON LA BÚSQUEDA
+        "zeroRecords": "La busqueda no coincide con ninguna salida de vehículo", 
+        
+        // ESTO CAMBIA EL MENSAJE CUANDO LA TABLA ESTÁ VACÍA (SIN DATOS)
+        "emptyTable": "No hay salidas de vehículo para mostrar",
+
+        // Esto es para que los campos de esa tabla del listado sigan en español:
+        
+        "search": "Buscar:",
+        "info": "Mostrando _START_ de _TOTAL_ registros",
+        "infoFiltered": "",
+        "infoEmpty": "No hay registros de salida de vehículo para mostrar",
+        'lengthMenu': 'Mostrar _MENU_ registros',
+        "paginate": {
+            "next": "Siguiente",
+            "previous": "Anterior"
+        }
       }
     });
   });
