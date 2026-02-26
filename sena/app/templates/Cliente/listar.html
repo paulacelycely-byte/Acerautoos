@@ -19,26 +19,27 @@
         </tr>
       </thead>
       <tbody>
-        {% for v in cliente %}
-        <tr>
+        <tbody>
+
+          {% for v in cliente %}
+          <tr>
           <td>{{ v.id }}</td>
           <td>{{ v.nombre }}</td>
           <td>{{ v.documento }}</td>
-            
+          <td>
             <a href="{% url 'app:editar_cliente' v.id %}"
-               class="btn btn-warning btn-sm">
+              class="btn btn-warning btn-sm">
               <i class="fas fa-edit"></i>
             </a>
 
-            
             <a href="{% url 'app:eliminar_cliente' v.id %}"
-               class="btn btn-danger btn-sm">
+              class="btn btn-danger btn-sm">
               <i class="fas fa-trash"></i>
             </a>
           </td>
         </tr>
-        {% endfor %}
-      </tbody>
+    {% endfor %}
+</tbody>
     </table>
   </div>
 
