@@ -3,6 +3,3 @@ from app.models import *
 
 # Register your models here.
 
-admin.site.register(Producto)
-admin.site.register(Entrada_vehiculo)
-admin.site.register(Salida_Vehiculo)

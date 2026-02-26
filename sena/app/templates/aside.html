@@ -1,94 +1,63 @@
-   
-        <!--begin::Sidebar Brand-->
-        <div class="sidebar-brand">
-          <!--begin::Brand Link-->
-          <a href="../index.html" class="brand-link">
-            <!--begin::Brand Image-->
-            <img
-              src="../assets/img/AdminLTELogo.png"
-              alt="AdminLTE Logo"
-              class="brand-image opacity-75 shadow"
-            />
-            <!--end::Brand Image-->
-            <!--begin::Brand Text-->
-            <span class="brand-text fw-light">ACERAUTOS</span>
-            <!--end::Brand Text-->
-          </a> 
-          <!--end::Brand Link-->
+{% load static %}
+<aside class="app-sidebar shadow-lg">
+    <div class="p-4 mb-2 d-flex align-items-center border-bottom border-white border-opacity-10">
+        <div class="bg-primary bg-gradient rounded-3 p-2 me-3 shadow-sm animate__animated animate__fadeIn">
+            <i class="fas fa-car-side text-white fs-5"></i>
         </div>
-        <!--end::Sidebar Brand-->
-        <!--begin::Sidebar Wrapper-->
-        <div class="sidebar-wrapper">
-          <nav class="mt-2">
-            <!--begin::Sidebar Menu-->
-            <ul
-              class="nav sidebar-menu flex-column"
-              data-lte-toggle="treeview"
-              role="navigation"
-              aria-label="Main navigation"
-              data-accordion="false"
-              id="navigation"
-            >
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi-speedometer"></i>
-                  <p>
-                    Dashboard
-                    <i class="nav-arrow bi bi-chevron-right"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="../index.html" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Dashboard v1</p>
+        <span class="text-white fw-bold fs-5" style="letter-spacing: 1.5px;">ACERAUTOOS</span>
+    </div>
+
+    <div class="sidebar-wrapper px-2">
+        <nav class="mt-2">
+            <ul class="nav sidebar-menu flex-column">
+                
+                <li class="nav-item">
+                    <a href="{% url 'app:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                        <i class="nav-icon fas fa-th-large text-primary-emphasis"></i>
+                        <span>Panel de Control</span>
                     </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="../index2.html" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Dashboard v2</p>
+                </li>
+
+                <div class="px-4 mt-4 mb-2 text-uppercase fw-bold" style="color: #64748b; letter-spacing: 2px; font-size: 0.65rem;">
+                    Módulos Operativos
+                </div>
+
+                <li class="nav-item">
+                    <a href="{% url 'app:listar_proveedores' %}" class="nav-link">
+                        <i class="nav-icon fas fa-user-friends" style="color: #0ea5e9;"></i>
+                        <span>Proveedores</span>
                     </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="../index3.html" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Dashboard v3</p>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'app:listar_servicio' %}" class="nav-link">
+                        <i class="nav-icon fas fa-tools" style="color: #10b981;"></i>
+                        <span>Servicios de Taller</span>
                     </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="../generate/theme.html" class="nav-link">
-                  <i class="nav-icon bi bi-palette"></i>
-                  <p>Theme Generate</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon bi bi-box-seam-fill"></i>
-                  <p>
-                    Widgets
-                    <i class="nav-arrow bi bi-chevron-right"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="../widgets/small-box.html" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Small Box</p>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'app:listar_compras' %}" class="nav-link">
+                        <i class="nav-icon fas fa-box" style="color: #f59e0b;"></i>
+                        <span>Compras / Stock</span>
                     </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="../widgets/info-box.html" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>info Box</p>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'app:listar_facturas' %}" class="nav-link">
+                        <i class="nav-icon fas fa-file-invoice-dollar" style="color: #ef4444;"></i>
+                        <span>Facturación</span>
                     </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="../widgets/cards.html" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Cards</p>
+                </li>
+
+                <div class="px-4 mt-4 mb-2 text-uppercase fw-bold" style="color: #64748b; letter-spacing: 2px; font-size: 0.65rem;">
+                    Configuración
+                </div>
+
+                <li class="nav-item">
+                    <a href="{% url 'admin:logout' %}" class="nav-link text-danger-emphasis">
+                        <i class="nav-icon fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
                     </a>
                   </li>
                 </ul>
@@ -460,9 +429,8 @@
                   <p>Informational</p>
                 </a>
               </li>
+                </li>
             </ul>
-            <!--end::Sidebar Menu-->
-          </nav>
-        </div>
-        <!--end::Sidebar Wrapper-->
-      </aside>
+        </nav>
+    </div>
+</aside>

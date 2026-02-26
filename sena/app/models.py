@@ -3,7 +3,6 @@ from datetime import datetime
 from decimal import Decimal
 from app.models import *
 
-
 # --- MODELOS BASE ---
 
 class Usuario(models.Model):
@@ -47,8 +46,8 @@ class Vehiculo(models.Model):
     kilometraje = models.IntegerField()
     documento = models.CharField(max_length=10)
 
-    def _str_(self):
-        # Corregido: Retorna una sola cadena.
+    def __str__(self):
+        
         return f"{self.marca} {self.modelo}"
 
     class Meta:
@@ -62,8 +61,8 @@ class insumo(models.Model):
     cantidad = models.IntegerField()
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
 
-    def _str_(self):
-        # Corregido: Se usa _str_. Retorna una sola cadena.
+    def __str__(self):
+        
         return f"{self.nombre} (${self.precio_unitario})"
 
     class Meta:
@@ -71,26 +70,26 @@ class insumo(models.Model):
         verbose_name_plural = "insumos"
         db_table = "insumo"
 
-
 class tipo_servicio(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
     categoria = models.CharField(max_length=100)
-    duracion_estimada = models.DateField()
+    hora_entrada_estimada = models.TimeField(null=True, blank=True)
+    hora_salida_estimada = models.TimeField(null=True, blank=True)
     estado = models.BooleanField(default=True)
-
-    def _str_(self):
+    
+    def __str__(self):
         return self.nombre
-
+    
     class Meta:
         verbose_name = "tipo_servicio"
         verbose_name_plural = "tipo_servicios"
         db_table = "tipo_servicio"
+       
 
-
-class Entrada_vehiculo(models.Model):
-    documento = models.IntegerField(unique=True)
-    fecha_hora_entrada = models.DateTimeField(auto_now_add=True)
+class Entrada_Vehiculo(models.Model):
+    documento = models.IntegerField()
+    fecha_hora_entrada = models.DateTimeField()
     placa = models.CharField(max_length=6)
 
     def __str__(self):
@@ -103,18 +102,22 @@ class Entrada_vehiculo(models.Model):
 
 
 # --- MODELOS CON RELACIONES ---
+estado = [
+    (True,'Activo'),
+    (False,'Inactivo'),
+    
+]
 
-class Proveedores(models.Model):
+class Proveedor(models.Model):
     nombre = models.CharField(max_length=50)
     documento = models.CharField(max_length=10)
     telefono = models.CharField(max_length=15)
     email = models.EmailField()
     direccion = models.CharField(max_length=100)
-    estado = models.BooleanField(default=True)
-    # Correcto: 'Producto'
-    mercancia = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    estado = models.BooleanField(default=True,choices=estado)
+    mercancia = models.ForeignKey(Producto, on_delete=models.CASCADE)
 
-    def _str_(self):
+    def __str__(self):
         return self.nombre
 
     class Meta:
@@ -126,15 +129,13 @@ class Proveedores(models.Model):
 class Compra(models.Model):
     id_compra = models.AutoField(primary_key=True)
     fecha = models.DateField()
+    total = models.DecimalField(max_digits=10, decimal_places=2)
     estado = models.CharField(max_length=10)
 
-    # CORREGIDO: 'Proveedor' -> 'Proveedores' (Nombre de la clase)
-    fk_proveedor = models.ForeignKey('Proveedores', on_delete=models.CASCADE)
-    # CORREGIDO: 'Insumo' -> 'insumo' (Nombre de la clase)
+    fk_proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     fk_insumo = models.ForeignKey('insumo', on_delete=models.CASCADE)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
 
-    def _str_(self):
+    def __str__(self):
         return f"Compra {self.id_compra} - {self.estado}"
 
     class Meta:
