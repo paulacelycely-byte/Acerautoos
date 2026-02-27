@@ -61,6 +61,11 @@ class VentasUpdateView(UpdateView):
         context['listar_url'] = reverse_lazy('app:listar_Ventas')
         return context
     
+    def form_valid(self, form):
+        messages.success(self.request, "Se edito correctamente")
+        return super().form_valid(form)
+
+    
 class Ventas_delete(DeleteView):
     model = Ventas
     template_name = 'Ventas/eliminar.html'
@@ -74,3 +79,7 @@ class Ventas_delete(DeleteView):
         context['titulo'] = 'Eliminar Venta'
         context['listar_url'] = reverse_lazy('app:listar_Ventas')
         return context
+
+    def form_valid(self, form):
+        messages.success(self.request, "Se elimino correctamente")
+        return super().form_valid(form)

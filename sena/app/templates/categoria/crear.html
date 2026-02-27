@@ -1,49 +1,63 @@
 {% extends 'body.html' %}
-{%load widget_tweaks%}
-{% block contenido %}
+{% load widget_tweaks %}
 
-<form method="post" action=".">
-    <div class="card card-default">
-        <div class="card-header">
-            <h3 class="card-title">
-                <i class="fas fa-search"></i>
-                {{ titulo }}
-            </h3>
-        </div>
-
-        <div class="card-body">
-            {% csrf_token %}
-            {% for field in form.visible_fields %}
-                <div class="form-group">
-                    <label>{{ field.label }}:</label>
-                    {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
-                    {% if field.errors %}
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-bs-dismiss="alert">×</button>
-                    {% for error in field.errors  %}
-                    {{error}}
-                    {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
-
-        <div class="card-footer">
-            <button type="submit" class="btn btn-primary btn-xs">
-                <i class="fas fa-plus"></i> Guardar registro
-            </button>
-        </div>
-    </div>
-</form>
+{% block css %}
+<style>
+    /* 🔴 SOLO ARREGLA LA DESCRIPCIÓN */
+    textarea {
+        height: 120px !important;
+        min-height: 120px !important;
+        resize: vertical;
+        border-radius: 12px !important;
+    }
+</style>
 {% endblock %}
 
-{%block js %}
-    <script>
-    Swal.fire({
-    title: "Registro guardado con exito",
-    icon: "success"
-    });
-</script>
+{% block contenido %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form method="post" action=".">
+                <div class="card border-0 shadow-lg" style="border-radius: 20px;">
 
+                    <div class="card-header bg-primary py-3" style="border-radius: 20px 20px 0 0;">
+                        <h3 class="card-title text-white m-0">
+                            <i class="fas fa-search me-2"></i>
+                            {{ titulo }}
+                        </h3>
+                    </div>
+
+                    <div class="card-body p-4">
+                        {% csrf_token %}
+
+                        {% for field in form.visible_fields %}
+                        <div class="form-group mb-4">
+                            <label class="fw-bold text-dark mb-1">
+                                {{ field.label }}:
+                            </label>
+
+                            {{ field|add_class:'form-control shadow-sm'|attr:'autocomplete:off' }}
+
+                            {% if field.errors %}
+                            <div class="alert alert-danger small mt-1">
+                                {% for error in field.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="card-footer bg-light p-3 text-end" style="border-radius: 0 0 20px 20px;">
+                        <button type="submit" class="btn btn-primary px-4 rounded-pill shadow">
+                            <i class="fas fa-plus me-1"></i> Guardar registro
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

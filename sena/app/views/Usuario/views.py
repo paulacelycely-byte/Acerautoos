@@ -59,7 +59,10 @@ class UsuarioUpdateView(UpdateView):
         context['listar_url'] = reverse_lazy('app:listar_Usuario')
         return context
 
-
+    def form_valid(self, form):
+        messages.success(self.request, "Se edito correctamente")
+        return super().form_valid(form)
+    
 class UsuarioDeleteView(DeleteView):
     model = Usuario
     template_name = 'Usuario/eliminar.html'
@@ -75,3 +78,6 @@ class UsuarioDeleteView(DeleteView):
         context['listar_url'] = reverse_lazy('app:listar_Usuario')
         return context
     
+    def form_valid(self, form):
+        messages.success(self.request, "Se elimino correctamente")
+        return super().form_valid(form)

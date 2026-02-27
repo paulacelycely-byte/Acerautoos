@@ -310,8 +310,21 @@
         }
       });
     </script>
-<script>
-</script>
+*    </script>
+    <script>
+      {% if messages %}
+      document.addEventListener('DOMContentLoaded', function () {
+        {% for message in messages %}
+        Swal.fire({
+          icon:"{{message.tags}}",
+          title:"{{message|escapejs}}",
+          showConfirmButton: false,
+          timer: 3000
+        })
+        {% endfor %}
+      });
+      {% endif %}
+    </script>*
     <!--end::OverlayScrollbars Configure-->
     <!--end::Script-->
 

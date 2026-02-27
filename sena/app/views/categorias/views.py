@@ -53,6 +53,10 @@ class CategoriaUpdateView(UpdateView):
         context['titulo'] = 'Editar Categoría'
         context['listar_url'] = reverse_lazy('app:listar_categoria')
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Se edito correctamente")
+        return super().form_valid(form)
 
 
 
@@ -70,3 +74,7 @@ class CategoriaDeleteView(DeleteView):
         context['titulo'] = 'Eliminar Categoría'
         context['listar_url'] = reverse_lazy('app:listar_categoria')
         return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Se elimino correctamente")
+        return super().form_valid(form)

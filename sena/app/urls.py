@@ -1,6 +1,6 @@
 from django.urls import path
 from app.views.Ventas.views import Ventas_delete
-from app.views.categorias.views import *
+from app.views.Categorias.views import *
 from app.views.Entrada_vehiculo.views import *
 from app.views.Ventas.views import *
 from app.views.Usuario.views import *
@@ -13,8 +13,80 @@ app_name = 'app'
 
 urlpatterns = [
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     # CATEGORÍAS
-    path('listar_categorias/', categoriaListView.as_view(), name='listar_categoria'),
+    path('listar_categoria/', categoriaListView.as_view(), name='listar_categoria'),
     path('crear_categoria/', CategoriaCreateView.as_view(), name='crear_categoria'),
     path('editar_categoria/<int:pk>/', CategoriaUpdateView.as_view(), name='editar_categoria'),
     path('eliminar_categoria/<int:pk>/', CategoriaDeleteView.as_view(), name='eliminar_categoria'),

@@ -10,8 +10,6 @@ from app.models import Ventas
 from app.forms import VentasForm
 
 
-
-
 class Entrada_vehiculoListView(ListView):
     model = Entrada_vehiculo
     template_name = 'Entrada_vehiculo/listar.html'
@@ -44,7 +42,7 @@ class Entrada_vehiculoCreateViews(CreateView):
         messages.success(self.request, "Se creó un nuevo ingreso")
         return super().form_valid(form)
 
-    
+
 class Entrada_vehiculoUpdateView(UpdateView):
     model = Entrada_vehiculo
     form_class = Entrada_vehiculoForm
@@ -61,6 +59,9 @@ class Entrada_vehiculoUpdateView(UpdateView):
         context['listar_url'] = reverse_lazy('app:listar_entrada_vehiculo')
         return context
 
+    def form_valid(self, form):
+        messages.success(self.request, "Se edito correctamente")
+        return super().form_valid(form)
 
 class EntradaVehiculoDeleteView(DeleteView):
     model = Entrada_vehiculo
@@ -76,4 +77,7 @@ class EntradaVehiculoDeleteView(DeleteView):
         context['titulo'] = 'Eliminar Entrada de Vehículo'
         context['listar_url'] = reverse_lazy('app:listar_entrada_vehiculo')
         return context
-    
+
+    def form_valid(self, form):
+        messages.success(self.request, "Se elimino correctamente")
+        return super().form_valid(form)
