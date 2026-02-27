@@ -1,10 +1,8 @@
 from django.urls import path, include
-from .views.categorias.views import *
 from .views.Proveedores.views import *
 from .views.tipo_servicio.views import *
 from .views.compra.views import *
 from .views.factura.views import *
-# Agregamos esta importación para el Dashboard
 from .views.dashboard.views import DashboardView 
 
 app_name = 'app'
@@ -12,12 +10,6 @@ app_name = 'app'
 urlpatterns = [
     # --- PANEL PRINCIPAL (DASHBOARD) ---
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
-
-    # --- MÓDULO DE CATEGORÍAS ---
-    path('listar_categorias/', categoriaListView.as_view(), name='listar_categoria'),
-    path('crear_categoria/', CategoriaCreateView.as_view(), name='crear_categoria'),
-    path('editar_categoria/<int:pk>/', CategoriaUpdateView.as_view(), name='editar_categoria'),
-    path('eliminar_categoria/<int:pk>/', CategoriaDeleteView.as_view(), name='eliminar_categoria'),
     
     # --- MÓDULO DE PROVEEDORES ---
     path('proveedores/listar/', ProveedorListView.as_view(), name='listar_proveedores'),
@@ -42,5 +34,5 @@ urlpatterns = [
     path('factura/detalle/<int:pk>/', FacturaDetailView.as_view(), name='detalle_factura'),
     
     # --- MÓDULO DE LOGIN ---
-    path('acceso/', include(('login.urls', 'login'), namespace='login')),
+    #path('acceso/', include(('login.urls', 'login'), namespace='login')),
 ]

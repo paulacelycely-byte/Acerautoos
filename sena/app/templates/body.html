@@ -90,7 +90,16 @@
         border-radius: 50%;
         box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
     }
+
+    /* --- ESTILOS ADICIONALES PARA DATATABLES --- */
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.5em 1em;
+        transition: all 0.3s;
+    }
 </style>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 
 <div class="app-wrapper">
     {% include 'aside.html' %}
@@ -131,22 +140,28 @@
 {% endblock %}
 
 {% block js %}
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const trigger = document.getElementById('sidebar-trigger');
         const body = document.body;
 
-        // Recuperar el estado del localStorage
+        // --- LÓGICA DEL SIDEBAR ---
         if (localStorage.getItem('sidebar-collapsed') === 'true') {
             body.classList.add('sidebar-hidden');
         }
 
-        trigger.addEventListener('click', function() {
-            body.classList.toggle('sidebar-hidden');
-            // Guardar el estado para que no se resetee al recargar
-            const isHidden = body.classList.contains('sidebar-hidden');
-            localStorage.setItem('sidebar-collapsed', isHidden);
-        });
+        if (trigger) {
+            trigger.addEventListener('click', function() {
+                body.classList.toggle('sidebar-hidden');
+                const isHidden = body.classList.contains('sidebar-hidden');
+                localStorage.setItem('sidebar-collapsed', isHidden);
+            });
+        }
     });
 </script>
 {% endblock %}

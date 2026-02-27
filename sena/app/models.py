@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 from app.models import*
 
-# --- MODELOS BASE ---
+
 
 class Usuario(models.Model):
     nombre = models.CharField(max_length=100)
@@ -101,7 +101,7 @@ class Entrada_Vehiculo(models.Model):
         verbose_name_plural = "Entradas de Vehículos"
 
 
-# --- MODELOS CON RELACIONES ---
+
 estado = [
     (True,'Activo'),
     (False,'Inactivo'),
@@ -174,8 +174,7 @@ class Salida_Vehiculo(models.Model):
         verbose_name_plural = "Salidas de Vehículos"
 
 
-# --- MODELO AUXILIAR FALTANTE (Agregado) ---
-# Se asume la existencia del modelo Cliente ya que Ventas lo necesita.
+
 class Cliente(models.Model):
     nombre = models.CharField(max_length=100)
     documento = models.CharField(max_length=10, unique=True)
@@ -193,17 +192,12 @@ class Ventas(models.Model):
     fecha = models.DateField()
     total = models.DecimalField(max_digits=10, decimal_places=2)
     documento = models.CharField(max_length=10)
-    # Correcto: 'Cliente' (Se asumió la creación del modelo Cliente)
     cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
-    # Correcto: 'Salida_Vehiculo'
     salida = models.ForeignKey('Salida_Vehiculo', on_delete=models.CASCADE)
-    # Correcto: 'Producto'
     productos = models.ForeignKey('Producto', on_delete=models.CASCADE)
-    # Correcto: 'Usuario'
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
 
     def __str__(self):
-        # Corregido: Retorna una sola cadena.
         return f"Venta del {self.fecha} a {self.cliente}"
 
     class Meta:
@@ -217,11 +211,9 @@ class Factura(models.Model):
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
     iva = models.DecimalField(max_digits=10, decimal_places=2)
     total = models.DecimalField(max_digits=10, decimal_places=2)
-    # CORREGIDO: 'Venta' -> 'Ventas' (Nombre de la clase)
     venta = models.ForeignKey('Ventas', on_delete=models.CASCADE)
 
     def __str__(self):
-        # Corregido: Retorna una sola cadena.
         return f"Factura #{self.id} por ${self.total}"
 
     class Meta:
@@ -234,7 +226,6 @@ class GestionNotificacion(models.Model):
     id_notificacion = models.AutoField(primary_key=True)
     mensaje = models.CharField(max_length=45)
     fecha_envio = models.CharField(max_length=45)
-    # CORREGIDO: 'Venta' -> 'Ventas' (Nombre de la clase)
     fk_ventas = models.ForeignKey('Ventas', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -251,14 +242,9 @@ class Servicio(models.Model):
     duracion = models.IntegerField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     documento = models.IntegerField()
-
-    # Correcto: 'Entrada_Vehiculo'
     entrada = models.ForeignKey('Entrada_Vehiculo', on_delete=models.CASCADE)
-    # CORREGIDO: 'Insumos' -> 'insumo' (Nombre de la clase)
     insumo = models.ForeignKey('insumo', on_delete=models.SET_NULL, null=True)
-    # Correcto: 'Usuario'
     usuario = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True)
-    # CORREGIDO: 'TipoServicio' -> 'tipo_servicio' (Nombre de la clase)
     tipo_servicio = models.ForeignKey('tipo_servicio', on_delete=models.CASCADE)
 
     def __str__(self):

@@ -2,10 +2,9 @@ from django.views.generic import ListView, CreateView, DetailView, DeleteView
 from django.urls import reverse_lazy
 from app.models import Factura
 from app.forms import FacturaForm
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 # --- LISTAR FACTURAS ---
-class FacturaListView(LoginRequiredMixin, ListView):
+class FacturaListView(ListView):
     model = Factura
     template_name = 'factura/listar.html'
     context_object_name = 'facturas'
@@ -18,7 +17,7 @@ class FacturaListView(LoginRequiredMixin, ListView):
         return context
 
 # --- CREAR FACTURA ---
-class FacturaCreateView(LoginRequiredMixin, CreateView):
+class FacturaCreateView(CreateView):
     model = Factura
     form_class = FacturaForm
     template_name = 'factura/crear.html' 
@@ -31,7 +30,7 @@ class FacturaCreateView(LoginRequiredMixin, CreateView):
         return context
 
 # --- VER DETALLE (RECIBO) ---
-class FacturaDetailView(LoginRequiredMixin, DetailView):
+class FacturaDetailView(DetailView):
     model = Factura
     template_name = 'factura/detalle.html'
     context_object_name = 'factura'
@@ -42,7 +41,7 @@ class FacturaDetailView(LoginRequiredMixin, DetailView):
         return context
 
 # --- ELIMINAR FACTURA ---
-class FacturaDeleteView(LoginRequiredMixin, DeleteView):
+class FacturaDeleteView(DeleteView):
     model = Factura
     template_name = 'factura/eliminar.html'
     success_url = reverse_lazy('app:listar_facturas')
