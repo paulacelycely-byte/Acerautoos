@@ -2,64 +2,91 @@
 {% load widget_tweaks %}
 {% block contenido %}
 
-<form method="post" action=".">
-    <div class="card">
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
 
-        <!-- Header azul como en la imagen -->
-        <div class="card-header bg-primary">
-            <h3 class="card-title text-white">
-                <i class="fas fa-plus-circle"></i>
-                {{ titulo }}
-            </h3>
-        </div>
+            <form method="post" action=".">
+                {% csrf_token %}
 
-        <div class="card-body">
-            {% csrf_token %}
+                <div class="card border-0 shadow-lg"
+                     style="border-radius: 20px;">
 
-            <div class="row">
-                {% for field in form.visible_fields %}
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>{{ field.label }}</label>
+                    <!-- HEADER -->
+                    <div class="card-header bg-primary py-3"
+                         style="border-radius: 20px 20px 0 0;">
+                        <h3 class="card-title text-white m-0">
+                            <i class="fas fa-plus-circle me-2"></i>
+                            {{ titulo }}
+                        </h3>
+                    </div>
 
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">
-                                    <i class="fas fa-edit"></i>
-                                </span>
-                            </div>
+                    <!-- BODY -->
+                    <div class="card-body p-4">
 
-                            {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
-                        </div>
-
-                        {% if field.errors %}
-                        <div class="text-danger small mt-1">
-                            {% for error in field.errors %}
-                                {{ error }}
-                            {% endfor %}
+                        {% if form.errors %}
+                        <div class="alert alert-danger shadow-sm rounded-3">
+                            <h6 class="fw-bold">
+                                <i class="fas fa-ban me-2"></i>
+                                Errores encontrados
+                            </h6>
+                            <ul class="mb-0">
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li>{{ field.label }}: {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
                         </div>
                         {% endif %}
+
+                        <div class="row">
+                            {% for field in form.visible_fields %}
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label class="fw-bold text-dark mb-1">
+                                        {{ field.label }}
+                                    </label>
+
+                                    {{ field|add_class:'form-control rounded-pill border-light-subtle shadow-sm'|attr:'autocomplete:off' }}
+
+                                    {% if field.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
                     </div>
+
+                    <!-- FOOTER -->
+                    <div class="card-footer bg-light p-3 text-end"
+                         style="border-radius: 0 0 20px 20px;">
+
+                        <button type="submit"
+                                class="btn btn-primary px-4 rounded-pill shadow">
+                            <i class="fas fa-save me-1"></i>
+                            Guardar registro
+                        </button>
+
+                        <a href="{{ listar_url }}"
+                           class="btn btn-outline-secondary px-4 rounded-pill ms-2">
+                            <i class="fas fa-times me-1"></i>
+                            Volver al listado
+                        </a>
+
+                    </div>
+
                 </div>
-                {% endfor %}
-            </div>
+            </form>
+
         </div>
-
-        <!-- Footer igual al de la imagen -->
-        <div class="card-footer text-right">
-            <button type="submit" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus"></i> Guardar registro
-            </button>
-
-            <a href="{{ listar_url }}" class="btn btn-secondary btn-sm">
-                <i class="fas fa-arrow-left"></i> Volver al listado
-            </a>
-        </div>
-
     </div>
-</form>
+</div>
 
-{% endblock %}
-
-{% block js %}
 {% endblock %}

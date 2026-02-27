@@ -1,5 +1,4 @@
 from django.urls import path
-from app.views.categorias.views import *
 from app.views.Salida_vehiculo.views import *
 from app.views.Insumos.views import *
 from app.views.Servicio.views import *
@@ -7,14 +6,6 @@ from app.views.Servicio.views import *
 app_name = 'app'
 
 urlpatterns = [
-
-    # ===== CATEGORÍAS =====
-    path('listar_categorias/', categoriaListView.as_view(), name='listar_categoria'),
-    path('crear_categoria/', CategoriaCreateView.as_view(), name='crear_categoria'),
-    path('editar_categoria/<int:pk>/', CategoriaUpdateView.as_view(), name='editar_categoria'),
-    path('eliminar_categoria/<int:pk>/', CategoriaDeleteView.as_view(), name='eliminar_categoria'),
-    
-    
      # ===== SALIDA VEHÍCULO =====
     path('listar_salida_vehiculo/', Salida_vehiculoListView.as_view(), name='listar_salida_vehiculo'),
     path('crear_salida_vehiculo/', Salida_vehiculoCreateView.as_view(), name='crear_salida_vehiculo'),

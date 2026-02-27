@@ -1,38 +1,10 @@
 import re
 from django.forms import ModelForm
-from app.models import Categorias
 from app.models import Salida_vehiculo
 from app.models import insumo
 from app.models import Servicio
 from django import forms  
 
-class CategoriaForm(ModelForm):
-    class Meta:
-        model = Categorias
-        fields = '__all__'
-        widgets = {
-            'nombre' : forms.TextInput(attrs={
-                'placeholder':'Ingrese el nombre de la categoria '}),
-            'descripcion':
-            forms.Textarea(attrs={
-                'placeholder':'ingrese la descripcion de la categoria ',
-                'rows':15,
-                'cols':17}),
-        }
-        
-    def clean_nombre(self):
-        nombre = self.cleaned_data.get('nombre')
-        if not re.match(r'^[a-zA-Z\s]+$', nombre):
-            raise forms.ValidationError('El campo nombre solo puede contener letras y espacios.')
-        return nombre
-    
-    def clean_descripcion(self):
-        descripcion = self.cleaned_data.get('descripcion')
-        if len(descripcion) > 10:
-            raise forms.ValidationError('La descripción debe tener al menos 10 caracteres.')
-        return descripcion
-
-        
 class Salida_vehiculoForm(ModelForm):
     class Meta:
         model = Salida_vehiculo

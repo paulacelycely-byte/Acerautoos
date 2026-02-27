@@ -41,6 +41,7 @@ class ServicioCreateView(CreateView):
         context['listar_url'] = reverse_lazy('app:listar_servicio')
         return context
     
+    #mensajes de confirmacion
     def form_valid(self, form):
         messages.success(self.request,'Se creo un nuevo servicio')
         return super().form_valid(form)
@@ -61,6 +62,11 @@ class ServicioUpdateView(UpdateView):
         context['titulo'] = 'Editar Servicio'
         context['listar_url'] = reverse_lazy('app:listar_servicio')
         return context
+    
+    #mensajes de confirmacion
+    def form_valid(self, form):
+        messages.success(self.request,'Se actualizó un servicio')
+        return super().form_valid(form)
 
 
 class ServicioDeleteView(DeleteView):
@@ -77,3 +83,8 @@ class ServicioDeleteView(DeleteView):
         context['titulo'] = 'Eliminar Servicio'
         context['listar_url'] = reverse_lazy('app:listar_servicio')
         return context
+    
+#mensajes de confirmacion
+    def form_valid(self, form):
+        messages.success(self.request,'Se eliminó un servicio')
+        return super().form_valid(form)

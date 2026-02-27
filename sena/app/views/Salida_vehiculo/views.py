@@ -39,6 +39,8 @@ class Salida_vehiculoCreateView(CreateView):
         context['titulo'] = 'Crear Salida de Vehículo'
         context['listar_url'] = reverse_lazy('app:listar_salida_vehiculo')
         return context
+    
+    #mensajes de confirmacion
     def form_valid(self, form):
         messages.success(self.request,'Se creo una nueva salida de vehículo')
         return super().form_valid(form)
@@ -61,6 +63,10 @@ class Salida_vehiculoUpdateView(UpdateView):
         context['listar_url'] = reverse_lazy('app:listar_salida_vehiculo')
         return context
 
+    #mensajes de confirmacion
+    def form_valid(self, form):
+        messages.success(self.request,'Se actualizó una salida de vehículo')
+        return super().form_valid(form)
 
 class Salida_vehiculoDeleteView(DeleteView):
     model = Salida_vehiculo
@@ -76,3 +82,7 @@ class Salida_vehiculoDeleteView(DeleteView):
         context['titulo'] = 'Eliminar Salida de Vehículo'
         context['listar_url'] = reverse_lazy('app:listar_salida_vehiculo')
         return context
+        #mensajes de confirmacion
+    def form_valid(self, form):
+        messages.success(self.request,'Se elimino una salida de vehículo')
+        return super().form_valid(form)

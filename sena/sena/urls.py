@@ -22,5 +22,4 @@ from app.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("principal/", include(('app.urls', 'app'), namespace='app')),
-    path("", include(('login.urls', 'login'), namespace='login')),
 ]

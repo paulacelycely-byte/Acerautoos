@@ -40,7 +40,7 @@ class InsumoCreateView(CreateView):
         context['titulo'] = 'Crear Insumo'
         context['listar_url'] = reverse_lazy('app:listar_insumo')
         return context
-    
+    #mensajes de confirmacion
     def form_valid(self, form):
         messages.success(self.request,'Se creo un nuevo insumo')
         return super().form_valid(form)
@@ -61,6 +61,11 @@ class InsumoUpdateView(UpdateView):
         context['titulo'] = 'Editar Insumo'
         context['listar_url'] = reverse_lazy('app:listar_insumo')
         return context
+    
+    #mensajes de confirmacion
+    def form_valid(self, form):
+        messages.success(self.request,'Se edito el insumo')
+        return super().form_valid(form)
 
 
 class InsumoDeleteView(DeleteView):
@@ -77,3 +82,9 @@ class InsumoDeleteView(DeleteView):
         context['titulo'] = 'Eliminar Insumo'
         context['listar_url'] = reverse_lazy('app:listar_insumo')
         return context
+    
+    #mensajes de confirmacion
+    def form_valid(self, form):
+        messages.success(self.request,'Se elimino el insumo')
+        return super().form_valid(form)
+

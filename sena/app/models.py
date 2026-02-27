@@ -4,7 +4,6 @@ from decimal import Decimal
 from app.models import*
 
 
-# --- MODELOS BASE ---
 
 class Usuario(models.Model):
     nombre = models.CharField(max_length=100)
