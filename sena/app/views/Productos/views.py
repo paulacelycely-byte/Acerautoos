@@ -3,10 +3,10 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.contrib import messages
 
 from app.models import Productos
 from app.forms import ProductosForm
-
 
 
 class ProductosListView(ListView):
@@ -14,7 +14,6 @@ class ProductosListView(ListView):
     template_name = 'productos/listar.html'
     context_object_name = 'productos'
 
-    #@method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -24,15 +23,19 @@ class ProductosListView(ListView):
         context['crear_url'] = reverse_lazy('app:crear_productos')
         return context
 
+
 class ProductosCreateView(CreateView):
     model = Productos
     form_class = ProductosForm
     template_name = 'productos/crear.html'
     success_url = reverse_lazy('app:listar_productos')
 
-    #@method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Producto creado correctamente')
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -41,16 +44,18 @@ class ProductosCreateView(CreateView):
         return context
 
 
-
 class ProductosUpdateView(UpdateView):
     model = Productos
     form_class = ProductosForm
     template_name = 'productos/crear.html'
     success_url = reverse_lazy('app:listar_productos')
 
-    #@method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Producto actualizado correctamente')
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -59,15 +64,17 @@ class ProductosUpdateView(UpdateView):
         return context
 
 
-
 class ProductosDeleteView(DeleteView):
     model = Productos
     template_name = 'productos/eliminar.html'
     success_url = reverse_lazy('app:listar_productos')
 
-    #@method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Producto eliminado correctamente')
+        return super().delete(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

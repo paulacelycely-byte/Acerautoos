@@ -1,5 +1,6 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.contrib import messages
 
 from app.models import Notificacion
 from app.forms import NotificacionForm
@@ -23,6 +24,10 @@ class NotificacionCreateView(CreateView):
     template_name = 'notificacion/crear.html'
     success_url = reverse_lazy('app:listar_notificacion')
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Notificación creada correctamente')
+        return super().form_valid(form)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Crear notificación'
@@ -36,6 +41,10 @@ class NotificacionUpdateView(UpdateView):
     template_name = 'notificacion/crear.html'
     success_url = reverse_lazy('app:listar_notificacion')
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Notificación actualizada correctamente')
+        return super().form_valid(form)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Editar notificación'
@@ -47,6 +56,10 @@ class NotificacionDeleteView(DeleteView):
     model = Notificacion
     template_name = 'notificacion/eliminar.html'
     success_url = reverse_lazy('app:listar_notificacion')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Notificación eliminada correctamente')
+        return super().delete(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

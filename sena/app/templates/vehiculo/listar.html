@@ -33,17 +33,20 @@
           <td>{{ v.kilometraje }}</td>
           <td>{{ v.documento }}</td>
           <td>
-            
+            <!-- Botón Editar -->
             <a href="{% url 'app:editar_vehiculo' v.id %}"
-               class="btn btn-warning btn-sm">
+               class="btn btn-warning btn-sm editar">
               <i class="fas fa-edit"></i>
             </a>
 
-            
-            <a href="{% url 'app:eliminar_vehiculo' v.id %}"
-               class="btn btn-danger btn-sm">
-              <i class="fas fa-trash"></i>
-            </a>
+            <!-- Botón Eliminar -->
+            <form action="{% url 'app:eliminar_vehiculo' v.id %}" method="post" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger btn-sm eliminar">
+                <i class="fas fa-trash"></i>
+              </button>
+            </form>
+
           </td>
         </tr>
         {% endfor %}
@@ -52,9 +55,7 @@
   </div>
 
   <div class="card-footer">
-  
-    <a href="{% url 'app:crear_vehiculo' %}"
-       class="btn btn-primary">
+    <a href="{% url 'app:crear_vehiculo' %}" class="btn btn-primary">
       <i class="fas fa-plus"></i> Nuevo Vehículo
     </a>
   </div>
@@ -66,6 +67,7 @@
 <script src="{% static 'lib/jquery/jquery-3.6.0.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
 
 <script>
   $(document).ready(function () {
@@ -76,6 +78,48 @@
         url: "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
       }
     });
+  });
+
+  // ALERTAS SweetAlert2
+  document.addEventListener("DOMContentLoaded", function () {
+
+    // Botones Editar
+    const botonesEditar = document.querySelectorAll('.editar');
+    botonesEditar.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Editado correctamente',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Aceptar'
+        });
+      });
+    });
+
+    // Botones Eliminar
+    const botonesEliminar = document.querySelectorAll('.eliminar');
+    botonesEliminar.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault(); // Evita enviar el formulario inmediatamente
+
+        Swal.fire({
+          title: '¿Estás seguro?',
+          text: "¡No podrás revertir esto!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const form = btn.closest('form');
+            if(form) form.submit(); // envía el formulario solo si confirma
+          }
+        });
+      });
+    });
+
   });
 </script>
 {% endblock %}

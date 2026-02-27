@@ -15,7 +15,7 @@
           <th>#</th>
           <th>Nombre</th>
           <th>Documento</th>
-          
+          <th>Opciones</th>
         </tr>
       </thead>
       <tbody>
@@ -24,7 +24,7 @@
           <td>{{ v.id }}</td>
           <td>{{ v.nombre }}</td>
           <td>{{ v.documento }}</td>
-            
+          <td>
             <a href="{% url 'app:editar_cliente' v.id %}"
                class="btn btn-warning btn-sm">
               <i class="fas fa-edit"></i>

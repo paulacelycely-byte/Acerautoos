@@ -232,7 +232,7 @@ class Notificacion(models.Model):
     mensaje = models.CharField(max_length=45)
     fecha_envio = models.CharField(max_length=45)
     
-    fk_ventas = models.ForeignKey('Ventas', on_delete=models.CASCADE)
+    ventas = models.ForeignKey('Ventas', on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Notificación {self.id_notificacion} - {self.mensaje}"
