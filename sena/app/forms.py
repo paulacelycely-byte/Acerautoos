@@ -87,7 +87,6 @@ class CompraForm(ModelForm):
             'total': 'Total a Pagar',
             'estado': 'Estado del Pedido'
         }
-
         widgets = {
             'fecha': forms.DateInput(attrs={
                 'class': 'form-control',
