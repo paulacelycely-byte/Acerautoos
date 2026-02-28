@@ -1,0 +1,118 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block contenido %}
+<div class="container-fluid py-4">
+
+    <div class="card border-0 shadow-lg"
+         style="border-radius: 15px; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px);">
+
+        <!-- HEADER -->
+        <div class="card-header bg-white py-3"
+             style="border-radius: 15px 15px 0 0;">
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h3 class="card-title fw-bold text-dark m-0">
+                    <i class="fas fa-car text-primary me-2"></i>
+                    Listado de Salida de Vehículos
+                </h3>
+
+                <a href="{% url 'app:crear_salida_vehiculo' %}"
+                   class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
+                    <i class="fas fa-plus"></i>
+                    Nueva Salida
+                </a>
+
+            </div>
+        </div>
+
+        <!-- BODY -->
+        <div class="card-body p-4">
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle"
+                       id="tabla"
+                       style="width:100%">
+
+                    <thead class="bg-light">
+                        <tr class="text-secondary"
+                            style="font-size:0.85rem; text-transform:uppercase; letter-spacing:1px;">
+                            <th>#</th>
+                            <th>Vehículo</th>
+                            <th>Fecha / Hora Salida</th>
+                            <th>Total a Pagar</th>
+                            <th class="text-center">Opciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="text-dark">
+                        {% for c in Salida_vehiculo %}
+                        <tr>
+
+                            <td class="fw-bold">#{{ c.id }}</td>
+
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    {{ c.entrada.placa }}
+                                </span>
+                            </td>
+
+                            <td>{{ c.fecha_hora_salida }}</td>
+
+                            <td class="fw-bold text-success">
+                                ${{ c.total_a_pagar }}
+                            </td>
+
+                            <td class="text-center">
+                                <a href="{% url 'app:editar_salida_vehiculo' c.id %}"
+                                   class="btn btn-warning btn-sm rounded-circle shadow-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+
+                                <a href="{% url 'app:eliminar_salida_vehiculo' c.id %}"
+                                   class="btn btn-danger btn-sm rounded-circle shadow-sm">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+/* Paginación moderna */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #0d6efd !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 5px;
+}
+
+/* Línea inferior limpia */
+table.dataTable.no-footer {
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+/* Botones redondos perfectos */
+.btn-sm {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    line-height: 32px;
+}
+
+/* Hover elegante */
+.table-hover tbody tr:hover {
+    background-color: rgba(13,110,253,0.05);
+    transition: 0.2s ease-in-out;
+}
+</style>
+
+{% endblock %}

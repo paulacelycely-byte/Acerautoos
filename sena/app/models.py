@@ -224,18 +224,6 @@ class Categorias(models.Model):
         db_table = "categoria_productos"
 
 
-class Salida_Vehiculo(models.Model):
-    entrada = models.ForeignKey('Entrada_Vehiculo', on_delete=models.CASCADE)
-    fecha_hora_salida = models.DateTimeField()
-    total_a_pagar = models.DecimalField(max_digits=10, decimal_places=2)
-
-    def __str__(self):
-        return f"Salida {self.entrada.placa} - ${self.total_a_pagar}"
-
-    class Meta:
-        db_table = "salida_vehiculos"
-        verbose_name = "Salida de Vehículo"
-        verbose_name_plural = "Salidas de Vehículos"
 
 
 class Cliente(models.Model):
@@ -265,6 +253,141 @@ class Ventas(models.Model):
     def _str_(self):
         # Corregido: Retorna una sola cadena.
         return f"Venta del {self.fecha} a {self.cliente} {self.salida}"
+
+
+    def _str_(self):
+        # Corregido: Retorna una sola cadena.
+        return f"{self.marca} {self.modelo}"
+
+    class Meta:
+        verbose_name = "Vehiculo"
+        verbose_name_plural = "Vehiculos"
+        db_table = "Vehiculo"
+
+
+class insumo(models.Model):
+    nombre = models.CharField(max_length=100)
+    cantidad = models.IntegerField()
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=0)
+
+    def _str_(self):
+        # Corregido: Se usa _str_. Retorna una sola cadena.
+        return f"{self.nombre} (${self.precio_unitario})"
+
+    class Meta:
+        verbose_name = "insumo"
+        verbose_name_plural = "insumos"
+        db_table = "insumo"
+
+
+
+
+
+
+
+class Entrada_vehiculo(models.Model):
+    documento = models.IntegerField()
+    fecha_hora_entrada = models.DateTimeField(auto_now_add=True)
+    placa = models.CharField(max_length=6)
+
+    def __str__(self):
+        return f"Entrada {self.placa} - {self.fecha_hora_entrada}"
+
+    class Meta:
+        db_table = "Entrada_vehiculo"
+        verbose_name = "Entrada de Vehículo"
+        verbose_name_plural = "Entradas de Vehículos"
+
+
+# --- MODELOS CON RELACIONES ---
+
+
+
+class Compra(models.Model):
+    id_compra = models.AutoField(primary_key=True)
+    fecha = models.DateField()
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    estado = models.CharField(max_length=10)
+
+    # CORREGIDO: 'Proveedor' -> 'Proveedores' (Nombre de la clase)
+    fk_proveedor = models.ForeignKey('Proveedor', on_delete=models.CASCADE)
+    # CORREGIDO: 'Insumo' -> 'insumo' (Nombre de la clase)
+    fk_insumo = models.ForeignKey('insumo', on_delete=models.CASCADE)
+
+    def _str_(self):
+        return f"Compra {self.id_compra} - {self.estado}"
+
+    class Meta:
+        verbose_name = "Compra"
+        verbose_name_plural = "Compras"
+        db_table = "compra"
+
+
+class Categorias(models.Model):
+    id_categoria = models.AutoField(primary_key=True)
+    nombre_categoria = models.CharField(max_length=45)
+    descripcion = models.CharField(max_length=45)
+    # Correcto: 'Producto'
+    fk_producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
+
+    def _str_(self):
+        return self.nombre_categoria
+
+    class Meta:
+        verbose_name = "Categoría "
+        verbose_name_plural = "Categorías"
+        db_table = "categoria"
+
+entrada = [
+    (True, 'Entrada'),
+    (False, 'Salida'),
+]
+class Salida_vehiculo(models.Model):
+    # Correcto: 'Entrada_Vehiculo'
+    entrada = models.ForeignKey('Entrada_Vehiculo', on_delete=models.CASCADE)
+    fecha_hora_salida = models.DateTimeField()
+    total_a_pagar = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    def __str__(self):
+        return f"Salida {self.entrada.placa} - ${self.total_a_pagar}"
+
+    class Meta:
+        db_table = "salida_vehiculos"
+        verbose_name = "Salida_de_Vehículo"
+        verbose_name_plural = "Salidas_de_Vehículos"
+
+
+# --- MODELO AUXILIAR FALTANTE (Agregado) ---
+# Se asume la existencia del modelo Cliente ya que Ventas lo necesita.
+class Cliente(models.Model):
+    nombre = models.CharField(max_length=100)
+    documento = models.CharField(max_length=10, unique=True)
+    
+    def _str_(self):
+        return self.nombre
+    
+    class Meta:
+        db_table = "Cliente"
+        verbose_name = "Cliente"
+        verbose_name_plural = "Clientes"
+
+
+class Ventas(models.Model):
+    fecha = models.DateField()
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    documento = models.CharField(max_length=10)
+    # Correcto: 'Cliente' (Se asumió la creación del modelo Cliente)
+    cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
+    # Correcto: 'Salida_Vehiculo'
+    salida = models.ForeignKey('Salida_Vehiculo', on_delete=models.CASCADE)
+    # Correcto: 'Producto'
+    productos = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    # Correcto: 'Usuario'
+    usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
+
+    def _str_(self):
+        # Corregido: Retorna una sola cadena.
+        return f"Venta del {self.fecha} a {self.cliente}"
 
     class Meta:
         verbose_name = "Venta"
@@ -305,17 +428,20 @@ class GestionNotificacion(models.Model):
 
 class Servicio(models.Model):
     descripcion = models.CharField(max_length=255)
-    duracion = models.IntegerField()
+    duracion = models.TimeField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
-    documento = models.IntegerField()
-    entrada = models.ForeignKey('Entrada_Vehiculo', on_delete=models.CASCADE)
-    insumo = models.ForeignKey('insumo', on_delete=models.SET_NULL, null=True)
-    usuario = models.ForeignKey(
-        'Usuario', on_delete=models.SET_NULL, null=True)
-    tipo_servicio = models.ForeignKey(
-        'tipo_servicio', on_delete=models.CASCADE)
 
-    def __str__(self):
+
+    # Correcto: 'Entrada_Vehiculo'
+    entrada = models.ForeignKey('Entrada_Vehiculo', on_delete=models.CASCADE)
+    # CORREGIDO: 'Insumos' -> 'insumo' (Nombre de la clase)
+    insumo = models.ForeignKey('insumo', on_delete=models.SET_NULL, null=True)
+    # Correcto: 'Usuario'
+    usuario = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True)
+    # CORREGIDO: 'TipoServicio' -> 'tipo_servicio' (Nombre de la clase)
+    tipo_servicio = models.ForeignKey('tipo_servicio', on_delete=models.CASCADE)
+
+    def _str_(self):
         return f"Servicio {self.descripcion} (${self.precio})"
 
     class Meta:
