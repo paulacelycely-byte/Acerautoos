@@ -3,7 +3,6 @@ from datetime import datetime
 from decimal import Decimal
 from app.models import *
 
-# --- MODELOS BASE ---
 
 class Usuario(models.Model):
     nombre = models.CharField(max_length=100)
@@ -47,7 +46,7 @@ class Vehiculo(models.Model):
     documento = models.CharField(max_length=10)
 
     def __str__(self):
-        
+
         return f"{self.marca} {self.modelo}"
 
     class Meta:
@@ -62,13 +61,14 @@ class insumo(models.Model):
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        
+
         return f"{self.nombre} (${self.precio_unitario})"
 
     class Meta:
         verbose_name = "insumo"
         verbose_name_plural = "insumos"
         db_table = "insumo"
+
 
 class tipo_servicio(models.Model):
     nombre = models.CharField(max_length=100)
@@ -77,10 +77,10 @@ class tipo_servicio(models.Model):
     hora_entrada_estimada = models.TimeField(null=True, blank=True)
     hora_salida_estimada = models.TimeField(null=True, blank=True)
     estado = models.BooleanField(default=True)
-    
+
     def __str__(self):
         return self.nombre
-    
+
     class Meta:
         verbose_name = "tipo_servicio"
         verbose_name_plural = "tipo_servicios"
@@ -103,10 +103,44 @@ class insumo(models.Model):
 
 
 class tipo_servicio(models.Model):
-    nombre = models.CharField(max_length=100)
+    CATEGORIAS = [
+        ('MEC', 'Mecánica general'),
+        ('ELEC', 'Electricidad automotriz'),
+        ('FREN', 'Frenos'),
+        ('SUSP', 'Suspensión'),
+        ('MANT', 'Mantenimiento'),
+        ('DIAG', 'Diagnóstico'),
+        ('CLIM', 'Climatización'),
+        ('EST', 'Estética vehicular'),
+    ]
+    SERVICIOS = [
+        ('ACEITE', 'Cambio de aceite'),
+        ('FILTROS', 'Cambio de filtros'),
+        ('REVISION', 'Revisión general'),
+        ('DIAGNOSTICO', 'Diagnóstico'),
+        ('PREVENTIVO', 'Mantenimiento preventivo'),
+        ('CORRECTIVO', 'Mantenimiento correctivo'),
+        ('ALINEACION', 'Alineación y balanceo'),
+        ('FRENOS', 'Servicio de frenos'),
+        ('BATERIA', 'Cambio de batería'),
+        ('ELECTRICO', 'Sistema eléctrico'),
+        ('SUSPENSION', 'Suspensión'),
+        ('DIRECCION', 'Dirección'),
+        ('MOTOR', 'Reparación de motor'),
+        ('SINCRONIZACION', 'Sincronización'),
+        ('CORREA', 'Cambio de correa'),
+        ('REFRIGERACION', 'Refrigeración'),
+        ('AIRE', 'Aire acondicionado'),
+        ('BUJIAS', 'Cambio de bujías'),
+        ('LAVADO', 'Lavado'),
+        ('INSPECCION', 'Inspección'),
+    ]
+    nombre = models.CharField(max_length=100,choices=SERVICIOS)
     descripcion = models.CharField(max_length=100)
-    categoria = models.CharField(max_length=100)
-    duracion_estimada = models.DateField()
+    categoria = models.CharField(max_length=100, choices=CATEGORIAS)
+    duracion_estimada = models.DateField(null=True,blank=True)
+    hora_entrada_estimada = models.TimeField(null=True, blank=True)
+    hora_salida_estimada = models.TimeField(null=True, blank=True)
     estado = models.BooleanField(default=True)
 
     def _str_(self):
@@ -132,12 +166,12 @@ class Entrada_vehiculo(models.Model):
         verbose_name_plural = "Entradas_de_Vehículos"
 
 
-# --- MODELOS CON RELACIONES ---
 estado = [
-    (True,'Activo'),
-    (False,'Inactivo'),
-    
+    (True, 'Activo'),
+    (False, 'Inactivo'),
+
 ]
+
 
 class Proveedor(models.Model):
     nombre = models.CharField(max_length=50)
@@ -145,7 +179,7 @@ class Proveedor(models.Model):
     telefono = models.CharField(max_length=15)
     email = models.EmailField()
     direccion = models.CharField(max_length=100)
-    estado = models.BooleanField(default=True,choices=estado)
+    estado = models.BooleanField(default=True, choices=estado)
     mercancia = models.ForeignKey(Producto, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -204,15 +238,13 @@ class Salida_Vehiculo(models.Model):
         verbose_name_plural = "Salidas de Vehículos"
 
 
-# --- MODELO AUXILIAR FALTANTE (Agregado) ---
-# Se asume la existencia del modelo Cliente ya que Ventas lo necesita.
 class Cliente(models.Model):
     nombre = models.CharField(max_length=100)
     documento = models.CharField(max_length=10, unique=True)
-    
+
     def __str__(self):
         return self.nombre
-    
+
     class Meta:
         db_table = "Cliente"
         verbose_name = "Cliente"
@@ -223,9 +255,7 @@ class Ventas(models.Model):
     fecha = models.DateField()
     total = models.DecimalField(max_digits=10, decimal_places=2)
     documento = models.CharField(max_length=10)
-    # Correcto: 'Cliente' (Se asumió la creación del modelo Cliente)
     cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
-    # Correcto: 'Salida_Vehiculo'
     salida = models.ForeignKey('Salida_Vehiculo', on_delete=models.CASCADE)
     # Correcto: 'Producto'
     productos = models.ManyToManyField(Producto)
@@ -247,11 +277,9 @@ class Factura(models.Model):
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
     iva = models.DecimalField(max_digits=10, decimal_places=2)
     total = models.DecimalField(max_digits=10, decimal_places=2)
-    # CORREGIDO: 'Venta' -> 'Ventas' (Nombre de la clase)
     venta = models.ForeignKey('Ventas', on_delete=models.CASCADE)
 
     def __str__(self):
-        # Corregido: Retorna una sola cadena.
         return f"Factura #{self.id} por ${self.total}"
 
     class Meta:
@@ -264,7 +292,6 @@ class GestionNotificacion(models.Model):
     id_notificacion = models.AutoField(primary_key=True)
     mensaje = models.CharField(max_length=45)
     fecha_envio = models.CharField(max_length=45)
-    # CORREGIDO: 'Venta' -> 'Ventas' (Nombre de la clase)
     fk_ventas = models.ForeignKey('Ventas', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -281,15 +308,12 @@ class Servicio(models.Model):
     duracion = models.IntegerField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     documento = models.IntegerField()
-
-    # Correcto: 'Entrada_Vehiculo'
     entrada = models.ForeignKey('Entrada_Vehiculo', on_delete=models.CASCADE)
-    # CORREGIDO: 'Insumos' -> 'insumo' (Nombre de la clase)
     insumo = models.ForeignKey('insumo', on_delete=models.SET_NULL, null=True)
-    # Correcto: 'Usuario'
-    usuario = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True)
-    # CORREGIDO: 'TipoServicio' -> 'tipo_servicio' (Nombre de la clase)
-    tipo_servicio = models.ForeignKey('tipo_servicio', on_delete=models.CASCADE)
+    usuario = models.ForeignKey(
+        'Usuario', on_delete=models.SET_NULL, null=True)
+    tipo_servicio = models.ForeignKey(
+        'tipo_servicio', on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Servicio {self.descripcion} (${self.precio})"

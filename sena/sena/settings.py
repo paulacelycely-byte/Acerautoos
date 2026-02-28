@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'app',
     #login
-    'login',
+    #'login',
 ]
 
 MIDDLEWARE = [
@@ -129,14 +129,7 @@ STATICFILES_DIRS = [
 
 # --- CONFIGURACIÓN DE REDIRECCIONES DE LOGIN (ACTUALIZADO) ---
 
-# Al loguearse con éxito, lo enviamos al Dashboard (Panel de Control)
-LOGIN_REDIRECT_URL = '/principal/dashboard/'
 
-# Al cerrar sesión, lo enviamos de vuelta al login
-LOGOUT_REDIRECT_URL = '/principal/acceso/'
-
-# Si intenta entrar a una URL protegida, lo manda aquí
-LOGIN_URL = '/principal/acceso/'
 
 
 # Default primary key field type

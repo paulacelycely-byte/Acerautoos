@@ -2,10 +2,9 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from app.models import Compra
 from app.forms import CompraForm
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 # --- VISTA PARA LISTAR COMPRAS ---
-class CompraListView(LoginRequiredMixin, ListView):
+class CompraListView(ListView):
     model = Compra
     template_name = 'compra/listar.html'
     context_object_name = 'compras'
@@ -18,7 +17,7 @@ class CompraListView(LoginRequiredMixin, ListView):
         return context
 
 # --- VISTA PARA CREAR COMPRA ---
-class CompraCreateView(LoginRequiredMixin, CreateView):
+class CompraCreateView(CreateView):
     model = Compra
     form_class = CompraForm
     template_name = 'compra/crear.html'
@@ -31,7 +30,7 @@ class CompraCreateView(LoginRequiredMixin, CreateView):
         return context
 
 # --- VISTA PARA EDITAR COMPRA ---
-class CompraUpdateView(LoginRequiredMixin, UpdateView):
+class CompraUpdateView(UpdateView):
     model = Compra
     form_class = CompraForm
     template_name = 'compra/crear.html'
@@ -44,7 +43,7 @@ class CompraUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 # --- VISTA PARA ELIMINAR COMPRA ---
-class CompraDeleteView(LoginRequiredMixin, DeleteView):
+class CompraDeleteView(DeleteView):
     model = Compra
     template_name = 'compra/eliminar.html'
     success_url = reverse_lazy('app:listar_compras')

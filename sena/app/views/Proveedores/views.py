@@ -4,10 +4,10 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin 
 from ...models import Proveedor
 from ...forms import ProveedorForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 # LISTAR
-class ProveedorListView(LoginRequiredMixin, ListView): # Mixin agregado
+class ProveedorListView(ListView): # Mixin agregado
     model = Proveedor
     template_name = 'Prooveedores/listar.html'
     context_object_name = 'object_list'
@@ -20,7 +20,7 @@ class ProveedorListView(LoginRequiredMixin, ListView): # Mixin agregado
         return context
 
 # CREAR
-class ProveedorCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView): # Mixin agregado al inicio
+class ProveedorCreateView(CreateView): # Mixin agregado al inicio
     model = Proveedor
     form_class = ProveedorForm
     template_name = 'Prooveedores/crear.html'
@@ -38,7 +38,7 @@ class ProveedorCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView): 
         return super().form_invalid(form)
 
 # EDITAR
-class ProveedorUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView): # Mixin agregado al inicio
+class ProveedorUpdateView(UpdateView): # Mixin agregado al inicio
     model = Proveedor
     form_class = ProveedorForm
     template_name = 'Prooveedores/crear.html'
@@ -56,7 +56,7 @@ class ProveedorUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView): 
         return super().form_invalid(form)
 
 # ELIMINAR
-class ProveedorDeleteView(LoginRequiredMixin, DeleteView): # Mixin agregado
+class ProveedorDeleteView(DeleteView): # Mixin agregado
     model = Proveedor
     template_name = 'Prooveedores/eliminar.html'
     success_url = reverse_lazy('app:listar_proveedores')

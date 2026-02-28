@@ -3,9 +3,8 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from app.models import tipo_servicio
 from app.forms import TipoServicioForm
-from django.contrib.auth.mixins import LoginRequiredMixin
 
-class TipoServicioListView(LoginRequiredMixin, ListView): # Mixin agregado
+class TipoServicioListView(ListView): # Mixin agregado
     model = tipo_servicio
     template_name = 'TipoServicio/listar.html'
     
@@ -15,7 +14,7 @@ class TipoServicioListView(LoginRequiredMixin, ListView): # Mixin agregado
         context['crear_url'] = reverse_lazy('app:crear_servicio')
         return context
 
-class TipoServicioCreateView(LoginRequiredMixin, CreateView): # Mixin agregado
+class TipoServicioCreateView(CreateView): # Mixin agregado
     model = tipo_servicio
     form_class = TipoServicioForm
     template_name = 'TipoServicio/crear.html'
@@ -35,7 +34,7 @@ class TipoServicioCreateView(LoginRequiredMixin, CreateView): # Mixin agregado
         messages.error(self.request, ' Error al guardar. Por favor verifica los campos')
         return super().form_invalid(form)
 
-class TipoServicioUpdateView(LoginRequiredMixin, UpdateView): # Mixin agregado
+class TipoServicioUpdateView(UpdateView): # Mixin agregado
     model = tipo_servicio
     form_class = TipoServicioForm
     template_name = 'TipoServicio/editar.html'
@@ -55,7 +54,7 @@ class TipoServicioUpdateView(LoginRequiredMixin, UpdateView): # Mixin agregado
         messages.error(self.request, ' Error al actualizar. Por favor verifica los campos')
         return super().form_invalid(form)
 
-class TipoServicioDeleteView(LoginRequiredMixin, DeleteView): # Mixin agregado
+class TipoServicioDeleteView(DeleteView): # Mixin agregado
     model = tipo_servicio
     template_name = 'TipoServicio/eliminar.html'
     success_url = reverse_lazy('app:listar_servicio')
