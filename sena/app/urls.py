@@ -28,11 +28,9 @@ urlpatterns = [
     path('compra/crear/', CompraCreateView.as_view(), name='crear_compra'),
     path('compra/editar/<int:pk>/', CompraUpdateView.as_view(), name='editar_compra'),
     path('compra/eliminar/<int:pk>/', CompraDeleteView.as_view(), name='eliminar_compra'),
-
     # --- MÓDULO DE FACTURAS (SOLO CONSULTA) ---
     path('factura/listar/', FacturaListView.as_view(), name='listar_facturas'),
     path('factura/detalle/<int:pk>/', FacturaDetailView.as_view(), name='detalle_factura'),
-    
     # --- MÓDULO DE LOGIN ---
     #path('acceso/', include(('login.urls', 'login'), namespace='login')),
 ]
