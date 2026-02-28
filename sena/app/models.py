@@ -1,7 +1,7 @@
 from django.db import models
 from datetime import datetime
 from decimal import Decimal
-from app.models import*
+from app.models import *
 
 # --- MODELOS BASE ---
 
@@ -85,20 +85,51 @@ class tipo_servicio(models.Model):
         verbose_name = "tipo_servicio"
         verbose_name_plural = "tipo_servicios"
         db_table = "tipo_servicio"
-       
 
-class Entrada_Vehiculo(models.Model):
-    documento = models.IntegerField()
-    fecha_hora_entrada = models.DateTimeField()
+
+class insumo(models.Model):
+    nombre = models.CharField(max_length=100)
+    cantidad = models.IntegerField()
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def _str_(self):
+        # Corregido: Se usa _str_. Retorna una sola cadena.
+        return f"{self.nombre} (${self.precio_unitario})"
+
+    class Meta:
+        verbose_name = "insumo"
+        verbose_name_plural = "insumos"
+        db_table = "insumo"
+
+
+class tipo_servicio(models.Model):
+    nombre = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=100)
+    categoria = models.CharField(max_length=100)
+    duracion_estimada = models.DateField()
+    estado = models.BooleanField(default=True)
+
+    def _str_(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = "tipo_servicio"
+        verbose_name_plural = "tipo_servicios"
+        db_table = "tipo_servicio"
+
+
+class Entrada_vehiculo(models.Model):
+    documento = models.IntegerField(unique=True)
+    fecha_hora_entrada = models.DateTimeField(auto_now_add=True)
     placa = models.CharField(max_length=6)
 
     def __str__(self):
         return f"Entrada {self.placa} - {self.fecha_hora_entrada}"
 
     class Meta:
-        db_table = "entrada_vehiculo"
-        verbose_name = "Entrada de Vehículo"
-        verbose_name_plural = "Entradas de Vehículos"
+        db_table = "Entrada_vehiculo"
+        verbose_name = "Entrada_de_Vehículo"
+        verbose_name_plural = "Entradas_de_Vehículos"
 
 
 # --- MODELOS CON RELACIONES ---
@@ -160,7 +191,6 @@ class Categorias(models.Model):
 
 
 class Salida_Vehiculo(models.Model):
-
     entrada = models.ForeignKey('Entrada_Vehiculo', on_delete=models.CASCADE)
     fecha_hora_salida = models.DateTimeField()
     total_a_pagar = models.DecimalField(max_digits=10, decimal_places=2)
@@ -198,13 +228,13 @@ class Ventas(models.Model):
     # Correcto: 'Salida_Vehiculo'
     salida = models.ForeignKey('Salida_Vehiculo', on_delete=models.CASCADE)
     # Correcto: 'Producto'
-    productos = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    productos = models.ManyToManyField(Producto)
     # Correcto: 'Usuario'
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
 
-    def __str__(self):
+    def _str_(self):
         # Corregido: Retorna una sola cadena.
-        return f"Venta del {self.fecha} a {self.cliente}"
+        return f"Venta del {self.fecha} a {self.cliente} {self.salida}"
 
     class Meta:
         verbose_name = "Venta"
