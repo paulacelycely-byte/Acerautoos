@@ -2,24 +2,30 @@
 {% load static %}
 
 {% block css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+
 <style>
-    /* Estilos de la tabla y contenedores */
     .card-custom {
         box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1) !important;
         border: none;
         border-radius: 0.75rem;
     }
 
-    .table-clean thead th {
-        background-color: #f8f9fa;
-        color: #4e73df;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        font-weight: 700;
-        border-bottom: 2px solid #e3e6f0;
+    /* Estilo del Buscador */
+    .dataTables_filter input {
+        border: 1px solid #d1d3e2 !important;
+        border-radius: 50px !important;
+        padding: 8px 20px !important;
+        width: 250px !important;
+        outline: none !important;
     }
 
-    /* Avatar con inicial */
+    /* Estilo de los botones de Anterior/Siguiente */
+    .page-item.active .page-link {
+        background-color: #4e73df !important;
+        border-color: #4e73df !important;
+    }
+    
     .avatar-box {
         width: 38px;
         height: 38px;
@@ -31,49 +37,16 @@
         justify-content: center;
         font-weight: bold;
         margin-right: 12px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
-    /* NIT Estilo Tech */
-    .badge-nit {
-        background-color: #f8f9fa !important;
-        color: #4e73df !important; 
-        border: 1px dashed #4e73df !important;
-        padding: 4px 10px !important;
-        border-radius: 20px !important;
-        font-family: 'Monaco', monospace;
-        font-size: 0.85rem;
-    }
-
-    /* BOTONES CIRCULARES (Como tu ejemplo) */
     .btn-circle {
-        width: 32px;
-        height: 32px;
-        padding: 6px 0;
+        width: 35px;
+        height: 35px;
         border-radius: 50%;
         text-align: center;
-        font-size: 12px;
-        line-height: 1.42857;
-        margin: 0 3px;
-        transition: all 0.3s;
-    }
-    .btn-circle:hover {
-        transform: scale(1.15);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
-
-    /* Ajuste para que el buscador y paginación se vean pro */
-    .dataTables_wrapper .dataTables_filter input {
-        border: 1px solid #d1d3e2;
-        border-radius: 20px;
-        padding: 5px 15px;
-        margin-left: 10px;
-    }
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        background: #4e73df !important;
-        color: white !important;
-        border: 1px solid #4e73df !important;
-        border-radius: 50%;
+        padding: 6px 0;
+        font-size: 14px;
+        border: none;
     }
 </style>
 {% endblock %}
@@ -81,17 +54,16 @@
 {% block contenido %}
 <div class="container-fluid animate__animated animate__fadeIn">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800 font-weight-bold text-uppercase">Directorio de Proveedores</h1>
-        <a href="{{ crear_url }}" class="btn btn-primary btn-icon-split shadow">
-            <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
-            <span class="text">Nuevo Proveedor</span>
+        <h1 class="h3 mb-0 text-gray-800 font-weight-bold">DIRECTORIO DE PROVEEDORES</h1>
+        <a href="{{ crear_url }}" class="btn btn-primary shadow">
+            <i class="fas fa-plus fa-sm text-white-50"></i> Nuevo Proveedor
         </a>
     </div>
 
     <div class="card card-custom shadow mb-4">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover table-clean align-middle" id="tabla_pro" style="width:100%">
+                <table class="table table-hover align-middle" id="tabla_pro" style="width:100%">
                     <thead>
                         <tr>
                             <th class="text-center">#</th>
@@ -103,24 +75,18 @@
                     <tbody>
                         {% for p in object_list %}
                         <tr>
-                            <td class="text-center font-weight-bold text-primary">{{ forloop.counter }}</td>
+                            <td class="text-center font-weight-bold">{{ forloop.counter }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-box">{{ p.nombre|first|upper }}</div>
-                                    <span class="font-weight-bold text-dark text-uppercase">{{ p.nombre }}</span>
+                                    <span class="font-weight-bold text-dark">{{ p.nombre }}</span>
                                 </div>
                             </td>
-                            <td><span class="badge-nit">{{ p.documento }}</span></td>
+                            <td>{{ p.documento }}</td>
                             <td class="text-center">
-                                <a href="{% url 'app:editar_proveedor' p.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button class="btn btn-info btn-circle shadow-sm" onclick="verDetalle('{{ p.nombre }}', '{{ p.documento }}')" title="Info">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <a href="{% url 'app:eliminar_proveedor' p.id %}" class="btn btn-danger btn-circle shadow-sm" title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </a>
+                                <a href="{% url 'app:editar_proveedor' p.id %}" class="btn btn-warning btn-circle"><i class="fas fa-edit text-white"></i></a>
+                                <button class="btn btn-info btn-circle" onclick="verDetalle('{{ p.nombre }}', '{{ p.documento }}')"><i class="fas fa-eye text-white"></i></button>
+                                <a href="{% url 'app:eliminar_proveedor' p.id %}" class="btn btn-danger btn-circle"><i class="fas fa-trash text-white"></i></a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -130,47 +96,31 @@
         </div>
     </div>
 </div>
-
-<div class="modal fade" id="modalDetalle" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title font-weight-bold">Ficha de Información</h5>
-                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body text-center p-4">
-                <div class="mb-3">
-                    <i class="fas fa-university fa-4x text-gray-300"></i>
-                </div>
-                <h2 id="det-nombre" class="font-weight-bold text-primary text-uppercase"></h2>
-                <hr>
-                <p class="text-muted mb-1">NIT / DOCUMENTO</p>
-                <h4 id="det-nit" class="badge-nit p-3 d-inline-block"></h4>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block js %}
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
 <script>
     $(document).ready(function () {
-        $('#tabla_pro').DataTable({
+        // Inicialización forzada de DataTable
+        var table = $('#tabla_pro').DataTable({
             responsive: true,
             autoWidth: false,
             destroy: true,
+            // Mostramos 3 registros para forzar que salga la paginación en tu ejemplo
+            pageLength: 3, 
             language: {
                 "sSearch": "<b>Buscar:</b>",
-                "sLengthMenu": "Mostrar _MENU_ proveedores",
-                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ proveedores",
                 "oPaginate": {
-                    "sFirst": "Primero",
-                    "sLast": "Último",
-                    "sNext": "Sig.",
-                    "sPrevious": "Ant."
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
                 }
             },
-            // Cambia el diseño: 'f' es el filtro (search), 't' la tabla, 'p' paginación
+            // l=length, f=filter, t=table, i=info, p=pagination
             dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
                  "<'row'<'col-sm-12'tr>>" +
                  "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
@@ -178,9 +128,7 @@
     });
 
     function verDetalle(nombre, documento) {
-        $('#det-nombre').text(nombre);
-        $('#det-nit').text(documento);
-        $('#modalDetalle').modal('show');
+        alert("Proveedor: " + nombre + "\nNIT: " + documento);
     }
 </script>
 {% endblock %}
