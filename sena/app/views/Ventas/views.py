@@ -6,13 +6,12 @@ from django.utils.decorators import method_decorator
 from django.contrib import messages
 from app.models import Entrada_vehiculo
 from app.forms import Entrada_vehiculoForm
-from app.models import Ventas 
+from app.models import Ventas
 from app.forms import VentasForm
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView
 
 
-    
 class VentasListView(ListView):
     model = Ventas
     template_name = 'Ventas/listar.html'
@@ -28,6 +27,7 @@ class VentasListView(ListView):
         context['crear_url'] = reverse_lazy('app:crear_Ventas')
         return context
 
+
 class VentasCreateView(CreateView):
     model = Ventas
     form_class = VentasForm
@@ -41,10 +41,13 @@ class VentasCreateView(CreateView):
         context['titulo'] = "Crear Ventas"
         context['listar_url'] = reverse_lazy('app:listar_Ventas')
         return context
+
+
     def form_valid(self, form):
         messages.success(self.request,"Se creo un nuevo ingreso")
         return super().form_valid(form)
-    
+
+
 class VentasUpdateView(UpdateView):
     model = Ventas
     form_class = VentasForm
@@ -60,12 +63,12 @@ class VentasUpdateView(UpdateView):
         context['titulo'] = 'Editar Venta'
         context['listar_url'] = reverse_lazy('app:listar_Ventas')
         return context
-    
+
     def form_valid(self, form):
         messages.success(self.request, "Se edito correctamente")
         return super().form_valid(form)
 
-    
+
 class Ventas_delete(DeleteView):
     model = Ventas
     template_name = 'Ventas/eliminar.html'

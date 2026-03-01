@@ -1,0 +1,100 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block contenido %}
+<div class="container-fluid py-4">
+    <div class="card border-0 shadow-lg" style="border-radius: 15px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
+        <div class="card-header bg-white py-3" style="border-radius: 15px 15px 0 0;">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="card-title fw-bold text-dark m-0">
+                    <i class="fas fa-box text-primary me-2"></i> Gestión de Productos
+                </h3>
+                <a href="{{ crear_url }}" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
+                    <i class="fas fa-plus"></i> Nuevo Producto
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="tabla" style="width:100%">
+                    <thead class="bg-light">
+                        <tr class="text-secondary" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th class="text-center">Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-dark">
+                        {% for c in object_list %}
+                        <tr>
+                            <td class="fw-bold">#{{ c.id }}</td>
+                            <td>{{ c.nombre }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'app:editar_productos' c.id %}" class="btn btn-warning btn-sm rounded-circle shadow-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'app:eliminar_productos' c.id %}" class="btn btn-danger btn-sm rounded-circle shadow-sm">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background: #0d6efd !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 5px;
+    }
+    table.dataTable.no-footer { border-bottom: 1px solid #e2e8f0 !important; }
+    .btn-sm { width: 32px; height: 32px; padding: 0; line-height: 32px; }
+</style>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'lib/jquery/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#tabla').DataTable({
+            responsive: true,
+            autoWidth: false,
+            language: {
+                search: "Buscar:",
+                lengthMenu: "Mostrar _MENU_ registros",
+                info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                infoEmpty: "Mostrando 0 a 0 de 0 registros",
+                zeroRecords: "No se encontraron resultados",
+                paginate: { first: "Primero", last: "Último", next: "Siguiente", previous: "Anterior" }
+            }
+        });
+    });
+</script>
+
+<script>
+    {% if messages %}
+    document.addEventListener('DOMContentLoaded', function() {
+        {% for message in messages %}
+        Swal.fire({
+            icon: "{{ message.tags }}",
+            title: "{{ message|escapejs }}",
+            showConfirmButton: false,
+            timer: 2500
+        });
+        {% endfor %}
+    });
+    {% endif %}
+</script>
+{% endblock %}

@@ -40,20 +40,18 @@ class Vehiculo(models.Model):
     tipo_vehiculo = models.CharField(max_length=100)
     placa = models.CharField(max_length=6)
     marca = models.CharField(max_length=100)
-    modelo = models.CharField(max_length=100)
-    anio = models.DateField()
+    modelo = models.CharField(max_length=100) 
     kilometraje = models.IntegerField()
     documento = models.CharField(max_length=10)
 
     def __str__(self):
-
+    
         return f"{self.marca} {self.modelo}"
 
     class Meta:
         verbose_name = "Vehiculo"
         verbose_name_plural = "Vehiculos"
         db_table = "Vehiculo"
-
 
 class insumo(models.Model):
     nombre = models.CharField(max_length=100)
@@ -243,26 +241,22 @@ class Ventas(models.Model):
     fecha = models.DateField()
     total = models.DecimalField(max_digits=10, decimal_places=2)
     documento = models.CharField(max_length=10)
-    cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     salida = models.ForeignKey('Salida_Vehiculo', on_delete=models.CASCADE)
     # Correcto: 'Producto'
     productos = models.ManyToManyField(Producto)
     # Correcto: 'Usuario'
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
 
-    def _str_(self):
+    def __str__(self):
         # Corregido: Retorna una sola cadena.
         return f"Venta del {self.fecha} a {self.cliente} {self.salida}"
 
 
-    def _str_(self):
-        # Corregido: Retorna una sola cadena.
-        return f"{self.marca} {self.modelo}"
-
     class Meta:
-        verbose_name = "Vehiculo"
-        verbose_name_plural = "Vehiculos"
-        db_table = "Vehiculo"
+        verbose_name = "Venta"
+        verbose_name_plural = "Venta"
+        db_table = "Venta"
 
 
 class insumo(models.Model):
@@ -359,40 +353,8 @@ class Salida_vehiculo(models.Model):
 
 # --- MODELO AUXILIAR FALTANTE (Agregado) ---
 # Se asume la existencia del modelo Cliente ya que Ventas lo necesita.
-class Cliente(models.Model):
-    nombre = models.CharField(max_length=100)
-    documento = models.CharField(max_length=10, unique=True)
-    
-    def _str_(self):
-        return self.nombre
-    
-    class Meta:
-        db_table = "Cliente"
-        verbose_name = "Cliente"
-        verbose_name_plural = "Clientes"
 
 
-class Ventas(models.Model):
-    fecha = models.DateField()
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-    documento = models.CharField(max_length=10)
-    # Correcto: 'Cliente' (Se asumió la creación del modelo Cliente)
-    cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
-    # Correcto: 'Salida_Vehiculo'
-    salida = models.ForeignKey('Salida_Vehiculo', on_delete=models.CASCADE)
-    # Correcto: 'Producto'
-    productos = models.ForeignKey('Producto', on_delete=models.CASCADE)
-    # Correcto: 'Usuario'
-    usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
-
-    def _str_(self):
-        # Corregido: Retorna una sola cadena.
-        return f"Venta del {self.fecha} a {self.cliente}"
-
-    class Meta:
-        verbose_name = "Venta"
-        verbose_name_plural = "Ventas"
-        db_table = "Venta"
 
 
 class Factura(models.Model):
@@ -411,19 +373,20 @@ class Factura(models.Model):
         db_table = "Factura"
 
 
-class GestionNotificacion(models.Model):
+class Notificacion(models.Model):
     id_notificacion = models.AutoField(primary_key=True)
     mensaje = models.CharField(max_length=45)
     fecha_envio = models.CharField(max_length=45)
-    fk_ventas = models.ForeignKey('Ventas', on_delete=models.CASCADE)
+    
+    ventas = models.ForeignKey('Ventas', on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Notificación {self.id_notificacion} - {self.mensaje}"
 
     class Meta:
-        verbose_name = "Gestión de Notificación"
-        verbose_name_plural = "Gestión de Notificaciones"
-        db_table = "gestion_notificacion"
+        verbose_name = "Notificación"
+        verbose_name_plural = "Notificaciones"
+        db_table = "notificacion"
 
 
 class Servicio(models.Model):
