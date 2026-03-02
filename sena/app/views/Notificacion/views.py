@@ -38,7 +38,7 @@ class NotificacionCreateView(CreateView):
 class NotificacionUpdateView(UpdateView):
     model = Notificacion
     form_class = NotificacionForm
-    template_name = 'notificacion/crear.html'
+    template_name = 'notificacion/editar.html'
     success_url = reverse_lazy('app:listar_notificacion')
 
     def form_valid(self, form):

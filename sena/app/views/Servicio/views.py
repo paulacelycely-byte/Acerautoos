@@ -50,7 +50,7 @@ class ServicioCreateView(CreateView):
 class ServicioUpdateView(UpdateView):
     model = Servicio
     form_class = ServicioForm
-    template_name = 'Servicio/crear.html'
+    template_name = 'Servicio/editar.html'
     success_url = reverse_lazy('app:listar_servicio')
 
     # @method_decorator(login_required)

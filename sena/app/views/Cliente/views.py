@@ -46,7 +46,7 @@ class ClienteCreateView(CreateView):
 class ClienteUpdateView(UpdateView):
     model = Cliente
     form_class = ClienteForm
-    template_name = 'cliente/crear.html'
+    template_name = 'cliente/editar.html'
     success_url = reverse_lazy('app:listar_cliente')
 
     def dispatch(self, request, *args, **kwargs):

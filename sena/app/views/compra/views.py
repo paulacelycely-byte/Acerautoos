@@ -33,7 +33,7 @@ class CompraCreateView(CreateView):
 class CompraUpdateView(UpdateView):
     model = Compra
     form_class = CompraForm
-    template_name = 'compra/crear.html'
+    template_name = 'compra/editar.html'
     success_url = reverse_lazy('app:listar_compras')
 
     def get_context_data(self, **kwargs):

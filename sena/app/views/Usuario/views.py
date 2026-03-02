@@ -46,7 +46,7 @@ class UsuarioCreateView(CreateView):
 class UsuarioUpdateView(UpdateView):
     model = Usuario
     form_class = UsuarioForm
-    template_name = 'Usuario/crear.html'
+    template_name = 'Usuario/editar.html'
     success_url = reverse_lazy('app:listar_Usuario')
 
     # @method_decorator(login_required)

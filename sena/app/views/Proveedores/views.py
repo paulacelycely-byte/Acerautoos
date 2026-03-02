@@ -7,7 +7,7 @@ from ...forms import ProveedorForm
 
 
 # LISTAR
-class ProveedorListView(ListView): # Mixin agregado
+class ProveedorListView(ListView): 
     model = Proveedor
     template_name = 'Prooveedores/listar.html'
     context_object_name = 'object_list'
@@ -20,7 +20,7 @@ class ProveedorListView(ListView): # Mixin agregado
         return context
 
 # CREAR
-class ProveedorCreateView(CreateView): # Mixin agregado al inicio
+class ProveedorCreateView(CreateView): 
     model = Proveedor
     form_class = ProveedorForm
     template_name = 'Prooveedores/crear.html'
@@ -34,16 +34,16 @@ class ProveedorCreateView(CreateView): # Mixin agregado al inicio
         return context
     
     def form_invalid(self, form):
-        messages.error(self.request, '❌ Error al guardar. Por favor verifica los campos')
+        messages.error(self.request, ' Error al guardar. Por favor verifica los campos')
         return super().form_invalid(form)
 
 # EDITAR
-class ProveedorUpdateView(UpdateView): # Mixin agregado al inicio
+class ProveedorUpdateView(UpdateView): 
     model = Proveedor
     form_class = ProveedorForm
-    template_name = 'Prooveedores/crear.html'
+    template_name = 'Prooveedores/editar.html'
     success_url = reverse_lazy('app:listar_proveedores')
-    success_message = '✅ Proveedor actualizado exitosamente'
+    success_message = ' Proveedor actualizado exitosamente'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -52,11 +52,11 @@ class ProveedorUpdateView(UpdateView): # Mixin agregado al inicio
         return context
     
     def form_invalid(self, form):
-        messages.error(self.request, '❌ Error al actualizar. Por favor verifica los campos')
+        messages.error(self.request, ' Error al actualizar. Por favor verifica los campos')
         return super().form_invalid(form)
 
 # ELIMINAR
-class ProveedorDeleteView(DeleteView): # Mixin agregado
+class ProveedorDeleteView(DeleteView):
     model = Proveedor
     template_name = 'Prooveedores/eliminar.html'
     success_url = reverse_lazy('app:listar_proveedores')
@@ -68,5 +68,5 @@ class ProveedorDeleteView(DeleteView): # Mixin agregado
         return context
     
     def post(self, request, *args, **kwargs):
-        messages.success(self.request, '🗑️ Proveedor eliminado exitosamente')
+        messages.success(self.request, ' Proveedor eliminado exitosamente')
         return self.delete(request, *args, **kwargs)

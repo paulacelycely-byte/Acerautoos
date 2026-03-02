@@ -1,129 +1,182 @@
 {% extends 'body.html' %}
 {% load static %}
 
+{% block css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+<style>
+    /* --- ENCABEZADO PREMIUM ESTILO CATEGORÍAS (ROJO) --- */
+    .header-premium {
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border-left: 10px solid #d32f2f;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .title-icon {
+        background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+        color: white;
+        width: 55px; height: 55px;
+        border-radius: 15px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
+        margin-right: 20px;
+    }
+
+    .title-container h1 {
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 1.9rem;
+        font-weight: 700;
+        margin-bottom: 0;
+        color: #2d3436;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+    }
+
+    .btn-nueva-premium {
+        background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+        color: white !important;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        display: flex; align-items: center; gap: 10px;
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
+    }
+
+    .card-custom {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
+        background: #fff;
+    }
+
+    /* Avatar circular como en categorías */
+    .avatar-box {
+        width: 40px; height: 40px;
+        background: #343a40;
+        color: white;
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: bold;
+        margin-right: 12px;
+    }
+
+    .btn-circle {
+        width: 35px; height: 35px;
+        border-radius: 10px;
+        display: inline-flex; align-items: center; justify-content: center;
+        transition: 0.3s;
+        border: none;
+    }
+
+    .btn-circle:hover { 
+        transform: translateY(-3px); 
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+    }
+</style>
+{% endblock %}
+
 {% block contenido %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-12">
-
-            <div class="card border-0 shadow-lg"
-                 style="border-radius: 20px;">
-
-                <!-- HEADER -->
-                <div class="card-header bg-primary py-3 d-flex justify-content-between align-items-center"
-                     style="border-radius: 20px 20px 0 0;">
-
-                    <h3 class="card-title text-white m-0">
-                        <i class="fas fa-tools me-2"></i>
-                        Listado de Servicios
-                    </h3>
-
-                    <a href="{% url 'app:crear_servicio' %}"
-                       class="btn btn-light rounded-pill px-4 shadow-sm">
-                        <i class="fas fa-plus me-1"></i>
-                        Nuevo Servicio
-                    </a>
-                </div>
-
-                <!-- BODY -->
-                <div class="card-body p-4">
-
-                    <div class="table-responsive">
-                        <table class="table align-middle table-hover"
-                               id="tabla"
-                               style="width:100%">
-
-                            <thead class="bg-light">
-                                <tr class="text-secondary small text-uppercase">
-                                    <th>#</th>
-                                    <th>Placa</th>
-                                    <th>Descripción</th>
-                                    <th>Duración</th>
-                                    <th>Tipo Servicio</th>
-                                    <th>Precio</th>
-                                    <th>Insumo</th>
-                                    <th>Usuario</th>
-                                    <th class="text-center">Opciones</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {% for c in object_list %}
-                                <tr>
-                                    <td class="fw-bold">#{{ c.id }}</td>
-
-                                    <td>
-                                        <span class="badge bg-light text-dark border rounded-pill px-3">
-                                            {{ c.entrada.placa }}
-                                        </span>
-                                    </td>
-
-                                    <td>{{ c.descripcion }}</td>
-
-                                    <td>{{ c.duracion }}</td>
-
-                                    <td>{{ c.tipo_servicio }}</td>
-
-                                    <td class="fw-bold text-success">
-                                        ${{ c.precio }}
-                                    </td>
-
-                                    <td>{{ c.insumo }}</td>
-
-                                    <td>
-                                        <small class="text-muted">
-                                            {{ c.usuario }}
-                                        </small>
-                                    </td>
-
-                                    <td class="text-center">
-
-                                        <a href="{% url 'app:editar_servicio' c.id %}"
-                                           class="btn btn-warning btn-sm rounded-pill px-3 shadow-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-
-                                        <a href="{% url 'app:eliminar_servicio' c.id %}"
-                                           class="btn btn-danger btn-sm rounded-pill px-3 shadow-sm ms-1">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-
-                        </table>
-                    </div>
-
-                </div>
+<div class="container-fluid animate__animated animate__fadeIn">
+    
+    <div class="header-premium">
+        <div class="d-flex align-items-center">
+            <div class="title-icon">
+                <i class="fas fa-tools"></i>
             </div>
+            <div class="title-container">
+                <h1>GESTIÓN DE SERVICIOS</h1>
+            </div>
+        </div>
 
+        <a href="{% url 'app:crear_servicio' %}" class="btn btn-nueva-premium">
+            <i class="fas fa-plus-circle"></i>
+            <span>Nuevo Servicio</span>
+        </a>
+    </div>
+
+    <div class="card card-custom">
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="tabla_servicios" style="width:100%">
+                    <thead>
+                        <tr class="text-uppercase small font-weight-bold text-muted" style="border-bottom: 2px solid #f8f9fa;">
+                            <th class="text-center">#</th>
+                            <th>Vehículo / Placa</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                            <th>Responsable</th>
+                            <th class="text-center">Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in object_list %}
+                        <tr>
+                            <td class="text-center align-middle font-weight-bold text-secondary">{{ forloop.counter }}</td>
+                            <td class="align-middle">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-box">{{ c.entrada.placa|first|upper }}</div>
+                                    <div>
+                                        <span class="font-weight-bold text-dark d-block">{{ c.entrada.placa }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle text-muted small">{{ c.descripcion }}</td>
+                            <td class="align-middle font-weight-bold text-success">${{ c.precio }}</td>
+                            <td class="align-middle small">{{ c.usuario }}</td>
+                            <td class="text-center align-middle">
+                                <a href="{% url 'app:editar_servicio' c.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
+                                    <i class="fas fa-pen text-white"></i>
+                                </a>
+                                <a href="{% url 'app:eliminar_servicio' c.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
+                                    <i class="fas fa-trash-alt text-white"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
-<style>
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        background: #0d6efd !important;
-        color: white !important;
-        border-radius: 20px !important;
-        border: none !important;
-    }
+{% block js %}
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 
-    table.dataTable.no-footer {
-        border-bottom: 1px solid #e9ecef !important;
-    }
+<script>
+    $(document).ready(function () {
+        // SOLUCIÓN DEFINITIVA AL ERROR DE LAS FOTOS:
+        if ($.fn.DataTable.isDataTable('#tabla_servicios')) {
+            $('#tabla_servicios').DataTable().destroy();
+        }
 
-    .dataTables_filter input {
-        border-radius: 20px !important;
-        padding: 6px 15px !important;
-        border: 1px solid #dee2e6 !important;
-    }
-
-    .dataTables_length select {
-        border-radius: 20px !important;
-        padding: 4px 10px !important;
-    }
-</style>
+        $('#tabla_servicios').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true, 
+            language: {
+                "sSearch": "<span class='font-weight-bold small'>BUSCAR:</span>",
+                "sLengthMenu": "Mostrar _MENU_",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_",
+                "oPaginate": {
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                }
+            }
+        });
+    });
+</script>
 {% endblock %}

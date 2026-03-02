@@ -2,38 +2,37 @@
 {% load static %}
 
 {% block body %}
+  {% block css %}
+  {% endblock %}
+
   <style>
-    /* --- ESTRUCTURA GLOBAL --- */
     .app-wrapper {
       display: flex;
       width: 100%;
       min-height: 100vh;
-      background: #f8fafc; /* Color de fondo profesional */
+      background: #f8fafc;
     }
     
-    /* --- SIDEBAR ARREGLADA (Visible por defecto) --- */
     .app-sidebar {
       width: 280px !important;
-      background: #0f172a !important; /* El azul oscuro que ya tenías */
+      background: #0f172a !important;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
       z-index: 1000;
       position: fixed !important;
       height: 100vh !important;
-      left: 0; /* Ahora inicia visible */
+      left: 0;
       border-right: 1px solid rgba(255, 255, 255, 0.05);
     }
     
-    /* --- CONTENEDOR PRINCIPAL CON MARGEN --- */
     .app-main-container {
       flex: 1;
-      margin-left: 280px; /* Deja el espacio para la barra */
+      margin-left: 280px;
       display: flex;
       flex-direction: column;
       min-width: 0;
       transition: all 0.4s ease;
     }
     
-    /* --- ESTADOS CUANDO SE OCULTA --- */
     body.sidebar-hidden .app-sidebar {
       left: -280px;
     }
@@ -42,7 +41,6 @@
       margin-left: 0;
     }
     
-    /* --- NAVBAR ESTILO CRISTAL --- */
     .app-header {
       background: rgba(255, 255, 255, 0.8) !important;
       backdrop-filter: blur(12px);
@@ -51,7 +49,6 @@
       z-index: 900;
     }
     
-    /* Botón de Menú */
     .btn-toggle-menu {
       background: #ffffff;
       border: 1px solid #e2e8f0;
@@ -71,7 +68,6 @@
       transform: scale(1.05);
     }
     
-    /* --- DETALLES DE USUARIO --- */
     .user-pill {
       background: white;
       border: 1px solid #e2e8f0;
@@ -91,7 +87,6 @@
       box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
     }
     
-    /* --- ESTILOS ADICIONALES PARA DATATABLES --- */
     .dataTables_wrapper .dataTables_paginate .paginate_button {
       padding: 0.5em 1em;
       transition: all 0.3s;
@@ -107,7 +102,9 @@
     <div class="app-main-container">
       <nav class="app-header d-flex align-items-center justify-content-between sticky-top">
         <div class="d-flex align-items-center">
-          <button class="btn-toggle-menu" id="sidebar-trigger" title="Ocultar/Mostrar Menú"><i class="fas fa-bars"></i></button>
+          <button class="btn-toggle-menu" id="sidebar-trigger" title="Ocultar/Mostrar Menú">
+            <i class="fas fa-bars"></i>
+          </button>
           <div class="ms-3 d-none d-md-block">
             <h5 class="mb-0 fw-bold text-dark">Acerautoos <span class="text-primary">Core</span></h5>
           </div>
@@ -117,7 +114,9 @@
           <div class="user-pill">
             <div class="status-indicator"></div>
             <span class="small fw-bold text-dark">{{ user.username|upper }}</span>
-            <div class="avatar-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 28px; height: 28px; border-radius: 50%; font-size: 0.7rem;">{{ user.username|slice:':1'|upper }}</div>
+            <div class="avatar-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 28px; height: 28px; border-radius: 50%; font-size: 0.7rem;">
+                {{ user.username|slice:':1'|upper }}
+            </div>
           </div>
         </div>
       </nav>
@@ -125,60 +124,36 @@
       <main class="p-4">
         <div class="animate__animated animate__fadeIn">
           {% block contenido %}
-
           {% endblock %}
         </div>
       </main>
     </div>
   </div>
-  <script>
-      {% if messages %}
-      document.addEventListener('DOMContentLoaded', function () {
-        {% for message in messages %}
-          Swal.fire({
-            icon:"{{message.tags}}",
-            title:"{{message|escapejs}}",
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar:true,
-          })
-        {% endfor %}
-      });
-      {% endif %}
-    </script>
-{% endblock %}
 
-{% block js %}
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
   <script>
+    {% if messages %}
     document.addEventListener('DOMContentLoaded', function () {
-      const trigger = document.getElementById('sidebar-trigger')
-      const body = document.body
-    
-      // Recuperar el estado del localStorage
-      if (localStorage.getItem('sidebar-collapsed') === 'true') {
-        body.classList.add('sidebar-hidden')
-      }
-    
-      trigger.addEventListener('click', function () {
-        body.classList.toggle('sidebar-hidden')
-        // Guardar el estado para que no se resetee al recargar
-        const isHidden = body.classList.contains('sidebar-hidden')
-        localStorage.setItem('sidebar-collapsed', isHidden)
-      })
-    })
-  </script>
-{% endblock %}
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+      {% for message in messages %}
+        Swal.fire({
+          icon:"{{message.tags}}",
+          title:"{{message|escapejs}}",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar:true,
+        })
+      {% endfor %}
+    });
+    {% endif %}
 
-<script>
     document.addEventListener("DOMContentLoaded", function() {
         const trigger = document.getElementById('sidebar-trigger');
         const body = document.body;
 
-        // --- LÓGICA DEL SIDEBAR ---
         if (localStorage.getItem('sidebar-collapsed') === 'true') {
             body.classList.add('sidebar-hidden');
         }
@@ -191,5 +166,9 @@
             });
         }
     });
-</script>
+  </script>
 
+  {% block js %}
+  {% endblock %}
+
+{% endblock %}

@@ -1,42 +1,180 @@
 {% extends 'body.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+<style>
+    /* --- ENCABEZADO PREMIUM ESTILO ACERAUTOS --- */
+    .header-premium {
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border-left: 10px solid #d32f2f;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .title-icon {
+        background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+        color: white;
+        width: 55px; height: 55px;
+        border-radius: 15px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
+        margin-right: 20px;
+    }
+
+    .title-container h1 {
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 1.9rem;
+        font-weight: 700;
+        margin-bottom: 0;
+        color: #2d3436;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+    }
+
+    .btn-nueva-premium {
+        background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+        color: white !important;
+        border: none; padding: 12px 25px; border-radius: 12px;
+        font-weight: 700; text-transform: uppercase;
+        font-size: 0.8rem; letter-spacing: 1px;
+        display: flex; align-items: center; gap: 10px;
+        transition: all 0.3s;
+        box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
+    }
+
+    .btn-nueva-premium:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+        box-shadow: 0 12px 20px rgba(211, 47, 47, 0.3);
+    }
+
+    .card-custom {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
+        background: #fff;
+    }
+
+    .avatar-box {
+        width: 40px; height: 40px;
+        background: #343a40; color: white;
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: bold; margin-right: 12px;
+    }
+
+    .btn-circle {
+        width: 35px; height: 35px;
+        border-radius: 10px;
+        display: inline-flex; align-items: center; justify-content: center;
+        transition: 0.3s; border: none;
+    }
+
+    .btn-circle:hover { 
+        transform: translateY(-3px); 
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+    }
+</style>
+{% endblock %}
+
 {% block contenido %}
-<div class="card card-primary">
-    <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-shopping-cart"></i> {{ titulo }}</h3>
-    </div>
-    <div class="card-body">
-        <table class="table table-bordered" id="tabla">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Fecha</th>
-                    <th>Proveedor</th>
-                    <th>Total</th>
-                    <th>Estado</th>
-                    <th>Opciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for c in compras %}
-                <tr>
-                    <td>{{ c.id_compra }}</td>
-                    <td>{{ c.fecha }}</td>
-                    <td>{{ c.fk_proveedor.nombre }}</td>
-                    <td>${{ c.total }}</td>
-                    <td>{{ c.estado }}</td>
-                    <td>
-                        <a href="{% url 'app:editar_compra' c.id_compra %}" class="btn btn-warning btn-xs"><i class="fas fa-edit"></i></a>
-                        <a href="{% url 'app:eliminar_compra' c.id_compra %}" class="btn btn-danger btn-xs"><i class="fas fa-trash"></i></a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="card-footer">
-        <a href="{% url 'app:crear_compra' %}" class="btn btn-primary btn-flat">
-            <i class="fas fa-plus"></i> Nueva Compra
+<div class="container-fluid animate__animated animate__fadeIn">
+    
+    <div class="header-premium">
+        <div class="d-flex align-items-center">
+            <div class="title-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="title-container">
+                <h1>{{ titulo|upper }}</h1>
+            </div>
+        </div>
+
+        <a href="{% url 'app:crear_compra' %}" class="btn btn-nueva-premium">
+            <i class="fas fa-plus-circle"></i>
+            <span>Nueva Compra</span>
         </a>
     </div>
+
+    <div class="card card-custom">
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="tabla_compras" style="width:100%">
+                    <thead>
+                        <tr class="text-uppercase small font-weight-bold text-muted">
+                            <th class="text-center" style="width: 5%;">ID</th>
+                            <th style="width: 30%;">Proveedor</th>
+                            <th style="width: 15%;">Fecha</th>
+                            <th style="width: 15%;">Total</th>
+                            <th style="width: 15%;">Estado</th>
+                            <th class="text-center" style="width: 20%;">Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in compras %}
+                        <tr>
+                            <td class="text-center align-middle font-weight-bold text-secondary">{{ c.id_compra }}</td>
+                            <td class="align-middle">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-box">{{ c.fk_proveedor.nombre|first|upper }}</div>
+                                    <span class="font-weight-bold text-dark">{{ c.fk_proveedor.nombre }}</span>
+                                </div>
+                            </td>
+                            <td class="align-middle text-dark">{{ c.fecha|date:"d/m/Y" }}</td>
+                            <td class="align-middle font-weight-bold text-dark">
+                                ${{ c.total }}
+                            </td>
+                            <td class="align-middle">
+                                <span class="badge badge-light p-2 text-uppercase shadow-sm" style="letter-spacing: 1px; color: #120aa3; border-radius: 8px;">
+                                    {{ c.estado }}
+                                </span>
+                            </td>
+                            <td class="text-center align-middle">
+                                <a href="{% url 'app:editar_compra' c.id_compra %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
+                                    <i class="fas fa-pen text-white"></i>
+                                </a>
+                                <a href="{% url 'app:eliminar_compra' c.id_compra %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
+                                    <i class="fas fa-trash-alt text-white"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#tabla_compras').DataTable({
+            destroy: true,
+            responsive: true,
+            autoWidth: false,
+            order: [[0, "desc"]], // Ordenar por ID descendente por defecto
+            language: {
+                "sSearch": "<span class='font-weight-bold small'>BUSCAR:</span>",
+                "sLengthMenu": "Mostrar _MENU_",
+                "sInfo": "Mostrando _TOTAL_ registros",
+                "oPaginate": {
+                    "sNext": "<i class='fas fa-chevron-right'></i>",
+                    "sPrevious": "<i class='fas fa-chevron-left'></i>"
+                }
+            }
+        });
+    });
+</script>
 {% endblock %}

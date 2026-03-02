@@ -43,7 +43,7 @@ class VehiculoCreateView(CreateView):
 class VehiculoUpdateView(UpdateView):
     model = Vehiculo
     form_class = VehiculoForm
-    template_name = 'vehiculo/crear.html'
+    template_name = 'vehiculo/editar.html'
     success_url = reverse_lazy('app:listar_vehiculo')
 
     def get_context_data(self, **kwargs):

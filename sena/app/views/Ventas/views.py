@@ -51,7 +51,7 @@ class VentasCreateView(CreateView):
 class VentasUpdateView(UpdateView):
     model = Ventas
     form_class = VentasForm
-    template_name = 'Ventas/crear.html'
+    template_name = 'Ventas/editar.html'
     success_url = reverse_lazy('app:listar_Ventas')
 
     # @method_decorator(login_required)

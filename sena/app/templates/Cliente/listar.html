@@ -1,72 +1,162 @@
 {% extends 'body.html' %}
 {% load static %}
 
+{% block css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+<style>
+    /* --- ENCABEZADO PREMIUM ACERAUTOS --- */
+    .header-premium {
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border-left: 10px solid #d32f2f;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .title-icon {
+        background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+        color: white;
+        width: 55px; height: 55px;
+        border-radius: 15px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
+        margin-right: 20px;
+    }
+
+    .title-container h1 {
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0;
+        color: #2d3436;
+        text-transform: uppercase;
+    }
+
+    .btn-nueva-premium {
+        background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+        color: white !important;
+        padding: 12px 25px;
+        border-radius: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        display: flex; align-items: center; gap: 10px;
+        transition: 0.3s;
+        border: none;
+    }
+
+    .card-custom {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
+    }
+
+    .avatar-box {
+        width: 40px; height: 40px;
+        background: #454d55;
+        color: white;
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: bold; margin-right: 12px;
+    }
+
+    .btn-circle {
+        width: 35px; height: 35px;
+        border-radius: 10px;
+        display: inline-flex; align-items: center; justify-content: center;
+        transition: 0.3s; border: none;
+    }
+</style>
+{% endblock %}
+
 {% block contenido %}
+<div class="container-fluid animate__animated animate__fadeIn">
+    
+    <div class="header-premium">
+        <div class="d-flex align-items-center">
+            <div class="title-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="title-container">
+                <h1>GESTIÓN DE CLIENTES</h1>
+            </div>
+        </div>
+        <a href="{% url 'app:crear_cliente' %}" class="btn btn-nueva-premium">
+            <i class="fas fa-user-plus"></i>
+            <span>Nuevo Cliente</span>
+        </a>
+    </div>
 
-<div class="card">
-  <div class="card-header">
-    <h3 class="card-title">Listado de Clientes</h3>
-  </div>
-
-  <div class="card-body">
-    <table class="table table-bordered table-hover" id="tabla">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Nombre</th>
-          <th>Documento</th>
-          <th>Opciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for v in cliente %}
-        <tr>
-          <td>{{ v.id }}</td>
-          <td>{{ v.nombre }}</td>
-          <td>{{ v.documento }}</td>
-          <td>
-            <a href="{% url 'app:editar_cliente' v.id %}"
-               class="btn btn-warning btn-sm">
-              <i class="fas fa-edit"></i>
-            </a>
-
-            
-            <a href="{% url 'app:eliminar_cliente' v.id %}"
-               class="btn btn-danger btn-sm">
-              <i class="fas fa-trash"></i>
-            </a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-
-  <div class="card-footer">
-  
-    <a href="{% url 'app:crear_cliente' %}"
-       class="btn btn-primary">
-      <i class="fas fa-plus"></i> Nuevo cliente
-    </a>
-  </div>
+    <div class="card card-custom">
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="tabla_clientes" style="width:100%">
+                    <thead>
+                        <tr class="text-uppercase small font-weight-bold text-muted">
+                            <th class="text-center" style="width: 5%;">ID</th>
+                            <th style="width: 40%;">Nombre Completo</th>
+                            <th style="width: 35%;">Documento / Identificación</th>
+                            <th class="text-center" style="width: 20%;">Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for v in cliente %}
+                        <tr>
+                            <td class="text-center align-middle font-weight-bold text-secondary">{{ v.id }}</td>
+                            <td class="align-middle">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-box">{{ v.nombre|first|upper }}</div>
+                                    <span class="font-weight-bold text-dark">{{ v.nombre }}</span>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <span class="text-dark font-weight-bold" style="font-size: 0.95rem;">
+                                    {{ v.documento|default:"---" }}
+                                </span>
+                            </td>
+                            <td class="text-center align-middle">
+                                <a href="{% url 'app:editar_cliente' v.id %}" class="btn btn-warning btn-circle shadow-sm">
+                                    <i class="fas fa-pen text-white"></i>
+                                </a>
+                                <a href="{% url 'app:eliminar_cliente' v.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;">
+                                    <i class="fas fa-trash-alt text-white"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
-
 {% endblock %}
 
 {% block js %}
-<script src="{% static 'lib/jquery/jquery-3.6.0.min.js' %}"></script>
-<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 
 <script>
-  $(document).ready(function () {
-    $('#tabla').DataTable({
-      responsive: true,
-      autoWidth: false,
-      language: {
-        url: "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
-      }
+    $(document).ready(function () {
+        $('#tabla_clientes').DataTable({
+            destroy: true,
+            responsive: true,
+            autoWidth: false,
+            language: {
+                "sSearch": "BUSCAR:",
+                "sLengthMenu": "Mostrar _MENU_",
+                "sInfo": "Mostrando _TOTAL_ registros",
+                "oPaginate": {
+                    "sNext": "<i class='fas fa-chevron-right'></i>",
+                    "sPrevious": "<i class='fas fa-chevron-left'></i>"
+                }
+            }
+        });
     });
-  });
 </script>
 {% endblock %}

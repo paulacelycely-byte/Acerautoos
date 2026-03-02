@@ -3,90 +3,177 @@
 
 {% block css %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-
 <style>
-    .card-custom {
-        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1) !important;
-        border: none;
-        border-radius: 0.75rem;
+    /* --- ENCABEZADO PREMIUM ESTILO ACERAUTOS (ROJO) --- */
+    .header-premium {
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border-left: 10px solid #d32f2f;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
-    /* Estilo del Buscador */
+    .title-icon {
+        background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+        color: white;
+        width: 55px;
+        height: 55px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
+        margin-right: 20px;
+    }
+
+    .title-container h1 {
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 1.9rem;
+        font-weight: 700;
+        margin-bottom: 0;
+        color: #2d3436;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+    }
+
+    .btn-nueva-premium {
+        background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+        color: white !important;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
+    }
+
+    .btn-nueva-premium:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+        box-shadow: 0 12px 20px rgba(211, 47, 47, 0.3);
+    }
+
+    .card-custom {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
+        background: #fff;
+    }
+
+    /* Estilo del Buscador DataTable */
     .dataTables_filter input {
         border: 1px solid #d1d3e2 !important;
         border-radius: 50px !important;
         padding: 8px 20px !important;
-        width: 250px !important;
         outline: none !important;
-    }
-
-    /* Estilo de los botones de Anterior/Siguiente */
-    .page-item.active .page-link {
-        background-color: #4e73df !important;
-        border-color: #4e73df !important;
+        transition: 0.3s;
     }
     
+    .dataTables_filter input:focus {
+        border-color: #d32f2f !important;
+        box-shadow: 0 0 0 0.2rem rgba(211, 47, 47, 0.1);
+    }
+
     .avatar-box {
-        width: 38px;
-        height: 38px;
-        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
-        color: white !important;
-        border-radius: 50%; 
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
+        color: white;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: bold;
         margin-right: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
     .btn-circle {
         width: 35px;
         height: 35px;
-        border-radius: 50%;
-        text-align: center;
-        padding: 6px 0;
-        font-size: 14px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s;
         border: none;
+        color: white !important;
+    }
+
+    .btn-circle:hover { 
+        transform: translateY(-3px); 
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
     }
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container-fluid animate__animated animate__fadeIn">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800 font-weight-bold">DIRECTORIO DE PROVEEDORES</h1>
-        <a href="{{ crear_url }}" class="btn btn-primary shadow">
-            <i class="fas fa-plus fa-sm text-white-50"></i> Nuevo Proveedor
+    
+    <div class="header-premium">
+        <div class="d-flex align-items-center">
+            <div class="title-icon">
+                <i class="fas fa-truck"></i>
+            </div>
+            <div class="title-container">
+                <h1>{{ titulo|default:"DIRECTORIO DE PROVEEDORES" }}</h1>
+            </div>
+        </div>
+
+        <a href="{{ crear_url }}" class="btn btn-nueva-premium">
+            <i class="fas fa-plus-circle"></i>
+            <span>Nuevo Proveedor</span>
         </a>
     </div>
 
-    <div class="card card-custom shadow mb-4">
-        <div class="card-body">
+    <div class="card card-custom">
+        <div class="card-body p-4">
             <div class="table-responsive">
                 <table class="table table-hover align-middle" id="tabla_pro" style="width:100%">
                     <thead>
-                        <tr>
-                            <th class="text-center">#</th>
-                            <th>Proveedor</th>
-                            <th>Identificación (NIT)</th>
-                            <th class="text-center">Opciones</th>
+                        <tr class="text-uppercase small font-weight-bold text-muted" style="border-bottom: 2px solid #f8f9fa;">
+                            <th class="text-center" style="width: 5%;">#</th>
+                            <th style="width: 40%;">Proveedor</th>
+                            <th style="width: 30%;">Identificación (NIT)</th>
+                            <th class="text-center" style="width: 25%;">Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for p in object_list %}
                         <tr>
-                            <td class="text-center font-weight-bold">{{ forloop.counter }}</td>
-                            <td>
+                            <td class="text-center align-middle font-weight-bold text-secondary">{{ forloop.counter }}</td>
+                            <td class="align-middle">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-box">{{ p.nombre|first|upper }}</div>
-                                    <span class="font-weight-bold text-dark">{{ p.nombre }}</span>
+                                    <div>
+                                        <span class="font-weight-bold text-dark d-block" style="font-size: 0.95rem;">{{ p.nombre }}</span>
+                                    </div>
                                 </div>
                             </td>
-                            <td>{{ p.documento }}</td>
-                            <td class="text-center">
-                                <a href="{% url 'app:editar_proveedor' p.id %}" class="btn btn-warning btn-circle"><i class="fas fa-edit text-white"></i></a>
-                                <button class="btn btn-info btn-circle" onclick="verDetalle('{{ p.nombre }}', '{{ p.documento }}')"><i class="fas fa-eye text-white"></i></button>
-                                <a href="{% url 'app:eliminar_proveedor' p.id %}" class="btn btn-danger btn-circle"><i class="fas fa-trash text-white"></i></a>
+                            <td class="align-middle text-muted" style="font-size: 0.95rem;">
+                                <i class="fas fa-id-card mr-1 small"></i> {{ p.documento }}
+                            </td>
+                            <td class="text-center align-middle">
+                                <a href="{% url 'app:editar_proveedor' p.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                <button class="btn btn-info btn-circle shadow-sm mx-1" onclick="verDetalle('{{ p.nombre }}', '{{ p.documento }}')" title="Ver Detalles">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <a href="{% url 'app:eliminar_proveedor' p.id %}" class="btn btn-danger btn-circle shadow-sm" style="background-color: #d32f2f !important;" title="Eliminar">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -104,31 +191,36 @@
 
 <script>
     $(document).ready(function () {
-        // Inicialización forzada de DataTable
-        var table = $('#tabla_pro').DataTable({
-            responsive: true,
-            autoWidth: false,
-            destroy: true,
-            // Mostramos 3 registros para forzar que salga la paginación en tu ejemplo
-            pageLength: 3, 
-            language: {
-                "sSearch": "<b>Buscar:</b>",
-                "sLengthMenu": "Mostrar _MENU_ registros",
+        // Usamos destroy: true para que no salga el error de advertencia en pantalla
+        // pero mantenemos la configuración para que NO se quiten el buscador ni la paginación.
+        $('#tabla_pro').DataTable({
+            "destroy": true,
+            "retrieve": true,
+            "responsive": true,
+            "autoWidth": false,
+            "pageLength": 10,
+            "language": {
+                "sSearch": "<span class='font-weight-bold small'>BUSCAR:</span>",
+                "sLengthMenu": "Mostrar _MENU_",
                 "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ proveedores",
                 "oPaginate": {
-                    "sNext": "Siguiente",
-                    "sPrevious": "Anterior"
+                    "sNext": "<i class='fas fa-chevron-right'></i>",
+                    "sPrevious": "<i class='fas fa-chevron-left'></i>"
                 }
             },
-            // l=length, f=filter, t=table, i=info, p=pagination
-            dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+            "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
                  "<'row'<'col-sm-12'tr>>" +
                  "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         });
     });
 
     function verDetalle(nombre, documento) {
-        alert("Proveedor: " + nombre + "\nNIT: " + documento);
+        Swal.fire({
+            title: '<strong>Detalle del Proveedor</strong>',
+            icon: 'info',
+            html: `<b>Nombre:</b> ${nombre}<br><b>NIT:</b> ${documento}`,
+            confirmButtonColor: '#d32f2f',
+        });
     }
 </script>
 {% endblock %}

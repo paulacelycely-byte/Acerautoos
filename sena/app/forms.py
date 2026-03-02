@@ -81,7 +81,8 @@ class Entrada_vehiculoForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'documento': forms.NumberInput(attrs={
-                'placeholder': 'Ingrese el documento'
+                'placeholder': 'Ingrese el documento',
+                'maxlength': '10' # Límite visual en el navegador
             }),
             'placa': forms.TextInput(attrs={
                 'placeholder': 'Ingrese la placa'
@@ -101,6 +102,14 @@ class Entrada_vehiculoForm(forms.ModelForm):
                 'El documento es obligatorio'
             )
 
+        # NUEVA VALIDACIÓN DE LONGITUD PARA EVITAR NÚMEROS INFINITOS
+        documento_str = str(documento)
+        if len(documento_str) > 10:
+            print(" ERROR: DOCUMENTO DEMASIADO LARGO")
+            raise forms.ValidationError(
+                'El documento no puede tener más de 10 dígitos'
+            )
+
         if int(documento) <= 0:
             print(" DOCUMENTO INVÁLIDO")
             raise forms.ValidationError(
@@ -109,6 +118,17 @@ class Entrada_vehiculoForm(forms.ModelForm):
 
         print(" DOCUMENTO VALIDO")
         return documento
+
+    # NUEVA VALIDACIÓN DE PLACA INCORPORADA
+    def clean_placa(self):
+        placa = self.cleaned_data.get('placa')
+        if placa:
+            placa = placa.upper().strip()
+            if not re.match(r'^[A-Z]{3}[0-9]{3}$', placa):
+                raise forms.ValidationError(
+                    'La placa debe tener 3 letras y 3 números (Ej: ABC123)'
+                )
+        return placa
 
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre')
@@ -283,7 +303,7 @@ class VentasForm(forms.ModelForm):
             raise forms.ValidationError(
                 'El documento solo puede contener números'
             )
-        if len(documento) > 10 or len(documento) < 10:
+        if len(documento) != 10:
             raise forms.ValidationError(
                 "El documento tiene que tener 10 digitos")
         return documento
@@ -383,16 +403,43 @@ class UsuarioForm(ModelForm):
 
         return email
 
-
 class ProveedorForm(ModelForm):
     class Meta:
         model = Proveedor
         fields = '__all__'
+        widgets = {
+            'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese el nombre', 'class': 'form-control'}),
+            'documento': forms.TextInput(attrs={'placeholder': 'Ingrese el documento', 'class': 'form-control'}),
+            'telefono': forms.TextInput(attrs={'placeholder': 'Ingrese el teléfono', 'class': 'form-control'}),
+            'direccion': forms.TextInput(attrs={'placeholder': 'Ingrese la dirección', 'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Ingrese el email', 'class': 'form-control'}),
+        }
 
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre')
         validar_solo_letras(nombre)
         return nombre
+
+    def clean_documento(self):
+        documento = self.cleaned_data.get('documento')
+        if not documento:
+            raise forms.ValidationError('El documento es obligatorio')
+        if not documento.isdigit():
+            raise forms.ValidationError('El documento solo puede contener números')
+        if len(documento) < 7 or len(documento) > 10:
+            raise forms.ValidationError('El documento debe tener entre 7 y 10 dígitos')
+        return documento
+
+    # --- ESTA ES LA VALIDACIÓN QUE TE FALTABA ---
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get('telefono')
+        if telefono:
+            telefono = telefono.strip()
+            if not telefono.isdigit():
+                raise forms.ValidationError('El teléfono no puede contener letras, solo números.')
+            if len(telefono) < 7 or len(telefono) > 10:
+                raise forms.ValidationError('El teléfono debe tener entre 7 y 10 dígitos.')
+        return telefono
 
 
 class TipoServicioForm(ModelForm):
@@ -661,18 +708,25 @@ class NotificacionForm(ModelForm):
 
     def clean_titulo(self):
         titulo = self.cleaned_data.get('titulo')
-
-        if len(titulo) < 5:
-            raise forms.ValidationError(
-                'El titulo debe tener mínimo 5 caracteres')
-
+        if titulo:
+            titulo = titulo.strip()
+            if len(titulo) < 5:
+                raise forms.ValidationError(
+                    'El titulo debe tener mínimo 5 caracteres')
         return titulo
 
     def clean_mensaje(self):
         mensaje = self.cleaned_data.get('mensaje')
-
-        if len(mensaje) < 10:
-            raise forms.ValidationError(
-                'El mensaje debe tener mínimo 10 caracteres')
-
+        if mensaje:
+            mensaje = mensaje.strip()
+            if len(mensaje) < 10:
+                raise forms.ValidationError(
+                    'El mensaje debe tener mínimo 10 caracteres')
         return mensaje
+
+    def clean_fecha(self):
+        fecha = self.cleaned_data.get('fecha')
+        # Validación: No permitir notificaciones en el pasado
+        if fecha and fecha < timezone.now().date():
+            raise forms.ValidationError('La fecha de la notificación no puede ser anterior a hoy.')
+        return fecha

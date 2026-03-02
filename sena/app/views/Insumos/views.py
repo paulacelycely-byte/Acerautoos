@@ -49,7 +49,7 @@ class InsumoCreateView(CreateView):
 class InsumoUpdateView(UpdateView):
     model = insumo
     form_class = InsumoForm
-    template_name = 'Insumo/crear.html'
+    template_name = 'Insumo/editar.html'
     success_url = reverse_lazy('app:listar_insumo')
 
     # @method_decorator(login_required)

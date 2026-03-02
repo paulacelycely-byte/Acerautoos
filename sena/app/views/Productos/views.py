@@ -47,7 +47,7 @@ class ProductosCreateView(CreateView):
 class ProductosUpdateView(UpdateView):
     model = Producto
     form_class = ProductosForm
-    template_name = 'productos/crear.html'
+    template_name = 'productos/editar.html'
     success_url = reverse_lazy('app:listar_productos')
 
     def dispatch(self, request, *args, **kwargs):

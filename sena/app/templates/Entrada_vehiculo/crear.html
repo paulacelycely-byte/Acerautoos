@@ -1,53 +1,228 @@
 {% extends 'body.html' %}
+{% load static %}
 {% load widget_tweaks %}
 
+{% block css %}
+<style>
+    /* --- ESTÉTICA PREMIUM CREACIÓN (GRIS ANTRACITA) --- */
+    /* Mantenemos la estructura de la alerta EXACTAMENTE igual, solo cambia el color de la barra izquierda */
+    .caja-error-roja {
+        background-color: #fff5f5 !important;
+        border: 1px solid #feb2b2 !important;
+        border-left: 6px solid #4a4a4a !important; 
+        padding: 10px !important;
+        margin-top: 5px !important;
+        border-radius: 8px !important;
+    }
+
+    .header-premium {
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border-left: 10px solid #4a4a4a;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .title-icon {
+        background: linear-gradient(135deg, #4a4a4a 0%, #2d3436 100%);
+        color: white;
+        width: 55px;
+        height: 55px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        margin-right: 20px;
+    }
+
+    .title-container h1 {
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 1.9rem;
+        font-weight: 700;
+        margin-bottom: 0;
+        color: #2d3436;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+    }
+
+    .card-form-premium {
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
+        background: #fff;
+    }
+
+    .card-header-dark {
+        background: #4a4a4a;
+        color: white;
+        padding: 15px 25px;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+    }
+
+    .input-group-text {
+        background: #f8f9fa;
+        border-right: none;
+        color: #4a4a4a;
+        border-radius: 12px 0 0 12px;
+    }
+
+    .form-control {
+        border-radius: 0 12px 12px 0 !important;
+        border: 1px solid #d1d3e2;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #4a4a4a;
+        box-shadow: 0 0 0 0.2rem rgba(74, 74, 74, 0.1);
+    }
+
+    .btn-acerautos-save-edit {
+        background: linear-gradient(135deg, #4a4a4a 0%, #2d3436 100%);
+        color: white !important;
+        border: none;
+        padding: 12px 35px;
+        border-radius: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
 {% block contenido %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <form method="post" action=".">
-                <div class="card border-0 shadow-lg" style="border-radius: 20px;">
-                    
-                    <div class="card-header bg-primary py-3" style="border-radius: 20px 20px 0 0;">
-                        <h3 class="card-title text-white m-0">
-                            <i class="fas fa-edit me-2"></i> {{ titulo }}
-                        </h3>
-                    </div>
+<div class="container py-4 animate__animated animate__fadeIn">
+    
+    <div class="header-premium">
+        <div class="d-flex align-items-center">
+            <div class="title-icon">
+                <i class="fas fa-plus"></i>
+            </div>
+            <div class="title-container">
+                <h1>{{ titulo }}</h1>
+            </div>
+        </div>
+        <small class="font-weight-bold text-uppercase" style="letter-spacing: 1px; color: #4a4a4a;">Nuevo Registro de Vehículo</small>
+    </div>
 
-                    <div class="card-body p-4">
-                        {% csrf_token %}
+    <form method="post" action="." id="formCrearEntrada">
+        {% csrf_token %}
+        <div class="card card-form-premium overflow-hidden">
+            <div class="card-header-dark">
+                <i class="fas fa-file-medical mr-2"></i> Registrar Nueva Entrada
+            </div>
 
-                        {% for field in form.visible_fields %}
-                            <div class="form-group mb-4">
-                                <label class="fw-bold text-dark mb-1">
-                                    {{ field.label }}
-                                </label>
+            <div class="card-body p-4 p-md-5">
+                <div class="row">
+                    {% for field in form.visible_fields %}
+                        <div class="col-md-6 mb-4">
+                            <label class="font-weight-bold text-dark small mb-1 text-uppercase" style="letter-spacing: 0.5px;">
+                                {{ field.label }}
+                            </label>
+                            
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-white">
+                                        {% if 'placa' in field.name %}<i class="fas fa-id-card"></i>
+                                        {% elif 'documento' in field.name %}<i class="fas fa-fingerprint"></i>
+                                        {% elif 'fecha' in field.name %}<i class="fas fa-calendar-alt"></i>
+                                        {% else %}<i class="fas fa-align-left"></i>{% endif %}
+                                    </span>
+                                </div>
 
-                                {{ field|add_class:'form-control rounded-pill shadow-sm'|attr:'autocomplete:off' }}
-
-                                {% if field.errors %}
-                                    <div class="text-danger small mt-1">
-                                        {% for error in field.errors %}
-                                            {{ error }}
-                                        {% endfor %}
-                                    </div>
+                                {% if 'documento' in field.name %}
+                                    {{ field|add_class:'form-control shadow-none'|attr:'maxlength:12' }}
+                                {% elif 'placa' in field.name %}
+                                    {{ field|add_class:'form-control shadow-none'|attr:'maxlength:6' }}
+                                {% else %}
+                                    {{ field|add_class:'form-control shadow-none'|attr:'autocomplete:off' }}
                                 {% endif %}
                             </div>
-                        {% endfor %}
-                    </div>
 
-                    <div class="card-footer bg-light p-3 text-end" style="border-radius: 0 0 20px 20px;">
-                        <button type="submit" class="btn btn-primary px-4 rounded-pill shadow">
-                            <i class="fas fa-save me-1"></i> Guardar registro
-                        </button>
-                        <a href="{{ listar_url }}" class="btn btn-outline-secondary px-4 rounded-pill ms-2">
-                            <i class="fas fa-arrow-left me-1"></i> Volver
-                        </a>
-                    </div>
-
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                    <div class="caja-error-roja">
+                                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                                        <span style="font-weight: bold;">{{ error }}</span>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
                 </div>
-            </form>
+            </div>
+
+            <div class="card-footer bg-light d-flex justify-content-end py-4 border-top">
+                <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')" class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold" style="border-radius: 12px;">
+                    <i class="fas fa-times mr-1"></i> Descartar
+                </button>
+
+                <button type="submit" class="btn btn-acerautos-save-edit shadow-sm">
+                    <i class="fas fa-save mr-2"></i> Guardar Registro
+                </button>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(function () {
+        // Bloqueo de caracteres en tiempo real (Igual que en edición)
+        $('input[name="documento"]').on('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        $('input[name="placa"]').on('input', function() {
+            this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        });
+
+        // Confirmación con SweetAlert al estilo Gris
+        $('#formCrearEntrada').on('submit', function (e) {
+            if (!this.checkValidity()) return;
+            e.preventDefault();
+            var formulario = this;
+            Swal.fire({
+                title: '¿Guardar Registro?',
+                text: "Se creará un nuevo ingreso en el sistema.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, Guardar',
+                cancelButtonText: 'Revisar',
+                confirmButtonColor: '#4a4a4a',
+                cancelButtonColor: '#d33',
+            }).then((result) => {
+                if (result.isConfirmed) { formulario.submit(); }
+            });
+        });
+    });
+
+    function confirmarCancelacion(url) {
+        Swal.fire({
+            title: '¿Cancelar Creación?',
+            text: "Se perderán los datos ingresados.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'Seguir aquí',
+            confirmButtonColor: '#4a4a4a',
+            cancelButtonColor: '#6c757d',
+        }).then((result) => {
+            if (result.isConfirmed) { window.location.href = url; }
+        });
+    }
+</script>
 {% endblock %}

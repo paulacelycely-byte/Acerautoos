@@ -1,55 +1,159 @@
 {% extends 'body.html' %}
 {% load static %}
 
-{% block contenido %}
-<div class="container-fluid py-4">
-    <div class="card border-0 shadow-lg" style="border-radius: 15px;">
-        
-        <div class="card-header bg-white py-3" style="border-radius: 15px 15px 0 0;">
-            <div class="d-flex justify-content-between align-items-center">
-                <h3 class="card-title fw-bold text-dark m-0">
-                    <i class="fas fa-car text-primary me-2"></i> Entrada de Vehículos
-                </h3>
+{% block css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+<style>
+    /* --- ENCABEZADO PREMIUM ESTILO ACERAUTOS --- */
+    .header-premium {
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border-left: 10px solid #d32f2f; /* Rojo Acerautos */
+        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
-                <a href="{% url 'app:crear_entrada_vehiculo' %}"
-                   class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
-                    <i class="fas fa-plus"></i> Nuevo Ingreso
-                </a>
+    .title-icon {
+        background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+        color: white;
+        width: 55px;
+        height: 55px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
+        margin-right: 20px;
+    }
+
+    .title-container h1 {
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 1.9rem;
+        font-weight: 700;
+        margin-bottom: 0;
+        color: #2d3436;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+    }
+
+    .btn-nueva-premium {
+        background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+        color: white !important;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
+    }
+
+    .btn-nueva-premium:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+        box-shadow: 0 12px 20px rgba(211, 47, 47, 0.3);
+    }
+
+    .card-custom {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
+        background: #fff;
+    }
+
+    .placa-badge {
+        background-color: #f8f9fa;
+        color: #2d3436;
+        border: 2px solid #e9ecef;
+        font-weight: 800;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-family: 'Courier New', Courier, monospace;
+        letter-spacing: 1px;
+    }
+
+    .btn-circle {
+        width: 35px;
+        height: 35px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s;
+        border: none;
+    }
+
+    .btn-circle:hover { 
+        transform: translateY(-3px); 
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid animate__animated animate__fadeIn">
+    
+    <div class="header-premium">
+        <div class="d-flex align-items-center">
+            <div class="title-icon">
+                <i class="fas fa-car-side"></i>
+            </div>
+            <div class="title-container">
+                <h1>ENTRADA DE VEHÍCULOS</h1>
             </div>
         </div>
 
+        <a href="{% url 'app:crear_entrada_vehiculo' %}" class="btn btn-nueva-premium">
+            <i class="fas fa-plus-circle"></i>
+            <span>Nuevo Ingreso</span>
+        </a>
+    </div>
+
+    <div class="card card-custom">
         <div class="card-body p-4">
             <div class="table-responsive">
-                <table class="table table-hover align-middle" id="tabla">
-                    <thead class="bg-light">
-                        <tr class="text-secondary text-uppercase" style="font-size: 0.85rem;">
-                            <th>#</th>
+                <table class="table table-hover align-middle" id="tabla_entradas" style="width:100%">
+                    <thead>
+                        <tr class="text-uppercase small font-weight-bold text-muted" style="border-bottom: 2px solid #f8f9fa;">
+                            <th class="text-center">#</th>
                             <th>Documento</th>
-                            <th>Fecha / Hora</th>
+                            <th>Fecha / Hora Entrada</th>
                             <th>Placa</th>
                             <th class="text-center">Opciones</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         {% for c in object_list %}
                         <tr>
-                            <td class="fw-bold">#{{ c.id }}</td>
-                            <td>{{ c.documento }}</td>
-                            <td>{{ c.fecha_hora_entrada }}</td>
-                            <td>
-                                <span class="badge bg-light text-dark border">
-                                    {{ c.placa }}
+                            <td class="text-center align-middle font-weight-bold text-secondary">#{{ c.id }}</td>
+                            <td class="align-middle font-weight-bold text-dark">{{ c.documento }}</td>
+                            <td class="align-middle">
+                                <div class="d-flex align-items-center">
+                                    <i class="far fa-clock mr-2 text-primary"></i>
+                                    <span class="text-muted small font-weight-bold">{{ c.fecha_hora_entrada|date:"d/m/Y H:i" }}</span>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <span class="placa-badge shadow-sm">
+                                    <i class="fas fa-id-card-alt mr-1 text-danger"></i> {{ c.placa|upper }}
                                 </span>
                             </td>
-                            <td class="text-center">
-                                <a href="{% url 'app:editar_entrada_vehiculo' c.id %}"
-                                   class="btn btn-warning btn-sm rounded-circle shadow-sm">
-                                    <i class="fas fa-edit"></i>
+                            <td class="text-center align-middle">
+                                <a href="{% url 'app:editar_entrada_vehiculo' c.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
+                                    <i class="fas fa-pen text-white"></i>
                                 </a>
-                                <a href="{% url 'app:eliminar_entrada_vehiculo' c.id %}"
-                                   class="btn btn-danger btn-sm rounded-circle shadow-sm">
-                                    <i class="fas fa-trash"></i>
+                                <a href="{% url 'app:eliminar_entrada_vehiculo' c.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
+                                    <i class="fas fa-trash-alt text-white"></i>
                                 </a>
                             </td>
                         </tr>
@@ -58,32 +162,39 @@
                 </table>
             </div>
         </div>
-
     </div>
 </div>
 {% endblock %}
 
 {% block js %}
-<script src="{% static 'lib/jquery/jquery-3.6.0.min.js' %}"></script>
-<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 
 <script>
-$(function () {
-    $('#tabla').DataTable({
-        responsive: true,
-        autoWidth: false,
-        language: {
-            search: "Buscar:",
-            lengthMenu: "Mostrar MENU registros",
-            info: "Mostrando el total registros",
-            zeroRecords: "No se encontraron resultados",
-            paginate: {
-                next: "Siguiente",
-                previous: "Anterior"
-            }
+    $(document).ready(function () {
+        if ($.fn.DataTable.isDataTable('#tabla_entradas')) {
+            $('#tabla_entradas').DataTable().destroy();
         }
+
+        $('#tabla_entradas').DataTable({
+            responsive: true,
+            autoWidth: false,
+            pageLength: 10,
+            order: [[0, "desc"]], // Mostrar los ingresos más recientes primero
+            language: {
+                "sSearch": "<span class='font-weight-bold small text-uppercase'>Buscar:</span>",
+                "sLengthMenu": "MOSTRAR _MENU_",
+                "sInfo": "Viendo _START_ a _END_ de _TOTAL_ vehículos",
+                "sZeroRecords": "No hay ingresos registrados",
+                "oPaginate": {
+                    "sNext": "<i class='fas fa-chevron-right'></i>",
+                    "sPrevious": "<i class='fas fa-chevron-left'></i>"
+                }
+            },
+            dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                 "<'row'<'col-sm-12'tr>>" +
+                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        });
     });
-});
 </script>
 {% endblock %}

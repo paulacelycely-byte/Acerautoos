@@ -50,7 +50,7 @@ class Salida_vehiculoCreateView(CreateView):
 class Salida_vehiculoUpdateView(UpdateView):
     model = Salida_vehiculo
     form_class = Salida_vehiculoForm
-    template_name = 'Salida_vehiculo/crear.html'
+    template_name = 'Salida_vehiculo/editar.html'
     success_url = reverse_lazy('app:listar_salida_vehiculo')
 
     # @method_decorator(login_required)
