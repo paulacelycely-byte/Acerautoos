@@ -1,173 +1,242 @@
 {% load static %}
 
 <style>
+    /* Contenedor Principal con efecto de profundidad */
     .app-sidebar {
-        overflow: hidden;
+        background: #0f172a !important; /* Slate 900 profundo */
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
         display: flex;
         flex-direction: column;
         height: 100vh;
-        background: #1a202c !important;
+        width: 270px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 1030;
+        transition: all 0.3s ease;
     }
 
+    /* Scroll Personalizado "Invisible" - Solo aparece al moverte */
     .sidebar-wrapper {
         flex: 1;
-        overflow-y: auto; 
-        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 10px 15px;
+        /* Estilizado de barra tipo Apple/Moderno */
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
     }
 
-    /* Personalización de la barra de desplazamiento */
     .sidebar-wrapper::-webkit-scrollbar {
         width: 5px;
     }
-    .sidebar-wrapper::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
+
+    .sidebar-wrapper::-webkit-scrollbar-track {
+        background: transparent;
     }
 
-    .nav-link p {
-        margin-bottom: 0;
-        display: inline-block;
-        margin-left: 10px;
+    .sidebar-wrapper::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        border: 1px solid transparent;
     }
-    
-    .nav-link.active {
-        background-color: rgba(13, 110, 253, 0.2) !important;
-        color: #fff !important;
-        border-left: 4px solid #0d6efd;
+
+    .sidebar-wrapper:hover::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.3); /* Se nota más al hacer hover */
+    }
+
+    /* Header del Logo */
+    .brand-link-pro {
+        padding: 25px;
+        display: flex;
+        align-items: center;
+        background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%);
+        border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .logo-box {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    }
+
+    /* Botones de Navegación "Aero-Dynamic" */
+    .nav-pills .nav-link {
+        color: #94a3b8 !important;
+        font-weight: 500;
+        padding: 12px 18px !important;
+        margin-bottom: 5px;
+        border-radius: 14px !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    /* Efecto de cambio de color PRO al pasar el mouse */
+    .nav-pills .nav-link:hover {
+        background: rgba(255, 255, 255, 0.05) !important;
+        color: #ffffff !important;
+        transform: scale(1.02);
+    }
+
+    /* Estado Activo con Gradiente */
+    .nav-pills .nav-link.active {
+        background: linear-gradient(90deg, #6366f1 0%, #4f46e5 100%) !important;
+        color: #ffffff !important;
+        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
+    }
+
+    .nav-pills .nav-link i {
+        font-size: 1.1rem;
+        width: 25px;
+        transition: transform 0.3s;
+    }
+
+    .nav-link:hover i {
+        transform: rotate(10deg);
+    }
+
+    .nav-header {
+        font-size: 0.65rem !important;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #475569 !important;
+        margin: 20px 0 10px 15px;
+    }
+
+    /* Perfil Inferior Flotante */
+    .sidebar-footer {
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.2);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .user-card-mini {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .btn-logout-minimal {
+        width: 100%;
+        padding: 10px;
+        background: rgba(239, 68, 68, 0.1);
+        color: #f87171 !important;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s;
+    }
+
+    .btn-logout-minimal:hover {
+        background: #ef4444;
+        color: white !important;
     }
 </style>
 
-<aside class="app-sidebar shadow-lg">
-    <div class="p-4 d-flex align-items-center border-bottom border-white border-opacity-10">
-        <div class="bg-primary bg-gradient rounded-3 p-2 me-3 shadow-sm">
-            <i class="fas fa-car-side text-white fs-5"></i>
+<aside class="app-sidebar">
+    <div class="brand-link-pro">
+        <div class="logo-box me-3">
+            <i class="fas fa-bolt text-white"></i>
         </div>
-        <span class="text-white fw-bold fs-5" style="letter-spacing: 1.5px;">ACERAUTOOS</span>
+        <div>
+            <span class="text-white fw-bold d-block" style="letter-spacing: 0.5px;">ACERAUTOS</span>
+            <span class="text-primary fw-bold" style="font-size: 0.6rem;">CORE v3.0</span>
+        </div>
     </div>
 
-    <div class="sidebar-wrapper px-2">
-        <nav class="mt-3">
-            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+    <div class="sidebar-wrapper">
+        <nav class="mt-2">
+            <ul class="nav nav-pills flex-column" role="menu">
                 
                 <li class="nav-item">
-                    <a href="{% url 'app:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                        <i class="nav-icon fas fa-chart-line text-primary"></i>
-                        <p>Panel de Control</p>
+                    <a href="{% url 'app:dashboard' %}" class="nav-link {% if 'dashboard' in request.path %}active{% endif %}">
+                        <i class="fas fa-layer-group me-3"></i>
+                        <p>Dashboard</p>
                     </a>
                 </li>
 
-                <div class="px-4 mt-4 mb-2 text-uppercase fw-bold" style="color: #64748b; letter-spacing: 2px; font-size: 0.65rem;">Recepción</div>
+                <li class="nav-header">Operaciones</li>
                 
                 <li class="nav-item">
-                    <a href="{% url 'app:listar_cliente' %}" class="nav-link {% if 'cliente' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-user-tie" style="color: #0ea5e9;"></i>
-                        <p>Clientes</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'app:listar_vehiculo' %}" class="nav-link {% if 'listar_vehiculo' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-car" style="color: #38bdf8;"></i>
-                        <p>Vehículos</p>
+                    <a href="{% url 'app:listar_cliente' %}" class="nav-link">
+                        <i class="fas fa-user-circle me-3"></i><p>Clientes</p>
                     </a>
                 </li>
 
-                <div class="px-4 mt-4 mb-2 text-uppercase fw-bold" style="color: #64748b; letter-spacing: 2px; font-size: 0.65rem;">Operaciones Taller</div>
-                
                 <li class="nav-item">
-                    <a href="{% url 'app:listar_entrada_vehiculo' %}" class="nav-link {% if 'entrada' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-file-import" style="color: #10b981;"></i>
-                        <p>Entrada Vehículos</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'app:listar_servicio' %}" class="nav-link {% if 'listar_servicio' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-tools" style="color: #4ade80;"></i>
-                        <p>Servicios</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'app:listar_salida_vehiculo' %}" class="nav-link {% if 'salida' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-sign-out-alt" style="color: #22c55e;"></i>
-                        <p>Salida Vehículos</p>
+                    <a href="{% url 'app:listar_vehiculo' %}" class="nav-link">
+                        <i class="fas fa-car me-3"></i><p>Flota</p>
                     </a>
                 </li>
 
-                <div class="px-4 mt-4 mb-2 text-uppercase fw-bold" style="color: #64748b; letter-spacing: 2px; font-size: 0.65rem;">Inventario</div>
-                
                 <li class="nav-item">
-                    <a href="{% url 'app:listar_productos' %}" class="nav-link {% if 'productos' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-box" style="color: #f59e0b;"></i>
-                        <p>Productos</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'app:listar_insumo' %}" class="nav-link {% if 'insumo' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-oil-can" style="color: #fbbf24;"></i>
-                        <p>Insumos</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'app:listar_categoria' %}" class="nav-link {% if 'categoria' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-layer-group" style="color: #d97706;"></i>
-                        <p>Categorías</p>
+                    <a href="{% url 'app:listar_entrada_vehiculo' %}" class="nav-link">
+                        <i class="fas fa-sign-in-alt me-3"></i><p>Entradas</p>
                     </a>
                 </li>
 
-                <div class="px-4 mt-4 mb-2 text-uppercase fw-bold" style="color: #64748b; letter-spacing: 2px; font-size: 0.65rem;">Administración</div>
-                
+                <li class="nav-header">Inventario</li>
+
                 <li class="nav-item">
-                    <a href="{% url 'app:listar_compras' %}" class="nav-link {% if 'compra' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-shopping-basket" style="color: #8b5cf6;"></i>
-                        <p>Compras</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'app:listar_Ventas' %}" class="nav-link {% if 'Ventas' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-cash-register" style="color: #a78bfa;"></i>
-                        <p>Ventas</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'app:listar_facturas' %}" class="nav-link {% if 'factura' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-file-invoice-dollar" style="color: #f87171;"></i>
-                        <p>Facturación</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'app:listar_proveedores' %}" class="nav-link {% if 'proveedores' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-truck-loading" style="color: #6366f1;"></i>
-                        <p>Proveedores</p>
+                    <a href="{% url 'app:listar_productos' %}" class="nav-link">
+                        <i class="fas fa-box-open me-3"></i><p>Productos</p>
                     </a>
                 </li>
 
-                <div class="px-4 mt-4 mb-2 text-uppercase fw-bold" style="color: #64748b; letter-spacing: 2px; font-size: 0.65rem;">Ajustes</div>
-                
                 <li class="nav-item">
-                    <a href="{% url 'app:listar_Usuario' %}" class="nav-link {% if 'Usuario' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-user-cog" style="color: #94a3b8;"></i>
-                        <p>Usuarios</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'app:listar_tipo_servicio' %}" class="nav-link {% if 'tipo_servicio' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-list-check" style="color: #94a3b8;"></i>
-                        <p>Tipos Servicio</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'app:listar_notificacion' %}" class="nav-link {% if 'notificacion' in request.path %}active{% endif %}">
-                        <i class="nav-icon fas fa-bell" style="color: #94a3b8;"></i>
-                        <p>Notificaciones</p>
+                    <a href="{% url 'app:listar_insumo' %}" class="nav-link">
+                        <i class="fas fa-vial me-3"></i><p>Insumos</p>
                     </a>
                 </li>
 
-                <li class="nav-item mt-4 pb-5">
-                    <a href="/accounts/login/" class="nav-link text-danger border-top border-white border-opacity-10 pt-3">
-                        <i class="nav-icon fas fa-power-off"></i>
-                        <p>Cerrar Sesión</p>
+                <li class="nav-header">Finanzas</li>
+
+                <li class="nav-item">
+                    <a href="{% url 'app:listar_Ventas' %}" class="nav-link">
+                        <i class="fas fa-receipt me-3"></i><p>Ventas</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'app:listar_facturas' %}" class="nav-link">
+                        <i class="fas fa-file-invoice me-3"></i><p>Facturación</p>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="{% url 'app:listar_Usuario' %}" class="nav-link">
+                        <i class="fas fa-fingerprint me-3"></i><p>Seguridad</p>
                     </a>
                 </li>
             </ul>
         </nav>
+    </div>
+
+    <div class="sidebar-footer">
+        <div class="user-card-mini">
+            <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=6366f1&color=fff" class="rounded-circle me-3" width="35">
+            <div class="overflow-hidden">
+                <h6 class="text-white mb-0 small fw-bold text-truncate">{{ user.username|capfirst }}</h6>
+                <small class="text-muted" style="font-size: 0.6rem;">Administrador</small>
+            </div>
+        </div>
+        <a href="/accounts/login/" class="btn-logout-minimal">
+            <i class="fas fa-sign-out-alt me-2"></i> SALIR
+        </a>
     </div>
 </aside>
