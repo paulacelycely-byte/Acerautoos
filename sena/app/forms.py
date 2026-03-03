@@ -20,12 +20,10 @@ class Salida_vehiculoForm(ModelForm):
     class Meta:
         model = Salida_vehiculo
         fields = '__all__'
+        exclude = ['total_a_pagar']
         widgets = {
             'fecha_hora_salida': forms.TimeInput(attrs={
                 'type': 'datetime-local'
-            }),
-            'total_a_pagar': forms.NumberInput(attrs={
-                'placeholder': 'Ingrese el total a pagar'
             }),
         }
 
@@ -66,6 +64,9 @@ class CategoriaForm(ModelForm):
 
     def clean_nombre_categoria(self):
         nombre = self.cleaned_data.get('nombre_categoria')
+        exist = Categorias.objects.filter(nombre_categoria = nombre).exclude(pk=self.instance.pk).exists()
+        if exist:
+            raise forms.ValidationError("El nombre ya existe")
         print(nombre)
         if not re.match(r'^[a-zA-Z\s]+$', nombre):
             print("En el error")
@@ -82,7 +83,7 @@ class Entrada_vehiculoForm(forms.ModelForm):
         widgets = {
             'documento': forms.NumberInput(attrs={
                 'placeholder': 'Ingrese el documento',
-                'maxlength': '10' # Límite visual en el navegador
+                'maxlength': '10'  # Límite visual en el navegador
             }),
             'placa': forms.TextInput(attrs={
                 'placeholder': 'Ingrese la placa'
@@ -122,11 +123,14 @@ class Entrada_vehiculoForm(forms.ModelForm):
     # NUEVA VALIDACIÓN DE PLACA INCORPORADA
     def clean_placa(self):
         placa = self.cleaned_data.get('placa')
+        exist = Entrada_vehiculo.objects.filter(placa = placa).exclude(pk=self.instance.pk).exists()
+        if exist:
+            raise forms.ValidationError("Ya existe esta placa")
         if placa:
             placa = placa.upper().strip()
             if not re.match(r'^[A-Z]{3}[0-9]{3}$', placa):
                 raise forms.ValidationError(
-                    'La placa debe tener 3 letras y 3 números (Ej: ABC123)'
+                    'La placa debe tener 3 letras y 3 números'
                 )
         return placa
 
@@ -280,129 +284,156 @@ class VentasForm(forms.ModelForm):
             'total',
         ]
         widgets = {
-            'fecha': forms.DateInput(attrs={'type': 'date'}),
+            'fecha': forms.DateInput(attrs={
+                'type': 'date',
+                'min': timezone.now().date().isoformat(),
+                'max': timezone.now().date().isoformat()
+            }),
             'total': forms.NumberInput(attrs={
                 'placeholder': 'Ingrese el total'
             }),
             'documento': forms.TextInput(attrs={
                 'placeholder': 'Ingrese el documento'
             }),
-            'contrasena': forms.PasswordInput(attrs={
-                'placeholder': 'Ingrese la contraseña'
-            }),
-            'producto': forms.SelectMultiple(attrs={
-            }),
+            'productos': forms.SelectMultiple(),
         }
+
+    def clean_fecha(self):
+        fecha = self.cleaned_data.get('fecha')
+        hoy = timezone.now().date()
+        if fecha != hoy:
+            raise forms.ValidationError('Solo se permite la fecha de hoy')
+        return fecha
 
     def clean_documento(self):
         documento = self.cleaned_data.get('documento')
-        print("DOCUMENTO:", documento)
-
         if not documento.isdigit():
-            print(" ERROR DOCUMENTO")
-            raise forms.ValidationError(
-                'El documento solo puede contener números'
-            )
+            raise forms.ValidationError('El documento solo puede contener números')
         if len(documento) != 10:
-            raise forms.ValidationError(
-                "El documento tiene que tener 10 digitos")
+            raise forms.ValidationError('El documento debe tener 10 dígitos')
+
+        # Validación de documento único por día
+        hoy = timezone.now().date()
+        if Ventas.objects.filter(documento=documento, fecha=hoy).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError('Este documento ya tiene una venta registrada hoy')
         return documento
+
+    def clean_productos(self):
+        productos = self.cleaned_data.get('productos')
+        fecha = self.cleaned_data.get('fecha', timezone.now().date())
+
+        # Validación de productos ya vendidos hoy
+        for producto in productos:
+            if Ventas.objects.filter(productos=producto, fecha=fecha).exists():
+                raise forms.ValidationError(
+                    f'El producto "{producto.nombre}" ya ha sido vendido hoy'
+                )
+        return productos
 
     def clean_total(self):
         total = self.cleaned_data.get('total')
-        print("TOTAL:", total)
-
         if total is None or total <= 0:
-            print(" ERROR TOTAL")
-            raise forms.ValidationError(
-                'El total debe ser mayor que cero'
-            )
-
-        print(" TOTAL OK")
+            raise forms.ValidationError('El total debe ser mayor que cero')
         return total
+
     def clean(self):
         cleaned_data = super().clean()
         productos = cleaned_data.get('productos')
+        salida = cleaned_data.get('salida')
 
-        if productos:
-            cleaned_data['total'] = sum(p.precio for p in productos)
+        total_productos = sum(p.precio for p in productos) if productos else 0
+        total_salida = salida.total_a_pagar if salida else 0
 
+        cleaned_data['total'] = total_productos + total_salida
         return cleaned_data
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        # total solo lectura
         self.fields['total'].widget.attrs['readonly'] = True
         self.fields['productos'].choices = [
             (p.id, f"{p.nombre} - ${p.precio}") for p in self.fields['productos'].queryset
         ]
-
+        self.fields['salida'].choices = [
+            (s.id, f"{s.fecha_hora_salida} - ${s.total_a_pagar}") for s in self.fields['salida'].queryset
+        ]
 
 class UsuarioForm(ModelForm):
+    confirmar_contraseña = forms.CharField(
+        widget=forms.PasswordInput(attrs={'placeholder': 'Confirma la contraseña'}),
+        label="Confirmar contraseña"
+    )
 
     class Meta:
         model = Usuario
         fields = '__all__'
         widgets = {
-            'contrasena': forms.PasswordInput(attrs={
-                'placeholder': 'Ingrese la contraseña'
-            }),
+            'rol': forms.Select(),
+            'contrasena': forms.PasswordInput(attrs={'placeholder': 'Ingrese la contraseña'}),
         }
 
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre')
-        print("NOMBRE:", nombre)
-
         if not re.match(r'^[a-zA-Z\s]+$', nombre):
-            print(" ERROR NOMBRE")
-            raise forms.ValidationError(
-                'El nombre solo puede contener letras y espacios'
-            )
-
+            raise forms.ValidationError('El nombre solo puede contener letras y espacios')
+        
+        # Evitar duplicados
+        if Usuario.objects.filter(nombre__iexact=nombre).exists():
+            raise forms.ValidationError('Ya existe un usuario con este nombre')
         return nombre
-
-    def clean_contrasena(self):
-        contrasena = self.cleaned_data.get('contrasena')
-        print("CONTRASEÑA:", contrasena)
-
-        if not contrasena:
-            raise forms.ValidationError(
-                'La contraseña es obligatoria'
-            )
-
-        if len(contrasena) < 8:
-            print(" CONTRASEÑA CORTA")
-            raise forms.ValidationError(
-                'La contraseña debe tener al menos 8 caracteres'
-            )
-
-        return contrasena
-
-    def clean_telefono(self):
-        telefono = self.cleaned_data.get('telefono')
-        print("TELÉFONO:", telefono)
-
-        if not telefono.isdigit():
-            print(" ERROR TELÉFONO")
-            raise forms.ValidationError(
-                'El teléfono solo puede contener números'
-            )
-
-        return telefono
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        print("EMAIL:", email)
+        if email and not re.match(r'^[^@]+@[^@]+\.[^@]+$', email):
+            raise forms.ValidationError('Ingrese un correo electrónico válido')
 
-        if not re.match(r'^[^@]+@[^@]+\.[^@]+$', email):
-            print(" ERROR EMAIL")
-            raise forms.ValidationError(
-                'Ingrese un correo electrónico válido'
-            )
-
+        # Evitar duplicados
+        if Usuario.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError('Este correo ya está registrado')
         return email
 
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get('telefono')
+        if telefono:
+            if not telefono.isdigit():
+                raise forms.ValidationError('El teléfono solo puede contener números')
+            if len(telefono) > 10:
+                raise forms.ValidationError("El número debe tener solo 10 dígitos")
+
+            # Evitar duplicados
+            if Usuario.objects.filter(telefono=telefono).exists():
+                raise forms.ValidationError('Este número de teléfono ya está registrado')
+        return telefono
+
+    def clean(self):
+        cleaned_data = super().clean()
+        contraseña = cleaned_data.get('contrasena')
+        confirm_contrasena = cleaned_data.get('confirmar_contraseña')
+
+        if contraseña and confirm_contrasena:
+            if contraseña != confirm_contrasena:
+                self.add_error('contrasena', "Las contraseñas no coinciden")
+                self.add_error('confirmar_contraseña', "Las contraseñas no coinciden")
+            else:
+                # Validación de complejidad
+                errores = []
+                if len(contraseña) < 8:
+                    errores.append("Debe tener al menos 8 caracteres")
+                if not re.search(r'[A-Z]', contraseña):
+                    errores.append("Debe contener al menos una letra mayúscula")
+                if not re.search(r'[a-z]', contraseña):
+                    errores.append("Debe contener al menos una letra minúscula")
+                if not re.search(r'\d', contraseña):
+                    errores.append("Debe contener al menos un número")
+                if not re.search(r'[!@#$%^&*(),.?":{}|<>]', contraseña):
+                    errores.append("Debe contener al menos un carácter especial (!@#$%^&*...)")
+                
+                if errores:
+                    self.add_error('contrasena', "Contraseña inválida: " + ", ".join(errores))
+        return cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['contrasena'].widget.attrs['value'] = ''
 class ProveedorForm(ModelForm):
     class Meta:
         model = Proveedor
@@ -582,7 +613,6 @@ class ServicioForm(ModelForm):
             'tipo_servicio',
             'entrada',
             'descripcion',
-            'duracion',
             'precio',
             'insumo',
             'usuario',
@@ -597,12 +627,6 @@ class ServicioForm(ModelForm):
             'precio': forms.NumberInput(attrs={
                 'placeholder': 'Ingrese el precio del servicio'
             }),
-            'duracion': forms.TimeInput(
-                format='%I:%M %p',
-                attrs={
-                    'type': 'time'
-                }
-            )
         }
 
     def clean_descripcion(self):

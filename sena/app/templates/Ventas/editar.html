@@ -179,44 +179,87 @@
 {% endblock %}
 
 {% block js %}
-<script>
+  <script>
     $(function () {
-        $('#formCategoria').on('submit', function (e) {
-            // Validamos longitud antes de abrir el Swal
-            if (!this.checkValidity()) {
-                return; 
+      // --- LÓGICA DE CÁLCULO TOTAL ---
+      const total = document.getElementById('id_total')
+      const productos = document.getElementById('id_productos')
+      const salida = document.getElementById('id_salida')
+    
+      function calcularTotal() {
+        let suma = 0
+    
+        // SUMAR PRODUCTOS
+        if (productos) {
+          for (let option of productos.selectedOptions) {
+            const precio = option.text.split('$')[1]
+            if (precio) {
+              suma += parseFloat(precio)
             }
-
-            e.preventDefault();
-            var formulario = this;
-            Swal.fire({
-                title: '¿Guardar Cambios?',
-                text: "Se actualizarán los datos en el sistema.",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Actualizar',
-                cancelButtonText: 'Revisar',
-                confirmButtonColor: '#120aa3',
-                cancelButtonColor: '#d33',
-            }).then((result) => {
-                if (result.isConfirmed) { formulario.submit(); }
-            });
-        });
-    });
-
-    function confirmarCancelacion(url) {
+          }
+        }
+    
+        // SUMAR SALIDA
+        if (salida && salida.selectedOptions.length > 0) {
+          const textoSalida = salida.selectedOptions[0].text
+          const precioSalida = textoSalida.split('$')[1]
+          if (precioSalida) {
+            suma += parseFloat(precioSalida)
+          }
+        }
+    
+        total.value = suma.toFixed(2)
+      }
+    
+      // Eventos
+      if (productos) {
+        productos.addEventListener('change', calcularTotal)
+      }
+    
+      if (salida) {
+        salida.addEventListener('change', calcularTotal)
+      }
+    
+      // --- VALIDACIÓN Y SWEETALERT ---
+      $('#formVentas').on('submit', function (e) {
+        if (!this.checkValidity()) {
+          return
+        }
+    
+        e.preventDefault()
+        var formulario = this
         Swal.fire({
-            title: '¿Cancelar Edición?',
-            text: "Los cambios no se guardarán.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Sí, salir',
-            cancelButtonText: 'Seguir aquí',
-            confirmButtonColor: '#120aa3',
-            cancelButtonColor: '#6c757d',
+          title: '¿Finalizar Venta?',
+          text: 'Se registrará la transacción y el total calculado.',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Confirmar Venta',
+          cancelButtonText: 'Revisar',
+          confirmButtonColor: '#454d55',
+          cancelButtonColor: '#d33'
         }).then((result) => {
-            if (result.isConfirmed) { window.location.href = url; }
-        });
+          if (result.isConfirmed) {
+            formulario.submit()
+          }
+        })
+      })
+    })
+    
+    function confirmarCancelacion(url) {
+      Swal.fire({
+        title: '¿Cancelar Venta?',
+        text: 'Se perderán los productos seleccionados.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, salir',
+        cancelButtonText: 'Seguir aquí',
+        confirmButtonColor: '#454d55',
+        cancelButtonColor: '#6c757d'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = url
+        }
+      })
     }
-</script>
+  </script>
 {% endblock %}

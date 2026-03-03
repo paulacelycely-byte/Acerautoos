@@ -1,6 +1,6 @@
 from django.urls import path
 from .views.dashboard.views import DashboardView
-from app.views.categorias.views import *
+from app.views.Categorias.views import *
 from app.views.Entrada_vehiculo.views import *
 from app.views.Ventas.views import *
 from app.views.Usuario.views import *
