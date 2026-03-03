@@ -72,8 +72,6 @@ class tipo_servicio(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
     categoria = models.CharField(max_length=100)
-    hora_entrada_estimada = models.TimeField(null=True, blank=True)
-    hora_salida_estimada = models.TimeField(null=True, blank=True)
     estado = models.BooleanField(default=True)
 
     def __str__(self):
@@ -90,7 +88,7 @@ class insumo(models.Model):
     cantidad = models.IntegerField()
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
 
-    def _str_(self):
+    def __str__(self):
         # Corregido: Se usa _str_. Retorna una sola cadena.
         return f"{self.nombre} (${self.precio_unitario})"
 
@@ -141,7 +139,7 @@ class tipo_servicio(models.Model):
     hora_salida_estimada = models.TimeField(null=True, blank=True)
     estado = models.BooleanField(default=True)
 
-    def _str_(self):
+    def __str__(self):
         return self.nombre
 
     class Meta:
@@ -264,7 +262,7 @@ class insumo(models.Model):
     cantidad = models.IntegerField()
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=0)
 
-    def _str_(self):
+    def __str__(self):
         # Corregido: Se usa _str_. Retorna una sola cadena.
         return f"{self.nombre} (${self.precio_unitario})"
 
@@ -307,8 +305,13 @@ class Compra(models.Model):
     fk_proveedor = models.ForeignKey('Proveedor', on_delete=models.CASCADE)
     # CORREGIDO: 'Insumo' -> 'insumo' (Nombre de la clase)
     fk_insumo = models.ForeignKey('insumo', on_delete=models.CASCADE)
+    
+    def save(self, *args, **kwargs):
+        if self.fk_insumo:
+            self.total = self.fk_insumo.precio_unitario * self.fk_insumo.cantidad
+        super().save(*args, **kwargs)
 
-    def _str_(self):
+    def __str__(self):
         return f"Compra {self.id_compra} - {self.estado}"
 
     class Meta:

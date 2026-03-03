@@ -2,7 +2,8 @@ from django.views.generic import ListView, CreateView, DetailView, DeleteView
 from django.urls import reverse_lazy
 from app.models import Factura
 from app.forms import FacturaForm
-
+from django.contrib import messages
+from decimal import Decimal
 # --- LISTAR FACTURAS ---
 class FacturaListView(ListView):
     model = Factura
@@ -20,14 +21,18 @@ class FacturaListView(ListView):
 class FacturaCreateView(CreateView):
     model = Factura
     form_class = FacturaForm
-    template_name = 'factura/crear.html' 
+    template_name = 'factura/crear.html'
     success_url = reverse_lazy('app:listar_facturas')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Generar Nueva Factura'
-        context['listar_url'] = reverse_lazy('app:listar_facturas')
-        return context
+    def form_valid(self, form):
+        factura = form.save(commit=False)
+        factura.subtotal = factura.venta.total
+        factura.iva = factura.subtotal * Decimal('0.19')
+        factura.total = factura.subtotal + factura.iva
+
+        factura.save()
+        messages.success(self.request, "Factura creada correctamente.")
+        return super().form_valid(form)
 
 # --- VER DETALLE (RECIBO) ---
 class FacturaDetailView(DetailView):

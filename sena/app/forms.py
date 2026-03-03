@@ -422,6 +422,9 @@ class ProveedorForm(ModelForm):
 
     def clean_documento(self):
         documento = self.cleaned_data.get('documento')
+        exist = Proveedor.objects.filter(documento=documento).exclude(id=self.instance.id).exists()
+        if exist:
+            raise forms.ValidationError('El documento ya existe para otro proveedor')
         if not documento:
             raise forms.ValidationError('El documento es obligatorio')
         if not documento.isdigit():
@@ -440,21 +443,23 @@ class ProveedorForm(ModelForm):
             if len(telefono) < 7 or len(telefono) > 10:
                 raise forms.ValidationError('El teléfono debe tener entre 7 y 10 dígitos.')
         return telefono
-
-
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email:
+            email = email.strip()
+            if not re.match(r'^[^@]+@[^@]+\.[^@]+$', email):
+                raise forms.ValidationError('Ingrese un correo electrónico válido.')
+        return email
 class TipoServicioForm(ModelForm):
     class Meta:
         model = tipo_servicio
-        fields = ['nombre', 'descripcion', 'categoria',
-                  'hora_entrada_estimada', 'hora_salida_estimada', 'estado']
+        fields = ['nombre', 'descripcion', 'categoria', 'estado']
 
         widgets = {
             'nombre': forms.Select(attrs={'placeholder': 'Nombre del servicio', 'class': 'form-control'}),
             'descripcion': forms.Textarea(attrs={'placeholder': 'Descripción', 'rows': 3, 'class': 'form-control'}),
             'categoria': forms.Select(attrs={'placeholder': 'Categoría', 'class': 'form-control'}),
-            'hora_entrada_estimada': forms.TimeInput(attrs={'class': 'form-control border-left-0', 'type': 'time'}),
-            'hora_salida_estimada': forms.TimeInput(attrs={'class': 'form-control border-left-0', 'type': 'time'}),
-            'estado': forms.CheckboxInput(attrs={'class': 'custom-control-input'})
+            'estado': forms.CheckboxInput(attrs={'class': 'custom-control-input'}),
         }
 
     def clean_nombre(self):
@@ -486,13 +491,13 @@ class CompraForm(ModelForm):
     class Meta:
         model = Compra
         fields = '__all__'
+        exclude = ['total']
 
         # Aquí quitamos el "fk_" de las etiquetas
         labels = {
             'fecha': 'Fecha de Compra',
             'fk_proveedor': 'Proveedor',
             'fk_insumo': 'Insumo',
-            'total': 'Total a Pagar',
             'estado': 'Estado del Pedido'
         }
         widgets = {
@@ -502,7 +507,6 @@ class CompraForm(ModelForm):
             }),
             'fk_proveedor': forms.Select(attrs={'class': 'form-control'}),
             'fk_insumo': forms.Select(attrs={'class': 'form-control'}),
-            'total': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '0.00'}),
             'estado': forms.Select(attrs={'class': 'form-control'}, choices=[
                 ('Pendiente', 'Pendiente'),
                 ('Completado', 'Completado'),
@@ -730,3 +734,33 @@ class NotificacionForm(ModelForm):
         if fecha and fecha < timezone.now().date():
             raise forms.ValidationError('La fecha de la notificación no puede ser anterior a hoy.')
         return fecha
+    
+
+
+class FacturaForm(ModelForm):
+    class Meta:
+        model = Factura
+        exclude = ['subtotal', 'iva', 'total'] 
+
+        labels = {
+            'venta': 'Venta Asociada',
+            'fecha': 'Fecha de Factura',
+        }
+
+        widgets = {
+            'fecha': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'venta': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+        }
+    def clean(self):
+        cleaned_data = super().clean()
+        venta = cleaned_data.get('venta')
+        exist = Factura.objects.filter(venta=venta).exclude(id=self.instance.id).exists()
+        if exist:
+            raise forms.ValidationError('Ya existe una factura para esta venta')
+        return cleaned_data
+        

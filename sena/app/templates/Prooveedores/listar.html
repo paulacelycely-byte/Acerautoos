@@ -32,7 +32,6 @@
     }
 
     .title-container h1 {
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         font-size: 1.9rem;
         font-weight: 700;
         margin-bottom: 0;
@@ -54,14 +53,13 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        transition: 0.3s;
         box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
     }
 
     .btn-nueva-premium:hover {
         transform: translateY(-2px);
         filter: brightness(1.1);
-        box-shadow: 0 12px 20px rgba(211, 47, 47, 0.3);
     }
 
     .card-custom {
@@ -69,20 +67,6 @@
         border-radius: 20px;
         box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
         background: #fff;
-    }
-
-    /* Estilo del Buscador DataTable */
-    .dataTables_filter input {
-        border: 1px solid #d1d3e2 !important;
-        border-radius: 50px !important;
-        padding: 8px 20px !important;
-        outline: none !important;
-        transition: 0.3s;
-    }
-    
-    .dataTables_filter input:focus {
-        border-color: #d32f2f !important;
-        box-shadow: 0 0 0 0.2rem rgba(211, 47, 47, 0.1);
     }
 
     .avatar-box {
@@ -142,36 +126,63 @@
             <div class="table-responsive">
                 <table class="table table-hover align-middle" id="tabla_pro" style="width:100%">
                     <thead>
-                        <tr class="text-uppercase small font-weight-bold text-muted" style="border-bottom: 2px solid #f8f9fa;">
-                            <th class="text-center" style="width: 5%;">#</th>
-                            <th style="width: 40%;">Proveedor</th>
-                            <th style="width: 30%;">Identificación (NIT)</th>
-                            <th class="text-center" style="width: 25%;">Opciones</th>
+                        <tr class="text-uppercase small font-weight-bold text-muted">
+                            <th>#</th>
+                            <th>Proveedor</th>
+                            <th>NIT</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Dirección</th>
+                            <th class="text-center">Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for p in object_list %}
                         <tr>
-                            <td class="text-center align-middle font-weight-bold text-secondary">{{ forloop.counter }}</td>
-                            <td class="align-middle">
+                            <td class="text-center font-weight-bold text-secondary">
+                                {{ forloop.counter }}
+                            </td>
+
+                            <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-box">{{ p.nombre|first|upper }}</div>
+                                    <div class="avatar-box">
+                                        {{ p.nombre|first|upper }}
+                                    </div>
                                     <div>
-                                        <span class="font-weight-bold text-dark d-block" style="font-size: 0.95rem;">{{ p.nombre }}</span>
+                                        <span class="font-weight-bold text-dark">
+                                            {{ p.nombre }}
+                                        </span>
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle text-muted" style="font-size: 0.95rem;">
-                                <i class="fas fa-id-card mr-1 small"></i> {{ p.documento }}
-                            </td>
-                            <td class="text-center align-middle">
-                                <a href="{% url 'app:editar_proveedor' p.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
+
+                            <td>{{ p.documento }}</td>
+                            <td>{{ p.telefono }}</td>
+                            <td>{{ p.email }}</td>
+                            <td>{{ p.direccion }}</td>
+
+                            <td class="text-center">
+                                <a href="{% url 'app:editar_proveedor' p.id %}" 
+                                   class="btn btn-warning btn-circle shadow-sm" title="Editar">
                                     <i class="fas fa-pen"></i>
                                 </a>
-                                <button class="btn btn-info btn-circle shadow-sm mx-1" onclick="verDetalle('{{ p.nombre }}', '{{ p.documento }}')" title="Ver Detalles">
+
+                                <button class="btn btn-info btn-circle shadow-sm mx-1"
+                                    onclick="verDetalle(
+                                        '{{ p.nombre }}',
+                                        '{{ p.documento }}',
+                                        '{{ p.telefono }}',
+                                        '{{ p.email }}',
+                                        '{{ p.direccion }}'
+                                    )"
+                                    title="Ver Detalles">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <a href="{% url 'app:eliminar_proveedor' p.id %}" class="btn btn-danger btn-circle shadow-sm" style="background-color: #d32f2f !important;" title="Eliminar">
+
+                                <a href="{% url 'app:eliminar_proveedor' p.id %}"
+                                   class="btn btn-danger btn-circle shadow-sm"
+                                   style="background-color: #d32f2f !important;"
+                                   title="Eliminar">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
                             </td>
@@ -191,35 +202,36 @@
 
 <script>
     $(document).ready(function () {
-        // Usamos destroy: true para que no salga el error de advertencia en pantalla
-        // pero mantenemos la configuración para que NO se quiten el buscador ni la paginación.
         $('#tabla_pro').DataTable({
-            "destroy": true,
-            "retrieve": true,
-            "responsive": true,
-            "autoWidth": false,
-            "pageLength": 10,
-            "language": {
-                "sSearch": "<span class='font-weight-bold small'>BUSCAR:</span>",
-                "sLengthMenu": "Mostrar _MENU_",
-                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ proveedores",
-                "oPaginate": {
-                    "sNext": "<i class='fas fa-chevron-right'></i>",
-                    "sPrevious": "<i class='fas fa-chevron-left'></i>"
+            destroy: true,
+            retrieve: true,
+            responsive: true,
+            autoWidth: false,
+            pageLength: 10,
+            language: {
+                sSearch: "Buscar:",
+                sLengthMenu: "Mostrar _MENU_",
+                sInfo: "Mostrando _START_ a _END_ de _TOTAL_ proveedores",
+                oPaginate: {
+                    sNext: "Siguiente",
+                    sPrevious: "Anterior"
                 }
-            },
-            "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                 "<'row'<'col-sm-12'tr>>" +
-                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            }
         });
     });
 
-    function verDetalle(nombre, documento) {
+    function verDetalle(nombre, documento, telefono, email, direccion) {
         Swal.fire({
             title: '<strong>Detalle del Proveedor</strong>',
             icon: 'info',
-            html: `<b>Nombre:</b> ${nombre}<br><b>NIT:</b> ${documento}`,
-            confirmButtonColor: '#d32f2f',
+            html: `
+                <b>Nombre:</b> ${nombre}<br>
+                <b>NIT:</b> ${documento}<br>
+                <b>Teléfono:</b> ${telefono}<br>
+                <b>Email:</b> ${email}<br>
+                <b>Dirección:</b> ${direccion}
+            `,
+            confirmButtonColor: '#d32f2f'
         });
     }
 </script>

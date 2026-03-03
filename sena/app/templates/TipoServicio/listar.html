@@ -125,7 +125,9 @@
                             <th>Servicio</th>
                             <th>Categoría</th>
                             <th class="text-center">Estado</th>
+                            <th class="text-center">Descripcion</th>
                             <th class="text-center">Acciones</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -146,6 +148,7 @@
                                     <span class="badge-estado badge-inactivo">INACTIVO</span>
                                 {% endif %}
                             </td>
+                            <td class="align-middle text-muted">{{ ts.descripcion }}</td>
                             <td class="text-center align-middle">
                                 <a href="{% url 'app:editar_tipo_servicio' ts.id %}" class="btn btn-warning btn-circle shadow-sm">
                                     <i class="fas fa-edit text-white"></i>
