@@ -91,6 +91,7 @@ urlpatterns = [
     # FACTURAS
     path('factura/listar/', FacturaListView.as_view(), name='listar_facturas'),
     path('factura/detalle/<int:pk>/', FacturaDetailView.as_view(), name='detalle_factura'),
+    path('factura/crear/', FacturaCreateView.as_view(), name='crear_factura'),
 
     # SALIDA VEHÍCULO
     path('listar_salida_vehiculo/', Salida_vehiculoListView.as_view(), name='listar_salida_vehiculo'),

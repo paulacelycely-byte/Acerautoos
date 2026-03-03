@@ -124,9 +124,6 @@ class tipo_servicio(models.Model):
     nombre = models.CharField(max_length=100, choices=SERVICIOS)
     descripcion = models.CharField(max_length=100)
     categoria = models.CharField(max_length=100, choices=CATEGORIAS)
-    duracion_estimada = models.DateField(null=True, blank=True)
-    hora_entrada_estimada = models.TimeField(null=True, blank=True)
-    hora_salida_estimada = models.TimeField(null=True, blank=True)
     estado = models.BooleanField(default=True)
 
     def __str__(self):
@@ -279,6 +276,11 @@ class Compra(models.Model):
     fk_proveedor = models.ForeignKey('Proveedor', on_delete=models.CASCADE)
     # CORREGIDO: 'Insumo' -> 'insumo' (Nombre de la clase)
     fk_insumo = models.ForeignKey('insumo', on_delete=models.CASCADE)
+    
+    def save(self, *args, **kwargs):
+        if self.fk_insumo:
+            self.total = self.fk_insumo.precio_unitario * self.fk_insumo.cantidad
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Compra {self.id_compra} - {self.estado}"
