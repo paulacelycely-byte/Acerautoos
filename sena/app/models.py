@@ -31,6 +31,7 @@ class Producto(models.Model):
     descripcion = models.CharField(max_length=100)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     existencia = models.IntegerField()
+
     def __str__(self):
         return self.nombre
 
@@ -38,8 +39,6 @@ class Producto(models.Model):
         verbose_name = "Producto"
         verbose_name_plural = "Productos"
         db_table = "Producto"
-        
-
 
 
 class Vehiculo(models.Model):
@@ -55,12 +54,12 @@ class Vehiculo(models.Model):
         ('Deportivo', 'Deportivo'),
         ('Crossover', 'Crossover'),
     ]
-    tipo_vehiculo = models.CharField(max_length=100,choices=TIPO)
+    tipo_vehiculo = models.CharField(max_length=100, choices=TIPO)
     placa = models.CharField(max_length=6)
     marca = models.CharField(max_length=100)
     modelo = models.CharField(max_length=100)
     kilometraje = models.IntegerField()
-    documento = models.ForeignKey('Cliente',on_delete=models.CASCADE)
+    documento = models.ForeignKey('Cliente', on_delete=models.CASCADE)
     modelo = models.CharField(max_length=30)
 
     def __str__(self):
@@ -135,27 +134,11 @@ class tipo_servicio(models.Model):
 
 
 class Entrada_vehiculo(models.Model):
-
-    TIPO_DOCUMENTO_CHOICES = [
-        ('CC', 'Cédula de Ciudadanía'),
-        ('CE', 'Cédula de Extranjería'),
-        ('TI', 'Tarjeta de Identidad'),
-    ]
-
-    tipo_documento = models.CharField(
-        max_length=2,
-        choices=TIPO_DOCUMENTO_CHOICES,
-        verbose_name="Tipo de documento"
-    )
-
-    documento = models.IntegerField(unique=True)
+    documento = models.ForeignKey('Cliente', on_delete=models.CASCADE)
 
     fecha_hora_entrada = models.DateTimeField(auto_now_add=True)
 
     placa = models.CharField(max_length=6)
-
-
-    
 
     def __str__(self):
         return f"Entrada {self.placa} - {self.fecha_hora_entrada}"
@@ -175,9 +158,9 @@ estado = [
 
 class Proveedor(models.Model):
     estado = [
-            (True, 'Activo'),
-            (False, 'Inactivo'),
-        ]
+        (True, 'Activo'),
+        (False, 'Inactivo'),
+    ]
     nombre = models.CharField(max_length=50)
     documento = models.CharField(max_length=10)
     telefono = models.CharField(max_length=15)
@@ -233,7 +216,7 @@ class Cliente(models.Model):
     documento = models.CharField(max_length=10, unique=True)
 
     def __str__(self):
-        return f" {self.nombre}-{str(self.documento)}"
+        return f"{self.documento}"
 
     class Meta:
         db_table = "Cliente"
@@ -244,7 +227,6 @@ class Cliente(models.Model):
 class Ventas(models.Model):
     fecha = models.DateField()
     total = models.DecimalField(max_digits=10, decimal_places=2)
-    documento = models.CharField(max_length=10)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     salida = models.ForeignKey('Salida_Vehiculo', on_delete=models.CASCADE)
     # Correcto: 'Producto'
@@ -275,7 +257,7 @@ class Compra(models.Model):
     fk_proveedor = models.ForeignKey('Proveedor', on_delete=models.CASCADE)
     # CORREGIDO: 'Insumo' -> 'insumo' (Nombre de la clase)
     fk_insumo = models.ForeignKey('insumo', on_delete=models.CASCADE)
-    
+
     def save(self, *args, **kwargs):
         if self.fk_insumo:
             self.total = self.fk_insumo.precio_unitario * self.fk_insumo.cantidad
@@ -364,10 +346,30 @@ class Salida_vehiculo(models.Model):
 
 class Factura(models.Model):
     fecha = models.DateField()
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
-    iva = models.DecimalField(max_digits=10, decimal_places=2)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
+
+
+    subtotal = models.DecimalField(
+    max_digits=10,
+    decimal_places=2,
+    default=Decimal('0.00')
+    )
+
+    iva = models.DecimalField(
+     max_digits=10,
+     decimal_places=2,
+     default=Decimal('0.00')
+     )
+
+    total = models.DecimalField(
+      max_digits=10,
+      decimal_places=2,
+      default=Decimal('0.00')
+      )
+
     venta = models.ForeignKey('Ventas', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Factura #{self.id} por ${self.total}"
 
     def __str__(self):
         return f"Factura #{self.id} por ${self.total}"
@@ -380,7 +382,8 @@ class Factura(models.Model):
 
 class Notificacion(models.Model):
     TIPO_NOTIFICACION = [
-        ('Mensaje', 'Mensaje General'),      # Para cualquier comunicación normal
+        # Para cualquier comunicación normal
+        ('Mensaje', 'Mensaje General'),
         ('Alerta', 'Alerta Importante'),     # Requiere atención inmediata
         ('Recordatorio', 'Recordatorio'),   # Para avisos o eventos próximos
     ]
@@ -427,10 +430,12 @@ class Servicio(models.Model):
         'tipo_servicio',
         on_delete=models.CASCADE
     )
+
     def save(self, *args, **kwargs):
         if self.insumo:
             self.precio += self.insumo.precio_unitario
         super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.descripcion} - ${self.precio}"
 

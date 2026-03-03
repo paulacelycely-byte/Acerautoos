@@ -117,6 +117,7 @@
                             <th class="text-center">ID</th>
                             <th>Vehículo / Placa</th>
                             <th>Fecha y Hora Salida</th>
+                            <th>Acumulado</th>
                             <th>Total Pagado</th>
                             <th class="text-center">Acciones</th>
                         </tr>
@@ -130,6 +131,9 @@
                             </td>
                             <td class="align-middle text-dark">
                                 <i class="far fa-clock mr-2 text-primary"></i>{{ c.fecha_hora_salida }}
+                            </td>
+                            <td class="align-middle text-dark">
+                                <i class="far fa-clock mr-2 text-primary"></i>{{ c.duracion_formateada }}
                             </td>
                             <td class="align-middle font-weight-bold text-success" style="font-size: 1.1rem;">
                                 ${{ c.total_a_pagar }}

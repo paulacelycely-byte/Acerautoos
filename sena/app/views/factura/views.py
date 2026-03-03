@@ -29,7 +29,6 @@ class FacturaCreateView(CreateView):
         factura.subtotal = factura.venta.total
         factura.iva = factura.subtotal * Decimal('0.19')
         factura.total = factura.subtotal + factura.iva
-
         factura.save()
         messages.success(self.request, "Factura creada correctamente.")
         return super().form_valid(form)

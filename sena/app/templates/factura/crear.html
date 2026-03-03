@@ -1,20 +1,86 @@
 {% extends 'body.html' %}
 
 {% block contenido %}
-<div class="container mt-4">
-    <h2>Crear Factura</h2>
+<style>
+    .card-premium {
+        border: none;
+        border-radius: 18px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        background: #ffffff;
+    }
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+    .card-header-premium {
+        background: linear-gradient(135deg, #4a4a4a, #2f2f2f);
+        color: white;
+        padding: 20px;
+        border-radius: 18px 18px 0 0;
+    }
 
-        <button type="submit" class="btn btn-success">
-            Guardar
-        </button>
+    .btn-premium {
+        border-radius: 10px;
+        padding: 8px 18px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
 
-        <a href="{% url 'app:listar_facturas' %}" class="btn btn-danger">
-            Cancelar
-        </a>
-    </form>
+    .btn-premium:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+
+    .alert-premium-error {
+        background: linear-gradient(145deg, #fff5f5, #ffecec);
+        border-left: 6px solid #4a4a4a;
+        padding: 15px 20px;
+        border-radius: 12px;
+        font-weight: 600;
+        color: #842029;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        animation: fadeIn 0.3s ease-in-out;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="card card-premium">
+        
+        <div class="card-header-premium">
+            <h3 class="mb-0">
+                <i class="fas fa-file-invoice mr-2"></i>
+                Crear Factura
+            </h3>
+        </div>
+
+        <div class="card-body p-4">
+
+            <!-- 🔴 Errores generales -->
+            {% if form.non_field_errors %}
+                <div class="alert-premium-error">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                
+                {{ form.as_p }}
+
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-success btn-premium">
+                        <i class="fas fa-save mr-1"></i> Guardar
+                    </button>
+
+                    <a href="{% url 'app:listar_facturas' %}" class="btn btn-danger btn-premium">
+                        <i class="fas fa-times mr-1"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+
+        </div>
+    </div>
 </div>
+
 {% endblock %}

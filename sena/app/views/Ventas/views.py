@@ -42,9 +42,16 @@ class VentasCreateView(CreateView):
         context['listar_url'] = reverse_lazy('app:listar_Ventas')
         return context
 
+    def form_valid(self, form):
+        messages.success(self.request, "Se creo un nuevo ingreso")
+        return super().form_valid(form)
 
     def form_valid(self, form):
-        messages.success(self.request,"Se creo un nuevo ingreso")
+        salida = form.cleaned_data.get('salida')
+
+        # Cliente viene desde la entrada del vehículo
+        form.instance.cliente = salida.entrada.documento
+
         return super().form_valid(form)
 
 

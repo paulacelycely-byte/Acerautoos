@@ -80,7 +80,7 @@ class Entrada_vehiculoForm(forms.ModelForm):
         model = Entrada_vehiculo
         fields = '__all__'
         widgets = {
-            'documento': forms.NumberInput(attrs={
+            'documento': forms.Select(attrs={
                 'placeholder': 'Ingrese el documento',
                 'maxlength': '10'  # Límite visual en el navegador
             }),
@@ -93,9 +93,8 @@ class Entrada_vehiculoForm(forms.ModelForm):
         }
 
     def clean_documento(self):
-        documento = self.cleaned_data.get('documento')
-        print("DOCUMENTO:", documento)
-
+        cliente = self.cleaned_data.get('documento')
+        documento = cliente.documento
         if documento is None:
             print("DOCUMENTO VACÍO")
             raise forms.ValidationError(
@@ -110,14 +109,14 @@ class Entrada_vehiculoForm(forms.ModelForm):
                 'El documento no puede tener más de 10 dígitos'
             )
 
-        if int(documento) <= 0:
+        if int(documento) <= 0 :
             print(" DOCUMENTO INVÁLIDO")
             raise forms.ValidationError(
                 'El documento debe ser mayor que cero'
             )
 
         print(" DOCUMENTO VALIDO")
-        return documento
+        return cliente
 
     # NUEVA VALIDACIÓN DE PLACA INCORPORADA
     def clean_placa(self):
@@ -462,8 +461,6 @@ class VentasForm(forms.ModelForm):
         model = Ventas
         fields = [
             'fecha',
-            'documento',
-            'cliente',
             'usuario',
             'productos',
             'salida',
@@ -477,9 +474,6 @@ class VentasForm(forms.ModelForm):
             }),
             'total': forms.NumberInput(attrs={
                 'placeholder': 'Ingrese el total'
-            }),
-            'documento': forms.TextInput(attrs={
-                'placeholder': 'Ingrese el documento'
             }),
             'productos': forms.SelectMultiple(),
         }
@@ -563,7 +557,7 @@ class UsuarioForm(ModelForm):
             raise forms.ValidationError('El nombre solo puede contener letras y espacios')
         
         # Evitar duplicados
-        if Usuario.objects.filter(nombre__iexact=nombre).exists():
+        if Usuario.objects.filter(nombre__iexact=nombre).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError('Ya existe un usuario con este nombre')
         return nombre
 
@@ -573,7 +567,7 @@ class UsuarioForm(ModelForm):
             raise forms.ValidationError('Ingrese un correo electrónico válido')
 
         # Evitar duplicados
-        if Usuario.objects.filter(email__iexact=email).exists():
+        if Usuario.objects.filter(email__iexact=email).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError('Este correo ya está registrado')
         return email
 
@@ -586,7 +580,7 @@ class UsuarioForm(ModelForm):
                 raise forms.ValidationError("El número debe tener solo 10 dígitos")
 
             # Evitar duplicados
-            if Usuario.objects.filter(telefono=telefono).exists():
+            if Usuario.objects.filter(telefono=telefono).exclude(pk=self.instance.pk).exists():
                 raise forms.ValidationError('Este número de teléfono ya está registrado')
         return telefono
 
@@ -662,11 +656,15 @@ class ProveedorForm(ModelForm):
         return telefono
     def clean_email(self):
         email = self.cleaned_data.get('email')
+        exist = Proveedor.objects.filter(email = email).exclude(pk=self.instance.pk).exists()
+        if exist:
+            raise forms.ValidationError("Error el email ya existe")
         if email:
             email = email.strip()
             if not re.match(r'^[^@]+@[^@]+\.[^@]+$', email):
                 raise forms.ValidationError('Ingrese un correo electrónico válido.')
         return email
+    
 class TipoServicioForm(ModelForm):
     class Meta:
         model = tipo_servicio
@@ -690,8 +688,15 @@ class TipoServicioForm(ModelForm):
         cat = self.cleaned_data.get('categoria')
         validar_solo_letras(cat)
         return cat
-
-
+    
+    def clean_descripcion(self):
+        descripcion = self.cleaned_data.get('descripcion')
+        if len(descripcion) < 10:
+            raise forms.ValidationError(
+                'La descripción debe tener al menos 10 caracteres.')
+        return descripcion
+    
+    
 # --- NUEVO FORMULARIO DE COMPRA ---
 
 
