@@ -19,13 +19,10 @@ def validar_solo_letras(valor):
 class Salida_vehiculoForm(ModelForm):
     class Meta:
         model = Salida_vehiculo
-        fields = '__all__'
+        fields = ['entrada', 'fecha_hora_salida']
         widgets = {
             'fecha_hora_salida': forms.TimeInput(attrs={
                 'type': 'datetime-local'
-            }),
-            'total_a_pagar': forms.NumberInput(attrs={
-                'placeholder': 'Ingrese el total a pagar'
             }),
         }
 
@@ -48,7 +45,6 @@ class Salida_vehiculoForm(ModelForm):
         if not entrada:
             raise forms.ValidationError('La entrada de vehículo es requerida.')
         return entrada
-
 
 class CategoriaForm(ModelForm):
     class Meta:
@@ -555,6 +551,10 @@ class InsumoForm(ModelForm):
 
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre')
+        exist = insumo.objects.filter(nombre__iexact=nombre).exclude(pk=self.instance.pk).exists()
+        if exist:
+            raise forms.ValidationError(
+                'Ya existe un insumo con este nombre, por favor elija otro nombre.')
         if not re.match(r'^[a-zA-Z\s]+$', nombre):
             raise forms.ValidationError(
                 'El campo nombre solo puede contener letras y espacios.')
@@ -582,7 +582,6 @@ class ServicioForm(ModelForm):
             'tipo_servicio',
             'entrada',
             'descripcion',
-            'duracion',
             'precio',
             'insumo',
             'usuario',
@@ -635,6 +634,7 @@ class ServicioForm(ModelForm):
                 'El documento solo puede contener números')
 
         return documento
+    
 
 
 class ClienteForm(ModelForm):
