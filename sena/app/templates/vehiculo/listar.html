@@ -129,7 +129,7 @@
                             <td>{{ v.marca }}</td>
                             <td>{{ v.modelo }}</td>
                             <td>{{ v.kilometraje }}</td>
-                            <td>{{ v.documento }}</td>
+                            <td>{{ v.documento.documento }}</td>
                             <td class="text-center">
                                 <a href="{% url 'app:editar_vehiculo' v.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
                                     <i class="fas fa-pen text-white"></i>
