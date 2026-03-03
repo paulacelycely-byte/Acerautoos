@@ -64,7 +64,6 @@ class Vehiculo(models.Model):
     modelo = models.CharField(max_length=30)
 
     def __str__(self):
-
         return f"{self.marca} {self.modelo}"
 
     class Meta:
@@ -428,7 +427,10 @@ class Servicio(models.Model):
         'tipo_servicio',
         on_delete=models.CASCADE
     )
-
+    def save(self, *args, **kwargs):
+        if self.insumo:
+            self.precio += self.insumo.precio_unitario
+        super().save(*args, **kwargs)
     def __str__(self):
         return f"{self.descripcion} - ${self.precio}"
 
