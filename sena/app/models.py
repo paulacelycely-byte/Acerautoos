@@ -31,7 +31,6 @@ class Producto(models.Model):
     descripcion = models.CharField(max_length=100)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     existencia = models.IntegerField()
-
     def __str__(self):
         return self.nombre
 
@@ -39,6 +38,8 @@ class Producto(models.Model):
         verbose_name = "Producto"
         verbose_name_plural = "Productos"
         db_table = "Producto"
+        
+
 
 
 class Vehiculo(models.Model):
@@ -60,8 +61,9 @@ class Vehiculo(models.Model):
     modelo = models.CharField(max_length=100)
     kilometraje = models.IntegerField()
     documento = models.ForeignKey('Cliente',on_delete=models.CASCADE)
+    modelo = models.CharField(max_length=30)
 
-    def _str_(self):
+    def __str__(self):
 
         return f"{self.marca} {self.modelo}"
 
@@ -77,7 +79,7 @@ class insumo(models.Model):
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        # Corregido: Se usa str. Retorna una sola cadena.
+        # Corregido: Se usa _str_. Retorna una sola cadena.
         return f"{self.nombre} (${self.precio_unitario})"
 
     class Meta:
@@ -167,6 +169,14 @@ class Entrada_vehiculo(models.Model):
         verbose_name = "Entrada de Vehículo"
         verbose_name_plural = "Entradas de Vehículos"
 
+
+estado = [
+    (True, 'Activo'),
+    (False, 'Inactivo'),
+
+]
+
+
 class Proveedor(models.Model):
     estado = [
             (True, 'Activo'),
@@ -180,7 +190,7 @@ class Proveedor(models.Model):
     estado = models.BooleanField(default=True, choices=estado)
     mercancia = models.ForeignKey(Producto, on_delete=models.CASCADE)
 
-    def _str_(self):
+    def __str__(self):
         return self.nombre
 
     class Meta:
@@ -198,7 +208,7 @@ class Compra(models.Model):
     fk_proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     fk_insumo = models.ForeignKey(insumo, on_delete=models.CASCADE)
 
-    def _str_(self):
+    def __str__(self):
         return f"Compra {self.id_compra} - {self.estado}"
 
     class Meta:
@@ -213,7 +223,7 @@ class Categorias(models.Model):
     descripcion = models.CharField(max_length=45)
     fk_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
 
-    def _str_(self):
+    def __str__(self):
         return self.nombre_categoria
 
     class Meta:
@@ -246,7 +256,7 @@ class Ventas(models.Model):
     # Correcto: 'Usuario'
     usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
 
-    def _str_(self):
+    def __str__(self):
         # Corregido: Retorna una sola cadena.
         return f"Venta del {self.fecha} a {self.cliente} {self.salida}"
 
@@ -270,7 +280,7 @@ class Compra(models.Model):
     # CORREGIDO: 'Insumo' -> 'insumo' (Nombre de la clase)
     fk_insumo = models.ForeignKey('insumo', on_delete=models.CASCADE)
 
-    def str(self):
+    def __str__(self):
         return f"Compra {self.id_compra} - {self.estado}"
 
     class Meta:
@@ -286,7 +296,7 @@ class Categorias(models.Model):
     # Correcto: 'Producto'
     fk_producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
 
-    def str(self):
+    def __str__(self):
         return self.nombre_categoria
 
     class Meta:

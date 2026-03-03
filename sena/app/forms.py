@@ -4,6 +4,7 @@ from django.forms import ModelForm
 from app.models import *
 from django.utils import timezone
 
+
 # --- FUNCIONES DE VALIDACIÓN ---
 
 
@@ -158,117 +159,304 @@ class Entrada_vehiculoForm(forms.ModelForm):
         return descripcion
 
 
+
+
+
+
+
+
+
 class ProductosForm(ModelForm):
+
     class Meta:
         model = Producto
         fields = '__all__'
         widgets = {
             'nombre': forms.TextInput(attrs={
-                'placeholder': 'Ingrese el nombre del producto'
+                'placeholder': 'Ingrese el nombre del producto',
+                'class': 'form-control'
             }),
             'descripcion': forms.Textarea(attrs={
                 'placeholder': 'Ingrese la descripción del producto',
-                'rows': 5
+                'rows': 5,
+                'class': 'form-control'
             }),
             'precio': forms.NumberInput(attrs={
-                'placeholder': 'Ingrese el precio'
+                'placeholder': 'Ingrese el precio',
+                'class': 'form-control',
+                'step': '0.01'
+            }),
+            'existencia': forms.NumberInput(attrs={
+                'placeholder': 'Ingrese la cantidad disponible',
+                'class': 'form-control'
             }),
         }
 
-    # VALIDACION MEJORADA
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre')
+
+        if not nombre:
+            raise forms.ValidationError('El nombre es obligatorio')
+
+        nombre = nombre.strip()
 
         if len(nombre) < 3:
             raise forms.ValidationError(
                 'El nombre debe tener mínimo 3 caracteres')
 
-        # AGREGADO: solo letras
-        if not re.match(r'^[a-zA-Z\s]+$', nombre):
+        if not re.match(r'^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$', nombre):
             raise forms.ValidationError(
                 'El nombre solo puede contener letras y espacios')
 
-        return nombre
+        existe = Producto.objects.filter(
+            nombre__iexact=nombre
+        ).exclude(pk=self.instance.pk).exists()
+
+        if existe:
+            raise forms.ValidationError(
+                'Ya existe un producto con ese nombre')
+
+        return nombre.title()
 
     def clean_descripcion(self):
         descripcion = self.cleaned_data.get('descripcion')
 
+        if not descripcion:
+            raise forms.ValidationError(
+                'La descripción es obligatoria')
+
+        descripcion = descripcion.strip()
+
         if len(descripcion) < 5:
             raise forms.ValidationError(
-                'La descripcion debe tener mínimo 5 caracteres')
+                'La descripción debe tener mínimo 5 caracteres')
 
-        # AGREGADO
-        if not re.match(r'^[a-zA-Z0-9\s.,]+$', descripcion):
+        if not re.match(r'^[a-zA-Z0-9ÁÉÍÓÚáéíóúÑñ\s.,]+$', descripcion):
             raise forms.ValidationError(
-                'La descripcion contiene caracteres no permitidos')
+                'La descripción contiene caracteres no permitidos')
 
         return descripcion
 
     def clean_precio(self):
         precio = self.cleaned_data.get('precio')
 
+        if precio is None:
+            raise forms.ValidationError('El precio es obligatorio')
+
         if precio <= 0:
-            raise forms.ValidationError('El precio debe ser mayor a 0')
+            raise forms.ValidationError(
+                'El precio debe ser mayor a 0')
+
+        if precio > 100000000:
+            raise forms.ValidationError(
+                'El precio es demasiado alto')
 
         return precio
-
-    # VALIDACION NUEVA (MUY IMPORTANTE)
 
     def clean_existencia(self):
         existencia = self.cleaned_data.get('existencia')
 
+        if existencia is None:
+            raise forms.ValidationError(
+                'La existencia es obligatoria')
+
         if existencia < 0:
-            raise forms.ValidationError('La existencia no puede ser negativa')
+            raise forms.ValidationError(
+                'La existencia no puede ser negativa')
+
+        if existencia > 100000:
+            raise forms.ValidationError(
+                'Cantidad demasiado grande')
 
         return existencia
 
+    def clean(self):
+        cleaned_data = super().clean()
+
+        precio = cleaned_data.get('precio')
+        existencia = cleaned_data.get('existencia')
+
+        if precio is not None and existencia is not None:
+            if precio == 0 and existencia > 0:
+                raise forms.ValidationError(
+                    'Un producto con existencia no puede tener precio 0')
+
+        return cleaned_data
+
+
+
 
 class VehiculoForm(ModelForm):
+
     class Meta:
         model = Vehiculo
         fields = '__all__'
 
         widgets = {
 
-            'tipo_vehiculo': forms.TextInput(attrs={
-                'placeholder': 'Ingrese el tipo de vehículo'
+            'tipo_vehiculo': forms.Select(attrs={
+                'class': 'form-control'
             }),
 
             'placa': forms.TextInput(attrs={
-                'placeholder': 'Ingrese la placa'
+                'placeholder': 'Ingrese la placa',
+                'class': 'form-control',
+                'maxlength': '6'
             }),
 
             'marca': forms.TextInput(attrs={
-                'placeholder': 'Ingrese la marca'
+                'placeholder': 'Ingrese la marca',
+                'class': 'form-control'
             }),
 
             'modelo': forms.TextInput(attrs={
-                'placeholder': 'Ingrese el modelo'
+                'placeholder': 'Ingrese el modelo',
+                'class': 'form-control'
             }),
 
             'kilometraje': forms.NumberInput(attrs={
-                'placeholder': 'Ingrese el kilometraje'
+                'placeholder': 'Ingrese el kilometraje',
+                'class': 'form-control'
             }),
 
-            'documento': forms.TextInput(attrs={
-                'placeholder': 'Ingrese el documento'
+            'documento': forms.Select(attrs={
+                'class': 'form-control'
             }),
-
         }
 
+    # VALIDACIÓN DE PLACA
+    
+
     def clean_placa(self):
+
         placa = self.cleaned_data.get('placa')
 
-        if placa:
-            placa = placa.upper()
+        if not placa:
+            raise forms.ValidationError("La placa es obligatoria")
+
+        placa = placa.upper().strip()
+
+        existe = Vehiculo.objects.filter(
+            placa=placa
+        ).exclude(pk=self.instance.pk).exists()
+
+        if existe:
+            raise forms.ValidationError("La placa ya existe")
 
         if not re.match(r'^[A-Z]{3}[0-9]{3}$', placa):
             raise forms.ValidationError(
-                'La placa debe tener 3 letras mayúsculas y 3 números '
+                'La placa debe tener 3 letras mayúsculas y 3 números (Ej: ABC123)'
             )
 
         return placa
 
+
+    
+    # VALIDACIÓN DE KILOMETRAJE
+    
+
+    def clean_kilometraje(self):
+
+        kilometraje = self.cleaned_data.get('kilometraje')
+        if kilometraje is None:
+            raise forms.ValidationError("El kilometraje es obligatorio")
+
+        if kilometraje < 0:
+            raise forms.ValidationError("El kilometraje no puede ser negativo")
+
+        if kilometraje > 1000000:
+            raise forms.ValidationError("El kilometraje no es válido")
+
+        return kilometraje
+
+
+    
+    # VALIDACIÓN DE MARCA
+    
+
+    def clean_marca(self):
+
+        marca = self.cleaned_data.get('marca')
+
+        if not marca:
+            raise forms.ValidationError("La marca es obligatoria")
+
+        if not re.match(r'^[a-zA-Z\s]+$', marca):
+            raise forms.ValidationError(
+                "La marca solo puede contener letras y espacios"
+            )
+
+        return marca.title()
+
+
+    
+    # VALIDACIÓN DE MODELO
+    
+
+    def clean_modelo(self):
+
+        modelo = self.cleaned_data.get('modelo')
+        if not re.fullmatch(r'^[0-9]+$', str(modelo)):
+            raise forms.ValidationError("El kilometraje solo puede contener números")
+        if not modelo:
+            raise forms.ValidationError("El modelo es obligatorio")
+
+        if len(modelo) > 30:
+            raise forms.ValidationError(
+                "El modelo no puede tener más de 30 caracteres"
+            )
+
+        return modelo
+
+
+    
+    # VALIDACIÓN DE DOCUMENTO
+    
+
+    def clean_documento(self):
+
+        documento = self.cleaned_data.get('documento')
+
+        if not documento:
+            raise forms.ValidationError("Debe seleccionar un documento")
+
+        return documento
+
+
+    
+    # VALIDACIÓN DE TIPO VEHÍCULO
+    
+
+    def clean_tipo_vehiculo(self):
+
+        tipo = self.cleaned_data.get('tipo_vehiculo')
+
+        if not tipo:
+            raise forms.ValidationError(
+                "Debe seleccionar un tipo de vehículo"
+            )
+
+        return tipo
+
+
+
+    # VALIDACIÓN GENERAL
+
+    def clean(self):
+
+        cleaned_data = super().clean()
+
+        marca = cleaned_data.get('marca')
+        modelo = cleaned_data.get('modelo')
+
+        if marca and modelo:
+            if marca.lower() == modelo.lower():
+                raise forms.ValidationError(
+                    "La marca y el modelo no pueden ser iguales"
+                )
+
+        return cleaned_data
+    
 
 class VentasForm(forms.ModelForm):
 
@@ -682,7 +870,9 @@ class ClienteForm(ModelForm):
 
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre')
-
+        exist = Cliente.objects.filter(nombre = nombre).exclude(pk=self.instance.pk).exists()
+        if exist:
+            raise forms.ValidationError("Este nombre ya existe")
         if not re.match(r'^[a-zA-Z\s]+$', nombre):
             raise forms.ValidationError('El nombre solo puede contener letras')
 
@@ -690,12 +880,32 @@ class ClienteForm(ModelForm):
 
     def clean_documento(self):
         documento = self.cleaned_data.get('documento')
-
+        exist = Cliente.objects.filter(documento = documento).exclude(pk = self.instance.pk).exists()
+        if exist:
+            raise forms.ValidationError("Este documento ya esta en uso")
         if not documento.isdigit():
             raise forms.ValidationError(
                 'El documento solo puede contener números')
 
         return documento
+    def clean_documento(self):
+        documento = self.cleaned_data.get('documento')
+
+        if not documento:
+            raise forms.ValidationError('El documento es obligatorio')
+
+        if len(documento) < 8 or len(documento) > 10:
+            raise forms.ValidationError(
+            'El documento debe tener entre 8 y 10 caracteres')
+
+        if not documento.isdigit():
+            raise forms.ValidationError(
+            'El documento solo debe contener números')
+
+        return documento
+
+
+
 
 
 class NotificacionForm(ModelForm):
@@ -705,29 +915,24 @@ class NotificacionForm(ModelForm):
         fields = '__all__'
 
         widgets = {
-
             'titulo': forms.TextInput(attrs={
                 'placeholder': 'Ingrese el título de la notificación',
                 'autocomplete': 'off',
                 'class': 'form-control'
             }),
-
             'mensaje': forms.Textarea(attrs={
                 'placeholder': 'Ingrese el mensaje de la notificación',
                 'autocomplete': 'off',
                 'class': 'form-control',
                 'rows': 3
             }),
-
             'fecha': forms.DateInput(attrs={
                 'type': 'date',
                 'class': 'form-control'
             }),
-
             'estado': forms.Select(attrs={
                 'class': 'form-control'
             }),
-
         }
 
     def clean_titulo(self):
@@ -736,21 +941,33 @@ class NotificacionForm(ModelForm):
             titulo = titulo.strip()
             if len(titulo) < 5:
                 raise forms.ValidationError(
-                    'El titulo debe tener mínimo 5 caracteres')
+                    'El título debe tener mínimo 5 caracteres')
         return titulo
 
     def clean_mensaje(self):
         mensaje = self.cleaned_data.get('mensaje')
-        if mensaje:
-            mensaje = mensaje.strip()
-            if len(mensaje) < 10:
-                raise forms.ValidationError(
-                    'El mensaje debe tener mínimo 10 caracteres')
+
+        if not mensaje:
+            raise forms.ValidationError('El mensaje es obligatorio')
+
+        mensaje = mensaje.strip()
+
+        if len(mensaje) < 10:
+            raise forms.ValidationError(
+                'El mensaje debe tener mínimo 10 caracteres'
+            )
+
+        if not re.match(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,]+$', mensaje):
+            raise forms.ValidationError(
+                'El mensaje solo puede contener letras, números, espacios, punto y coma'
+            )
+
         return mensaje
 
     def clean_fecha(self):
         fecha = self.cleaned_data.get('fecha')
-        # Validación: No permitir notificaciones en el pasado
         if fecha and fecha < timezone.now().date():
-            raise forms.ValidationError('La fecha de la notificación no puede ser anterior a hoy.')
+            raise forms.ValidationError(
+                'La fecha de la notificación no puede ser anterior a hoy.'
+            )
         return fecha
