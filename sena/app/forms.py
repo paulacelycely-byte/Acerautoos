@@ -2,20 +2,18 @@ from django import forms
 import re
 from django.utils import timezone
 from .models import (
-    Proveedor, Producto, Compra, Cliente, 
+    Proveedor, Producto, Compra, Cliente,
     Marca, Vehiculo, TipoServicio, OrdenServicio, VentasFactura, Usuario
 )
 
-# =========================================================
-# --- UTILIDADES DE VALIDACIÓN (REUTILIZABLES) ---
-# =========================================================
-
+# ============================
+# UTILIDADES DE VALIDACIÓN
+# ============================
 def validar_solo_letras(valor):
     if not re.match(r'^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$', str(valor)):
         raise forms.ValidationError("Este campo solo puede contener letras y espacios.")
 
 def validar_numerico_estricto(valor, longitud=None):
-    """Verifica que el valor contenga SOLO números. Opcionalmente verifica longitud."""
     valor_str = str(valor).strip()
     if not valor_str.isdigit():
         raise forms.ValidationError("Este campo debe contener solo números (sin letras, puntos o espacios).")
@@ -23,10 +21,9 @@ def validar_numerico_estricto(valor, longitud=None):
         raise forms.ValidationError(f"Este campo debe tener exactamente {longitud} dígitos.")
     return valor_str
 
-# =========================================================
-# --- FORMULARIOS DEL SISTEMA ---
-# =========================================================
-
+# ============================
+# FORMULARIO USUARIO
+# ============================
 class UsuarioForm(forms.ModelForm):
     password = forms.CharField(
         label="Contraseña",
@@ -81,8 +78,9 @@ class UsuarioForm(forms.ModelForm):
             raise forms.ValidationError("Este número de teléfono ya está registrado.")
         return tel
 
-
-# --- FORMULARIO PROVEEDOR (REFORZADO) ---
+# ============================
+# FORMULARIO PROVEEDOR
+# ============================
 class ProveedorForm(forms.ModelForm):
     class Meta:
         model = Proveedor
@@ -96,7 +94,6 @@ class ProveedorForm(forms.ModelForm):
 
     def clean_nombre(self):
         nombre = self.cleaned_data.get('nombre', '').strip().upper()
-        # Validamos que no tenga números (usando tu utilidad)
         validar_solo_letras(nombre)
         if len(nombre) < 3:
             raise forms.ValidationError("El nombre debe tener al menos 3 caracteres.")
@@ -116,39 +113,9 @@ class ProveedorForm(forms.ModelForm):
             raise forms.ValidationError("Este teléfono ya pertenece a otro proveedor.")
         return tel
 
-
-class CompraForm(forms.ModelForm):
-    class Meta:
-        model = Compra
-        fields = ['proveedor', 'producto', 'cantidad', 'num_factura_proveedor', 'metodo_pago', 'total_pagado']
-        widgets = {
-            'proveedor': forms.Select(attrs={'class': 'form-control'}),
-            'producto': forms.Select(attrs={'class': 'form-control'}),
-            'cantidad': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
-            'num_factura_proveedor': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'N° de Factura'}),
-            'metodo_pago': forms.Select(attrs={'class': 'form-control'}),
-            'total_pagado': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-        }
-
-    def clean_cantidad(self):
-        cantidad = self.cleaned_data.get('cantidad')
-        if cantidad is not None and cantidad <= 0:
-            raise forms.ValidationError("La cantidad debe ser mayor a cero.")
-        return cantidad
-
-    def clean_total_pagado(self):
-        total = self.cleaned_data.get('total_pagado')
-        if total is not None and total < 0:
-            raise forms.ValidationError("El total pagado no puede ser negativo.")
-        return total
-
-    def clean_num_factura_proveedor(self):
-        factura = self.cleaned_data.get('num_factura_proveedor', '').strip().upper()
-        if Compra.objects.filter(num_factura_proveedor=factura).exclude(pk=self.instance.pk).exists():
-            raise forms.ValidationError("Este número de factura ya fue ingresado.")
-        return factura
-
-
+# ============================
+# FORMULARIO CLIENTE
+# ============================
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
@@ -187,39 +154,94 @@ class ClienteForm(forms.ModelForm):
                 raise forms.ValidationError("Este correo electrónico ya está registrado con otro cliente.")
         return email
 
-
-class ProductoForm(forms.ModelForm):
+# ============================
+# FORMULARIO MARCA
+# ============================
+class MarcaForm(forms.ModelForm):
     class Meta:
-        model = Producto
-        fields = '__all__'
+        model = Marca
+        fields = ['nombre', 'pais_origen', 'descripcion', 'estado']
         widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Filtro de Aceite'}),
-            'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Detalles del repuesto'}),
-            'precio_compra': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-            'precio_venta': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-            'existencia': forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
-            'stock_minimo': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Toyota'}),
+            'pais_origen': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Japón (Opcional)'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Descripción opcional'}),
+            'estado': forms.CheckboxInput(attrs={'class': 'form-check-input', 'role': 'switch'}),
         }
 
     def clean_nombre(self):
-        nombre = self.cleaned_data.get('nombre', '').strip().upper()
-        if Producto.objects.filter(nombre=nombre).exclude(pk=self.instance.pk).exists():
-            raise forms.ValidationError("Ya existe un producto con este nombre.")
-        return nombre
+        nombre = self.cleaned_data.get('nombre')
+        if len(nombre) < 2:
+            raise forms.ValidationError("El nombre debe tener al menos 2 caracteres.")
+        return nombre.capitalize()
 
-    def clean(self):
-        cd = super().clean()
-        p_venta = cd.get('precio_venta')
-        p_compra = cd.get('precio_compra')
-        
-        if p_compra is not None and p_compra < 0:
-            self.add_error('precio_compra', "El precio no puede ser negativo.")
-            
-        if p_venta and p_compra and p_venta <= p_compra:
-            self.add_error('precio_venta', "El precio de venta debe ser mayor al de compra para generar ganancia.")
-        return cd
+# ============================
+# FORMULARIO PRODUCTO
+# ============================
+class ProductoForm(forms.ModelForm):
+    estado = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input', 'role': 'switch'})
+    )
 
+class ProductoForm(forms.ModelForm):
+    estado = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input', 'role': 'switch'})
+    )
+    class Meta:
+            model = Producto
+            fields = '__all__'
+            widgets = {
+                'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Filtro de Aceite'}),
+                'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Detalles del repuesto'}),
+                'codigo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Código único'}),
+                'precio': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': '0'}),
+                'stock': forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
+                'stock_minimo': forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
+                'marca': forms.Select(attrs={'class': 'form-control'}),
+                'estado': forms.CheckboxInput(attrs={'class': 'form-check-input', 'role': 'switch'}),
+            }
 
+    def clean_nombre(self):
+            nombre = self.cleaned_data.get('nombre', '').strip().title()
+            if len(nombre) < 3:
+                raise forms.ValidationError("El nombre debe tener al menos 3 caracteres.")
+            if Producto.objects.filter(nombre=nombre).exclude(pk=self.instance.pk).exists():
+                raise forms.ValidationError("Ya existe un producto con este nombre.")
+            return nombre
+
+    def clean_codigo(self):
+            codigo = self.cleaned_data.get('codigo', '').strip().upper()
+            if codigo and len(codigo) < 4:
+                raise forms.ValidationError("El código debe tener mínimo 4 caracteres.")
+            if Producto.objects.filter(codigo=codigo).exclude(pk=self.instance.pk).exists():
+                raise forms.ValidationError("Ya existe un producto con este código.")
+            return codigo
+
+    def clean_precio(self):
+            precio = self.cleaned_data.get('precio')
+            if precio is not None and precio <= 0:
+                raise forms.ValidationError("El precio debe ser mayor a cero.")
+            return precio
+
+    def clean_stock(self):
+            stock = self.cleaned_data.get('stock')
+            if stock is not None and stock < 0:
+                raise forms.ValidationError("El stock no puede ser negativo.")
+            return stock
+
+    def clean_stock_minimo(self):
+            stock_minimo = self.cleaned_data.get('stock_minimo')
+            stock = self.cleaned_data.get('stock')
+            if stock_minimo is not None and stock_minimo < 0:
+                raise forms.ValidationError("El stock mínimo no puede ser negativo.")
+            if stock_minimo is not None and stock is not None and stock_minimo > stock:
+                raise forms.ValidationError("El stock mínimo no puede ser mayor que la existencia actual.")
+            return stock_minimo
+
+# ============================
+# FORMULARIO VEHICULO
+# ============================
 class VehiculoForm(forms.ModelForm):
     class Meta:
         model = Vehiculo

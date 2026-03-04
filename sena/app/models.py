@@ -1,5 +1,9 @@
 from django.db import models
 from django.utils import timezone
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator, MinValueValidator
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 # =========================================================
 # BLOQUE 0: PERSONAL (USUARIOS)
@@ -31,6 +35,42 @@ class Usuario(models.Model):
 # =========================================================
 # BLOQUE 1: INVENTARIO Y FINANZAS (CAJA)
 # =========================================================
+class Marca(models.Model):
+
+    nombre = models.CharField(
+        max_length=50,
+        unique=True,
+        validators=[
+            RegexValidator(
+                regex='^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$',
+                message='El nombre solo puede contener letras y espacios.'
+            )
+        ]
+    )
+
+    pais_origen = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True
+    )
+
+    descripcion = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    estado = models.BooleanField(
+        default=True
+    )
+
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Marca"
+        verbose_name_plural = "Marcas"
+
+    def __str__(self):
+        return self.nombre
 
 class Caja(models.Model):
     TIPOS = [('INGRESO', 'Ingreso (+)'), ('EGRESO', 'Egreso (-)')]
@@ -58,21 +98,75 @@ class Proveedor(models.Model):
     class Meta: 
         db_table = "proveedor"
 
+
+
 class Producto(models.Model):
-    nombre = models.CharField(max_length=100)
-    descripcion = models.CharField(max_length=200, blank=True)
-    precio_compra = models.DecimalField(max_digits=12, decimal_places=2)
-    precio_venta = models.DecimalField(max_digits=12, decimal_places=2)
-    existencia = models.IntegerField(default=0)
-    stock_minimo = models.IntegerField(default=5)
 
-    def __str__(self): 
-        return f"{self.nombre} ({self.existencia} unid.)"
-    
-    class Meta: 
-        db_table = "producto"
+    nombre = models.CharField(
+        max_length=100,
+        unique=True,
+        validators=[
+            RegexValidator(
+                regex='^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]+$',
+                message='El nombre solo puede contener letras, números y espacios.'
+            )
+        ]
+    )
 
-# COMPRA: Sube stock y genera un EGRESO en Caja
+    marca = models.ForeignKey(
+        Marca,
+        on_delete=models.PROTECT,
+        limit_choices_to={'estado': True}  # Solo marcas activas
+    )
+
+    descripcion = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    precio = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0.01)]
+    )
+
+    stock = models.PositiveIntegerField(
+        validators=[MinValueValidator(0)]
+    )
+
+    stock_minimo = models.PositiveIntegerField(
+        default=0,
+        validators=[MinValueValidator(0)]
+    )
+
+    codigo = models.CharField(
+        max_length=20,
+        unique=True
+    )
+
+    estado = models.BooleanField(
+        default=True
+    )
+
+    fecha_creacion = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        verbose_name = "Producto"
+        verbose_name_plural = "Productos"
+        ordering = ['nombre']
+
+    def clean(self):
+        # Validación lógica empresarial
+        if self.stock_minimo > self.stock:
+            raise ValidationError(
+                "El stock mínimo no puede ser mayor al stock actual."
+            )
+
+    def __str__(self):
+        return f"{self.nombre} - {self.marca}"
+
 class Compra(models.Model):
     METODOS = [('Efectivo', 'Efectivo'), ('Transferencia', 'Transferencia'), ('Credito', 'Crédito')]
     
@@ -80,18 +174,15 @@ class Compra(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     fecha = models.DateTimeField(default=timezone.now)
-    # MEJORA: unique=True para evitar registrar la misma factura dos veces
     num_factura_proveedor = models.CharField(max_length=50, unique=True) 
     metodo_pago = models.CharField(max_length=20, choices=METODOS, default='Efectivo')
     total_pagado = models.DecimalField(max_digits=12, decimal_places=2, default=0)
 
     def save(self, *args, **kwargs):
-        if not self.pk: # Solo ocurre al crear la compra, no al editarla
-            # 1. Aumentamos el stock del producto
+        if not self.pk:
             self.producto.existencia += self.cantidad
             self.producto.save()
             
-            # 2. Si se pagó (Efectivo o Transf), se registra la salida de dinero
             if self.metodo_pago != 'Credito':
                 Caja.objects.create(
                     descripcion=f"Pago Compra Factura {self.num_factura_proveedor} - {self.proveedor.nombre}",
@@ -120,19 +211,15 @@ class Cliente(models.Model):
     class Meta: 
         db_table = "cliente"
 
-class Marca(models.Model):
-    nombre = models.CharField(max_length=50, unique=True)
-    
-    def __str__(self): 
-        return self.nombre
-    
-    class Meta: 
-        db_table = "marca"
+# 🔥 MARCA MEJORADA PROFESIONALMENTE
+from django.db import models
+from django.core.validators import RegexValidator
+
 
 class Vehiculo(models.Model):
     placa = models.CharField(max_length=10, unique=True)
     modelo = models.CharField(max_length=50)
-    marca = models.ForeignKey(Marca, on_delete=models.PROTECT) # Evita borrar marcas usadas
+    Marca = models.ForeignKey('Marca', on_delete=models.PROTECT)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
 
     def __str__(self): 
@@ -142,7 +229,7 @@ class Vehiculo(models.Model):
         db_table = "vehiculo"
 
 # =========================================================
-# BLOQUE 3: OPERACIÓN (ÓRDENES DE SERVICIO)
+# BLOQUE 3: OPERACIÓN
 # =========================================================
 class TipoServicio(models.Model):
     nombre = models.CharField(max_length=100)
@@ -178,7 +265,6 @@ class DetalleOrdenProducto(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            # Al usar un producto en un servicio, restamos del stock
             self.producto.existencia -= self.cantidad
             self.producto.save()
         super().save(*args, **kwargs)
@@ -196,7 +282,6 @@ class VentasFactura(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            # Al facturar, entra dinero a la CAJA como INGRESO
             Caja.objects.create(
                 descripcion=f"Venta Factura {self.numero_factura} - Orden {self.orden.id}",
                 monto=self.total,
