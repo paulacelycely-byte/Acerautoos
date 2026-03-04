@@ -1,445 +1,219 @@
-from datetime import timedelta
 from django.db import models
-from datetime import datetime
-from decimal import Decimal
-from app.models import *
-from django.db.models import Sum
+from django.utils import timezone
 
-
+# =========================================================
+# BLOQUE 0: PERSONAL (USUARIOS)
+# =========================================================
 class Usuario(models.Model):
-    ROL = [(
-        'Administrador', 'Administrador'
-    ), ('Usuario', 'Usuario')]
-    nombre = models.CharField(max_length=100)
-    rol = models.CharField(max_length=45, choices=ROL)
-    telefono = models.CharField(max_length=45)
-    email = models.CharField(max_length=45, unique=True)
-    direccion = models.CharField(max_length=100)
-    contrasena = models.CharField(max_length=45)
+    CARGOS = [
+        ('ADMIN', 'Administrador'),
+        ('MECANICO', 'Mecánico'),
+        ('RECEPCIONISTA', 'Recepcionista'),
+        ('GERENTE', 'Gerente'),
+    ]
+    nombres = models.CharField(max_length=150)
+    apellidos = models.CharField(max_length=150)
+    cedula = models.CharField(max_length=20, unique=True)
+    telefono = models.CharField(max_length=20, null=True, blank=True)
+    correo = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)
+    cargo = models.CharField(max_length=20, choices=CARGOS, default='ADMIN')
+    activo = models.BooleanField(default=True)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.nombre
+        return f"{self.nombres} {self.apellidos} ({self.get_cargo_display()})"
 
     class Meta:
-        verbose_name = "Usuario"
-        verbose_name_plural = "Usuarios"
-        db_table = "Usuario"
+        db_table = 'usuario'
+        ordering = ['id']
 
+# =========================================================
+# BLOQUE 1: INVENTARIO Y FINANZAS (CAJA)
+# =========================================================
+
+class Caja(models.Model):
+    TIPOS = [('INGRESO', 'Ingreso (+)'), ('EGRESO', 'Egreso (-)')]
+    fecha = models.DateTimeField(auto_now_add=True)
+    descripcion = models.CharField(max_length=255)
+    monto = models.DecimalField(max_digits=12, decimal_places=2)
+    tipo = models.CharField(max_length=10, choices=TIPOS)
+
+    def __str__(self):
+        return f"{self.tipo}: {self.descripcion} (${self.monto})"
+    
+    class Meta: 
+        db_table = "caja"
+        verbose_name_plural = "Cajas"
+
+class Proveedor(models.Model):
+    nombre = models.CharField(max_length=100)
+    nit = models.CharField(max_length=20, unique=True)
+    telefono = models.CharField(max_length=20)
+    direccion = models.CharField(max_length=150, blank=True)
+
+    def __str__(self): 
+        return self.nombre
+    
+    class Meta: 
+        db_table = "proveedor"
 
 class Producto(models.Model):
     nombre = models.CharField(max_length=100)
-    descripcion = models.CharField(max_length=100)
-    precio = models.DecimalField(max_digits=10, decimal_places=2)
-    existencia = models.IntegerField()
+    descripcion = models.CharField(max_length=200, blank=True)
+    precio_compra = models.DecimalField(max_digits=12, decimal_places=2)
+    precio_venta = models.DecimalField(max_digits=12, decimal_places=2)
+    existencia = models.IntegerField(default=0)
+    stock_minimo = models.IntegerField(default=5)
 
-    def __str__(self):
+    def __str__(self): 
+        return f"{self.nombre} ({self.existencia} unid.)"
+    
+    class Meta: 
+        db_table = "producto"
+
+# COMPRA: Sube stock y genera un EGRESO en Caja
+class Compra(models.Model):
+    METODOS = [('Efectivo', 'Efectivo'), ('Transferencia', 'Transferencia'), ('Credito', 'Crédito')]
+    
+    proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.IntegerField()
+    fecha = models.DateTimeField(default=timezone.now)
+    # MEJORA: unique=True para evitar registrar la misma factura dos veces
+    num_factura_proveedor = models.CharField(max_length=50, unique=True) 
+    metodo_pago = models.CharField(max_length=20, choices=METODOS, default='Efectivo')
+    total_pagado = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+
+    def save(self, *args, **kwargs):
+        if not self.pk: # Solo ocurre al crear la compra, no al editarla
+            # 1. Aumentamos el stock del producto
+            self.producto.existencia += self.cantidad
+            self.producto.save()
+            
+            # 2. Si se pagó (Efectivo o Transf), se registra la salida de dinero
+            if self.metodo_pago != 'Credito':
+                Caja.objects.create(
+                    descripcion=f"Pago Compra Factura {self.num_factura_proveedor} - {self.proveedor.nombre}",
+                    monto=self.total_pagado,
+                    tipo='EGRESO'
+                )
+        super().save(*args, **kwargs)
+
+    class Meta: 
+        db_table = "compra"
+
+# =========================================================
+# BLOQUE 2: CLIENTES Y FLOTA
+# =========================================================
+class Cliente(models.Model):
+    TIPOS_DOC = [('CC', 'Cédula'), ('NIT', 'NIT'), ('CE', 'Cédula Extranjería')]
+    nombre = models.CharField(max_length=150)
+    tipo_documento = models.CharField(max_length=5, choices=TIPOS_DOC, default='CC')
+    numero_documento = models.CharField(max_length=20, unique=True)
+    telefono = models.CharField(max_length=20)
+    email = models.EmailField(null=True, blank=True)
+
+    def __str__(self): 
+        return f"{self.nombre} - {self.numero_documento}"
+    
+    class Meta: 
+        db_table = "cliente"
+
+class Marca(models.Model):
+    nombre = models.CharField(max_length=50, unique=True)
+    
+    def __str__(self): 
         return self.nombre
-
-    class Meta:
-        verbose_name = "Producto"
-        verbose_name_plural = "Productos"
-        db_table = "Producto"
-
+    
+    class Meta: 
+        db_table = "marca"
 
 class Vehiculo(models.Model):
-    TIPO = [
-        ('Sedán', 'Sedán'),
-        ('SUV', 'SUV'),
-        ('Hatchback', 'Hatchback'),
-        ('Coupé', 'Coupé'),
-        ('Convertible', 'Convertible'),
-        ('Pickup', 'Pickup'),
-        ('Minivan', 'Minivan'),
-        ('Station Wagon', 'Station Wagon'),
-        ('Deportivo', 'Deportivo'),
-        ('Crossover', 'Crossover'),
-    ]
-    tipo_vehiculo = models.CharField(max_length=100, choices=TIPO)
-    placa = models.CharField(max_length=6)
-    marca = models.CharField(max_length=100)
-    modelo = models.CharField(max_length=100)
-    kilometraje = models.IntegerField()
-    documento = models.ForeignKey('Cliente', on_delete=models.CASCADE)
-    modelo = models.CharField(max_length=30)
+    placa = models.CharField(max_length=10, unique=True)
+    modelo = models.CharField(max_length=50)
+    marca = models.ForeignKey(Marca, on_delete=models.PROTECT) # Evita borrar marcas usadas
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f"{self.marca} {self.modelo}"
+    def __str__(self): 
+        return f"{self.placa} ({self.marca} {self.modelo})"
+    
+    class Meta: 
+        db_table = "vehiculo"
 
-    class Meta:
-        verbose_name = "Vehiculo"
-        verbose_name_plural = "Vehiculos"
-        db_table = "Vehiculo"
-
-
-class insumo(models.Model):
+# =========================================================
+# BLOQUE 3: OPERACIÓN (ÓRDENES DE SERVICIO)
+# =========================================================
+class TipoServicio(models.Model):
     nombre = models.CharField(max_length=100)
-    cantidad = models.IntegerField()
-    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
-
-    def __str__(self):
-        # Corregido: Se usa _str_. Retorna una sola cadena.
-        return f"{self.nombre} (${self.precio_unitario})"
-
-    class Meta:
-        verbose_name = "insumo"
-        verbose_name_plural = "insumos"
-        db_table = "insumo"
-
-
-class tipo_servicio(models.Model):
-    CATEGORIAS = [
-        ('MEC', 'Mecánica general'),
-        ('ELEC', 'Electricidad automotriz'),
-        ('FREN', 'Frenos'),
-        ('SUSP', 'Suspensión'),
-        ('MANT', 'Mantenimiento'),
-        ('DIAG', 'Diagnóstico'),
-        ('CLIM', 'Climatización'),
-        ('EST', 'Estética vehicular'),
-    ]
-    SERVICIOS = [
-        ('ACEITE', 'Cambio de aceite'),
-        ('FILTROS', 'Cambio de filtros'),
-        ('REVISION', 'Revisión general'),
-        ('DIAGNOSTICO', 'Diagnóstico'),
-        ('PREVENTIVO', 'Mantenimiento preventivo'),
-        ('CORRECTIVO', 'Mantenimiento correctivo'),
-        ('ALINEACION', 'Alineación y balanceo'),
-        ('FRENOS', 'Servicio de frenos'),
-        ('BATERIA', 'Cambio de batería'),
-        ('ELECTRICO', 'Sistema eléctrico'),
-        ('SUSPENSION', 'Suspensión'),
-        ('DIRECCION', 'Dirección'),
-        ('MOTOR', 'Reparación de motor'),
-        ('SINCRONIZACION', 'Sincronización'),
-        ('CORREA', 'Cambio de correa'),
-        ('REFRIGERACION', 'Refrigeración'),
-        ('AIRE', 'Aire acondicionado'),
-        ('BUJIAS', 'Cambio de bujías'),
-        ('LAVADO', 'Lavado'),
-        ('INSPECCION', 'Inspección'),
-    ]
-    nombre = models.CharField(max_length=100, choices=SERVICIOS)
-    descripcion = models.CharField(max_length=100)
-    categoria = models.CharField(max_length=100, choices=CATEGORIAS)
-    estado = models.BooleanField(default=True)
-
-    def __str__(self):
+    precio_mano_obra = models.DecimalField(max_digits=12, decimal_places=2)
+    
+    def __str__(self): 
         return self.nombre
-
-    class Meta:
-        verbose_name = "tipo_servicio"
-        verbose_name_plural = "tipo_servicios"
+    
+    class Meta: 
         db_table = "tipo_servicio"
 
+class OrdenServicio(models.Model):
+    ESTADOS = [('Pendiente', 'Pendiente'), ('En Proceso', 'En Proceso'), ('Terminado', 'Terminado')]
+    usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True)
+    vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
+    servicio = models.ForeignKey(TipoServicio, on_delete=models.PROTECT)
+    fecha = models.DateTimeField(default=timezone.now)
+    km_actual = models.IntegerField()
+    km_proximo_cambio = models.IntegerField(null=True, blank=True)
+    estado = models.CharField(max_length=20, choices=ESTADOS, default='Pendiente')
+    observaciones = models.TextField(blank=True)
 
-class Entrada_vehiculo(models.Model):
-    documento = models.ForeignKey('Cliente', on_delete=models.CASCADE)
+    def __str__(self): 
+        return f"Orden {self.id} - {self.vehiculo.placa}"
+    
+    class Meta: 
+        db_table = "orden_servicio"
 
-    fecha_hora_entrada = models.DateTimeField(auto_now_add=True)
-
-    placa = models.CharField(max_length=6)
-
-    def __str__(self):
-        return f"Entrada {self.placa} - {self.fecha_hora_entrada}"
-
-    class Meta:
-        db_table = "entrada_vehiculos"
-        verbose_name = "Entrada de Vehículo"
-        verbose_name_plural = "Entradas de Vehículos"
-
-
-estado = [
-    (True, 'Activo'),
-    (False, 'Inactivo'),
-
-]
-
-
-class Proveedor(models.Model):
-    estado = [
-        (True, 'Activo'),
-        (False, 'Inactivo'),
-    ]
-    nombre = models.CharField(max_length=50)
-    documento = models.CharField(max_length=10)
-    telefono = models.CharField(max_length=15)
-    email = models.EmailField()
-    direccion = models.CharField(max_length=100)
-    estado = models.BooleanField(default=True, choices=estado)
-    mercancia = models.ForeignKey(Producto, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.nombre
-
-    class Meta:
-        verbose_name = "Proveedor"
-        verbose_name_plural = "Proveedores"
-        db_table = "Proveedor"
-
-
-class Compra(models.Model):
-    id_compra = models.AutoField(primary_key=True)
-    fecha = models.DateField()
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-    estado = models.CharField(max_length=10)
-
-    fk_proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
-    fk_insumo = models.ForeignKey(insumo, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"Compra {self.id_compra} - {self.estado}"
-
-    class Meta:
-        verbose_name = "Compra"
-        verbose_name_plural = "Compras"
-        db_table = "compra"
-
-
-class Categorias(models.Model):
-    id_categoria = models.AutoField(primary_key=True)
-    nombre_categoria = models.CharField(max_length=45)
-    descripcion = models.CharField(max_length=45)
-    fk_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.nombre_categoria
-
-    class Meta:
-        verbose_name = "Categoría de Producto"
-        verbose_name_plural = "Categorías de Productos"
-        db_table = "categoria_productos"
-
-
-class Cliente(models.Model):
-    nombre = models.CharField(max_length=100)
-    documento = models.CharField(max_length=10, unique=True)
-
-    def __str__(self):
-        return f"{self.documento}"
-
-    class Meta:
-        db_table = "Cliente"
-        verbose_name = "Cliente"
-        verbose_name_plural = "Clientes"
-
-
-class Ventas(models.Model):
-    fecha = models.DateField()
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    salida = models.ForeignKey('Salida_Vehiculo', on_delete=models.CASCADE)
-    # Correcto: 'Producto'
-    productos = models.ManyToManyField(Producto)
-    # Correcto: 'Usuario'
-    usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
-
-    def __str__(self):
-        # Corregido: Retorna una sola cadena.
-        return f"Venta del {self.fecha} a {self.cliente} {self.salida}"
-
-    class Meta:
-        verbose_name = "Venta"
-        verbose_name_plural = "Venta"
-        db_table = "Venta"
-
-
-# --- MODELOS CON RELACIONES ---
-
-
-class Compra(models.Model):
-    id_compra = models.AutoField(primary_key=True)
-    fecha = models.DateField()
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-    estado = models.CharField(max_length=10)
-
-    # CORREGIDO: 'Proveedor' -> 'Proveedores' (Nombre de la clase)
-    fk_proveedor = models.ForeignKey('Proveedor', on_delete=models.CASCADE)
-    # CORREGIDO: 'Insumo' -> 'insumo' (Nombre de la clase)
-    fk_insumo = models.ForeignKey('insumo', on_delete=models.CASCADE)
+class DetalleOrdenProducto(models.Model):
+    orden = models.ForeignKey(OrdenServicio, on_delete=models.CASCADE, related_name='productos_usados')
+    producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
+    cantidad = models.IntegerField(default=1)
 
     def save(self, *args, **kwargs):
-        if self.fk_insumo:
-            self.total = self.fk_insumo.precio_unitario * self.fk_insumo.cantidad
+        if not self.pk:
+            # Al usar un producto en un servicio, restamos del stock
+            self.producto.existencia -= self.cantidad
+            self.producto.save()
         super().save(*args, **kwargs)
 
-    def __str__(self):
-        return f"Compra {self.id_compra} - {self.estado}"
-
-    class Meta:
-        verbose_name = "Compra"
-        verbose_name_plural = "Compras"
-        db_table = "compra"
-
-
-class Categorias(models.Model):
-    id_categoria = models.AutoField(primary_key=True)
-    nombre_categoria = models.CharField(max_length=45)
-    descripcion = models.CharField(max_length=45)
-    # Correcto: 'Producto'
-    fk_producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.nombre_categoria
-
-    class Meta:
-        verbose_name = "Categoría "
-        verbose_name_plural = "Categorías"
-        db_table = "categoria"
-
-
-entrada = [
-    (True, 'Entrada'),
-    (False, 'Salida'),
-]
-
-
-class Salida_vehiculo(models.Model):
-    entrada = models.OneToOneField(
-        'Entrada_Vehiculo',
-        on_delete=models.CASCADE,
-        related_name="salida"
-    )
-
-    fecha_hora_salida = models.DateTimeField()
-    total_a_pagar = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        blank=True
-    )
-
-    # 🔹 Duración total del vehículo en el taller
-    @property
-    def duracion_total(self):
-        return self.fecha_hora_salida - self.entrada.fecha_hora_entrada
-
-    # 🔹 Duración formateada bonita
-    def duracion_formateada(self):
-        duracion = self.duracion_total
-        horas = duracion.days * 24 + duracion.seconds // 3600
-        minutos = (duracion.seconds % 3600) // 60
-        return f"{horas}h {minutos}m"
-
-    # 🔹 Calcular total automáticamente
-    def calcular_total(self):
-        total = self.entrada.servicios.aggregate(
-            total=Sum('precio')
-        )['total']
-        return total or 0
+# =========================================================
+# BLOQUE 4: FACTURACIÓN Y ALERTAS
+# =========================================================
+class VentasFactura(models.Model):
+    METODOS = [('Efectivo', 'Efectivo'), ('Transferencia', 'Transferencia')]
+    orden = models.OneToOneField(OrdenServicio, on_delete=models.CASCADE)
+    numero_factura = models.CharField(max_length=20, unique=True)
+    fecha_emision = models.DateTimeField(auto_now_add=True)
+    metodo_pago = models.CharField(max_length=20, choices=METODOS, default='Efectivo')
+    total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
 
     def save(self, *args, **kwargs):
-        self.total_a_pagar = self.calcular_total()
+        if not self.pk:
+            # Al facturar, entra dinero a la CAJA como INGRESO
+            Caja.objects.create(
+                descripcion=f"Venta Factura {self.numero_factura} - Orden {self.orden.id}",
+                monto=self.total,
+                tipo='INGRESO'
+            )
         super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"Salida {self.entrada.placa} - ${self.total_a_pagar}"
-
-    class Meta:
-        db_table = "salida_vehiculos"
-        verbose_name = "Salida de Vehículo"
-        verbose_name_plural = "Salidas de Vehículos"
-
-
-# --- MODELO AUXILIAR FALTANTE (Agregado) ---
-# Se asume la existencia del modelo Cliente ya que Ventas lo necesita.
-
-
-class Factura(models.Model):
-    fecha = models.DateField()
-
-
-    subtotal = models.DecimalField(
-    max_digits=10,
-    decimal_places=2,
-    default=Decimal('0.00')
-    )
-
-    iva = models.DecimalField(
-     max_digits=10,
-     decimal_places=2,
-     default=Decimal('0.00')
-     )
-
-    total = models.DecimalField(
-      max_digits=10,
-      decimal_places=2,
-      default=Decimal('0.00')
-      )
-
-    venta = models.ForeignKey('Ventas', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"Factura #{self.id} por ${self.total}"
-
-    def __str__(self):
-        return f"Factura #{self.id} por ${self.total}"
-
-    class Meta:
-        verbose_name = "Factura"
-        verbose_name_plural = "Facturas"
-        db_table = "Factura"
-
+    
+    class Meta: 
+        db_table = "factura"
 
 class Notificacion(models.Model):
-    TIPO_NOTIFICACION = [
-        # Para cualquier comunicación normal
-        ('Mensaje', 'Mensaje General'),
-        ('Alerta', 'Alerta Importante'),     # Requiere atención inmediata
-        ('Recordatorio', 'Recordatorio'),   # Para avisos o eventos próximos
-    ]
-    id_notificacion = models.AutoField(primary_key=True)
-    tipo_notificacion = models.CharField(choices=TIPO_NOTIFICACION)
-    mensaje = models.CharField(max_length=45)
-    fecha_envio = models.CharField(max_length=45)
-    ventas = models.ForeignKey('Ventas', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"Notificación {self.id_notificacion} - {self.mensaje}"
-
-    class Meta:
-        verbose_name = "Notificación"
-        verbose_name_plural = "Notificaciones"
+    TIPOS = [('Mantenimiento', 'Mantenimiento'), ('Stock', 'Inventario Bajo')]
+    tipo = models.CharField(max_length=20, choices=TIPOS, default='Mantenimiento')
+    vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE, null=True, blank=True)
+    mensaje = models.TextField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    leido = models.BooleanField(default=False)
+    
+    class Meta: 
         db_table = "notificacion"
-
-
-class Servicio(models.Model):
-    descripcion = models.CharField(max_length=255)
-    precio = models.DecimalField(max_digits=10, decimal_places=2)
-
-    entrada = models.ForeignKey(
-        'Entrada_vehiculo',
-        on_delete=models.CASCADE,
-        related_name="servicios"
-    )
-
-    insumo = models.ForeignKey(
-        'insumo',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
-
-    usuario = models.ForeignKey(
-        'Usuario',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
-
-    tipo_servicio = models.ForeignKey(
-        'tipo_servicio',
-        on_delete=models.CASCADE
-    )
-
-    def save(self, *args, **kwargs):
-        if self.insumo:
-            self.precio += self.insumo.precio_unitario
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.descripcion} - ${self.precio}"
-
-    class Meta:
-        db_table = "servicios"
-        verbose_name = "Servicio"
-        verbose_name_plural = "Servicios"

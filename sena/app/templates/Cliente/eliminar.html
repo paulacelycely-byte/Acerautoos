@@ -11,10 +11,10 @@
         background: #fff;
     }
 
-    /* --- TU ICONO ANIMADO RECUPERADO --- */
+    /* Icono Animado */
     .warning-wrapper {
         font-size: 4.5rem;
-        color: #dc3545; /* Mantenemos el rojo solo en el icono para que resalte */
+        color: #dc3545;
         margin-bottom: 1.5rem;
         animation: swing 2s infinite ease-in-out;
         display: inline-block;
@@ -28,7 +28,7 @@
         80% { transform: rotate(-5deg); }
     }
 
-    /* Caja de detalles neutra */
+    /* Caja de detalles */
     .category-details {
         background-color: #f8f9fa;
         border-radius: 12px;
@@ -78,14 +78,15 @@
                 </div>
 
                 <h2 class="font-weight-bold text-dark text-uppercase" style="letter-spacing: 1px;">Confirmar Acción</h2>
-                <p class="text-muted">Estás a punto de retirar un elemento del sistema central.</p>
+                <p class="text-muted">Estás a punto de eliminar a un cliente del sistema central.</p>
 
                 <div class="category-details text-left">
-                    <small class="text-uppercase font-weight-bold text-muted" style="letter-spacing: 0.5px;">Registro a eliminar:</small>
+                    <small class="text-uppercase font-weight-bold text-muted" style="letter-spacing: 0.5px;">Cliente a eliminar:</small>
                     <h4 class="mb-0 text-dark font-weight-bold mt-1">{{ object.nombre }}</h4>
+                    <p class="mb-0 text-secondary">Identificación: {{ object.numero_documento }}</p>
                     <hr>
                     <p class="text-muted small mb-0">
-                        <i class="fas fa-info-circle mr-1"></i> Esta operación eliminará el registro de la base de datos de Acerautos de forma permanente.
+                        <i class="fas fa-info-circle mr-1"></i> Esta operación eliminará el registro de **Acerautos** permanentemente. Si este cliente tiene vehículos asociados, asegúrate de revisarlos antes.
                     </p>
                 </div>
 
@@ -93,9 +94,9 @@
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-6">
-                            <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')" class="btn btn-block btn-modern btn-volver">
+                           <a href="{% url 'app:listar_clientes' %}" class="btn btn-block btn-modern btn-volver">
                                 <i class="fas fa-times mr-2"></i> Cancelar
-                            </button>
+                            </a>
                         </div>
                         <div class="col-6">
                             <button type="button" id="btnConfirmarBorrado" class="btn btn-block btn-modern btn-eliminar-final">
@@ -127,7 +128,7 @@
                 confirmButtonText: 'Sí, eliminar',
                 cancelButtonText: 'No, mantener',
                 reverseButtons: true,
-                backdrop: true // Fondo oscuro normal, sin el rojo invasivo
+                backdrop: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     $('#formEliminar').submit();
@@ -135,9 +136,5 @@
             });
         });
     });
-
-    function confirmarCancelacion(url) {
-        window.location.href = url;
-    }
 </script>
 {% endblock %}

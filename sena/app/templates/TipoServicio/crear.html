@@ -110,20 +110,20 @@
     <div class="header-premium">
         <div class="d-flex align-items-center">
             <div class="title-icon">
-                <i class="fas fa-plus"></i>
+                <i class="fas fa-user-shield"></i>
             </div>
             <div class="title-container">
-                <h1>{{ titulo }}</h1>
+                <h1>{% if form.instance.pk %}Editar Usuario{% else %}Nuevo Usuario{% endif %}</h1>
             </div>
         </div>
-        <small class="text-secondary font-weight-bold text-uppercase" style="letter-spacing: 1px;">Nuevo Registro de Servicio</small>
+        <small class="text-secondary font-weight-bold text-uppercase" style="letter-spacing: 1px;">Acerautos Admin System</small>
     </div>
 
-    <form method="post" action="." id="formTipoServicio">
+    <form method="post" action="." id="formUsuario">
         {% csrf_token %}
         <div class="card card-form-premium overflow-hidden">
             <div class="card-header-dark">
-                <i class="fas fa-info-circle mr-2"></i> Configuración del Servicio
+                <i class="fas fa-id-card mr-2"></i> Información Personal y de Acceso
             </div>
 
             <div class="card-body p-4 p-md-5">
@@ -134,24 +134,20 @@
                                 {{ field.label }}
                             </label>
 
-                            {% if field.field.widget.input_type == 'checkbox' %}
-                                <div class="custom-control custom-switch mt-2">
-                                    {{ field|add_class:'custom-control-input' }}
-                                    <label class="custom-control-label text-secondary font-weight-bold" for="{{ field.id_for_label }}">Habilitar este servicio</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-white border-right-0">
+                                        {% if 'username' in field.name %}<i class="fas fa-user"></i>
+                                        {% elif 'password' in field.name %}<i class="fas fa-lock"></i>
+                                        {% elif 'first_name' in field.name %}<i class="fas fa-address-book"></i>
+                                        {% elif 'cedula' in field.name %}<i class="fas fa-fingerprint"></i>
+                                        {% elif 'telefono' in field.name %}<i class="fas fa-phone"></i>
+                                        {% elif 'email' in field.name %}<i class="fas fa-envelope"></i>
+                                        {% else %}<i class="fas fa-align-left"></i>{% endif %}
+                                    </span>
                                 </div>
-                            {% else %}
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text bg-white border-right-0">
-                                            {% if 'hora' in field.name %}<i class="fas fa-clock"></i>
-                                            {% elif 'nombre' in field.name %}<i class="fas fa-tag"></i>
-                                            {% elif 'precio' in field.name %}<i class="fas fa-dollar-sign"></i>
-                                            {% else %}<i class="fas fa-align-left"></i>{% endif %}
-                                        </span>
-                                    </div>
-                                    {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
-                                </div>
-                            {% endif %}
+                                {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+                            </div>
 
                             {% if field.errors %}
                                 {% for error in field.errors %}
@@ -167,12 +163,12 @@
             </div>
 
             <div class="card-footer bg-light d-flex justify-content-end py-4 border-top">
-                <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')" class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold" style="border-radius: 12px;">
+                <button type="button" onclick="confirmarCancelacion('{% url 'app:listar_usuario' %}')" class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold" style="border-radius: 12px;">
                     <i class="fas fa-times mr-1"></i> Descartar
                 </button>
 
                 <button type="submit" class="btn btn-acerautos-save-crear shadow-sm">
-                    <i class="fas fa-save mr-2"></i> Guardar Servicio
+                    <i class="fas fa-save mr-2"></i> Guardar Usuario
                 </button>
             </div>
         </div>
@@ -183,17 +179,17 @@
 {% block js %}
 <script>
     $(function () {
-        $('#formTipoServicio').on('submit', function (e) {
+        $('#formUsuario').on('submit', function (e) {
             if (!this.checkValidity()) { return; }
 
             e.preventDefault();
             var formulario = this;
             Swal.fire({
                 title: '¿Confirmar Registro?',
-                text: "El nuevo tipo de servicio será añadido al catálogo.",
+                text: "Los datos del usuario serán actualizados en la base de datos.",
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonText: 'Guardar',
+                confirmButtonText: 'Sí, Guardar',
                 cancelButtonText: 'Revisar',
                 confirmButtonColor: '#454d55',
                 cancelButtonColor: '#d33',
@@ -205,12 +201,12 @@
 
     function confirmarCancelacion(url) {
         Swal.fire({
-            title: '¿Cancelar Registro?',
-            text: "Se perderán los datos ingresados.",
+            title: '¿Cancelar Proceso?',
+            text: "Se perderán los datos no guardados.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sí, salir',
-            cancelButtonText: 'Continuar aquí',
+            cancelButtonText: 'Seguir aquí',
             confirmButtonColor: '#454d55',
             cancelButtonColor: '#6c757d',
         }).then((result) => {

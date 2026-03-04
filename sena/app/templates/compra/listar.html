@@ -71,8 +71,8 @@
     }
 
     .btn-circle {
-        width: 35px; height: 35px;
-        border-radius: 10px;
+        width: 40px; height: 40px;
+        border-radius: 12px;
         display: inline-flex; align-items: center; justify-content: center;
         transition: 0.3s; border: none;
     }
@@ -80,6 +80,18 @@
     .btn-circle:hover { 
         transform: translateY(-3px); 
         box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+    }
+
+    /* Ajuste para los badges de la tabla */
+    .badge-metodo {
+        background-color: #f1f3f5;
+        color: #212529 !important;
+        border: 1px solid #dee2e6;
+        font-weight: 600;
+        padding: 8px 12px;
+        border-radius: 8px;
+        text-transform: uppercase;
+        font-size: 0.75rem;
     }
 </style>
 {% endblock %}
@@ -93,13 +105,13 @@
                 <i class="fas fa-shopping-cart"></i>
             </div>
             <div class="title-container">
-                <h1>{{ titulo|upper }}</h1>
+                <h1>HISTORIAL DE COMPRAS</h1>
             </div>
         </div>
 
         <a href="{% url 'app:crear_compra' %}" class="btn btn-nueva-premium">
             <i class="fas fa-plus-circle"></i>
-            <span>Nueva Compra</span>
+            <span>Registrar Nueva Compra</span>
         </a>
     </div>
 
@@ -109,39 +121,47 @@
                 <table class="table table-hover align-middle" id="tabla_compras" style="width:100%">
                     <thead>
                         <tr class="text-uppercase small font-weight-bold text-muted">
-                            <th class="text-center" style="width: 5%;">ID</th>
-                            <th style="width: 30%;">Proveedor</th>
-                            <th style="width: 15%;">Fecha</th>
-                            <th style="width: 15%;">Total</th>
-                            <th style="width: 15%;">Estado</th>
-                            <th class="text-center" style="width: 20%;">Opciones</th>
+                            <th class="text-center">ID</th>
+                            <th>Proveedor / Factura</th>
+                            <th>Producto</th>
+                            <th class="text-center">Cant.</th>
+                            <th class="text-center">Método</th>
+                            <th>Total Pagado</th>
+                            <th>Fecha Registro</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for c in compras %}
                         <tr>
-                            <td class="text-center align-middle font-weight-bold text-secondary">{{ c.id_compra }}</td>
+                            <td class="text-center align-middle font-weight-bold text-secondary">{{ c.id }}</td>
                             <td class="align-middle">
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-box">{{ c.fk_proveedor.nombre|first|upper }}</div>
-                                    <span class="font-weight-bold text-dark">{{ c.fk_proveedor.nombre }}</span>
+                                    <div class="avatar-box">{{ c.proveedor.nombre|first|upper }}</div>
+                                    <div>
+                                        <span class="font-weight-bold text-dark d-block">{{ c.proveedor.nombre }}</span>
+                                        <small class="text-muted"><i class="fas fa-file-invoice"></i> Factura: {{ c.num_factura_proveedor }}</small>
+                                    </div>
                                 </div>
                             </td>
-                            <td class="align-middle text-dark">{{ c.fecha|date:"d/m/Y" }}</td>
-                            <td class="align-middle font-weight-bold text-dark">
-                                ${{ c.total }}
-                            </td>
                             <td class="align-middle">
-                                <span class="badge badge-light p-2 text-uppercase shadow-sm" style="letter-spacing: 1px; color: #120aa3; border-radius: 8px;">
-                                    {{ c.estado }}
-                                </span>
+                                <span class="text-dark font-weight-medium">{{ c.producto.nombre }}</span>
                             </td>
                             <td class="text-center align-middle">
-                                <a href="{% url 'app:editar_compra' c.id_compra %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
+                                <span class="font-weight-bold text-dark" style="font-size: 1.05rem;">{{ c.cantidad }}</span>
+                            </td>
+                            <td class="text-center align-middle">
+                                <span class="badge badge-metodo">
+                                    {{ c.metodo_pago }}
+                                </span>
+                            </td>
+                            <td class="align-middle">
+                                <span class="text-danger font-weight-bold">$ {{ c.total_pagado }}</span>
+                            </td>
+                            <td class="align-middle text-dark small">{{ c.fecha|date:"d/m/Y H:i" }}</td>
+                            <td class="text-center align-middle">
+                                <a href="{% url 'app:editar_compra' c.id %}" class="btn btn-warning btn-circle shadow-sm" title="Corregir datos">
                                     <i class="fas fa-pen text-white"></i>
-                                </a>
-                                <a href="{% url 'app:eliminar_compra' c.id_compra %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
-                                    <i class="fas fa-trash-alt text-white"></i>
                                 </a>
                             </td>
                         </tr>
@@ -164,11 +184,13 @@
             destroy: true,
             responsive: true,
             autoWidth: false,
-            order: [[0, "desc"]], // Ordenar por ID descendente por defecto
+            order: [[0, "desc"]],
             language: {
-                "sSearch": "<span class='font-weight-bold small'>BUSCAR:</span>",
+                "sSearch": "<span class='font-weight-bold small'>FILTRAR:</span>",
                 "sLengthMenu": "Mostrar _MENU_",
-                "sInfo": "Mostrando _TOTAL_ registros",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "sInfoEmpty": "0 registros",
+                "sZeroRecords": "No se encontraron facturas",
                 "oPaginate": {
                     "sNext": "<i class='fas fa-chevron-right'></i>",
                     "sPrevious": "<i class='fas fa-chevron-left'></i>"

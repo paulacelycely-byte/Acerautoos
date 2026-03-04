@@ -4,97 +4,69 @@
 {% block css %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <style>
-    /* --- ENCABEZADO PREMIUM ESTILO ACERAUTOS --- */
+    /* --- ENCABEZADO PREMIUM ROJO --- */
     .header-premium {
         background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        border-radius: 20px;
-        padding: 25px;
-        margin-bottom: 30px;
+        border-radius: 20px; padding: 25px; margin-bottom: 30px;
         border-left: 10px solid #d32f2f;
         box-shadow: 0 15px 35px rgba(0,0,0,0.04);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        display: flex; align-items: center; justify-content: space-between;
     }
 
     .title-icon {
         background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-        color: white;
-        width: 55px; height: 55px;
-        border-radius: 15px;
+        color: white; width: 55px; height: 55px; border-radius: 15px;
         display: flex; align-items: center; justify-content: center;
-        font-size: 1.5rem;
-        box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
+        font-size: 1.5rem; box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
         margin-right: 20px;
     }
 
     .title-container h1 {
-        font-family: 'Segoe UI', sans-serif;
-        font-size: 1.9rem;
-        font-weight: 700;
-        margin-bottom: 0;
-        color: #2d3436;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
+        font-family: 'Segoe UI', sans-serif; font-size: 1.8rem;
+        font-weight: 700; margin-bottom: 0; color: #2d3436;
+        text-transform: uppercase; letter-spacing: 1.5px;
     }
 
     .btn-nueva-premium {
         background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
-        color: white !important;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        letter-spacing: 1px;
-        display: flex; align-items: center; gap: 10px;
-        transition: all 0.3s ease;
-        box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
+        color: white !important; border: none; padding: 12px 25px;
+        border-radius: 12px; font-weight: 700; text-transform: uppercase;
+        font-size: 0.8rem; box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
     }
 
-    .btn-nueva-premium:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.1);
+    /* --- BADGES DE ESTADO --- */
+    .badge-estado {
+        padding: 8px 15px; border-radius: 10px; font-weight: 800;
+        font-size: 0.75rem; letter-spacing: 0.5px; display: inline-block;
+        min-width: 95px; text-align: center;
+    }
+    .badge-activo {
+        background-color: #28a745; color: white !important;
+        box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
+    }
+    .badge-inactivo {
+        background-color: #d32f2f; color: white !important;
+        box-shadow: 0 4px 10px rgba(211, 47, 47, 0.2);
     }
 
-    .card-custom {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
-        background: #fff;
+    /* --- DATATABLES CUSTOM --- */
+    .dataTables_filter input {
+        border: 2px solid #f1f3f5 !important; border-radius: 10px !important;
+        padding: 8px 15px !important; outline: none !important;
     }
+    .dataTables_filter input:focus { border-color: #d32f2f !important; }
+    .page-item.active .page-link { background-color: #d32f2f !important; border-color: #d32f2f !important; }
+    .page-link { color: #d32f2f; font-weight: 600; }
 
-    .avatar-user {
-        width: 40px; height: 40px;
-        background: #120aa3; /* Azul para diferenciar que es un usuario */
-        color: white;
-        border-radius: 10px;
-        display: flex; align-items: center; justify-content: center;
-        font-weight: bold;
-        margin-right: 12px;
+    /* --- TABLA --- */
+    .card-custom { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; }
+    .avatar-box {
+        width: 38px; height: 38px; background: #343a40; color: white;
+        border-radius: 10px; display: flex; align-items: center;
+        justify-content: center; font-weight: bold; margin-right: 12px;
     }
-
-    .btn-circle {
-        width: 35px; height: 35px;
-        border-radius: 10px;
-        display: inline-flex; align-items: center; justify-content: center;
-        transition: 0.3s;
-        border: none;
-    }
-
-    .btn-circle:hover { transform: translateY(-3px); }
-    
-    /* Badge de Rol */
-    .badge-rol {
-        padding: 5px 12px;
-        border-radius: 8px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        background: #f1f2f6;
-        color: #2f3542;
-        border: 1px solid #dfe4ea;
-    }
+    .btn-circle { width: 35px; height: 35px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; }
+    .badge-cargo { background: #f8f9fa; color: #495057; border: 1px solid #dee2e6; padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 0.75rem; }
 </style>
 {% endblock %}
 
@@ -104,53 +76,63 @@
     <div class="header-premium">
         <div class="d-flex align-items-center">
             <div class="title-icon">
-                <i class="fas fa-users"></i>
+                <i class="fas fa-user-tie"></i>
             </div>
             <div class="title-container">
-                <h1>GESTIÓN DE USUARIOS</h1>
+                <h1>Gestión de Personal</h1>
             </div>
         </div>
-
-        <a href="{{ crear_url }}" class="btn btn-nueva-premium">
-            <i class="fas fa-user-plus"></i>
-            <span>Nuevo Usuario</span>
+        <a href="{% url 'app:crear_usuario' %}" class="btn btn-nueva-premium">
+            <i class="fas fa-user-plus mr-1"></i> NUEVO USUARIO
         </a>
     </div>
 
     <div class="card card-custom">
         <div class="card-body p-4">
             <div class="table-responsive">
-                <table class="table table-hover align-middle" id="tabla_usuarios" style="width:100%">
+                <table class="table table-hover align-middle" id="tabla_usuarios_premium" style="width:100%">
                     <thead>
-                        <tr class="text-uppercase small font-weight-bold text-muted" style="border-bottom: 2px solid #f8f9fa;">
-                            <th class="text-center" style="width: 5%;">ID</th>
-                            <th style="width: 25%;">Usuario</th>
-                            <th style="width: 15%;">Rol</th>
-                            <th style="width: 15%;">Teléfono</th>
-                            <th style="width: 25%;">Email</th>
-                            <th class="text-center" style="width: 15%;">Opciones</th>
+                        <tr class="text-uppercase small font-weight-bold text-muted">
+                            <th class="text-center">#</th>
+                            <th>Nombre Completo</th>
+                            <th>Cédula</th>
+                            <th>Cargo</th>
+                            <th>Email</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for c in object_list %}
+                        {% for u in usuarios %}
                         <tr>
-                            <td class="text-center align-middle font-weight-bold text-secondary">#{{ c.id }}</td>
+                            <td class="text-center align-middle font-weight-bold text-secondary">{{ forloop.counter }}</td>
                             <td class="align-middle">
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-user">{{ c.nombre|first|upper }}</div>
-                                    <span class="font-weight-bold text-dark" style="font-size: 0.95rem;">{{ c.nombre }}</span>
+                                    <div class="avatar-box bg-dark">{{ u.nombres|first|upper }}</div>
+                                    <span class="font-weight-bold text-dark">{{ u.nombres }} {{ u.apellidos }}</span>
                                 </div>
                             </td>
+                            <td class="align-middle text-muted">{{ u.cedula }}</td>
                             <td class="align-middle">
-                                <span class="badge-rol text-uppercase">{{ c.rol }}</span>
+                                <span class="badge-cargo">{{ u.get_cargo_display }}</span>
                             </td>
-                            <td class="align-middle text-muted">{{ c.telefono|default:"N/A" }}</td>
-                            <td class="align-middle"><small class="text-muted">{{ c.email }}</small></td>
+                            <td class="align-middle small">{{ u.correo }}</td>
                             <td class="text-center align-middle">
-                                <a href="{% url 'app:editar_Usuario' c.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
-                                    <i class="fas fa-pen text-white"></i>
+                                {% if u.activo %}
+                                    <span class="badge-estado badge-activo">
+                                        <i class="fas fa-check-circle mr-1"></i> ACTIVO
+                                    </span>
+                                {% else %}
+                                    <span class="badge-estado badge-inactivo">
+                                        <i class="fas fa-times-circle mr-1"></i> INACTIVO
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center align-middle">
+                                <a href="{% url 'app:editar_usuario' u.id %}" class="btn btn-warning btn-circle shadow-sm">
+                                    <i class="fas fa-edit text-white"></i>
                                 </a>
-                                <a href="{% url 'app:eliminar_Usuario' c.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
+                                <a href="{% url 'app:eliminar_usuario' u.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;">
                                     <i class="fas fa-trash-alt text-white"></i>
                                 </a>
                             </td>
@@ -170,29 +152,33 @@
 
 <script>
     $(document).ready(function () {
-        // SOLUCIÓN AL ERROR DE RE-INICIALIZACIÓN (Captura 1 y 2)
-        if ($.fn.DataTable.isDataTable('#tabla_usuarios')) {
-            $('#tabla_usuarios').DataTable().destroy();
-        }
-
-        $('#tabla_usuarios').DataTable({
+        $('#tabla_usuarios_premium').DataTable({
+            destroy: true,
             responsive: true,
             autoWidth: false,
-            destroy: true, // Asegura que se pueda re-crear sin alertas
             pageLength: 10,
             language: {
-                "sSearch": "<span class='font-weight-bold small'>BUSCAR:</span>",
-                "sLengthMenu": "Mostrar _MENU_",
-                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_",
-                "sZeroRecords": "No se encontraron usuarios",
+                "sProcessing":     "Procesando...",
+                "sLengthMenu":     "Mostrar _MENU_ registros",
+                "sZeroRecords":    "No se encontraron resultados",
+                "sEmptyTable":     "Ningún dato disponible en esta tabla",
+                "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                "sSearch":         "<span class='font-weight-bold small text-uppercase'>Buscar:</span>",
                 "oPaginate": {
-                    "sNext": "<i class='fas fa-chevron-right'></i>",
+                    "sFirst":    "Primero",
+                    "sLast":     "Último",
+                    "sNext":     "<i class='fas fa-chevron-right'></i>",
                     "sPrevious": "<i class='fas fa-chevron-left'></i>"
                 }
             },
             dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
                  "<'row'<'col-sm-12'tr>>" +
                  "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            columnDefs: [
+                { targets: [5, 6], orderable: false }
+            ]
         });
     });
 </script>

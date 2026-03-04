@@ -2,9 +2,7 @@
 {% load static %}
 
 {% block css %}
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <style>
-    /* --- ENCABEZADO PREMIUM ACERAUTOS --- */
     .header-premium {
         background: linear-gradient(145deg, #ffffff, #f8f9fa);
         border-radius: 20px;
@@ -16,7 +14,6 @@
         align-items: center;
         justify-content: space-between;
     }
-
     .title-icon {
         background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
         color: white;
@@ -27,47 +24,29 @@
         box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
         margin-right: 20px;
     }
-
     .title-container h1 {
         font-family: 'Segoe UI', sans-serif;
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 0;
-        color: #2d3436;
+        font-size: 1.8rem; font-weight: 700;
+        margin-bottom: 0; color: #2d3436;
         text-transform: uppercase;
     }
-
     .btn-nueva-premium {
         background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
         color: white !important;
-        padding: 12px 25px;
-        border-radius: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.8rem;
+        padding: 12px 25px; border-radius: 12px;
+        font-weight: 700; text-transform: uppercase; font-size: 0.8rem;
         display: flex; align-items: center; gap: 10px;
-        transition: 0.3s;
-        border: none;
+        transition: 0.3s; border: none;
     }
-
-    .card-custom {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
-    }
-
+    .card-custom { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; }
     .avatar-box {
         width: 40px; height: 40px;
-        background: #454d55;
-        color: white;
-        border-radius: 10px;
-        display: flex; align-items: center; justify-content: center;
+        background: #454d55; color: white;
+        border-radius: 10px; display: flex; align-items: center; justify-content: center;
         font-weight: bold; margin-right: 12px;
     }
-
     .btn-circle {
-        width: 35px; height: 35px;
-        border-radius: 10px;
+        width: 35px; height: 35px; border-radius: 10px;
         display: inline-flex; align-items: center; justify-content: center;
         transition: 0.3s; border: none;
     }
@@ -75,20 +54,33 @@
 {% endblock %}
 
 {% block contenido %}
+{% if messages %}
+    {% for message in messages %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: "¡Acción Exitosa!",
+                text: "{{ message }}",
+                icon: "success",  // Esto fuerza el icono VERDE
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                background: '#fff',
+                iconColor: '#28a745' // Color verde esmeralda para el check
+            });
+        });
+    </script>
+    {% endfor %}
+{% endif %}
+
 <div class="container-fluid animate__animated animate__fadeIn">
-    
     <div class="header-premium">
         <div class="d-flex align-items-center">
-            <div class="title-icon">
-                <i class="fas fa-users"></i>
-            </div>
-            <div class="title-container">
-                <h1>GESTIÓN DE CLIENTES</h1>
-            </div>
+            <div class="title-icon"><i class="fas fa-users"></i></div>
+            <div class="title-container"><h1>{{ titulo }}</h1></div>
         </div>
         <a href="{% url 'app:crear_cliente' %}" class="btn btn-nueva-premium">
-            <i class="fas fa-user-plus"></i>
-            <span>Nuevo Cliente</span>
+            <i class="fas fa-user-plus"></i><span>Nuevo Cliente</span>
         </a>
     </div>
 
@@ -98,32 +90,41 @@
                 <table class="table table-hover align-middle" id="tabla_clientes" style="width:100%">
                     <thead>
                         <tr class="text-uppercase small font-weight-bold text-muted">
-                            <th class="text-center" style="width: 5%;">ID</th>
-                            <th style="width: 40%;">Nombre Completo</th>
-                            <th style="width: 35%;">Documento / Identificación</th>
-                            <th class="text-center" style="width: 20%;">Opciones</th>
+                            <th class="text-center">ID</th>
+                            <th>Cliente</th>
+                            <th>Identificación</th>
+                            <th>Contacto</th> 
+                            <th class="text-center">Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for v in cliente %}
+                        {% for c in clientes %}
                         <tr>
-                            <td class="text-center align-middle font-weight-bold text-secondary">{{ v.id }}</td>
+                            <td class="text-center align-middle font-weight-bold text-secondary">{{ c.id }}</td>
                             <td class="align-middle">
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-box">{{ v.nombre|first|upper }}</div>
-                                    <span class="font-weight-bold text-dark">{{ v.nombre }}</span>
+                                    <div class="avatar-box">{{ c.nombre|first|upper }}</div>
+                                    <div>
+                                        <span class="font-weight-bold text-dark d-block">{{ c.nombre }}</span>
+                                        <small class="text-muted">{{ c.email|default:"Sin correo" }}</small>
+                                    </div>
                                 </div>
                             </td>
                             <td class="align-middle">
-                                <span class="text-dark font-weight-bold" style="font-size: 0.95rem;">
-                                    {{ v.documento|default:"---" }}
+                                <span class="badge badge-light text-dark p-2">
+                                    {{ c.get_tipo_documento_display|default:c.tipo_documento }}: {{ c.numero_documento }}
                                 </span>
                             </td>
+                            <td class="align-middle">
+                                <div class="text-dark">
+                                    <i class="fas fa-phone-alt mr-2 text-muted"></i>{{ c.telefono|default:"---" }}
+                                </div>
+                            </td>
                             <td class="text-center align-middle">
-                                <a href="{% url 'app:editar_cliente' v.id %}" class="btn btn-warning btn-circle shadow-sm">
+                                <a href="{% url 'app:editar_cliente' c.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
                                     <i class="fas fa-pen text-white"></i>
                                 </a>
-                                <a href="{% url 'app:eliminar_cliente' v.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;">
+                                <a href="{% url 'app:eliminar_cliente' c.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
                                     <i class="fas fa-trash-alt text-white"></i>
                                 </a>
                             </td>
@@ -138,24 +139,23 @@
 {% endblock %}
 
 {% block js %}
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-
 <script>
     $(document).ready(function () {
+        if ($.fn.DataTable.isDataTable('#tabla_clientes')) {
+            $('#tabla_clientes').DataTable().destroy();
+        }
+
         $('#tabla_clientes').DataTable({
-            destroy: true,
             responsive: true,
             autoWidth: false,
-            language: {
-                "sSearch": "BUSCAR:",
-                "sLengthMenu": "Mostrar _MENU_",
-                "sInfo": "Mostrando _TOTAL_ registros",
-                "oPaginate": {
-                    "sNext": "<i class='fas fa-chevron-right'></i>",
-                    "sPrevious": "<i class='fas fa-chevron-left'></i>"
-                }
-            }
+            language: { 
+                "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json" 
+            },
+            order: [[0, "desc"]],
+            pageLength: 10,
+            columnDefs: [
+                { orderable: false, targets: [4] }
+            ]
         });
     });
 </script>

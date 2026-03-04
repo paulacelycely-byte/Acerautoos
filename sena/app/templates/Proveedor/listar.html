@@ -127,13 +127,12 @@
                 <table class="table table-hover align-middle" id="tabla_pro" style="width:100%">
                     <thead>
                         <tr class="text-uppercase small font-weight-bold text-muted">
-                            <th>#</th>
+                            <th class="text-center">#</th>
                             <th>Proveedor</th>
-                            <th>NIT</th>
+                            <th>NIT / Documento</th>
                             <th>Teléfono</th>
-                            <th>Email</th>
                             <th>Dirección</th>
-                            <th class="text-center">Opciones</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -156,10 +155,15 @@
                                 </div>
                             </td>
 
-                            <td>{{ p.documento }}</td>
-                            <td>{{ p.telefono }}</td>
-                            <td>{{ p.email }}</td>
-                            <td>{{ p.direccion }}</td>
+                            <td>
+                                <span class="badge badge-light p-2 text-dark font-weight-bold" style="font-size: 0.9rem; border: 1px solid #ebedef;">
+                                    {{ p.nit }}
+                                </span>
+                            </td>
+                            
+                            <td class="text-dark font-weight-bold">{{ p.telefono }}</td>
+                            
+                            <td class="text-muted">{{ p.direccion|default:"No registrada" }}</td>
 
                             <td class="text-center">
                                 <a href="{% url 'app:editar_proveedor' p.id %}" 
@@ -170,9 +174,8 @@
                                 <button class="btn btn-info btn-circle shadow-sm mx-1"
                                     onclick="verDetalle(
                                         '{{ p.nombre }}',
-                                        '{{ p.documento }}',
+                                        '{{ p.nit }}',
                                         '{{ p.telefono }}',
-                                        '{{ p.email }}',
                                         '{{ p.direccion }}'
                                     )"
                                     title="Ver Detalles">
@@ -199,39 +202,42 @@
 {% block js %}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     $(document).ready(function () {
         $('#tabla_pro').DataTable({
-            destroy: true,
-            retrieve: true,
             responsive: true,
             autoWidth: false,
-            pageLength: 10,
             language: {
                 sSearch: "Buscar:",
-                sLengthMenu: "Mostrar _MENU_",
+                sLengthMenu: "Mostrar _MENU_ registros",
                 sInfo: "Mostrando _START_ a _END_ de _TOTAL_ proveedores",
                 oPaginate: {
                     sNext: "Siguiente",
                     sPrevious: "Anterior"
-                }
+                },
+                sEmptyTable: "No hay datos disponibles en la tabla",
+                sZeroRecords: "No se encontraron resultados"
             }
         });
     });
 
-    function verDetalle(nombre, documento, telefono, email, direccion) {
+    function verDetalle(nombre, nit, telefono, direccion) {
         Swal.fire({
-            title: '<strong>Detalle del Proveedor</strong>',
+            title: '<strong>Información del Proveedor</strong>',
             icon: 'info',
             html: `
-                <b>Nombre:</b> ${nombre}<br>
-                <b>NIT:</b> ${documento}<br>
-                <b>Teléfono:</b> ${telefono}<br>
-                <b>Email:</b> ${email}<br>
-                <b>Dirección:</b> ${direccion}
+                <div class="text-left" style="font-size: 0.95rem;">
+                    <hr>
+                    <p><b>🏢 Razón Social:</b> ${nombre}</p>
+                    <p><b>🆔 NIT:</b> ${nit}</p>
+                    <p><b>📞 Teléfono:</b> ${telefono}</p>
+                    <p><b>📍 Dirección:</b> ${direccion}</p>
+                </div>
             `,
-            confirmButtonColor: '#d32f2f'
+            confirmButtonColor: '#d32f2f',
+            confirmButtonText: '<i class="fa fa-thumbs-up"></i> Entendido'
         });
     }
 </script>

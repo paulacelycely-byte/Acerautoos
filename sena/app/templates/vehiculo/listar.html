@@ -3,7 +3,7 @@
 
 {% block css %}
 <style>
-    /* --- ENCABEZADO PREMIUM ROJO --- */
+    /* --- ENCABEZADO PREMIUM ESTILO ACERAUTOS --- */
     .header-premium {
         background: linear-gradient(145deg, #ffffff, #f8f9fa);
         border-radius: 20px;
@@ -19,12 +19,9 @@
     .title-icon {
         background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
         color: white;
-        width: 55px;
-        height: 55px;
+        width: 55px; height: 55px;
         border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: flex; align-items: center; justify-content: center;
         font-size: 1.5rem;
         box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
         margin-right: 20px;
@@ -50,13 +47,17 @@
         text-transform: uppercase;
         font-size: 0.8rem;
         letter-spacing: 1px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.3s;
+        display: flex; align-items: center; gap: 10px;
+        transition: all 0.3s ease;
         box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
     }
 
+    .btn-nueva-premium:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+    }
+
+    /* --- TABLA Y TARJETA --- */
     .card-custom {
         border: none;
         border-radius: 20px;
@@ -64,23 +65,51 @@
         background: #fff;
     }
 
-    .btn-circle {
-        width: 35px;
-        height: 35px;
+    .placa-box {
+        font-family: 'Monaco', 'Courier New', monospace;
+        font-weight: bold;
+        color: #d32f2f;
+        background-color: #fdf2f2;
+        padding: 5px 12px;
+        border-radius: 8px;
+        border: 1px solid #f9d5d5;
+        text-transform: uppercase;
+        display: inline-block;
+    }
+
+    .avatar-owner {
+        width: 40px; height: 40px;
+        background: #2d3436;
+        color: white;
         border-radius: 10px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: bold;
+        margin-right: 12px;
+    }
+
+    .btn-circle {
+        width: 35px; height: 35px;
+        border-radius: 10px;
+        display: inline-flex; align-items: center; justify-content: center;
         transition: 0.3s;
         border: none;
     }
+
+    .btn-circle:hover { transform: translateY(-3px); }
+
+    /* Personalización de DataTables para que coincida con el diseño */
+    .dataTables_filter input {
+        border: 2px solid #f1f2f6 !important;
+        border-radius: 10px !important;
+        padding: 6px 15px !important;
+        margin-left: 10px !important;
+        outline: none !important;
+    }
+    .dataTables_filter input:focus { border-color: #d32f2f !important; }
     
-    /* Ajuste para que la búsqueda y paginación se vean bien */
-    .dataTables_wrapper .dataTables_filter input {
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        padding: 5px 10px;
-        margin-left: 10px;
+    .page-item.active .page-link {
+        background-color: #d32f2f !important;
+        border-color: #d32f2f !important;
     }
 </style>
 {% endblock %}
@@ -94,7 +123,7 @@
                 <i class="fas fa-car"></i>
             </div>
             <div class="title-container">
-                <h1>Listado de Vehículos</h1>
+                <h1>{{ titulo|upper }}</h1>
             </div>
         </div>
 
@@ -107,40 +136,45 @@
     <div class="card card-custom">
         <div class="card-body p-4">
             <div class="table-responsive">
-                <table class="table table-hover align-middle" id="tabla_vehiculos_final" style="width:100%">
+                <table class="table table-hover align-middle" id="tabla_vehiculos" style="width:100%">
                     <thead>
                         <tr class="text-uppercase small font-weight-bold text-muted" style="border-bottom: 2px solid #f8f9fa;">
-                            <th>#</th>
-                            <th>Tipo Vehículo</th>
-                            <th>Placa</th>
-                            <th>Marca</th>
-                            <th>Modelo</th>
-                            <th>Kilometraje</th>
-                            <th>Documento</th>
-                            <th class="text-center">Acciones</th>
+                            <th style="width: 15%;">Placa</th>
+                            <th style="width: 20%;">Marca</th>
+                            <th style="width: 20%;">Modelo / Año</th>
+                            <th style="width: 30%;">Propietario</th>
+                            <th class="text-center" style="width: 15%;">Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for v in vehiculo %}
+                        {% for v in vehiculos %}
                         <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td class="font-weight-bold">{{ v.tipo_vehiculo }}</td>
-                            <td><span class="badge badge-dark p-2" style="letter-spacing: 1px;">{{ v.placa|upper }}</span></td>
-                            <td>{{ v.marca }}</td>
-                            <td>{{ v.modelo }}</td>
-                            <td>{{ v.kilometraje }}</td>
-                            <td>{{ v.documento.documento }}</td>
-                            <td class="text-center">
+                            <td class="align-middle">
+                                <span class="placa-box">{{ v.placa }}</span>
+                            </td>
+                            <td class="align-middle">
+                                <span class="font-weight-bold text-dark">{{ v.marca.nombre }}</span>
+                            </td>
+                            <td class="align-middle text-dark">
+                                <span class="font-weight-bold">{{ v.modelo }}</span>
+                                <small class="text-muted d-block">Acerautos Fleet</small>
+                            </td>
+                            <td class="align-middle">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-owner">{{ v.cliente.nombre|first|upper }}</div>
+                                    <div>
+                                        <span class="font-weight-bold text-dark d-block">{{ v.cliente.nombre }}</span>
+                                        <small class="text-muted">ID: {{ v.cliente.numero_documento }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center align-middle">
                                 <a href="{% url 'app:editar_vehiculo' v.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
                                     <i class="fas fa-pen text-white"></i>
                                 </a>
-
-                                <form action="{% url 'app:eliminar_vehiculo' v.id %}" method="post" style="display:inline;">
-                                    {% csrf_token %}
-                                    <button type="button" class="btn btn-danger btn-circle shadow-sm ml-1 btn-delete-vh" style="background-color: #d32f2f !important;">
-                                        <i class="fas fa-trash-alt text-white"></i>
-                                    </button>
-                                </form>
+                                <a href="{% url 'app:eliminar_vehiculo' v.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
+                                    <i class="fas fa-trash-alt text-white"></i>
+                                </a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -155,57 +189,29 @@
 {% block js %}
 <script>
     $(document).ready(function () {
-        // Inicialización segura
-        var table = $('#tabla_vehiculos_final').DataTable({
+        // Inicializamos la tabla con el ID correcto y configuración para Bootstrap 5
+        if ($.fn.DataTable.isDataTable('#tabla_vehiculos')) {
+            $('#tabla_vehiculos').DataTable().destroy();
+        }
+
+        $('#tabla_vehiculos').DataTable({
             responsive: true,
             autoWidth: false,
-            destroy: true,   // <--- ESTO ELIMINA EL ERROR DE REINITIALISE
-            searching: true, // Asegura que la barra de búsqueda esté activa
-            paging: true,    // Asegura que la paginación esté activa
             pageLength: 10,
             language: {
-                "sProcessing":     "Procesando...",
-                "sLengthMenu":     "Mostrar _MENU_ registros",
-                "sZeroRecords":    "No se encontraron resultados",
-                "sEmptyTable":     "Ningún dato disponible en esta tabla",
-                "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-                "sSearch":         "BUSCAR:",
-                "sInfoPostFix":    "",
-                "sUrl":            "",
-                "sInfoThousands":  ",",
-                "sLoadingRecords": "Cargando...",
+                "sSearch": "<span class='text-muted small font-weight-bold'>BUSCAR:</span>",
+                "sLengthMenu": "Mostrar _MENU_",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ vehículos",
+                "sZeroRecords": "No se encontraron vehículos",
                 "oPaginate": {
-                    "sFirst":    "Primero",
-                    "sLast":     "Último",
-                    "sNext":     "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    "sNext": "<i class='fas fa-chevron-right'></i>",
+                    "sPrevious": "<i class='fas fa-chevron-left'></i>"
                 }
-            }
-        });
-
-        // SweetAlert2 para eliminar
-        $(document).on('click', '.btn-delete-vh', function() {
-            var form = $(this).closest('form');
-            Swal.fire({
-                title: '¿Confirmar eliminación?',
-                text: "El vehículo será borrado permanentemente.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
+            },
+            // Estructura DOM: Filtro arriba, tabla al medio, paginación abajo
+            dom: "<'row mb-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                 "<'row'<'col-sm-12'tr>>" +
+                 "<'row mt-3'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         });
     });
 </script>

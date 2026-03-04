@@ -4,7 +4,7 @@
 
 {% block css %}
 <style>
-    /* --- LÓGICA DE CAJA DE ERROR --- */
+    /* Mantenemos tus estilos originales que están perfectos */
     .caja-error-roja {
         background-color: #fff5f5 !important;
         border: 1px solid #feb2b2 !important;
@@ -14,13 +14,12 @@
         border-radius: 8px !important;
     }
 
-    /* --- ESTÉTICA PREMIUM REGISTRO (GRIS ACERAUTOS) --- */
     .header-premium {
         background: linear-gradient(145deg, #ffffff, #f8f9fa);
         border-radius: 20px;
         padding: 25px;
         margin-bottom: 30px;
-        border-left: 10px solid #454d55; /* Gris Registro */
+        border-left: 10px solid #454d55;
         box-shadow: 0 15px 35px rgba(0,0,0,0.04);
         display: flex;
         align-items: center;
@@ -30,19 +29,16 @@
     .title-icon {
         background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
         color: white;
-        width: 55px;
-        height: 55px;
+        width: 55px; height: 55px;
         border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: flex; align-items: center; justify-content: center;
         font-size: 1.5rem;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         margin-right: 20px;
     }
 
     .title-container h1 {
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-family: 'Segoe UI', sans-serif;
         font-size: 1.9rem;
         font-weight: 700;
         margin-bottom: 0;
@@ -65,12 +61,10 @@
         font-weight: 700;
         text-transform: uppercase;
         font-size: 0.85rem;
-        letter-spacing: 1px;
     }
 
     .input-group-text {
         background: #f8f9fa;
-        border-right: none;
         color: #454d55;
         border-radius: 12px 0 0 12px;
     }
@@ -79,12 +73,6 @@
         border-radius: 0 12px 12px 0 !important;
         border: 1px solid #d1d3e2;
         padding: 12px 15px;
-        transition: all 0.3s ease;
-    }
-
-    .form-control:focus {
-        border-color: #454d55;
-        box-shadow: 0 0 0 0.2rem rgba(69, 77, 85, 0.1);
     }
 
     .btn-acerautos-save-crear {
@@ -95,15 +83,7 @@
         border-radius: 12px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 1px;
         transition: all 0.3s;
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-acerautos-save-crear:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
-        filter: brightness(1.1);
     }
 </style>
 {% endblock %}
@@ -120,21 +100,21 @@
                 <h1>{{ titulo }}</h1>
             </div>
         </div>
-        <small class="text-secondary font-weight-bold text-uppercase" style="letter-spacing: 1px;">Registro de Cliente</small>
+        <small class="text-secondary font-weight-bold text-uppercase">Acerautos S.A.S</small>
     </div>
 
     <form method="post" action="." id="formCliente">
         {% csrf_token %}
         <div class="card card-form-premium overflow-hidden">
             <div class="card-header-dark">
-                <i class="fas fa-id-badge mr-2"></i> Datos del Propietario
+                <i class="fas fa-id-badge mr-2"></i> Información del Cliente
             </div>
 
             <div class="card-body p-4 p-md-5">
                 <div class="row">
                     {% for field in form.visible_fields %}
                         <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold text-dark small mb-1 text-uppercase" style="letter-spacing: 0.5px;">
+                            <label class="font-weight-bold text-dark small mb-1 text-uppercase">
                                 {{ field.label }}
                             </label>
                             
@@ -165,9 +145,9 @@
             </div>
 
             <div class="card-footer bg-light d-flex justify-content-end py-4 border-top">
-                <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')" class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold" style="border-radius: 12px;">
-                    <i class="fas fa-times mr-1"></i> Descartar
-                </button>
+                <a href="{% url 'app:listar_clientes' %}" class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold" style="border-radius: 12px;">
+                    <i class="fas fa-times mr-1"></i> Cancelar
+                </a>
 
                 <button type="submit" class="btn btn-acerautos-save-crear shadow-sm">
                     <i class="fas fa-save mr-2"></i> Guardar Cliente
@@ -185,8 +165,8 @@
             e.preventDefault();
             var formulario = this;
             Swal.fire({
-                title: '¿Guardar nuevo cliente?',
-                text: "El cliente será registrado en la base de datos de Acerautos.",
+                title: '¿Confirmar registro?',
+                text: "Se guardarán los datos del cliente en Acerautos.",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Sí, guardar',
@@ -198,20 +178,5 @@
             });
         });
     });
-
-    function confirmarCancelacion(url) {
-        Swal.fire({
-            title: '¿Abandonar registro?',
-            text: "Si sales ahora, perderás la información ingresada.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Sí, salir',
-            cancelButtonText: 'Seguir aquí',
-            confirmButtonColor: '#454d55',
-            cancelButtonColor: '#6c757d',
-        }).then((result) => {
-            if (result.isConfirmed) { window.location.href = url; }
-        });
-    }
 </script>
 {% endblock %}

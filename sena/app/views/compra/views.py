@@ -1,55 +1,30 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from app.models import Compra
-from app.forms import CompraForm
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
+from ...models import Compra
+from ...forms import CompraForm
 
-# --- VISTA PARA LISTAR COMPRAS ---
 class CompraListView(ListView):
     model = Compra
-    template_name = 'compra/listar.html'
+    template_name = 'Compra/listar.html' # Ajusta a tu ruta de template
     context_object_name = 'compras'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Listado de Compras'
-        context['crear_url'] = reverse_lazy('app:crear_compra')
-        context['listar_url'] = reverse_lazy('app:listar_compras')
-        return context
-
-# --- VISTA PARA CREAR COMPRA ---
-class CompraCreateView(CreateView):
+class CompraCreateView(SuccessMessageMixin, CreateView):
     model = Compra
     form_class = CompraForm
-    template_name = 'compra/crear.html'
-    success_url = reverse_lazy('app:listar_compras')
+    template_name = 'Compra/crear.html'
+    success_url = reverse_lazy('app:lista_compras')
+    success_message = "Compra registrada y stock actualizado."
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['listar_url'] = reverse_lazy('app:listar_compras')
-        context['titulo'] = 'Nueva Compra'
-        return context
-
-# --- VISTA PARA EDITAR COMPRA ---
-class CompraUpdateView(UpdateView):
+class CompraUpdateView(SuccessMessageMixin, UpdateView):
     model = Compra
     form_class = CompraForm
-    template_name = 'compra/editar.html'
-    success_url = reverse_lazy('app:listar_compras')
+    template_name = 'Compra/crear.html' # Usualmente usan el mismo que crear
+    success_url = reverse_lazy('app:lista_compras')
+    success_message = "Compra modificada exitosamente."
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['listar_url'] = reverse_lazy('app:listar_compras')
-        context['titulo'] = 'Editar Compra'
-        return context
-
-# --- VISTA PARA ELIMINAR COMPRA ---
 class CompraDeleteView(DeleteView):
     model = Compra
-    template_name = 'compra/eliminar.html'
-    success_url = reverse_lazy('app:listar_compras')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['listar_url'] = reverse_lazy('app:listar_compras')
-        context['titulo'] = 'Eliminar Compra'
-        return context
+    template_name = 'Compra/eliminar.html'
+    success_url = reverse_lazy('app:lista_compras')

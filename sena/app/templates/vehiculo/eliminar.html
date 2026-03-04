@@ -11,10 +11,10 @@
         background: #fff;
     }
 
-    /* --- TU ICONO ANIMADO RECUPERADO --- */
+    /* --- ICONO ANIMADO ACERAUTOS --- */
     .warning-wrapper {
         font-size: 4.5rem;
-        color: #dc3545; /* Mantenemos el rojo solo en el icono para que resalte */
+        color: #d32f2f; /* Rojo Acerautos */
         margin-bottom: 1.5rem;
         animation: swing 2s infinite ease-in-out;
         display: inline-block;
@@ -33,8 +33,17 @@
         background-color: #f8f9fa;
         border-radius: 12px;
         padding: 25px;
-        border-left: 5px solid #454d55;
+        border-left: 5px solid #2d3436; /* Gris Oscuro */
         margin: 25px 0;
+    }
+
+    .placa-badge-delete {
+        background: #d32f2f;
+        color: white;
+        padding: 2px 10px;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 1.2rem;
     }
 
     /* Botones estilo Acerautos */
@@ -54,10 +63,10 @@
     }
 
     .btn-eliminar-final {
-        background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%);
+        background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
         color: white !important;
         border: none;
-        box-shadow: 0 8px 15px rgba(220, 53, 69, 0.2);
+        box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
     }
 
     .btn-modern:hover {
@@ -77,15 +86,18 @@
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
 
-                <h2 class="font-weight-bold text-dark text-uppercase" style="letter-spacing: 1px;">Confirmar Acción</h2>
-                <p class="text-muted">Estás a punto de retirar un elemento del sistema central.</p>
+                <h2 class="font-weight-bold text-dark text-uppercase" style="letter-spacing: 1px;">Confirmar Eliminación</h2>
+                <p class="text-muted">Estás a punto de retirar un vehículo de la flota activa.</p>
 
                 <div class="category-details text-left">
-                    <small class="text-uppercase font-weight-bold text-muted" style="letter-spacing: 0.5px;">Registro a eliminar:</small>
-                    <h4 class="mb-0 text-dark font-weight-bold mt-1">{{ object.nombre }}</h4>
+                    <small class="text-uppercase font-weight-bold text-muted" style="letter-spacing: 0.5px;">Vehículo a eliminar:</small>
+                    <h4 class="mb-0 text-dark font-weight-bold mt-1">
+                        <span class="placa-badge-delete">{{ object.placa }}</span> 
+                        {{ object.marca.nombre }} {{ object.modelo }}
+                    </h4>
                     <hr>
                     <p class="text-muted small mb-0">
-                        <i class="fas fa-info-circle mr-1"></i> Esta operación eliminará el registro de la base de datos de Acerautos de forma permanente.
+                        <i class="fas fa-info-circle mr-1"></i> Esta operación eliminará el registro de <strong>Acerautos</strong> de forma permanente y no se podrá recuperar.
                     </p>
                 </div>
 
@@ -93,9 +105,9 @@
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-6">
-                            <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')" class="btn btn-block btn-modern btn-volver">
+                            <a href="/principal/vehiculos/listar/" class="btn btn-block btn-modern btn-volver">
                                 <i class="fas fa-times mr-2"></i> Cancelar
-                            </button>
+                            </a>
                         </div>
                         <div class="col-6">
                             <button type="button" id="btnConfirmarBorrado" class="btn btn-block btn-modern btn-eliminar-final">
@@ -118,16 +130,15 @@
             e.preventDefault();
 
             Swal.fire({
-                title: '¿Proceder con la eliminación?',
-                text: "Esta acción no se puede deshacer.",
+                title: '¿Eliminar definitivamente?',
+                text: "Los datos de este vehículo desaparecerán del sistema.",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#454d55',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'No, mantener',
-                reverseButtons: true,
-                backdrop: true // Fondo oscuro normal, sin el rojo invasivo
+                confirmButtonColor: '#d32f2f',
+                cancelButtonColor: '#2d3436',
+                confirmButtonText: 'Sí, eliminar ahora',
+                cancelButtonText: 'No, mantenerlo',
+                reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     $('#formEliminar').submit();
@@ -135,9 +146,5 @@
             });
         });
     });
-
-    function confirmarCancelacion(url) {
-        window.location.href = url;
-    }
 </script>
 {% endblock %}
