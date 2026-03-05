@@ -4,12 +4,6 @@
 
 {% block css %}
 <style>
-    /* --- LÓGICA DE SWITCH EN GRIS (ESTILO ACERAUTOS) --- */
-    .custom-switch .custom-control-label::before { height: 1.5rem; width: 2.75rem; border-radius: 2rem; }
-    .custom-switch .custom-control-label::after { width: calc(1.5rem - 4px); height: calc(1.5rem - 4px); border-radius: 2rem; }
-    .custom-control-input:checked ~ .custom-control-label::before { background-color: #454d55 !important; border-color: #454d55 !important; }
-
-    /* --- CAJA DE ERROR PREMIUM --- */
     .caja-error-roja {
         background-color: #fff5f5 !important;
         border: 1px solid #feb2b2 !important;
@@ -19,7 +13,6 @@
         border-radius: 8px !important;
     }
 
-    /* --- ESTÉTICA PREMIUM REGISTRO (GRIS) --- */
     .header-premium {
         background: linear-gradient(145deg, #ffffff, #f8f9fa);
         border-radius: 20px;
@@ -44,7 +37,6 @@
     }
 
     .title-container h1 {
-        font-family: 'Segoe UI', sans-serif;
         font-size: 1.9rem;
         font-weight: 700;
         margin-bottom: 0;
@@ -56,7 +48,7 @@
     .card-form-premium {
         border: none;
         border-radius: 20px;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.07);
         background: #fff;
     }
 
@@ -89,7 +81,7 @@
         box-shadow: 0 0 0 0.2rem rgba(69, 77, 85, 0.1);
     }
 
-    .btn-acerautos-save-crear {
+    .btn-acerautos-save {
         background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
         color: white !important;
         border: none;
@@ -110,42 +102,66 @@
     <div class="header-premium">
         <div class="d-flex align-items-center">
             <div class="title-icon">
-                <i class="fas fa-user-shield"></i>
+                <i class="fas fa-tools"></i>
             </div>
             <div class="title-container">
-                <h1>{% if form.instance.pk %}Editar Usuario{% else %}Nuevo Usuario{% endif %}</h1>
+                <h1>
+                    {% if form.instance.pk %}
+                        Editar Servicio
+                    {% else %}
+                        Nuevo Servicio
+                    {% endif %}
+                </h1>
             </div>
         </div>
-        <small class="text-secondary font-weight-bold text-uppercase" style="letter-spacing: 1px;">Acerautos Admin System</small>
+        <small class="text-secondary font-weight-bold text-uppercase" style="letter-spacing: 1px;">
+            Gestión de Servicios - Acerautos
+        </small>
     </div>
 
-    <form method="post" action="." id="formUsuario">
+    <form method="post" action="." id="formServicio">
         {% csrf_token %}
         <div class="card card-form-premium overflow-hidden">
+
             <div class="card-header-dark">
-                <i class="fas fa-id-card mr-2"></i> Información Personal y de Acceso
+                <i class="fas fa-wrench mr-2"></i> Información del Servicio
             </div>
 
             <div class="card-body p-4 p-md-5">
                 <div class="row">
+
                     {% for field in form.visible_fields %}
                         <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold text-dark small mb-1 text-uppercase" style="letter-spacing: 0.5px;">
+                            <label class="font-weight-bold text-dark small mb-1 text-uppercase">
                                 {{ field.label }}
                             </label>
 
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text bg-white border-right-0">
-                                        {% if 'username' in field.name %}<i class="fas fa-user"></i>
-                                        {% elif 'password' in field.name %}<i class="fas fa-lock"></i>
-                                        {% elif 'first_name' in field.name %}<i class="fas fa-address-book"></i>
-                                        {% elif 'cedula' in field.name %}<i class="fas fa-fingerprint"></i>
-                                        {% elif 'telefono' in field.name %}<i class="fas fa-phone"></i>
-                                        {% elif 'email' in field.name %}<i class="fas fa-envelope"></i>
-                                        {% else %}<i class="fas fa-align-left"></i>{% endif %}
+
+                                        {% if 'nombre' in field.name %}
+                                            <i class="fas fa-tools"></i>
+
+                                        {% elif 'descripcion' in field.name %}
+                                            <i class="fas fa-align-left"></i>
+
+                                        {% elif 'precio' in field.name %}
+                                            <i class="fas fa-dollar-sign"></i>
+
+                                        {% elif 'tipo' in field.name %}
+                                            <i class="fas fa-layer-group"></i>
+
+                                        {% elif 'estado' in field.name %}
+                                            <i class="fas fa-toggle-on"></i>
+
+                                        {% else %}
+                                            <i class="fas fa-info-circle"></i>
+                                        {% endif %}
+
                                     </span>
                                 </div>
+
                                 {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
                             </div>
 
@@ -159,17 +175,23 @@
                             {% endif %}
                         </div>
                     {% endfor %}
+
                 </div>
             </div>
 
             <div class="card-footer bg-light d-flex justify-content-end py-4 border-top">
-                <button type="button" onclick="confirmarCancelacion('{% url 'app:listar_usuario' %}')" class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold" style="border-radius: 12px;">
+
+                <button type="button" 
+                        onclick="confirmarCancelacion('{% url 'app:tipo_servicio_list' %}')" 
+                        class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold"
+                        style="border-radius: 12px;">
                     <i class="fas fa-times mr-1"></i> Descartar
                 </button>
 
-                <button type="submit" class="btn btn-acerautos-save-crear shadow-sm">
-                    <i class="fas fa-save mr-2"></i> Guardar Usuario
+                <button type="submit" class="btn btn-acerautos-save shadow-sm">
+                    <i class="fas fa-save mr-2"></i> Guardar Servicio
                 </button>
+
             </div>
         </div>
     </form>
@@ -179,14 +201,15 @@
 {% block js %}
 <script>
     $(function () {
-        $('#formUsuario').on('submit', function (e) {
+        $('#formServicio').on('submit', function (e) {
             if (!this.checkValidity()) { return; }
 
             e.preventDefault();
             var formulario = this;
+
             Swal.fire({
                 title: '¿Confirmar Registro?',
-                text: "Los datos del usuario serán actualizados en la base de datos.",
+                text: "El servicio será guardado en el sistema.",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Sí, Guardar',

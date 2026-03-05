@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>🗑️ Eliminar Producto</h2>
+<p>¿Seguro que deseas eliminar <strong>{{ object.producto.nombre }}</strong> (Cantidad: {{ object.cantidad }}) de la Orden #{{ object.orden.id }}?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" style="background-color:red; color:white;">Sí, eliminar</button>
+    <a href="{% url 'app:detalle_orden_list' %}" style="margin-left:10px;">Cancelar</a>
+</form>
+{% endblock %}
