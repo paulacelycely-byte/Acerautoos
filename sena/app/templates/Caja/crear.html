@@ -3,8 +3,6 @@
 {% load widget_tweaks %}
 
 {% block css %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
 <style>
 
 /* ===============================
@@ -133,26 +131,26 @@
     <div class="header-premium">
         <div class="d-flex align-items-center">
             <div class="title-icon">
-                <i class="fas fa-bell"></i>
+                <i class="fas fa-cash-register"></i>
             </div>
             <div class="title-container">
-                <h1>{{ titulo|default:"Nueva Notificación" }}</h1>
+                <h1>{{ titulo|default:"Registrar Movimiento de Caja" }}</h1>
             </div>
         </div>
         <small class="text-secondary font-weight-bold text-uppercase" style="letter-spacing: 1px;">
-            Gestión de Alertas
+            Gestión de Caja
         </small>
     </div>
 
     <!-- FORM -->
-    <form method="post" id="formNotificacion">
+    <form method="post" id="formCaja">
         {% csrf_token %}
 
         <div class="card card-form-premium overflow-hidden">
 
             <div class="card-header-dark">
                 <i class="fas fa-info-circle mr-2"></i>
-                Información de la Notificación
+                Información del Movimiento
             </div>
 
             <div class="card-body p-4 p-md-5">
@@ -168,27 +166,19 @@
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
-
-                                    {% if 'mensaje' in field.name %}
-                                        <i class="fas fa-comment-dots"></i>
-                                    {% elif 'fecha' in field.name %}
-                                        <i class="fas fa-calendar-alt"></i>
-                                    {% elif 'vehiculo' in field.name %}
-                                        <i class="fas fa-car"></i>
-                                    {% else %}
+                                    {% if 'monto' in field.name %}
+                                        <i class="fas fa-dollar-sign"></i>
+                                    {% elif 'descripcion' in field.name %}
                                         <i class="fas fa-align-left"></i>
+                                    {% elif 'tipo' in field.name %}
+                                        <i class="fas fa-exchange-alt"></i>
+                                    {% else %}
+                                        <i class="fas fa-calendar-alt"></i>
                                     {% endif %}
-
                                 </span>
                             </div>
 
-                            {% if 'fecha' in field.name %}
-                                {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'id:id_fecha_envio'|attr:'readonly:true' }}
-                            {% elif 'mensaje' in field.name %}
-                                {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'style:height:100px; resize:none;' }}
-                            {% else %}
-                                {{ field|add_class:'form-control border-left-0 shadow-none' }}
-                            {% endif %}
+                            {{ field|add_class:'form-control border-left-0 shadow-none' }}
                         </div>
 
                         {% if field.errors %}
@@ -210,7 +200,7 @@
             <div class="card-footer bg-light d-flex justify-content-end py-4 border-top">
 
                 <button type="button"
-                        onclick="confirmarCancelacion('{{ listar_url }}')"
+                        onclick="confirmarCancelacion('{{ listar_caja }}')"
                         class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold"
                         style="border-radius: 12px;">
                     <i class="fas fa-times mr-1"></i>
@@ -220,7 +210,7 @@
                 <button type="submit"
                         class="btn btn-acerautos-save-crear shadow-sm">
                     <i class="fas fa-save mr-2"></i>
-                    Guardar Notificación
+                    Guardar Movimiento
                 </button>
 
             </div>

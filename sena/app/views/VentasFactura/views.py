@@ -5,13 +5,14 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 
-from app.models import Notificacion
-from app.forms import NotificacionForm
+from app.models import VentasFactura
+from app.forms import VentasFacturaForm
 
-class NotificacionListView(ListView):
-    model = Notificacion
-    template_name = 'Notificacion/listar.html'
-    context_object_name = 'notificaciones'
+
+class VentasFacturaListView(ListView):
+    model = VentasFactura
+    template_name = 'VentasFactura/listar.html'
+    context_object_name = 'facturas'
 
     # @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -19,36 +20,33 @@ class NotificacionListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Listado de Notificaciones'
-        context['crear_url'] = reverse_lazy('app:crear_notificacion')
+        context['titulo'] = 'Listado de Facturas'
+        context['crear_url'] = reverse_lazy('app:crear_factura')
         return context
     
-
-
-class NotificacionCreateView(CreateView):
-    model = Notificacion
-    form_class = NotificacionForm
-    template_name = 'Notificacion/crear.html'
-    success_url = reverse_lazy('app:listar_notificacion')
+class VentasFacturaCreateView(CreateView):
+    model = VentasFactura
+    form_class = VentasFacturaForm
+    template_name = 'VentasFactura/crear.html'
+    success_url = reverse_lazy('app:listar_factura')
 
     # @method_decorator(login_required)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = "Crear Notificación"
-        context['listar_url'] = reverse_lazy('app:listar_notificacion')
+        context['titulo'] = "Crear Factura"
+        context['listar_url'] = reverse_lazy('app:listar_factura')
         return context
 
     def form_valid(self, form):
-        messages.success(self.request, "Se creó correctamente la notificación")
+        messages.success(self.request, "Se creó correctamente la factura")
         return super().form_valid(form)
     
-    
-class NotificacionUpdateView(UpdateView):
-    model = Notificacion
-    form_class = NotificacionForm
-    template_name = 'Notificacion/crear.html'
-    success_url = reverse_lazy('app:listar_notificacion')
+class VentasFacturaUpdateView(UpdateView):
+    model = VentasFactura
+    form_class = VentasFacturaForm
+    template_name = 'VentasFactura/crear.html'
+    success_url = reverse_lazy('app:listar_factura')
 
     # @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -56,8 +54,8 @@ class NotificacionUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Editar Notificación'
-        context['listar_url'] = reverse_lazy('app:listar_notificacion')
+        context['titulo'] = 'Editar Factura'
+        context['listar_url'] = reverse_lazy('app:listar_factura')
         return context
 
     def form_valid(self, form):
@@ -65,20 +63,21 @@ class NotificacionUpdateView(UpdateView):
         return super().form_valid(form)
     
     
-class NotificacionDeleteView(DeleteView):
-    model = Notificacion
-    template_name = 'Notificacion/eliminar.html'
-    success_url = reverse_lazy('app:listar_notificacion')
+class VentasFacturaDeleteView(DeleteView):
+    model = VentasFactura
+    template_name = 'VentasFactura/eliminar.html'
+    success_url = reverse_lazy('app:listar_factura')
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar Notificación'
-        context['listar_url'] = reverse_lazy('app:listar_notificacion')
+        context['titulo'] = 'Eliminar Factura'
+        context['listar_url'] = reverse_lazy('app:listar_factura')
         return context
 
     def form_valid(self, form):
         messages.success(self.request, "Se eliminó correctamente")
         return super().form_valid(form)
+    

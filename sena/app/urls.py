@@ -3,11 +3,14 @@ from .views.dashboard.views import DashboardView
 from .views.Cliente.views import (ClienteListView, ClienteCreateView, ClienteUpdateView, ClienteDeleteView)
 from .views.Vehiculo.views import (VehiculoListView, VehiculoCreateView, VehiculoUpdateView, VehiculoDeleteView)
 from .views.Usuario.views import (UsuarioListView, UsuarioCreateView, UsuarioUpdateView, UsuarioDeleteView)
-#from .views.compra.views import (CompraListView, CompraCreateView, CompraUpdateView, CompraDeleteView)
+from .views.compra.views import (CompraListView, CompraCreateView, CompraUpdateView)
 from .views.Proveedor.views import (ProveedorListView, ProveedorCreateView, ProveedorUpdateView, ProveedorDeleteView)
 from .views.Marca.views import (MarcaListView, MarcaCreateView, MarcaUpdateView, MarcaDeleteView)
 from .views.Producto.views import (ProductoListView, ProductoCreateView, ProductoUpdateView, ProductoDeleteView)
-
+from .views.Proveedor.views import (ProveedorListView, ProveedorCreateView, ProveedorUpdateView, ProveedorDeleteView)
+from .views.VentasFactura.views import (VentasFacturaListView, VentasFacturaCreateView, VentasFacturaUpdateView, VentasFacturaDeleteView) 
+from .views.Notificacion.views import (NotificacionListView, NotificacionCreateView, NotificacionUpdateView, NotificacionDeleteView) 
+from .views.caja.views import (CajaListView, CajaCreateView, CajaUpdateView, CajaDeleteView) 
 app_name = 'app'
 
 urlpatterns = [
@@ -27,9 +30,9 @@ urlpatterns = [
     path('vehiculos/eliminar/<int:pk>/', VehiculoDeleteView.as_view(), name='eliminar_vehiculo'),
 
     # --- COMPRAS ---
-    #path('compras/listar/', CompraListView.as_view(), name='lista_compras'),
-    #path('compras/crear/', CompraCreateView.as_view(), name='crear_compra'),
-    #path('compras/editar/<int:pk>/', CompraUpdateView.as_view(), name='editar_compra'),
+    path('compras/listar/', CompraListView.as_view(), name='lista_compras'),
+    path('compras/crear/', CompraCreateView.as_view(), name='crear_compra'),
+    path('compras/editar/<int:pk>/', CompraUpdateView.as_view(), name='editar_compra'),
 
     # --- PROVEEDORES ---
     path('proveedor/listar/', ProveedorListView.as_view(), name='listar_proveedores'),
@@ -55,4 +58,21 @@ urlpatterns = [
     path('producto/editar/<int:pk>/', ProductoUpdateView.as_view(), name='editar_producto'),
     path('producto/eliminar/<int:pk>/', ProductoDeleteView.as_view(), name='eliminar_producto'),
 
+    
+    
+    path('ventas/listar/', VentasFacturaListView.as_view(), name='listar_factura'),
+    path('ventas/crear/', VentasFacturaCreateView.as_view(), name='crear_factura'),
+    path('ventas/editar/<int:pk>/', VentasFacturaUpdateView.as_view(), name='editar_factura'),
+    path('ventas/eliminar/<int:pk>/', VentasFacturaDeleteView.as_view(), name='eliminar_factura'),
+    
+    path('notificaciones/listar/', NotificacionListView.as_view(), name='listar_notificacion'),
+    path('notificaciones/crear/', NotificacionCreateView.as_view(), name='crear_notificacion'),
+    path('notificaciones/editar/<int:pk>/', NotificacionUpdateView.as_view(), name='editar_notificacion'),
+    path('notificaciones/eliminar/<int:pk>/', NotificacionDeleteView.as_view(), name='eliminar_notificacion'),
+    
+    
+    path('caja/listar', CajaListView.as_view(), name='caja_listar'),
+    path('caja/crear/', CajaCreateView.as_view(), name='caja_crear'),
+    path('caja/editar/<int:pk>/', CajaUpdateView.as_view(), name='caja_editar'),
+    path('caja/eliminar/<int:pk>/', CajaDeleteView.as_view(), name='caja_eliminar'),
 ]

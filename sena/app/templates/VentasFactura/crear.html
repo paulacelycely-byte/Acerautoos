@@ -3,13 +3,9 @@
 {% load widget_tweaks %}
 
 {% block css %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
 <style>
 
-/* ===============================
-   ERRORES VISUALES
-================================*/
+/* ========= CAJA ERROR ========= */
 .caja-error-roja {
     background-color: #fff5f5 !important;
     border: 1px solid #feb2b2 !important;
@@ -20,9 +16,7 @@
     font-size: 0.85rem;
 }
 
-/* ===============================
-   HEADER PREMIUM
-================================*/
+/* ========= HEADER PREMIUM ========= */
 .header-premium {
     background: linear-gradient(145deg, #ffffff, #f8f9fa);
     border-radius: 20px;
@@ -50,6 +44,7 @@
 }
 
 .title-container h1 {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-size: 1.9rem;
     font-weight: 700;
     margin-bottom: 0;
@@ -58,9 +53,7 @@
     letter-spacing: 1.5px;
 }
 
-/* ===============================
-   CARD FORM
-================================*/
+/* ========= CARD PREMIUM ========= */
 .card-form-premium {
     border: none;
     border-radius: 20px;
@@ -78,9 +71,7 @@
     letter-spacing: 1px;
 }
 
-/* ===============================
-   INPUTS
-================================*/
+/* ========= INPUTS ========= */
 .input-group-text {
     background: #f8f9fa;
     border-right: none;
@@ -99,12 +90,10 @@
 
 .form-control:focus {
     border-color: #454d55 !important;
-    box-shadow: 0 0 0 0.2rem rgba(69, 77, 85, 0.1) !important;
+    box-shadow: 0 0 0 0.2rem rgba(69,77,85,0.1) !important;
 }
 
-/* ===============================
-   BOTONES
-================================*/
+/* ========= BOTONES ========= */
 .btn-acerautos-save-crear {
     background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
     color: white !important;
@@ -114,13 +103,17 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    transition: all 0.3s;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
 }
 
 .btn-acerautos-save-crear:hover {
     transform: translateY(-2px);
-    filter: brightness(1.2);
+    filter: brightness(1.15);
+}
+
+.btn-light {
+    border-radius: 12px !important;
 }
 
 </style>
@@ -133,99 +126,92 @@
     <div class="header-premium">
         <div class="d-flex align-items-center">
             <div class="title-icon">
-                <i class="fas fa-bell"></i>
+                <i class="fas fa-shopping-cart"></i>
             </div>
             <div class="title-container">
-                <h1>{{ titulo|default:"Nueva Notificación" }}</h1>
+                <h1>{{ titulo }}</h1>
             </div>
         </div>
-        <small class="text-secondary font-weight-bold text-uppercase" style="letter-spacing: 1px;">
-            Gestión de Alertas
+        <small class="font-weight-bold text-uppercase"
+               style="letter-spacing: 1px; color: #454d55;">
+            Registro de Ventas
         </small>
     </div>
 
     <!-- FORM -->
-    <form method="post" id="formNotificacion">
+    <form method="post" action="." id="formVentas">
         {% csrf_token %}
-
         <div class="card card-form-premium overflow-hidden">
 
             <div class="card-header-dark">
-                <i class="fas fa-info-circle mr-2"></i>
-                Información de la Notificación
+                <i class="fas fa-file-invoice-dollar mr-2"></i>
+                Detalles de la Transacción
             </div>
 
             <div class="card-body p-4 p-md-5">
                 <div class="row">
-
                     {% for field in form.visible_fields %}
                     <div class="col-md-6 mb-4">
 
-                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">
+                        <label class="font-weight-bold text-dark small mb-1 text-uppercase"
+                               style="letter-spacing: 0.5px;">
                             {{ field.label }}
                         </label>
 
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text">
+                                <span class="input-group-text border-right-0">
 
-                                    {% if 'mensaje' in field.name %}
-                                        <i class="fas fa-comment-dots"></i>
-                                    {% elif 'fecha' in field.name %}
-                                        <i class="fas fa-calendar-alt"></i>
-                                    {% elif 'vehiculo' in field.name %}
-                                        <i class="fas fa-car"></i>
+                                    {% if 'total' in field.name %}
+                                        <i class="fas fa-dollar-sign"></i>
+                                    {% elif 'productos' in field.name %}
+                                        <i class="fas fa-boxes"></i>
+                                    {% elif 'cliente' in field.name %}
+                                        <i class="fas fa-user"></i>
                                     {% else %}
-                                        <i class="fas fa-align-left"></i>
+                                        <i class="fas fa-tag"></i>
                                     {% endif %}
 
                                 </span>
                             </div>
 
-                            {% if 'fecha' in field.name %}
-                                {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'id:id_fecha_envio'|attr:'readonly:true' }}
-                            {% elif 'mensaje' in field.name %}
-                                {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'style:height:100px; resize:none;' }}
-                            {% else %}
-                                {{ field|add_class:'form-control border-left-0 shadow-none' }}
-                            {% endif %}
+                            {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+
                         </div>
 
                         {% if field.errors %}
                             {% for error in field.errors %}
-                                <div class="caja-error-roja">
-                                    <i class="fas fa-exclamation-triangle mr-1"></i>
-                                    <strong>{{ error }}</strong>
-                                </div>
+                            <div class="caja-error-roja">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                <strong>{{ error }}</strong>
+                            </div>
                             {% endfor %}
                         {% endif %}
 
                     </div>
                     {% endfor %}
-
                 </div>
             </div>
 
-            <!-- FOOTER -->
             <div class="card-footer bg-light d-flex justify-content-end py-4 border-top">
 
                 <button type="button"
                         onclick="confirmarCancelacion('{{ listar_url }}')"
-                        class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold"
-                        style="border-radius: 12px;">
+                        class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold">
                     <i class="fas fa-times mr-1"></i>
                     Descartar
                 </button>
 
                 <button type="submit"
                         class="btn btn-acerautos-save-crear shadow-sm">
-                    <i class="fas fa-save mr-2"></i>
-                    Guardar Notificación
+                    <i class="fas fa-check-circle mr-2"></i>
+                    Finalizar Venta
                 </button>
 
             </div>
 
         </div>
     </form>
+
 </div>
 {% endblock %}

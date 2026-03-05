@@ -107,24 +107,24 @@
                 </h2>
 
                 <p class="text-muted">
-                    Estás a punto de eliminar un registro del sistema.
+                    Estás a punto de eliminar un movimiento de caja.
                 </p>
 
                 <!-- DETALLE -->
                 <div class="delete-details-box text-left">
                     <small class="text-uppercase font-weight-bold text-muted">
-                        Registro a eliminar:
+                        Movimiento a eliminar:
                     </small>
 
                     <h4 class="mb-0 text-dark font-weight-bold mt-1">
-                        {{ object.nombre }}
+                        {{ object.tipo }}: {{ object.descripcion }} ({{ object.monto }})
                     </h4>
 
                     <hr>
 
                     <p class="text-muted small mb-0">
                         <i class="fas fa-info-circle mr-1"></i>
-                        Esta acción eliminará el registro de forma permanente.
+                        Este registro se eliminará de forma permanente.
                     </p>
                 </div>
 

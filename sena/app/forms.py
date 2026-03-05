@@ -2,8 +2,8 @@ from django import forms
 import re
 from django.utils import timezone
 from .models import (
-    Proveedor, Producto, Compra, Cliente,
-    Marca, Vehiculo, TipoServicio, OrdenServicio, VentasFactura, Usuario
+    Proveedor, Producto, Compra, Cliente, 
+    Marca, Vehiculo, TipoServicio, OrdenServicio, VentasFactura, Usuario, Notificacion,Caja
 )
 
 # ============================
@@ -268,3 +268,154 @@ class VehiculoForm(forms.ModelForm):
         if int(modelo) < 1900 or int(modelo) > (anio_actual + 1):
             raise forms.ValidationError(f"Año fuera de rango (1900 - {anio_actual + 1}).")
         return modelo
+    
+    
+class VentasFacturaForm(forms.ModelForm):
+
+    class Meta:
+        model = VentasFactura
+        fields = ['orden', 'numero_factura', 'metodo_pago', 'total']
+        widgets = {
+            'orden': forms.Select(attrs={'class': 'form-control'}),
+            'numero_factura': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: FAC-001'
+            }),
+            'metodo_pago': forms.Select(attrs={'class': 'form-control'}),
+            'total': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'step': '0.01'
+            }),
+        }
+    def clean_numero_factura(self):
+        numero = self.cleaned_data.get('numero_factura')
+
+        existe = VentasFactura.objects.filter(
+            numero_factura__iexact=numero
+        ).exclude(pk=self.instance.pk).exists()
+
+        if existe:
+            raise forms.ValidationError(
+                "Ya existe una factura con este número."
+            )
+
+        if not re.match(r'^[A-Za-z0-9\-]+$', numero):
+            raise forms.ValidationError(
+                "El número de factura solo puede contener letras, números y guiones."
+            )
+
+        return numero
+    
+    def clean_total(self):
+        total = self.cleaned_data.get('total')
+
+        if total <= 0:
+            raise forms.ValidationError(
+                "El total debe ser mayor a 0."
+            )
+
+        return total
+    
+    def clean_orden(self):
+        orden = self.cleaned_data.get('orden')
+
+        if VentasFactura.objects.filter(
+            orden=orden
+        ).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError(
+                "Esta orden ya tiene una factura registrada."
+            )
+
+        return orden
+    
+class NotificacionForm(forms.ModelForm):
+
+    class Meta:
+        model = Notificacion
+        fields = ['tipo', 'vehiculo', 'mensaje', 'leido']
+        widgets = {
+            'tipo': forms.Select(attrs={'class': 'form-control'}),
+            'vehiculo': forms.Select(attrs={'class': 'form-control'}),
+            'mensaje': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Escriba el mensaje de la notificación...'
+            }),
+            'leido': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+        
+    def clean_mensaje(self):
+        mensaje = self.cleaned_data.get('mensaje')
+
+        if not mensaje:
+            raise forms.ValidationError("El mensaje no puede estar vacío.")
+
+        if len(mensaje) < 5:
+            raise forms.ValidationError("El mensaje debe tener al menos 5 caracteres.")
+
+        return mensaje
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        tipo = cleaned_data.get('tipo')
+        vehiculo = cleaned_data.get('vehiculo')
+
+        if tipo == 'Mantenimiento' and not vehiculo:
+            raise forms.ValidationError(
+                "Debe seleccionar un vehículo para notificaciones de mantenimiento."
+            )
+
+        return cleaned_data
+
+
+class CajaForm(forms.ModelForm):
+
+    class Meta:
+        model = Caja
+        fields = ['descripcion', 'monto', 'tipo']
+        widgets = {
+            'descripcion': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Descripción del movimiento'
+            }),
+            'monto': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'step': '0.01',
+                'placeholder': '0.00'
+            }),
+            'tipo': forms.Select(attrs={'class': 'form-control'}),
+        }
+        
+    def clean_monto(self):
+        monto = self.cleaned_data.get('monto')
+        if monto <= 0:
+            raise forms.ValidationError("El monto debe ser mayor a 0")
+        return monto
+
+    def clean_descripcion(self):
+        descripcion = self.cleaned_data.get('descripcion')
+        if not descripcion or len(descripcion.strip()) < 3:
+            raise forms.ValidationError("La descripción es obligatoria y debe tener al menos 3 caracteres")
+        return descripcion
+
+# ============================
+# FORMULARIO COMPRA 
+# ============================
+class CompraForm(forms.ModelForm):
+    class Meta:
+        model = Compra
+        fields = '__all__'
+        widgets = {
+            'proveedor': forms.Select(attrs={'class': 'form-control'}),
+            'producto': forms.Select(attrs={'class': 'form-control'}),
+            'cantidad': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
+            'precio_unitario': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'fecha_compra': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }
+
+    def clean_cantidad(self):
+        cantidad = self.cleaned_data.get('cantidad')
+        if cantidad is not None and cantidad <= 0:
+            raise forms.ValidationError("La cantidad debe ser mayor a cero.")
+        return cantidad
+    

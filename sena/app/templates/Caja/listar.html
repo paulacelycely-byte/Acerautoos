@@ -120,7 +120,6 @@
 {% endblock %}
 
 
-
 {% block contenido %}
 <div class="container-fluid animate__animated animate__fadeIn">
 
@@ -128,16 +127,16 @@
     <div class="header-premium">
         <div class="d-flex align-items-center">
             <div class="title-icon">
-                <i class="fas fa-bell"></i>
+                <i class="fas fa-box"></i>
             </div>
             <div class="title-container">
-                <h1>{{ titulo|default:"GESTIÓN DE NOTIFICACIONES" }}</h1>
+                <h1>{{ titulo|default:"GESTIÓN DE CAJA" }}</h1>
             </div>
         </div>
 
         <a href="{{ crear_url }}" class="btn btn-nueva-premium">
             <i class="fas fa-plus-circle"></i>
-            <span>Nueva Notificación</span>
+            <span>Nuevo Movimiento</span>
         </a>
     </div>
 
@@ -145,19 +144,20 @@
     <div class="card card-custom">
         <div class="card-body p-4">
             <div class="table-responsive">
-                <table class="table table-hover align-middle" id="tabla_notificaciones" style="width:100%">
+                <table class="table table-hover align-middle" id="tabla_caja" style="width:100%">
                     <thead>
                         <tr class="text-uppercase small font-weight-bold text-muted">
                             <th class="text-center">#</th>
-                            <th>Mensaje</th>
-                            <th>Fecha Creacion</th>
-                            <th>Venta</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th>Monto</th>
+                            <th>Fecha</th>
                             <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {% for n in object_list %}
+                        {% for c in object_list %}
                         <tr>
 
                             <td class="text-center font-weight-bold text-secondary">
@@ -167,37 +167,28 @@
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-box">
-                                        {{ n.mensaje|first|upper }}
+                                        {{ c.tipo|first|upper }}
                                     </div>
                                     <div>
                                         <span class="font-weight-bold text-dark">
-                                            {{ n.mensaje }}
+                                            {{ c.tipo }}
                                         </span>
                                     </div>
                                 </div>
                             </td>
 
-                            <td class="text-muted">
-                                {{ n.fecha_creacion|date:"d M Y H:i" }}
-                            </td>
-
-                            <td class="text-muted">
-                                {% if n.vehiculo %}
-                                    Venta #{{ n.vehiculo}}
-                                {% else %}
-                                    ---
-                                {% endif %}
-                            </td>
+                            <td class="text-muted">{{ c.descripcion }}</td>
+                            <td class="text-muted">${{ c.monto }}</td>
+                            <td class="text-muted">{{ c.fecha|date:"d M Y H:i" }}</td>
 
                             <td class="text-center">
-
-                                <a href="{% url 'app:editar_notificacion' n.id %}"
+                                <a href="{% url 'app:caja_editar' c.id %}"
                                    class="btn btn-warning btn-circle shadow-sm"
                                    title="Editar">
                                     <i class="fas fa-pen"></i>
                                 </a>
 
-                                <a href="{% url 'app:eliminar_notificacion' n.id %}"
+                                <a href="{% url 'app:caja_eliminar' c.id %}"
                                    class="btn btn-danger btn-circle shadow-sm ml-1"
                                    style="background-color:#d32f2f !important;"
                                    title="Eliminar">
@@ -219,7 +210,6 @@
 {% endblock %}
 
 
-
 {% block js %}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
@@ -227,7 +217,7 @@
 <script>
 $(document).ready(function () {
 
-    $('#tabla_notificaciones').DataTable({
+    $('#tabla_caja').DataTable({
         responsive: true,
         autoWidth: false,
         pageLength: 10,
