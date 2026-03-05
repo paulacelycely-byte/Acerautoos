@@ -3,14 +3,17 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-
-from app.models import Servicio
-from app.forms import ServicioForm
 from django.contrib import messages
 
+from app.models import OrdenServicio
+from app.forms import OrdenServicioForm   # 👈 Asegúrate que tu form se llame así
 
-class ServicioListView(ListView):
-    model = Servicio
+
+# ==============================
+# LISTAR
+# ==============================
+class OrdenServicioListView(ListView):
+    model = OrdenServicio
     template_name = 'Servicio/listar.html'
     context_object_name = 'servicio'
 
@@ -20,16 +23,19 @@ class ServicioListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Listado de Servicios'
+        context['titulo'] = 'Listado de Órdenes de Servicio'
         context['crear_url'] = reverse_lazy('app:crear_servicio')
         return context
 
 
-class ServicioCreateView(CreateView):
-    model = Servicio
-    form_class = ServicioForm
+# ==============================
+# CREAR
+# ==============================
+class OrdenServicioCreateView(CreateView):
+    model = OrdenServicio
+    form_class = OrdenServicioForm
     template_name = 'Servicio/crear.html'
-    success_url = reverse_lazy('app:listar_servicio')
+    success_url = reverse_lazy('app:orden_servicio_list')
 
     # @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -37,21 +43,23 @@ class ServicioCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Crear Servicio'
-        context['listar_url'] = reverse_lazy('app:listar_servicio')
+        context['titulo'] = 'Crear Orden de Servicio'
+        context['listar_url'] = reverse_lazy('app:orden_servicio_list')
         return context
-    
-    #mensajes de confirmacion
+
     def form_valid(self, form):
-        messages.success(self.request,'Se creo un nuevo servicio')
+        messages.success(self.request, 'Se creó una nueva orden de servicio')
         return super().form_valid(form)
 
 
-class ServicioUpdateView(UpdateView):
-    model = Servicio
-    form_class = ServicioForm
-    template_name = 'Servicio/editar.html'
-    success_url = reverse_lazy('app:listar_servicio')
+# ==============================
+# EDITAR
+# ==============================
+class OrdenServicioUpdateView(UpdateView):
+    model = OrdenServicio
+    form_class = OrdenServicioForm
+    template_name = 'Servicio/crear.html'
+    success_url = reverse_lazy('app:orden_servicio_list')
 
     # @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -59,20 +67,22 @@ class ServicioUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Editar Servicio'
+        context['titulo'] = 'Editar Orden de Servicio'
         context['listar_url'] = reverse_lazy('app:listar_servicio')
         return context
-    
-    #mensajes de confirmacion
+
     def form_valid(self, form):
-        messages.success(self.request,'Se actualizó un servicio')
+        messages.success(self.request, 'Se actualizó la orden de servicio')
         return super().form_valid(form)
 
 
-class ServicioDeleteView(DeleteView):
-    model = Servicio
+# ==============================
+# ELIMINAR
+# ==============================
+class OrdenServicioDeleteView(DeleteView):
+    model = OrdenServicio
     template_name = 'Servicio/eliminar.html'
-    success_url = reverse_lazy('app:listar_servicio')
+    success_url = reverse_lazy('app:orden_servicio_list')
 
     # @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -80,11 +90,10 @@ class ServicioDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar Servicio'
-        context['listar_url'] = reverse_lazy('app:listar_servicio')
+        context['titulo'] = 'Eliminar Orden de Servicio'
+        context['listar_url'] = reverse_lazy('app:orden_servicio_list')
         return context
-    
-#mensajes de confirmacion
-    def form_valid(self, form):
-        messages.success(self.request,'Se eliminó un servicio')
-        return super().form_valid(form)
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Se eliminó la orden de servicio')
+        return super().delete(request, *args, **kwargs)

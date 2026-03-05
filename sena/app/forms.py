@@ -3,22 +3,28 @@ import re
 from django.utils import timezone
 from .models import (
     Proveedor, Producto, Compra, Cliente, 
-    Marca, Vehiculo, TipoServicio, OrdenServicio, VentasFactura, Usuario, Notificacion,Caja
+    Marca, Vehiculo, TipoServicio, OrdenServicio, VentasFactura, Usuario, Notificacion,Caja,DetalleOrdenProducto
 )
 
-# ============================
-# UTILIDADES DE VALIDACIÓN
-# ============================
+# =========================================================
+# --- UTILIDADES DE VALIDACIÓN (REUTILIZABLES) ---
+# =========================================================
+
+
 def validar_solo_letras(valor):
     if not re.match(r'^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$', str(valor)):
-        raise forms.ValidationError("Este campo solo puede contener letras y espacios.")
+        raise forms.ValidationError(
+            "Este campo solo puede contener letras y espacios.")
+
 
 def validar_numerico_estricto(valor, longitud=None):
     valor_str = str(valor).strip()
     if not valor_str.isdigit():
-        raise forms.ValidationError("Este campo debe contener solo números (sin letras, puntos o espacios).")
+        raise forms.ValidationError(
+            "Este campo debe contener solo números (sin letras, puntos o espacios).")
     if longitud and len(valor_str) != longitud:
-        raise forms.ValidationError(f"Este campo debe tener exactamente {longitud} dígitos.")
+        raise forms.ValidationError(
+            f"Este campo debe tener exactamente {longitud} dígitos.")
     return valor_str
 
 # ============================
@@ -37,7 +43,8 @@ class UsuarioForm(forms.ModelForm):
 
     class Meta:
         model = Usuario
-        fields = ['nombres', 'apellidos', 'cedula', 'telefono', 'correo', 'password', 'cargo', 'activo']
+        fields = ['nombres', 'apellidos', 'cedula', 'telefono',
+                  'correo', 'password', 'cargo', 'activo']
         widgets = {
             'nombres': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombres completos'}),
             'apellidos': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Apellidos completos'}),
@@ -68,14 +75,16 @@ class UsuarioForm(forms.ModelForm):
     def clean_correo(self):
         email = self.cleaned_data.get('correo', '').strip().lower()
         if Usuario.objects.filter(correo=email).exclude(pk=self.instance.pk).exists():
-            raise forms.ValidationError("Este correo ya está en uso por otro usuario.")
+            raise forms.ValidationError(
+                "Este correo ya está en uso por otro usuario.")
         return email
 
     def clean_telefono(self):
         tel = self.cleaned_data.get('telefono')
         validar_numerico_estricto(tel, longitud=10)
         if Usuario.objects.filter(telefono=tel).exclude(pk=self.instance.pk).exists():
-            raise forms.ValidationError("Este número de teléfono ya está registrado.")
+            raise forms.ValidationError(
+                "Este número de teléfono ya está registrado.")
         return tel
 
 # ============================
@@ -96,7 +105,8 @@ class ProveedorForm(forms.ModelForm):
         nombre = self.cleaned_data.get('nombre', '').strip().upper()
         validar_solo_letras(nombre)
         if len(nombre) < 3:
-            raise forms.ValidationError("El nombre debe tener al menos 3 caracteres.")
+            raise forms.ValidationError(
+                "El nombre debe tener al menos 3 caracteres.")
         return nombre
 
     def clean_nit(self):
@@ -110,12 +120,50 @@ class ProveedorForm(forms.ModelForm):
         tel = self.cleaned_data.get('telefono')
         validar_numerico_estricto(tel, longitud=10)
         if Proveedor.objects.filter(telefono=tel).exclude(pk=self.instance.pk).exists():
-            raise forms.ValidationError("Este teléfono ya pertenece a otro proveedor.")
+            raise forms.ValidationError(
+                "Este teléfono ya pertenece a otro proveedor.")
         return tel
 
 # ============================
 # FORMULARIO CLIENTE
 # ============================
+
+class CompraForm(forms.ModelForm):
+    class Meta:
+        model = Compra
+        fields = ['proveedor', 'producto', 'cantidad',
+                  'num_factura_proveedor', 'metodo_pago', 'total_pagado']
+        widgets = {
+            'proveedor': forms.Select(attrs={'class': 'form-control'}),
+            'producto': forms.Select(attrs={'class': 'form-control'}),
+            'cantidad': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
+            'num_factura_proveedor': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'N° de Factura'}),
+            'metodo_pago': forms.Select(attrs={'class': 'form-control'}),
+            'total_pagado': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+        }
+
+    def clean_cantidad(self):
+        cantidad = self.cleaned_data.get('cantidad')
+        if cantidad is not None and cantidad <= 0:
+            raise forms.ValidationError("La cantidad debe ser mayor a cero.")
+        return cantidad
+
+    def clean_total_pagado(self):
+        total = self.cleaned_data.get('total_pagado')
+        if total is not None and total < 0:
+            raise forms.ValidationError(
+                "El total pagado no puede ser negativo.")
+        return total
+
+    def clean_num_factura_proveedor(self):
+        factura = self.cleaned_data.get(
+            'num_factura_proveedor', '').strip().upper()
+        if Compra.objects.filter(num_factura_proveedor=factura).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError(
+                "Este número de factura ya fue ingresado.")
+        return factura
+
+
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
@@ -137,26 +185,58 @@ class ClienteForm(forms.ModelForm):
         doc = self.cleaned_data.get('numero_documento')
         validar_numerico_estricto(doc)
         if Cliente.objects.filter(numero_documento=doc).exclude(pk=self.instance.pk).exists():
-            raise forms.ValidationError("Este número de documento ya está registrado.")
+            raise forms.ValidationError(
+                "Este número de documento ya está registrado.")
         return doc
 
     def clean_telefono(self):
         tel = self.cleaned_data.get('telefono')
         validar_numerico_estricto(tel, longitud=10)
         if Cliente.objects.filter(telefono=tel).exclude(pk=self.instance.pk).exists():
-            raise forms.ValidationError("Este número de teléfono ya pertenece a otro cliente.")
+            raise forms.ValidationError(
+                "Este número de teléfono ya pertenece a otro cliente.")
         return tel
 
     def clean_email(self):
         email = self.cleaned_data.get('email', '').strip().lower()
         if email:
             if Cliente.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
-                raise forms.ValidationError("Este correo electrónico ya está registrado con otro cliente.")
+                raise forms.ValidationError(
+                    "Este correo electrónico ya está registrado con otro cliente.")
         return email
 
-# ============================
-# FORMULARIO MARCA
-# ============================
+
+class DetalleOrdenProductoForm(forms.ModelForm):
+
+    class Meta:
+        model = DetalleOrdenProducto
+        fields = ['orden', 'producto', 'cantidad']
+        widgets = {
+            'orden': forms.Select(attrs={'class': 'form-control'}),
+            'producto': forms.Select(attrs={'class': 'form-control'}),
+            'cantidad': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': '1'
+            }),
+        }
+
+
+    def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fields['producto'].queryset = Producto.objects.filter(
+                stock__gt=0)
+            self.fields['cantidad'].widget.attrs.update({'min': 1})
+            self.fields['orden'].queryset = OrdenServicio.objects.all().order_by(
+                '-fecha')
+
+    def clean_cantidad(self):
+        cantidad = self.cleaned_data.get('cantidad')
+
+        if cantidad <= 0:
+            raise forms.ValidationError("La cantidad debe ser mayor a 0.")
+
+        return cantidad
+
 class MarcaForm(forms.ModelForm):
     class Meta:
         model = Marca
@@ -177,12 +257,6 @@ class MarcaForm(forms.ModelForm):
 # ============================
 # FORMULARIO PRODUCTO
 # ============================
-class ProductoForm(forms.ModelForm):
-    estado = forms.BooleanField(
-        required=False,
-        widget=forms.CheckboxInput(attrs={'class': 'form-check-input', 'role': 'switch'})
-    )
-
 class ProductoForm(forms.ModelForm):
     estado = forms.BooleanField(
         required=False,
@@ -256,7 +330,8 @@ class VehiculoForm(forms.ModelForm):
     def clean_placa(self):
         placa = self.cleaned_data.get('placa', '').upper().strip()
         if not re.match(r'^[A-Z]{3}[0-9]{3}$', placa):
-            raise forms.ValidationError("Formato de placa inválido (Debe ser AAA111).")
+            raise forms.ValidationError(
+                "Formato de placa inválido (Debe ser AAA111).")
         if Vehiculo.objects.filter(placa=placa).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError("Este vehículo ya existe.")
         return placa
@@ -274,9 +349,9 @@ class VentasFacturaForm(forms.ModelForm):
 
     class Meta:
         model = VentasFactura
-        fields = ['orden', 'numero_factura', 'metodo_pago', 'total']
+        fields = ['venta', 'numero_factura', 'metodo_pago', 'total']
         widgets = {
-            'orden': forms.Select(attrs={'class': 'form-control'}),
+            'venta': forms.Select(attrs={'class': 'form-control'}),
             'numero_factura': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Ej: FAC-001'
@@ -364,6 +439,113 @@ class NotificacionForm(forms.ModelForm):
             raise forms.ValidationError(
                 "Debe seleccionar un vehículo para notificaciones de mantenimiento."
             )
+        return cleaned_data
+
+
+class OrdenServicioForm(forms.ModelForm):
+
+    class Meta:
+        model = OrdenServicio
+        fields = [
+            'usuario',
+            'vehiculo',
+            'servicio',
+            'fecha',
+            'km_actual',
+            'km_proximo_cambio',
+            'estado',
+            'observaciones'
+        ]
+        widgets = {
+            'usuario': forms.Select(attrs={'class': 'form-control'}),
+            'vehiculo': forms.Select(attrs={'class': 'form-control'}),
+            'servicio': forms.Select(attrs={'class': 'form-control'}),
+            'fecha': forms.DateTimeInput(attrs={
+                'class': 'form-control',
+                'type': 'datetime-local'
+            }),
+            'km_actual': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': '0'
+            }),
+            'km_proximo_cambio': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': '0'
+            }),
+            'estado': forms.Select(attrs={'class': 'form-control'}),
+            'observaciones': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3
+            }),
+        }
+
+    def clean_km_actual(self):
+        km = self.cleaned_data.get('km_actual')
+        if km is not None and km < 0:
+            raise forms.ValidationError(
+                "El kilometraje no puede ser negativo.")
+        return km
+
+    def clean_km_actual(self):
+        km = self.cleaned_data.get('km_actual')
+
+        if km is None:
+            raise forms.ValidationError("Debe ingresar el kilometraje actual.")
+
+        if km <= 0:
+            raise forms.ValidationError("El kilometraje debe ser mayor a 0.")
+
+        if km < 500:
+            raise forms.ValidationError(
+                "El kilometraje ingresado no es válido para un vehículo en servicio."
+            )
+
+        if km > 1000000:
+            raise forms.ValidationError(
+                "El kilometraje ingresado es demasiado alto."
+            )
+
+        return km
+
+    def clean(self):
+        cleaned_data = super().clean()
+        km_actual = cleaned_data.get('km_actual')
+        km_proximo = cleaned_data.get('km_proximo_cambio')
+        vehiculo = cleaned_data.get('vehiculo')
+
+        if km_actual is not None and km_proximo is not None:
+
+            if km_proximo <= km_actual:
+                self.add_error(
+                    'km_proximo_cambio',
+                    'El próximo cambio debe ser mayor al kilometraje actual.'
+                )
+
+            diferencia = km_proximo - km_actual
+
+            if diferencia < 3000:
+                self.add_error(
+                    'km_proximo_cambio',
+                    'El próximo cambio debe ser mínimo 3.000 km después.'
+                )
+
+            if diferencia > 999_999:
+                self.add_error(
+                    'km_proximo_cambio',
+                    'El próximo cambio no puede superar 999.999 km.'
+                )
+
+        # Evitar retroceso
+        if vehiculo and km_actual is not None:
+            ultimo = OrdenServicio.objects.filter(
+                vehiculo=vehiculo
+            ).exclude(pk=self.instance.pk).order_by('-km_actual').first()
+
+            if ultimo and km_actual < ultimo.km_actual:
+                self.add_error(
+                    'km_actual',
+                    'No puede registrar un kilometraje menor al último registrado.'
+                )
 
         return cleaned_data
 
@@ -419,3 +601,24 @@ class CompraForm(forms.ModelForm):
             raise forms.ValidationError("La cantidad debe ser mayor a cero.")
         return cantidad
     
+class TipoServicioForm(forms.ModelForm):
+
+    class Meta:
+        model = TipoServicio
+        fields = ['nombre', 'precio_mano_obra']
+        widgets = {
+            'nombre': forms.Select(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese el nombre del servicio'
+            }),
+            'precio_mano_obra': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese el precio de mano de obra',
+                'step': '0.01',
+                'min': '0'
+            }),
+
+        }
+
+
+
