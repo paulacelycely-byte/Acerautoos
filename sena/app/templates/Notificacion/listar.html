@@ -3,195 +3,247 @@
 
 {% block css %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+
 <style>
-    /* --- ENCABEZADO PREMIUM ESTILO ACERAUTOS (COPIADO DE CATEGORÍAS) --- */
-    .header-premium {
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        border-radius: 20px;
-        padding: 25px;
-        margin-bottom: 30px;
-        border-left: 10px solid #d32f2f;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: relative;
-        overflow: hidden;
-    }
 
-    .title-icon {
-        background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-        color: white;
-        width: 55px; height: 55px;
-        border-radius: 15px;
-        display: flex;
-        align-items: center; justify-content: center;
-        font-size: 1.5rem;
-        box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
-        margin-right: 20px;
-    }
+/* ===============================
+   HEADER PREMIUM ROJO
+================================*/
+.header-premium {
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border-left: 10px solid #d32f2f;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
-    .title-container h1 {
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        font-size: 1.9rem;
-        font-weight: 700;
-        margin-bottom: 0;
-        color: #2d3436;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-    }
+.title-icon {
+    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+    color: white;
+    width: 55px;
+    height: 55px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 20px rgba(211,47,47,0.2);
+    margin-right: 20px;
+}
 
-    .btn-nueva-premium {
-        background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
-        color: white !important;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        letter-spacing: 1px;
-        display: flex;
-        align-items: center; gap: 10px;
-        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-        box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
-    }
+.title-container h1 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    color: #2d3436;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
 
-    .btn-nueva-premium:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.1);
-        box-shadow: 0 12px 20px rgba(211, 47, 47, 0.3);
-    }
+/* ===============================
+   BOTÓN NUEVO
+================================*/
+.btn-nueva-premium {
+    background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+    color: white !important;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.3s;
+    box-shadow: 0 8px 15px rgba(211,47,47,0.2);
+}
 
-    .card-custom {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
-        background: #fff;
-    }
+.btn-nueva-premium:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
 
-    .avatar-box {
-        width: 40px; height: 40px;
-        background: #343a40;
-        color: white;
-        border-radius: 10px;
-        display: flex;
-        align-items: center; justify-content: center;
-        font-weight: bold;
-        margin-right: 12px;
-    }
+/* ===============================
+   CARD TABLA
+================================*/
+.card-custom {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.07);
+    background: #fff;
+}
 
-    .btn-circle {
-        width: 35px; height: 35px;
-        border-radius: 10px;
-        display: inline-flex;
-        align-items: center; justify-content: center;
-        transition: 0.3s;
-        border: none;
-    }
+/* ===============================
+   AVATAR LETRA
+================================*/
+.avatar-box {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
 
-    .btn-circle:hover { 
-        transform: translateY(-3px); 
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-    }
+/* ===============================
+   BOTONES CIRCULARES
+================================*/
+.btn-circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    border: none;
+    color: white !important;
+}
+
+.btn-circle:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
 </style>
 {% endblock %}
 
+
+
 {% block contenido %}
 <div class="container-fluid animate__animated animate__fadeIn">
-    
+
+    <!-- HEADER -->
     <div class="header-premium">
         <div class="d-flex align-items-center">
             <div class="title-icon">
                 <i class="fas fa-bell"></i>
             </div>
             <div class="title-container">
-                <h1>GESTIÓN DE NOTIFICACIONES</h1>
+                <h1>{{ titulo|default:"GESTIÓN DE NOTIFICACIONES" }}</h1>
             </div>
         </div>
 
-        <a href="{% url 'app:crear_notificacion' %}" class="btn btn-nueva-premium">
+        <a href="{{ crear_url }}" class="btn btn-nueva-premium">
             <i class="fas fa-plus-circle"></i>
             <span>Nueva Notificación</span>
         </a>
     </div>
 
+    <!-- CARD TABLA -->
     <div class="card card-custom">
         <div class="card-body p-4">
             <div class="table-responsive">
                 <table class="table table-hover align-middle" id="tabla_notificaciones" style="width:100%">
                     <thead>
-                        <tr class="text-uppercase small font-weight-bold text-muted" style="border-bottom: 2px solid #f8f9fa;">
-                            <th class="text-center" style="width: 5%;">#</th>
-                            <th style="width: 35%;">Mensaje</th>
-                            <th style="width: 25%;">Fecha Envío</th>
-                            <th style="width: 20%;">Venta</th>
-                            <th class="text-center" style="width: 15%;">Opciones</th>
+                        <tr class="text-uppercase small font-weight-bold text-muted">
+                            <th class="text-center">#</th>
+                            <th>Mensaje</th>
+                            <th>Fecha Creacion</th>
+                            <th>Venta</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         {% for n in object_list %}
                         <tr>
-                            <td class="text-center align-middle font-weight-bold text-secondary">{{ n.id_notificacion }}</td>
-                            <td class="align-middle">
+
+                            <td class="text-center font-weight-bold text-secondary">
+                                {{ forloop.counter }}
+                            </td>
+
+                            <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-box">{{ n.mensaje|first|upper }}</div>
+                                    <div class="avatar-box">
+                                        {{ n.mensaje|first|upper }}
+                                    </div>
                                     <div>
-                                        <span class="font-weight-bold text-dark d-block" style="font-size: 0.95rem;">{{ n.mensaje }}</span>
+                                        <span class="font-weight-bold text-dark">
+                                            {{ n.mensaje }}
+                                        </span>
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle text-muted" style="font-size: 0.9rem;">
-                                {{ n.fecha_envio }}
+
+                            <td class="text-muted">
+                                {{ n.fecha_creacion|date:"d M Y H:i" }}
                             </td>
-                            <td class="align-middle text-muted" style="font-size: 0.9rem;">
-                                {% if n.ventas %} Venta #{{ n.ventas.id }} {% else %} --- {% endif %}
+
+                            <td class="text-muted">
+                                {% if n.vehiculo %}
+                                    Venta #{{ n.vehiculo}}
+                                {% else %}
+                                    ---
+                                {% endif %}
                             </td>
-                            <td class="text-center align-middle">
-                                <a href="{% url 'app:editar_notificacion' n.id_notificacion %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
-                                    <i class="fas fa-pen text-white"></i>
+
+                            <td class="text-center">
+
+                                <a href="{% url 'app:editar_notificacion' n.id %}"
+                                   class="btn btn-warning btn-circle shadow-sm"
+                                   title="Editar">
+                                    <i class="fas fa-pen"></i>
                                 </a>
-                                <a href="{% url 'app:eliminar_notificacion' n.id_notificacion %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
-                                    <i class="fas fa-trash-alt text-white"></i>
+
+                                <a href="{% url 'app:eliminar_notificacion' n.id %}"
+                                   class="btn btn-danger btn-circle shadow-sm ml-1"
+                                   style="background-color:#d32f2f !important;"
+                                   title="Eliminar">
+                                    <i class="fas fa-trash-alt"></i>
                                 </a>
+
                             </td>
+
                         </tr>
                         {% endfor %}
                     </tbody>
+
                 </table>
             </div>
         </div>
     </div>
+
 </div>
 {% endblock %}
+
+
 
 {% block js %}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 
 <script>
-    $(document).ready(function () {
-        if ($.fn.DataTable.isDataTable('#tabla_notificaciones')) {
-            $('#tabla_notificaciones').DataTable().destroy();
-        }
+$(document).ready(function () {
 
-        $('#tabla_notificaciones').DataTable({
-            responsive: true,
-            autoWidth: false,
-            pageLength: 10,
-            language: {
-                "sSearch": "<span class='font-weight-bold small'>BUSCAR:</span>",
-                "sLengthMenu": "Mostrar _MENU_",
-                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_",
-                "oPaginate": {
-                    "sNext": "<i class='fas fa-chevron-right'></i>",
-                    "sPrevious": "<i class='fas fa-chevron-left'></i>"
-                }
+    $('#tabla_notificaciones').DataTable({
+        responsive: true,
+        autoWidth: false,
+        pageLength: 10,
+        language: {
+            sSearch: "Buscar:",
+            sLengthMenu: "Mostrar _MENU_",
+            sInfo: "Mostrando _START_ a _END_ de _TOTAL_",
+            oPaginate: {
+                sNext: "Siguiente",
+                sPrevious: "Anterior"
             },
-            dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                 "<'row'<'col-sm-12'tr>>" +
-                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-        });
+            sEmptyTable: "No hay datos disponibles",
+            sZeroRecords: "No se encontraron resultados"
+        }
     });
+
+});
 </script>
 {% endblock %}

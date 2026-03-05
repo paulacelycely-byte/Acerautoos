@@ -7,23 +7,22 @@
 <style>
 
 /* ===============================
-   HEADER PREMIUM UNIFICADO
+   HEADER PREMIUM ROJO
 ================================*/
 .header-premium {
     background: linear-gradient(145deg, #ffffff, #f8f9fa);
     border-radius: 20px;
     padding: 25px;
     margin-bottom: 30px;
-    border-left: 10px solid #120aa3;
+    border-left: 10px solid #d32f2f;
     box-shadow: 0 15px 35px rgba(0,0,0,0.04);
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-/* Icono lateral */
 .title-icon {
-    background: linear-gradient(135deg, #120aa3 0%, #1362b1 100%);
+    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
     color: white;
     width: 55px;
     height: 55px;
@@ -32,11 +31,10 @@
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
-    box-shadow: 0 8px 20px rgba(18, 10, 163, 0.2);
+    box-shadow: 0 8px 20px rgba(211,47,47,0.2);
     margin-right: 20px;
 }
 
-/* Titulo */
 .title-container h1 {
     font-size: 1.9rem;
     font-weight: 700;
@@ -46,9 +44,11 @@
     letter-spacing: 1.5px;
 }
 
-/* Botón nuevo */
+/* ===============================
+   BOTÓN NUEVO
+================================*/
 .btn-nueva-premium {
-    background: linear-gradient(135deg, #120aa3 0%, #1362b1 100%);
+    background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
     color: white !important;
     border: none;
     padding: 12px 25px;
@@ -61,7 +61,7 @@
     align-items: center;
     gap: 10px;
     transition: 0.3s;
-    box-shadow: 0 8px 15px rgba(18, 10, 163, 0.2);
+    box-shadow: 0 8px 15px rgba(211,47,47,0.2);
 }
 
 .btn-nueva-premium:hover {
@@ -70,16 +70,35 @@
 }
 
 /* ===============================
-   CARD TABLA PREMIUM
+   CARD TABLA
 ================================*/
 .card-custom {
     border: none;
     border-radius: 20px;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.07);
     background: #fff;
 }
 
-/* Botones circulares */
+/* ===============================
+   AVATAR LETRA
+================================*/
+.avatar-box {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* ===============================
+   BOTONES CIRCULARES
+================================*/
 .btn-circle {
     width: 35px;
     height: 35px;
@@ -94,24 +113,12 @@
 
 .btn-circle:hover {
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-}
-
-/* Input búsqueda */
-.dataTables_filter input {
-    border-radius: 10px !important;
-    border: 1px solid #d1d3e2 !important;
-    padding: 8px 15px !important;
-}
-
-/* Paginación activa */
-.paginate_button.page-item.active .page-link {
-    background-color: #120aa3 !important;
-    border-color: #120aa3 !important;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 </style>
 {% endblock %}
+
 
 {% block contenido %}
 <div class="container-fluid animate__animated animate__fadeIn">
@@ -120,81 +127,113 @@
     <div class="header-premium">
         <div class="d-flex align-items-center">
             <div class="title-icon">
-                <i class="fas fa-file-invoice-dollar"></i>
+                <i class="fas fa-box"></i>
             </div>
             <div class="title-container">
-                <h1>{{ titulo|default:"GESTIÓN DE VENTAS"|upper }}</h1>
+                <h1>{{ titulo|default:"GESTIÓN DE CAJA" }}</h1>
             </div>
         </div>
 
         <a href="{{ crear_url }}" class="btn btn-nueva-premium">
             <i class="fas fa-plus-circle"></i>
-            <span>Nueva Venta</span>
+            <span>Nuevo Movimiento</span>
         </a>
     </div>
 
-    <!-- TABLA -->
+    <!-- CARD TABLA -->
     <div class="card card-custom">
         <div class="card-body p-4">
             <div class="table-responsive">
-                <table class="table table-hover align-middle" id="tabla_principal" style="width:100%">
+                <table class="table table-hover align-middle" id="tabla_caja" style="width:100%">
                     <thead>
                         <tr class="text-uppercase small font-weight-bold text-muted">
-                            <th class="text-center">ID</th>
-                            <th>Factura</th>
-                            <th>Cliente</th>
+                            <th class="text-center">#</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th>Monto</th>
                             <th>Fecha</th>
-                            <th class="text-end">Total</th>
-                            <th class="text-center">Opciones</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         {% for c in object_list %}
                         <tr>
+
                             <td class="text-center font-weight-bold text-secondary">
-                                #{{ c.id }}
+                                {{ forloop.counter }}
                             </td>
 
                             <td>
-                                <span class="font-weight-bold text-dark">
-                                    {{ c.numero_factura }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="font-weight-bold text-dark">
-                                    {{ c.orden.vehiculo}} - {{ c.orden.vehiculo.cliente.nombre }}
-                                </span>
-                            </td>
-
-                            <td class="small text-muted">
-                                {{ c.fecha_emision|date:"d M Y" }}
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-box">
+                                        {{ c.tipo|first|upper }}
+                                    </div>
+                                    <div>
+                                        <span class="font-weight-bold text-dark">
+                                            {{ c.tipo }}
+                                        </span>
+                                    </div>
+                                </div>
                             </td>
 
-                            <td class="text-end font-weight-bold text-dark">
-                                ${{ c.total }}
-                            </td>
+                            <td class="text-muted">{{ c.descripcion }}</td>
+                            <td class="text-muted">${{ c.monto }}</td>
+                            <td class="text-muted">{{ c.fecha|date:"d M Y H:i" }}</td>
 
                             <td class="text-center">
-                                <a href="{% url 'app:editar_factura' c.id %}"
+                                <a href="{% url 'app:caja_editar' c.id %}"
                                    class="btn btn-warning btn-circle shadow-sm"
                                    title="Editar">
                                     <i class="fas fa-pen"></i>
                                 </a>
 
-                                <a href="{% url 'app:eliminar_factura' c.id %}"
+                                <a href="{% url 'app:caja_eliminar' c.id %}"
                                    class="btn btn-danger btn-circle shadow-sm ml-1"
                                    style="background-color:#d32f2f !important;"
                                    title="Eliminar">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
+
                             </td>
+
                         </tr>
                         {% endfor %}
                     </tbody>
+
                 </table>
             </div>
         </div>
     </div>
 
 </div>
+{% endblock %}
+
+
+{% block js %}
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
+<script>
+$(document).ready(function () {
+
+    $('#tabla_caja').DataTable({
+        responsive: true,
+        autoWidth: false,
+        pageLength: 10,
+        language: {
+            sSearch: "Buscar:",
+            sLengthMenu: "Mostrar _MENU_",
+            sInfo: "Mostrando _START_ a _END_ de _TOTAL_",
+            oPaginate: {
+                sNext: "Siguiente",
+                sPrevious: "Anterior"
+            },
+            sEmptyTable: "No hay datos disponibles",
+            sZeroRecords: "No se encontraron resultados"
+        }
+    });
+
+});
+</script>
 {% endblock %}

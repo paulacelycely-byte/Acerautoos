@@ -4,106 +4,125 @@
 
 {% block css %}
 <style>
-    /* --- ESTÉTICA PREMIUM REGISTRO (GRIS) --- */
-    .header-premium {
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        border-radius: 20px;
-        padding: 25px;
-        margin-bottom: 30px;
-        border-left: 10px solid #454d55; /* Gris Registro */
-        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
 
-    .title-icon {
-        background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
-        color: white;
-        width: 55px;
-        height: 55px;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        margin-right: 20px;
-    }
+/* ========= CAJA ERROR ========= */
+.caja-error-roja {
+    background-color: #fff5f5 !important;
+    border: 1px solid #feb2b2 !important;
+    border-left: 6px solid #454d55 !important;
+    padding: 10px !important;
+    margin-top: 5px !important;
+    border-radius: 8px !important;
+    font-size: 0.85rem;
+}
 
-    .title-container h1 {
-        font-family: 'Segoe UI', sans-serif;
-        font-size: 1.9rem;
-        font-weight: 700;
-        margin-bottom: 0;
-        color: #2d3436;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-    }
+/* ========= HEADER PREMIUM ========= */
+.header-premium {
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border-left: 10px solid #454d55;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
-    .card-form-premium {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
-        background: #fff;
-    }
+.title-icon {
+    background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
+    color: white;
+    width: 55px;
+    height: 55px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    margin-right: 20px;
+}
 
-    .card-header-dark {
-        background: #454d55;
-        color: white;
-        padding: 15px 25px;
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.85rem;
-        letter-spacing: 1px;
-    }
+.title-container h1 {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    color: #2d3436;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
 
-    .input-group-text {
-        background: #f8f9fa;
-        color: #454d55;
-        border-right: none;
-        border-radius: 12px 0 0 12px;
-    }
+/* ========= CARD PREMIUM ========= */
+.card-form-premium {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
+    background: #fff;
+}
 
-    .form-control {
-        border-radius: 0 12px 12px 0 !important;
-        border: 1px solid #d1d3e2;
-        padding: 12px 15px;
-        transition: all 0.3s ease;
-    }
+.card-header-dark {
+    background: #454d55;
+    color: white;
+    padding: 15px 25px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
 
-    .form-control:focus {
-        border-color: #454d55;
-        box-shadow: 0 0 0 0.2rem rgba(69, 77, 85, 0.1);
-    }
+/* ========= INPUTS ========= */
+.input-group-text {
+    background: #f8f9fa;
+    border-right: none;
+    color: #454d55;
+    border-radius: 12px 0 0 12px;
+    width: 45px;
+    justify-content: center;
+}
 
-    .btn-acerautos-save-crear {
-        background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
-        color: white !important;
-        border: none;
-        padding: 12px 35px;
-        border-radius: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: all 0.3s;
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    }
+.form-control {
+    border-radius: 0 12px 12px 0 !important;
+    border: 1px solid #d1d3e2;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+}
 
-    .caja-error-roja {
-        background-color: #fff5f5 !important;
-        border: 1px solid #feb2b2 !important;
-        border-left: 6px solid #454d55 !important; 
-        padding: 10px !important;
-        margin-top: 5px !important;
-        border-radius: 8px !important;
-    }
+.form-control:focus {
+    border-color: #454d55 !important;
+    box-shadow: 0 0 0 0.2rem rgba(69,77,85,0.1) !important;
+}
+
+/* ========= BOTONES ========= */
+.btn-acerautos-save-crear {
+    background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
+    color: white !important;
+    border: none;
+    padding: 12px 35px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.btn-acerautos-save-crear:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.15);
+}
+
+.btn-light {
+    border-radius: 12px !important;
+}
+
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container animate__animated animate__fadeIn">
-    
+
+    <!-- HEADER -->
     <div class="header-premium">
         <div class="d-flex align-items-center">
             <div class="title-icon">
@@ -113,145 +132,86 @@
                 <h1>{{ titulo }}</h1>
             </div>
         </div>
-        <small class="text-secondary font-weight-bold text-uppercase" style="letter-spacing: 1px;">Registro de Ventas</small>
+        <small class="font-weight-bold text-uppercase"
+               style="letter-spacing: 1px; color: #454d55;">
+            Registro de Ventas
+        </small>
     </div>
 
+    <!-- FORM -->
     <form method="post" action="." id="formVentas">
         {% csrf_token %}
         <div class="card card-form-premium overflow-hidden">
+
             <div class="card-header-dark">
-                <i class="fas fa-file-invoice-dollar mr-2"></i> Detalles de la Transacción
+                <i class="fas fa-file-invoice-dollar mr-2"></i>
+                Detalles de la Transacción
             </div>
 
             <div class="card-body p-4 p-md-5">
                 <div class="row">
                     {% for field in form.visible_fields %}
-                        <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold text-dark small mb-1 text-uppercase" style="letter-spacing: 0.5px;">
-                                {{ field.label }}
-                            </label>
-                            
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text bg-white border-right-0">
-                                        {% if 'total' in field.name %}<i class="fas fa-dollar-sign"></i>
-                                        {% elif 'productos' in field.name %}<i class="fas fa-boxes"></i>
-                                        {% elif 'cliente' in field.name %}<i class="fas fa-user"></i>
-                                        {% else %}<i class="fas fa-tag"></i>{% endif %}
-                                    </span>
-                                </div>
-                                {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+                    <div class="col-md-6 mb-4">
+
+                        <label class="font-weight-bold text-dark small mb-1 text-uppercase"
+                               style="letter-spacing: 0.5px;">
+                            {{ field.label }}
+                        </label>
+
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text border-right-0">
+
+                                    {% if 'total' in field.name %}
+                                        <i class="fas fa-dollar-sign"></i>
+                                    {% elif 'productos' in field.name %}
+                                        <i class="fas fa-boxes"></i>
+                                    {% elif 'cliente' in field.name %}
+                                        <i class="fas fa-user"></i>
+                                    {% else %}
+                                        <i class="fas fa-tag"></i>
+                                    {% endif %}
+
+                                </span>
                             </div>
 
-                            {% if field.errors %}
-                                {% for error in field.errors %}
-                                    <div class="caja-error-roja">
-                                        <i class="fas fa-exclamation-triangle mr-1"></i>
-                                        <span style="font-weight: bold;">{{ error }}</span>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
+                            {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+
                         </div>
+
+                        {% if field.errors %}
+                            {% for error in field.errors %}
+                            <div class="caja-error-roja">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                <strong>{{ error }}</strong>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+
+                    </div>
                     {% endfor %}
                 </div>
             </div>
 
             <div class="card-footer bg-light d-flex justify-content-end py-4 border-top">
-                <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')" class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold" style="border-radius: 12px;">
-                    <i class="fas fa-times mr-1"></i> Descartar
+
+                <button type="button"
+                        onclick="confirmarCancelacion('{{ listar_url }}')"
+                        class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold">
+                    <i class="fas fa-times mr-1"></i>
+                    Descartar
                 </button>
 
-                <button type="submit" class="btn btn-acerautos-save-crear shadow-sm">
-                    <i class="fas fa-check-circle mr-2"></i> Finalizar Venta
+                <button type="submit"
+                        class="btn btn-acerautos-save-crear shadow-sm">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    Finalizar Venta
                 </button>
+
             </div>
+
         </div>
     </form>
-</div>
-{% endblock %}
 
-{% block js %}
-  <script>
-    $(function () {
-      // --- LÓGICA DE CÁLCULO TOTAL ---
-      const total = document.getElementById('id_total')
-      const productos = document.getElementById('id_productos')
-      const salida = document.getElementById('id_salida')
-    
-      function calcularTotal() {
-        let suma = 0
-    
-        // SUMAR PRODUCTOS
-        if (productos) {
-          for (let option of productos.selectedOptions) {
-            const precio = option.text.split('$')[1]
-            if (precio) {
-              suma += parseFloat(precio)
-            }
-          }
-        }
-    
-        // SUMAR SALIDA
-        if (salida && salida.selectedOptions.length > 0) {
-          const textoSalida = salida.selectedOptions[0].text
-          const precioSalida = textoSalida.split('$')[1]
-          if (precioSalida) {
-            suma += parseFloat(precioSalida)
-          }
-        }
-    
-        total.value = suma.toFixed(2)
-      }
-    
-      // Eventos
-      if (productos) {
-        productos.addEventListener('change', calcularTotal)
-      }
-    
-      if (salida) {
-        salida.addEventListener('change', calcularTotal)
-      }
-    
-      // --- VALIDACIÓN Y SWEETALERT ---
-      $('#formVentas').on('submit', function (e) {
-        if (!this.checkValidity()) {
-          return
-        }
-    
-        e.preventDefault()
-        var formulario = this
-        Swal.fire({
-          title: '¿Finalizar Venta?',
-          text: 'Se registrará la transacción y el total calculado.',
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonText: 'Confirmar Venta',
-          cancelButtonText: 'Revisar',
-          confirmButtonColor: '#454d55',
-          cancelButtonColor: '#d33'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            formulario.submit()
-          }
-        })
-      })
-    })
-    
-    function confirmarCancelacion(url) {
-      Swal.fire({
-        title: '¿Cancelar Venta?',
-        text: 'Se perderán los productos seleccionados.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, salir',
-        cancelButtonText: 'Seguir aquí',
-        confirmButtonColor: '#454d55',
-        cancelButtonColor: '#6c757d'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = url
-        }
-      })
-    }
-  </script>
+</div>
 {% endblock %}
