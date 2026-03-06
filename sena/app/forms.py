@@ -12,45 +12,38 @@ from .models import (
 # ══════════════════════════════════════════════════════════
 
 def val_solo_letras(valor, campo):
-    """Solo letras, tildes, ñ y espacios. Sin números ni símbolos."""
     if not re.match(r'^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$', str(valor).strip()):
         raise forms.ValidationError(f"'{campo}' solo permite letras y espacios, sin números ni símbolos.")
     return valor.strip()
 
 def val_solo_numeros(valor, campo):
-    """Solo dígitos 0-9. Sin letras ni símbolos."""
     limpio = str(valor).strip()
     if not limpio.isdigit():
         raise forms.ValidationError(f"'{campo}' solo permite números, sin letras ni símbolos.")
     return limpio
 
 def val_placa_colombiana(valor):
-    """Formato colombiano estricto. Carro: ABC123 — Moto: ABC12D"""
     placa = str(valor).strip().upper().replace(" ", "")
     if not (re.match(r'^[A-Z]{3}[0-9]{3}$', placa) or re.match(r'^[A-Z]{3}[0-9]{2}[A-Z]{1}$', placa)):
         raise forms.ValidationError("Placa inválida. Use el formato ABC123 para carros o ABC12D para motos.")
     return placa
 
 def val_no_negativo(valor, campo):
-    """Rechaza valores negativos (permite 0)."""
     if valor < 0:
         raise forms.ValidationError(f"'{campo}' no puede ser un valor negativo.")
     return valor
 
 def val_positivo(valor, campo):
-    """Rechaza valores menores o iguales a 0."""
     if valor <= 0:
         raise forms.ValidationError(f"'{campo}' debe ser mayor que 0.")
     return valor
 
 def val_email(valor, campo):
-    """Formato básico de correo electrónico."""
     if not re.match(r'^[\w\.\+\-]+@[\w\-]+\.[a-zA-Z]{2,}$', str(valor).strip()):
         raise forms.ValidationError(f"'{campo}' no tiene un formato de correo válido.")
     return valor.strip().lower()
 
 def val_telefono(valor, campo):
-    """Solo dígitos, mínimo 7 y máximo 15 caracteres."""
     limpio = str(valor).strip()
     if not limpio.isdigit():
         raise forms.ValidationError(f"'{campo}' solo permite números, sin espacios ni símbolos.")
@@ -60,24 +53,20 @@ def val_telefono(valor, campo):
 
 
 # ══════════════════════════════════════════════════════════
-#  USUARIO (Campo fecha_registro excluido para evitar el error)
+#  USUARIO
 # ══════════════════════════════════════════════════════════
 
 class UsuarioForm(forms.ModelForm):
     class Meta:
         model = Usuario
-        # Excluimos fecha_registro para que el formulario no intente enviarlo como NULL al editar
         exclude = ['fecha_registro']
 
-    # ── Nombres: solo letras ─────────────────────────────
     def clean_nombres(self):
         return val_solo_letras(self.cleaned_data['nombres'], "Nombres")
 
-    # ── Apellidos: solo letras ───────────────────────────
     def clean_apellidos(self):
         return val_solo_letras(self.cleaned_data['apellidos'], "Apellidos")
 
-    # ── Cédula: solo números, sin duplicados ─────────────
     def clean_cedula(self):
         cedula = val_solo_numeros(self.cleaned_data['cedula'], "Cédula")
         qs = Usuario.objects.filter(cedula=cedula)
@@ -87,14 +76,12 @@ class UsuarioForm(forms.ModelForm):
             raise forms.ValidationError("Ya existe un usuario registrado con esta cédula.")
         return cedula
 
-    # ── Teléfono: solo números ───────────────────────────
     def clean_telefono(self):
         telefono = self.cleaned_data.get('telefono')
         if telefono:
             return val_telefono(telefono, "Teléfono")
         return telefono
 
-    # ── Correo: formato válido, sin duplicados ───────────
     def clean_correo(self):
         correo = val_email(self.cleaned_data['correo'], "Correo")
         qs = Usuario.objects.filter(correo=correo)
@@ -104,7 +91,6 @@ class UsuarioForm(forms.ModelForm):
             raise forms.ValidationError("Ya existe un usuario registrado con este correo.")
         return correo
 
-    # ── Contraseñas coinciden ────────────────────────────
     def clean(self):
         cleaned = super().clean()
         password = cleaned.get('password')
@@ -410,7 +396,7 @@ class VentasFacturaForm(forms.ModelForm):
 
 
 # ══════════════════════════════════════════════════════════
-#  CAJA
+#  CAJA  ← ACTUALIZADO
 # ══════════════════════════════════════════════════════════
 
 class CajaForm(forms.ModelForm):
@@ -427,18 +413,58 @@ class CajaForm(forms.ModelForm):
             raise forms.ValidationError("La descripción es demasiado corta (mínimo 5 caracteres).")
         return desc
 
+   
+
+    def clean_comprobante(self):
+        archivo = self.cleaned_data.get('comprobante')
+        if archivo:
+            ext = archivo.name.split('.')[-1].lower()
+            if ext not in ['pdf', 'jpg', 'jpeg', 'png']:
+                raise forms.ValidationError("Solo se permiten archivos PDF, JPG o PNG.")
+            if archivo.size > 5 * 1024 * 1024:
+                raise forms.ValidationError("El archivo no puede superar los 5 MB.")
+        return archivo
+
+    def clean_observaciones(self):
+        obs = self.cleaned_data.get('observaciones', '').strip()
+        if obs and len(obs) < 10:
+            raise forms.ValidationError("Las observaciones son demasiado cortas (mínimo 10 caracteres).")
+        return obs or None
+
 
 # ══════════════════════════════════════════════════════════
 #  NOTIFICACIÓN
 # ══════════════════════════════════════════════════════════
 
 class NotificacionForm(forms.ModelForm):
+
+    TIPOS_NOTIFICACION = [
+        ('',              '-- Seleccione un tipo --'),
+        ('Alerta',        'Alerta'),
+        ('Recordatorio',  'Recordatorio'),
+        ('Mantenimiento', 'Mantenimiento'),
+        ('Urgente',       'Urgente'),
+        ('Informacion',   'Información'),
+    ]
+
+    tipo = forms.ChoiceField(
+        choices=TIPOS_NOTIFICACION,
+        label="Tipo de Notificación",
+        widget=forms.Select(attrs={'class': 'form-control'}),
+    )
+
     class Meta:
         model = Notificacion
         fields = '__all__'
 
     def clean_tipo(self):
-        return val_solo_letras(self.cleaned_data['tipo'], "Tipo de notificación")
+        tipo = self.cleaned_data.get('tipo')
+        if not tipo:
+            raise forms.ValidationError("Seleccione un tipo de notificación.")
+        tipos_validos = [t[0] for t in self.TIPOS_NOTIFICACION if t[0]]
+        if tipo not in tipos_validos:
+            raise forms.ValidationError("Tipo de notificación no válido.")
+        return tipo
 
     def clean_mensaje(self):
         msg = self.cleaned_data['mensaje'].strip()

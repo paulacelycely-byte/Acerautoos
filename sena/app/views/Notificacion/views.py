@@ -1,19 +1,16 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django.contrib import messages
-
 from app.models import Notificacion
 from app.forms import NotificacionForm
+
 
 class NotificacionListView(ListView):
     model = Notificacion
     template_name = 'Notificacion/listar.html'
-    context_object_name = 'notificaciones'
+    context_object_name = 'object_list'
 
-    # @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -22,7 +19,6 @@ class NotificacionListView(ListView):
         context['titulo'] = 'Listado de Notificaciones'
         context['crear_url'] = reverse_lazy('app:crear_notificacion')
         return context
-    
 
 
 class NotificacionCreateView(CreateView):
@@ -30,8 +26,6 @@ class NotificacionCreateView(CreateView):
     form_class = NotificacionForm
     template_name = 'Notificacion/crear.html'
     success_url = reverse_lazy('app:listar_notificacion')
-
-    # @method_decorator(login_required)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -42,15 +36,14 @@ class NotificacionCreateView(CreateView):
     def form_valid(self, form):
         messages.success(self.request, "Se creó correctamente la notificación")
         return super().form_valid(form)
-    
-    
+
+
 class NotificacionUpdateView(UpdateView):
     model = Notificacion
     form_class = NotificacionForm
     template_name = 'Notificacion/crear.html'
     success_url = reverse_lazy('app:listar_notificacion')
 
-    # @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -63,8 +56,8 @@ class NotificacionUpdateView(UpdateView):
     def form_valid(self, form):
         messages.success(self.request, "Se editó correctamente")
         return super().form_valid(form)
-    
-    
+
+
 class NotificacionDeleteView(DeleteView):
     model = Notificacion
     template_name = 'Notificacion/eliminar.html'

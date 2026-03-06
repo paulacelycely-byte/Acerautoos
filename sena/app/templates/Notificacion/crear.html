@@ -3,229 +3,298 @@
 {% load widget_tweaks %}
 
 {% block css %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
 <style>
-
-/* ===============================
-   ERRORES VISUALES
-================================*/
 .caja-error-roja {
     background-color: #fff5f5 !important;
     border: 1px solid #feb2b2 !important;
     border-left: 6px solid #454d55 !important;
-    padding: 10px !important;
-    margin-top: 5px !important;
-    border-radius: 8px !important;
-    font-size: 0.85rem;
+    padding: 10px !important; margin-top: 5px !important;
+    border-radius: 8px !important; font-size: 0.85rem;
 }
 
-/* ===============================
-   HEADER PREMIUM
-================================*/
 .header-premium {
     background: linear-gradient(145deg, #ffffff, #f8f9fa);
-    border-radius: 20px;
-    padding: 25px;
-    margin-bottom: 30px;
+    border-radius: 20px; padding: 25px; margin-bottom: 30px;
     border-left: 10px solid #454d55;
     box-shadow: 0 15px 35px rgba(0,0,0,0.04);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between;
 }
 
 .title-icon {
     background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
-    color: white;
-    width: 55px;
-    height: 55px;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    margin-right: 20px;
+    color: white; width: 55px; height: 55px; border-radius: 15px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; box-shadow: 0 8px 20px rgba(0,0,0,0.15); margin-right: 20px;
 }
 
 .title-container h1 {
-    font-size: 1.9rem;
-    font-weight: 700;
-    margin-bottom: 0;
-    color: #2d3436;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
+    font-size: 1.9rem; font-weight: 700; margin-bottom: 0;
+    color: #2d3436; text-transform: uppercase; letter-spacing: 1.5px;
 }
 
-/* ===============================
-   CARD FORM
-================================*/
-.card-form-premium {
-    border: none;
-    border-radius: 20px;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
-    background: #fff;
-}
+.card-form-premium { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; background: #fff; }
 
 .card-header-dark {
-    background: #454d55;
-    color: white;
-    padding: 15px 25px;
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
+    background: #454d55; color: white; padding: 15px 25px;
+    font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;
 }
 
-/* ===============================
-   INPUTS
-================================*/
 .input-group-text {
-    background: #f8f9fa;
-    border-right: none;
-    color: #454d55;
-    border-radius: 12px 0 0 12px;
-    width: 45px;
-    justify-content: center;
+    background: #f8f9fa; border-right: none; color: #454d55;
+    border-radius: 12px 0 0 12px; width: 45px; justify-content: center;
 }
 
 .form-control {
     border-radius: 0 12px 12px 0 !important;
-    border: 1px solid #d1d3e2;
-    padding: 12px 15px;
-    transition: all 0.3s ease;
+    border: 1px solid #d1d3e2; padding: 12px 15px; transition: all 0.3s ease;
 }
 
-.form-control:focus {
-    border-color: #454d55 !important;
-    box-shadow: 0 0 0 0.2rem rgba(69, 77, 85, 0.1) !important;
-}
+.form-control:focus { border-color: #454d55 !important; box-shadow: 0 0 0 0.2rem rgba(69,77,85,0.1) !important; }
 
-/* ===============================
-   BOTONES
-================================*/
 .btn-acerautos-save-crear {
     background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
-    color: white !important;
-    border: none;
-    padding: 12px 35px;
-    border-radius: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    color: white !important; border: none; padding: 12px 35px;
+    border-radius: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; transition: all 0.3s; box-shadow: 0 8px 15px rgba(0,0,0,0.1);
 }
+.btn-acerautos-save-crear:hover { transform: translateY(-2px); filter: brightness(1.2); }
 
-.btn-acerautos-save-crear:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.2);
+/* ── Botones tipo notificación ── */
+.tipo-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border-radius: 10px;
+    border: 2px solid #dee2e6; background: #f8f9fa;
+    color: #6c757d; font-weight: 600; font-size: 0.82rem;
+    cursor: pointer; transition: all 0.25s; text-transform: uppercase;
+    letter-spacing: 0.5px; margin: 4px;
 }
+.tipo-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.tipo-btn.activo-Mantenimiento { background: #e3f2fd; border-color: #1565c0; color: #1565c0; }
+.tipo-btn.activo-Alerta        { background: #ffebee; border-color: #c62828; color: #c62828; }
+.tipo-btn.activo-Recordatorio  { background: #f3e5f5; border-color: #6a1b9a; color: #6a1b9a; }
+.tipo-btn.activo-Urgente       { background: #fff3e0; border-color: #e65100; color: #e65100; }
+.tipo-btn.activo-Informacion   { background: #e8f5e9; border-color: #2e7d32; color: #2e7d32; }
 
+/* ── Switch leído ── */
+.switch-leido-wrapper {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 18px; border: 1px solid #d1d3e2;
+    border-radius: 12px; background: #f8f9fa;
+    cursor: pointer; user-select: none;
+}
+.switch-toggle { position: relative; width: 54px; height: 28px; flex-shrink: 0; }
+.switch-toggle input { display: none; }
+.switch-track { position: absolute; inset: 0; background: #ccc; border-radius: 28px; transition: background 0.3s; }
+.switch-thumb { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; background: white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: transform 0.3s; }
+.switch-toggle input:checked ~ .switch-track { background: #454d55; }
+.switch-toggle input:checked ~ .switch-thumb { transform: translateX(26px); }
+#label-leido { font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; transition: color 0.3s; }
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container animate__animated animate__fadeIn">
 
-    <!-- HEADER -->
     <div class="header-premium">
         <div class="d-flex align-items-center">
-            <div class="title-icon">
-                <i class="fas fa-bell"></i>
-            </div>
+            <div class="title-icon"><i class="fas fa-bell"></i></div>
             <div class="title-container">
                 <h1>{{ titulo|default:"Nueva Notificación" }}</h1>
             </div>
         </div>
-        <small class="text-secondary font-weight-bold text-uppercase" style="letter-spacing: 1px;">
-            Gestión de Alertas
-        </small>
+        <small class="text-secondary font-weight-bold text-uppercase" style="letter-spacing:1px;">Gestión de Alertas</small>
     </div>
 
-    <!-- FORM -->
     <form method="post" id="formNotificacion">
         {% csrf_token %}
 
-        <div class="card card-form-premium overflow-hidden">
+        {# Campo tipo oculto — lo llena el JS al hacer click en los botones #}
+        <input type="hidden" name="tipo" id="campo-tipo" value="{{ form.tipo.value|default:'' }}">
 
+        {# Campo leido real de Django — oculto, el switch visual lo sincroniza #}
+        <div style="display:none;">{{ form.leido }}</div>
+
+        <div class="card card-form-premium overflow-hidden">
             <div class="card-header-dark">
-                <i class="fas fa-info-circle mr-2"></i>
-                Información de la Notificación
+                <i class="fas fa-info-circle mr-2"></i> Información de la Notificación
             </div>
 
             <div class="card-body p-4 p-md-5">
                 <div class="row">
 
-                    {% for field in form.visible_fields %}
-                    <div class="col-md-6 mb-4">
-
-                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">
-                            {{ field.label }}
+                    {# ── TIPO: botones visuales — col completo ── #}
+                    <div class="col-md-12 mb-4">
+                        <label class="font-weight-bold text-dark small mb-2 d-block text-uppercase">
+                            Tipo de Notificación
                         </label>
-
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">
-
-                                    {% if 'mensaje' in field.name %}
-                                        <i class="fas fa-comment-dots"></i>
-                                    {% elif 'fecha' in field.name %}
-                                        <i class="fas fa-calendar-alt"></i>
-                                    {% elif 'vehiculo' in field.name %}
-                                        <i class="fas fa-car"></i>
-                                    {% else %}
-                                        <i class="fas fa-align-left"></i>
-                                    {% endif %}
-
-                                </span>
-                            </div>
-
-                            {% if 'fecha' in field.name %}
-                                {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'id:id_fecha_envio'|attr:'readonly:true' }}
-                            {% elif 'mensaje' in field.name %}
-                                {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'style:height:100px; resize:none;' }}
-                            {% else %}
-                                {{ field|add_class:'form-control border-left-0 shadow-none' }}
-                            {% endif %}
+                        <div>
+                            <button type="button" class="tipo-btn" data-tipo="Mantenimiento" onclick="seleccionarTipo(this)">
+                                <i class="fas fa-wrench"></i> Mantenimiento
+                            </button>
+                            <button type="button" class="tipo-btn" data-tipo="Alerta" onclick="seleccionarTipo(this)">
+                                <i class="fas fa-exclamation-triangle"></i> Alerta
+                            </button>
+                            <button type="button" class="tipo-btn" data-tipo="Recordatorio" onclick="seleccionarTipo(this)">
+                                <i class="fas fa-clock"></i> Recordatorio
+                            </button>
+                            <button type="button" class="tipo-btn" data-tipo="Urgente" onclick="seleccionarTipo(this)">
+                                <i class="fas fa-fire"></i> Urgente
+                            </button>
+                            <button type="button" class="tipo-btn" data-tipo="Informacion" onclick="seleccionarTipo(this)">
+                                <i class="fas fa-info-circle"></i> Información
+                            </button>
                         </div>
-
-                        {% if field.errors %}
-                            {% for error in field.errors %}
-                                <div class="caja-error-roja">
-                                    <i class="fas fa-exclamation-triangle mr-1"></i>
-                                    <strong>{{ error }}</strong>
-                                </div>
+                        {% if form.tipo.errors %}
+                            {% for error in form.tipo.errors %}
+                            <div class="caja-error-roja mt-2">
+                                <i class="fas fa-exclamation-triangle mr-1"></i><strong>{{ error }}</strong>
+                            </div>
                             {% endfor %}
                         {% endif %}
-
                     </div>
+
+                    {# ── Vehiculo y Mensaje ── #}
+                    {% for field in form.visible_fields %}
+                        {% if field.name != 'tipo' and field.name != 'leido' %}
+                        <div class="col-md-6 mb-4">
+                            <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ field.label }}</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        {% if 'mensaje' in field.name %}<i class="fas fa-comment-dots"></i>
+                                        {% elif 'vehiculo' in field.name %}<i class="fas fa-car"></i>
+                                        {% else %}<i class="fas fa-align-left"></i>{% endif %}
+                                    </span>
+                                </div>
+                                {% if 'mensaje' in field.name %}
+                                    {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'style:height:100px; resize:none;' }}
+                                {% else %}
+                                    {{ field|add_class:'form-control border-left-0 shadow-none' }}
+                                {% endif %}
+                            </div>
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                <div class="caja-error-roja">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i><strong>{{ error }}</strong>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        {% endif %}
                     {% endfor %}
+
+                    {# ── LEÍDO: switch visual ── #}
+                    <div class="col-md-6 mb-4">
+                        <label class="font-weight-bold text-dark small mb-1 d-block text-uppercase">Estado de Lectura</label>
+                        <div class="switch-leido-wrapper" onclick="toggleLeido()">
+                            <label class="switch-toggle mb-0" style="pointer-events:none;">
+                                <input type="checkbox" id="switch-visual-leido">
+                                <span class="switch-track"></span>
+                                <span class="switch-thumb"></span>
+                            </label>
+                            <span id="label-leido" style="color:#c62828;">📭 No Leído</span>
+                        </div>
+                    </div>
 
                 </div>
             </div>
 
-            <!-- FOOTER -->
             <div class="card-footer bg-light d-flex justify-content-end py-4 border-top">
-
-                <button type="button"
-                        onclick="confirmarCancelacion('{{ listar_url }}')"
-                        class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold"
-                        style="border-radius: 12px;">
-                    <i class="fas fa-times mr-1"></i>
-                    Descartar
+                <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')"
+                        class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold" style="border-radius:12px;">
+                    <i class="fas fa-times mr-1"></i> Descartar
                 </button>
-
-                <button type="submit"
-                        class="btn btn-acerautos-save-crear shadow-sm">
-                    <i class="fas fa-save mr-2"></i>
-                    Guardar Notificación
+                <button type="submit" class="btn btn-acerautos-save-crear shadow-sm">
+                    <i class="fas fa-save mr-2"></i> Guardar Notificación
                 </button>
-
             </div>
-
         </div>
     </form>
 </div>
+{% endblock %}
+
+{% block js %}
+<script>
+    // ── Restaurar tipo si hubo error de validación ──
+    var tipoActual = document.getElementById('campo-tipo').value;
+    if (tipoActual) {
+        document.querySelectorAll('.tipo-btn').forEach(function(btn) {
+            if (btn.dataset.tipo === tipoActual) {
+                btn.classList.add('activo-' + tipoActual);
+            }
+        });
+    }
+
+    function seleccionarTipo(btn) {
+        document.querySelectorAll('.tipo-btn').forEach(function(b) {
+            b.className = 'tipo-btn';
+        });
+        var tipo = btn.dataset.tipo;
+        btn.classList.add('activo-' + tipo);
+        document.getElementById('campo-tipo').value = tipo;
+    }
+
+    // ── Switch leído — sincroniza visual con el checkbox real de Django ──
+    function actualizarLeido() {
+        var visual = document.getElementById('switch-visual-leido');
+        var real   = document.getElementById('id_leido');
+        var label  = document.getElementById('label-leido');
+        real.checked = visual.checked;
+        if (visual.checked) {
+            label.textContent = '📬 Leído';
+            label.style.color = '#2e7d32';
+        } else {
+            label.textContent = '📭 No Leído';
+            label.style.color = '#c62828';
+        }
+    }
+
+    function toggleLeido() {
+        var visual = document.getElementById('switch-visual-leido');
+        visual.checked = !visual.checked;
+        actualizarLeido();
+    }
+
+    // Inicializar — útil al editar una notificación ya marcada como leída
+    var realCb = document.getElementById('id_leido');
+    if (realCb && realCb.checked) {
+        document.getElementById('switch-visual-leido').checked = true;
+    }
+    actualizarLeido();
+
+    // ── SweetAlert submit ──
+    var hayErrores = {{ form.errors|yesno:"true,false" }};
+
+    $(function () {
+        $('#formNotificacion').on('submit', function (e) {
+            if (!document.getElementById('campo-tipo').value) {
+                Swal.fire({ icon: 'warning', title: 'Seleccione un tipo de notificación', confirmButtonColor: '#454d55' });
+                e.preventDefault(); return;
+            }
+            if (hayErrores) return;
+            e.preventDefault();
+            var formulario = this;
+            Swal.fire({
+                title: '¿Guardar Notificación?',
+                text: "La notificación será registrada en el sistema.",
+                icon: 'question', showCancelButton: true,
+                confirmButtonText: 'Guardar', cancelButtonText: 'Revisar',
+                confirmButtonColor: '#454d55', cancelButtonColor: '#d33',
+            }).then((result) => {
+                if (result.isConfirmed) { formulario.submit(); }
+            });
+        });
+    });
+
+    function confirmarCancelacion(url) {
+        Swal.fire({
+            title: '¿Cancelar Registro?', text: "Se perderán los datos ingresados.",
+            icon: 'warning', showCancelButton: true,
+            confirmButtonText: 'Sí, salir', cancelButtonText: 'Seguir aquí',
+            confirmButtonColor: '#454d55', cancelButtonColor: '#6c757d',
+        }).then((result) => {
+            if (result.isConfirmed) { window.location.href = url; }
+        });
+    }
+</script>
 {% endblock %}

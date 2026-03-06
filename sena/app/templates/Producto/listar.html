@@ -4,7 +4,6 @@
 {% block css %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <style>
-    /* --- ESTILOS PREMIUM ACERAUTOS --- */
     .header-premium {
         background: linear-gradient(145deg, #ffffff, #f8f9fa);
         border-radius: 20px;
@@ -31,47 +30,36 @@
 
     .title-container h1 {
         font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        font-size: 1.9rem;
-        font-weight: 700;
-        margin-bottom: 0;
-        color: #2d3436;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
+        font-size: 1.9rem; font-weight: 700;
+        margin-bottom: 0; color: #2d3436;
+        text-transform: uppercase; letter-spacing: 1.5px;
     }
 
     .btn-nueva-premium {
         background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
         color: white !important;
-        padding: 12px 25px;
-        border-radius: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.8rem;
+        padding: 12px 25px; border-radius: 12px;
+        font-weight: 700; text-transform: uppercase; font-size: 0.8rem;
         display: flex; align-items: center; gap: 10px;
         box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
         text-decoration: none;
     }
 
     .card-custom {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.07);
-        background: #fff;
+        border: none; border-radius: 20px;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.07); background: #fff;
     }
 
     .avatar-box {
         width: 40px; height: 40px;
-        background: #343a40;
-        color: white;
+        background: #343a40; color: white;
         border-radius: 10px;
         display: flex; align-items: center; justify-content: center;
-        font-weight: bold; margin-right: 12px;
-        flex-shrink: 0;
+        font-weight: bold; margin-right: 12px; flex-shrink: 0;
     }
 
     .btn-circle {
-        width: 35px; height: 35px;
-        border-radius: 10px;
+        width: 35px; height: 35px; border-radius: 10px;
         display: inline-flex; align-items: center; justify-content: center;
         border: none; transition: 0.3s;
     }
@@ -79,27 +67,25 @@
     .btn-circle:hover { transform: translateY(-3px); }
 
     .dataTables_filter input {
-        border-radius: 10px !important;
-        border: 1px solid #ddd !important;
-        padding: 6px 12px !important;
-        margin-left: 10px !important;
+        border-radius: 10px !important; border: 1px solid #ddd !important;
+        padding: 6px 12px !important; margin-left: 10px !important;
     }
 
     .page-item.active .page-link {
-        background-color: #d32f2f !important;
-        border-color: #d32f2f !important;
+        background-color: #d32f2f !important; border-color: #d32f2f !important;
     }
 
-    /* Badge de stock */
-    .badge-stock {
-        padding: 5px 10px;
-        border-radius: 8px;
-        font-size: 0.78rem;
-        font-weight: 700;
+    /* Badges de estado */
+    .badge-estado {
+        padding: 6px 12px; border-radius: 8px;
+        font-size: 0.78rem; font-weight: 700;
     }
-    .stock-ok   { background: #e8f5e9; color: #2e7d32; }
-    .stock-bajo { background: #fff3e0; color: #e65100; }
-    .stock-cero { background: #ffebee; color: #c62828; }
+    .estado-pendiente  { background: #fff3e0; color: #e65100; }
+    .estado-proceso    { background: #e3f2fd; color: #1565c0; }
+    .estado-terminado  { background: #e8f5e9; color: #2e7d32; }
+
+    /* Letras negras en la tabla */
+    #tabla_ordenes tbody td { color: #2d3436 !important; }
 </style>
 {% endblock %}
 
@@ -109,84 +95,75 @@
     <div class="header-premium">
         <div class="d-flex align-items-center">
             <div class="title-icon">
-                <i class="fas fa-box"></i>
+                <i class="fas fa-clipboard-list"></i>
             </div>
             <div class="title-container">
-                <h1>GESTIÓN DE PRODUCTOS</h1>
+                <h1>ÓRDENES DE SERVICIO</h1>
             </div>
         </div>
-        <a href="{{ crear_url }}" class="btn btn-nueva-premium">
+        <a href="{% url 'app:orden_servicio_create' %}" class="btn btn-nueva-premium">
             <i class="fas fa-plus-circle"></i>
-            <span>Nuevo Producto</span>
+            <span>Nueva Orden</span>
         </a>
     </div>
 
     <div class="card card-custom">
         <div class="card-body p-4">
             <div class="table-responsive">
-                <table class="table table-hover align-middle" id="tabla_productos_acerautos" style="width:100%">
+                <table class="table table-hover align-middle" id="tabla_ordenes" style="width:100%">
                     <thead>
                         <tr class="text-uppercase small font-weight-bold text-muted" style="border-bottom: 2px solid #f8f9fa;">
-                            <th class="text-center"># ID</th>
-                            <th>Producto</th>
-                            <th>Código</th>
-                            <th>Marca</th>
-                            <th>Proveedor</th>
-                            <th class="text-center">Precio</th>
-                            <th class="text-center">Stock</th>
-                            <th class="text-center">Stock Mín.</th>
+                            <th class="text-center"># Orden</th>
+                            <th>Vehículo</th>
+                            <th>Cliente</th>
+                            <th>Servicio</th>
+                            <th>Responsable</th>
+                            <th class="text-center">Fecha</th>
+                            <th class="text-center">Kilometraje</th>
                             <th class="text-center">Estado</th>
                             <th class="text-center">Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for c in object_list %}
+                        {% for o in object_list %}
                         <tr>
-                            <td class="text-center font-weight-bold text-secondary">#{{ c.id }}</td>
+                            <td class="text-center font-weight-bold">#{{ o.id }}</td>
 
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-box">{{ c.nombre|first|upper }}</div>
+                                    <div class="avatar-box">{{ o.vehiculo.placa|first|upper }}</div>
                                     <div>
-                                        <span class="font-weight-bold text-dark d-block">{{ c.nombre }}</span>
-                                        <small class="text-muted">{{ c.descripcion|truncatechars:40 }}</small>
+                                        <span class="font-weight-bold d-block">{{ o.vehiculo.placa }}</span>
+                                        <small class="text-muted">{{ o.vehiculo.marca }} — {{ o.vehiculo.modelo }}</small>
                                     </div>
                                 </div>
                             </td>
 
-                            <td><span class="font-weight-bold">{{ c.codigo }}</span></td>
+                            <td>{{ o.vehiculo.cliente }}</td>
 
-                            <td>{{ c.marca }}</td>
+                            <td>{{ o.servicio }}</td>
 
-                            <td>{{ c.proveedor|default:"—" }}</td>
+                            <td>{{ o.usuario|default:"—" }}</td>
 
-                            <td class="text-center font-weight-bold">${{ c.precio|floatformat:2 }}</td>
+                            <td class="text-center">{{ o.fecha|date:"d/m/Y" }}</td>
 
-                            <td class="text-center">
-                                {% if c.stock == 0 %}
-                                    <span class="badge-stock stock-cero">{{ c.stock }} — Sin stock</span>
-                                {% elif c.stock <= c.stock_minimo %}
-                                    <span class="badge-stock stock-bajo">{{ c.stock }} — Stock bajo</span>
-                                {% else %}
-                                    <span class="badge-stock stock-ok">{{ c.stock }}</span>
-                                {% endif %}
-                            </td>
-
-                            <td class="text-center">{{ c.stock_minimo }}</td>
+                            <td class="text-center">{{ o.km_actual }} km</td>
 
                             <td class="text-center">
-                                {% if c.estado %}
-                                    <span class="badge badge-success px-2 py-1" style="border-radius:8px;">Activo</span>
+                                {% if o.estado == 'Pendiente' %}
+                                    <span class="badge-estado estado-pendiente">⏳ Pendiente</span>
+                                {% elif o.estado == 'En Proceso' %}
+                                    <span class="badge-estado estado-proceso">🔧 En Proceso</span>
                                 {% else %}
-                                    <span class="badge badge-secondary px-2 py-1" style="border-radius:8px;">Inactivo</span>
+                                    <span class="badge-estado estado-terminado">✅ Terminado</span>
                                 {% endif %}
                             </td>
 
                             <td class="text-center">
-                                <a href="{% url 'app:editar_producto' c.id %}" class="btn btn-warning btn-circle" title="Editar">
+                                <a href="{% url 'app:orden_servicio_edit' o.id %}" class="btn btn-warning btn-circle" title="Editar">
                                     <i class="fas fa-pen text-white"></i>
                                 </a>
-                                <a href="{% url 'app:eliminar_producto' c.id %}" class="btn btn-danger btn-circle ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
+                                <a href="{% url 'app:orden_servicio_delete' o.id %}" class="btn btn-danger btn-circle ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
                                     <i class="fas fa-trash-alt text-white"></i>
                                 </a>
                             </td>
@@ -206,7 +183,7 @@
 
 <script>
     $(document).ready(function () {
-        var table = $('#tabla_productos_acerautos').DataTable({
+        $('#tabla_ordenes').DataTable({
             retrieve: true,
             destroy: true,
             responsive: true,
@@ -215,13 +192,10 @@
             language: {
                 "sSearch": "BUSCAR:",
                 "sLengthMenu": "MOSTRAR _MENU_",
-                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ productos",
-                "oPaginate": {
-                    "sNext": "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "sZeroRecords": "No se encontraron resultados",
-                "sInfoEmpty": "Mostrando 0 de 0 productos",
+                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ órdenes",
+                "oPaginate": { "sNext": "Siguiente", "sPrevious": "Anterior" },
+                "sZeroRecords": "No se encontraron órdenes",
+                "sInfoEmpty": "Mostrando 0 de 0 órdenes",
             }
         });
 
