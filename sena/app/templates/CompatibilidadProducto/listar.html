@@ -3,7 +3,6 @@
 
 {% block css %}
 <style>
-    /* Estilos Premium Mantenidos al 100% */
     .header-premium {
         background: linear-gradient(145deg, #ffffff, #f8f9fa);
         border-radius: 20px;
@@ -40,12 +39,6 @@
         transition: 0.3s; border: none;
     }
     .card-custom { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; }
-    .avatar-box {
-        width: 40px; height: 40px;
-        background: #454d55; color: white;
-        border-radius: 10px; display: flex; align-items: center; justify-content: center;
-        font-weight: bold; margin-right: 12px;
-    }
     .btn-circle {
         width: 35px; height: 35px; border-radius: 10px;
         display: inline-flex; align-items: center; justify-content: center;
@@ -58,48 +51,43 @@
 <div class="container-fluid animate__animated animate__fadeIn">
     <div class="header-premium">
         <div class="d-flex align-items-center">
-            <div class="title-icon"><i class="fas fa-users"></i></div>
+            <div class="title-icon"><i class="fas fa-cogs"></i></div>
             <div class="title-container"><h1>{{ titulo }}</h1></div>
         </div>
-        <a href="{% url 'app:crear_cliente' %}" class="btn btn-nueva-premium">
-            <i class="fas fa-user-plus"></i><span>Nuevo Cliente</span>
+        <a href="{% url 'app:crear_compatibilidad' %}" class="btn btn-nueva-premium">
+            <i class="fas fa-plus"></i><span>Nueva Relación</span>
         </a>
     </div>
 
     <div class="card card-custom">
         <div class="card-body p-4">
             <div class="table-responsive">
-                <table class="table table-hover align-middle" id="tabla_clientes" style="width:100%">
+                <table class="table table-hover align-middle" id="tabla_compatibilidad" style="width:100%">
                     <thead>
                         <tr class="text-uppercase small font-weight-bold text-muted">
                             <th class="text-center">ID</th>
-                            <th>Nombre</th>
-                            <th>Tipo Doc</th>
-                            <th>Nro Documento</th>
-                            <th>Teléfono</th>
-                            <th>Email</th>
-                            <th class="text-center">Acciones</th>
+                            <th>Producto</th>
+                            <th>Aplica para Marca</th>
+                            <th class="text-center">Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for c in clientes %}
+                        {% for comp in compatibilidades %}
                         <tr>
-                            <td class="text-center font-weight-bold text-secondary">{{ c.id }}</td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-box">{{ c.nombre|first|upper }}</div>
-                                    <span class="font-weight-bold text-dark">{{ c.nombre }}</span>
-                                </div>
+                            <td class="text-center align-middle font-weight-bold text-secondary">{{ comp.id }}</td>
+                            <td class="align-middle">
+                                <span class="font-weight-bold text-dark">{{ comp.producto.nombre }}</span>
                             </td>
-                            <td><span class="badge badge-light text-dark">{{ c.get_tipo_documento_display }}</span></td>
-                            <td class="font-weight-bold">{{ c.numero_documento }}</td>
-                            <td>{{ c.telefono }}</td>
-                            <td>{{ c.email|default:"---" }}</td>
-                            <td class="text-center">
-                                <a href="{% url 'app:editar_cliente' c.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
+                            <td class="align-middle">
+                                <span class="badge badge-info p-2" style="background-color: #454d55;">
+                                    {{ comp.marca_vehiculo.nombre }}
+                                </span>
+                            </td>
+                            <td class="text-center align-middle">
+                                <a href="{% url 'app:editar_compatibilidad' comp.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
                                     <i class="fas fa-pen text-white"></i>
                                 </a>
-                                <a href="{% url 'app:eliminar_cliente' c.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
+                                <a href="{% url 'app:eliminar_compatibilidad' comp.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
                                     <i class="fas fa-trash-alt text-white"></i>
                                 </a>
                             </td>
@@ -116,11 +104,15 @@
 {% block js %}
 <script>
     $(document).ready(function () {
-        $('#tabla_clientes').DataTable({
+        $('#tabla_compatibilidad').DataTable({
             responsive: true,
             autoWidth: false,
-            language: { "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json" },
-            order: [[0, "desc"]]
+            language: { 
+                "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json" 
+            },
+            order: [[0, "desc"]],
+            pageLength: 10,
+            columnDefs: [{ orderable: false, targets: [3] }]
         });
     });
 </script>

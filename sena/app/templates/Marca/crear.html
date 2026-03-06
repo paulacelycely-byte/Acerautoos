@@ -4,174 +4,73 @@
 
 {% block css %}
 <style>
-    .caja-error-roja {
-        background-color: #fff5f5 !important;
-        border: 1px solid #feb2b2 !important;
-        border-left: 6px solid #454d55 !important; 
-        padding: 10px !important;
-        margin-top: 5px !important;
-        border-radius: 8px !important;
-    }
-
-    .header-premium {
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        border-radius: 20px;
-        padding: 25px;
-        margin-bottom: 30px;
-        border-left: 10px solid #454d55;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .title-icon {
-        background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
-        color: white;
-        width: 55px;
-        height: 55px;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        margin-right: 20px;
-    }
-
-    .title-container h1 {
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        font-size: 1.9rem;
-        font-weight: 700;
-        margin-bottom: 0;
-        color: #2d3436;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-    }
-
-    .card-form-premium {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
-        background: #fff;
-    }
-
-    .card-header-dark {
-        background: #454d55;
-        color: white;
-        padding: 15px 25px;
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.85rem;
-        letter-spacing: 1px;
-    }
-
-    .input-group-text {
-        background: #f8f9fa;
-        border-right: none;
-        color: #454d55;
-        border-radius: 12px 0 0 12px;
-        width: 45px;
-        justify-content: center;
-    }
-
-    .form-control {
-        border-radius: 0 12px 12px 0 !important;
-        border: 1px solid #d1d3e2;
-        padding: 12px 15px;
-        transition: all 0.3s ease;
-    }
-
-    .form-control:focus {
-        border-color: #454d55 !important;
-        box-shadow: 0 0 0 0.2rem rgba(69, 77, 85, 0.1) !important;
-    }
-
-    .btn-acerautos-save-crear {
-        background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
-        color: white !important;
-        border: none;
-        padding: 12px 35px;
-        border-radius: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: all 0.3s;
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-acerautos-save-crear:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.2);
-    }
+    /* Estilos Premium */
+    .header-premium { background: linear-gradient(145deg, #ffffff, #f8f9fa); border-radius: 20px; padding: 25px; margin-bottom: 30px; border-left: 10px solid #454d55; box-shadow: 0 15px 35px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; }
+    .title-icon { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white; width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); margin-right: 20px; }
+    .title-container h1 { font-size: 1.9rem; font-weight: 700; color: #2d3436; text-transform: uppercase; letter-spacing: 1.5px; }
+    .card-form-premium { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; background: #fff; }
+    .card-header-dark { background: #454d55; color: white; padding: 15px 25px; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+    .input-group-text { background: #f8f9fa; border-right: none; color: #454d55; border-radius: 12px 0 0 12px; width: 45px; justify-content: center; }
+    .form-control { border-radius: 0 12px 12px 0 !important; border: 1px solid #d1d3e2; padding: 12px 15px; }
+    .btn-acerautos-save { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white !important; border: none; padding: 12px 35px; border-radius: 12px; font-weight: 700; text-transform: uppercase; }
+    
+    /* Switch Elegante */
+    .switch-container { display: flex; align-items: center; padding: 10px; border: 1px solid #d1d3e2; border-radius: 12px; background: #f8f9fa; }
+    .switch { position: relative; display: inline-block; width: 50px; height: 25px; margin-bottom: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e0; transition: .4s; border-radius: 25px; }
+    .slider:before { position: absolute; content: ""; height: 17px; width: 17px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: #454d55; }
+    input:checked + .slider:before { transform: translateX(25px); }
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container animate__animated animate__fadeIn">
-    
     <div class="header-premium">
         <div class="d-flex align-items-center">
-            <div class="title-icon">
-                <i class="fas {% if 'editar' in request.path %}fa-edit{% else %}fa-car{% endif %}"></i>
-            </div>
-            <div class="title-container">
-                <h1>{% if 'editar' in request.path %}Editar Marca{% else %}Nueva Marca{% endif %}</h1>
-            </div>
+            <div class="title-icon"><i class="fas fa-car"></i></div>
+            <div class="title-container"><h1>{{ titulo }}</h1></div>
         </div>
-        <small class="text-secondary font-weight-bold text-uppercase" style="letter-spacing: 1px;">
-            Gestión de Vehículos
-        </small>
+        <small class="text-secondary font-weight-bold text-uppercase">Gestión de Vehículos</small>
     </div>
 
-    <form method="post" action="." id="formMarca">
+    <form method="post" action="." id="formMarca" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="card card-form-premium overflow-hidden">
-            <div class="card-header-dark">
-                <i class="fas fa-car mr-2"></i> Información de la Marca
-            </div>
-
+        <div class="card card-form-premium">
+            <div class="card-header-dark"><i class="fas fa-info-circle mr-2"></i> Información de la Marca</div>
             <div class="card-body p-4 p-md-5">
                 <div class="row">
                     {% for field in form.visible_fields %}
+                        {% if field.name != 'estado' %}
                         <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold text-dark small mb-1 text-uppercase" style="letter-spacing: 0.5px;">
-                                {{ field.label }}
-                            </label>
-                            
+                            <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ field.label }}</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text border-right-0">
-                                        <i class="fas fa-industry"></i>
-                                    </span>
+                                    <span class="input-group-text"><i class="fas fa-pen"></i></span>
                                 </div>
                                 {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
                             </div>
-
-                            {% if field.errors %}
-                                {% for error in field.errors %}
-                                    <div class="caja-error-roja small">
-                                        <i class="fas fa-exclamation-triangle mr-1"></i>
-                                        <span style="font-weight: bold;">{{ error }}</span>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
                         </div>
+                        {% endif %}
                     {% endfor %}
+
+                    <div class="col-md-6 mb-4">
+                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">Estado (Activo)</label>
+                        <div class="switch-container">
+                            <span class="flex-grow-1 font-weight-bold text-muted ml-2">¿Marca habilitada?</span>
+                            <label class="switch">
+                                {{ form.estado }}
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="card-footer bg-light d-flex justify-content-end py-4 border-top">
-                <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')" 
-                        class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold" 
-                        style="border-radius: 12px;">
-                    <i class="fas fa-times mr-1"></i> Descartar
-                </button>
-
-                <button type="submit" class="btn btn-acerautos-save-crear shadow-sm">
-                    <i class="fas fa-save mr-2"></i> 
-                    {% if 'editar' in request.path %}Actualizar Marca{% else %}Guardar Marca{% endif %}
-                </button>
+                <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')" class="btn btn-light border px-4 mx-2 font-weight-bold" style="border-radius: 12px;">Descartar</button>
+                <button type="submit" class="btn btn-acerautos-save"><i class="fas fa-save mr-2"></i> Guardar Marca</button>
             </div>
         </div>
     </form>
@@ -180,40 +79,28 @@
 
 {% block js %}
 <script>
-    $(function () {
-        $('#formMarca').on('submit', function (e) {
-            if (!this.checkValidity()) { return; }
-
-            e.preventDefault();
-            var formulario = this;
-            Swal.fire({
-                title: '¿Confirmar Registro?',
-                text: "La información de la marca será almacenada.",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Guardar',
-                cancelButtonText: 'Revisar',
-                confirmButtonColor: '#454d55',
-                cancelButtonColor: '#d33',
-            }).then((result) => {
-                if (result.isConfirmed) { formulario.submit(); }
-            });
-        });
+    $('#formMarca').on('submit', function (e) {
+        if (!this.checkValidity()) return;
+        e.preventDefault();
+        var form = this;
+        Swal.fire({
+            title: '¿Confirmar registro?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Guardar',
+            confirmButtonColor: '#454d55'
+        }).then((result) => { if (result.isConfirmed) form.submit(); });
     });
 
     function confirmarCancelacion(url) {
         Swal.fire({
-            title: '¿Cancelar Registro?',
-            text: "Los cambios realizados se perderán.",
+            title: '¿Cancelar?',
+            text: "Los cambios se perderán.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sí, salir',
-            cancelButtonText: 'Seguir aquí',
-            confirmButtonColor: '#454d55',
-            cancelButtonColor: '#6c757d',
-        }).then((result) => {
-            if (result.isConfirmed) { window.location.href = url; }
-        });
+            confirmButtonColor: '#454d55'
+        }).then((result) => { if (result.isConfirmed) window.location.href = url; });
     }
 </script>
 {% endblock %}

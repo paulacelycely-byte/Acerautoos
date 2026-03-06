@@ -4,7 +4,6 @@
 
 {% block css %}
 <style>
-    /* --- LÓGICA DE ERRORES --- */
     .caja-error-roja {
         background-color: #fff5f5 !important;
         border: 1px solid #feb2b2 !important;
@@ -14,7 +13,6 @@
         border-radius: 8px !important;
     }
 
-    /* --- ESTÉTICA PREMIUM REGISTRO (GRIS ACERAUTOS) --- */
     .header-premium {
         background: linear-gradient(145deg, #ffffff, #f8f9fa);
         border-radius: 20px;
@@ -30,96 +28,118 @@
     .title-icon {
         background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
         color: white;
-        width: 55px;
-        height: 55px;
+        width: 55px; height: 55px;
         border-radius: 15px;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        align-items: center; justify-content: center;
         font-size: 1.5rem;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         margin-right: 20px;
     }
 
     .title-container h1 {
         font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        font-size: 1.9rem;
-        font-weight: 700;
-        margin-bottom: 0;
-        color: #2d3436;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
+        font-size: 1.9rem; font-weight: 700;
+        margin-bottom: 0; color: #2d3436;
+        text-transform: uppercase; letter-spacing: 1.5px;
     }
 
     .card-form-premium {
-        border: none;
-        border-radius: 20px;
+        border: none; border-radius: 20px;
         box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
         background: #fff;
     }
 
     .card-header-dark {
-        background: #454d55;
-        color: white;
-        padding: 15px 25px;
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.85rem;
-        letter-spacing: 1px;
+        background: #454d55; color: white;
+        padding: 15px 25px; font-weight: 700;
+        text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;
     }
 
     .input-group-text {
-        background: #f8f9fa;
-        border-right: none;
-        color: #454d55;
-        border-radius: 12px 0 0 12px;
+        background: #f8f9fa; border-right: none;
+        color: #454d55; border-radius: 12px 0 0 12px;
     }
 
     .form-control {
         border-radius: 0 12px 12px 0 !important;
-        border: 1px solid #d1d3e2;
-        padding: 12px 15px;
-        transition: all 0.3s ease;
+        border: 1px solid #d1d3e2; padding: 12px 15px; transition: all 0.3s ease;
     }
 
     .form-control:focus {
         border-color: #454d55;
-        box-shadow: 0 0 0 0.2rem rgba(69, 77, 85, 0.1);
+        box-shadow: 0 0 0 0.2rem rgba(69,77,85,0.1);
     }
 
     .btn-acerautos-save-crear {
         background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
-        color: white !important;
-        border: none;
-        padding: 12px 35px;
-        border-radius: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: all 0.3s;
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        color: white !important; border: none;
+        padding: 12px 35px; border-radius: 12px;
+        font-weight: 700; text-transform: uppercase;
+        letter-spacing: 1px; transition: all 0.3s;
+        box-shadow: 0 8px 15px rgba(0,0,0,0.1);
     }
 
-    .btn-acerautos-save-crear:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.1);
+    .btn-acerautos-save-crear:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+    /* ── Switch Estado ── */
+    .switch-estado-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 18px;
+        border: 1px solid #d1d3e2;
+        border-radius: 12px;
+        background: #f8f9fa;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .switch-toggle {
+        position: relative;
+        width: 54px; height: 28px;
+        flex-shrink: 0;
+    }
+
+    .switch-toggle input { display: none; }
+
+    .switch-track {
+        position: absolute; inset: 0;
+        background: #ccc; border-radius: 28px;
+        transition: background 0.3s;
+    }
+
+    .switch-thumb {
+        position: absolute;
+        top: 3px; left: 3px;
+        width: 22px; height: 22px;
+        background: white; border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: transform 0.3s;
+    }
+
+    .switch-toggle input:checked ~ .switch-track { background: #454d55; }
+    .switch-toggle input:checked ~ .switch-thumb { transform: translateX(26px); }
+
+    #label-estado {
+        font-weight: 700;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: color 0.3s;
     }
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container animate__animated animate__fadeIn">
-    
+
     <div class="header-premium">
         <div class="d-flex align-items-center">
-            <div class="title-icon">
-                <i class="fas fa-box"></i>
-            </div>
-            <div class="title-container">
-                <h1>{{ titulo }}</h1>
-            </div>
+            <div class="title-icon"><i class="fas fa-box"></i></div>
+            <div class="title-container"><h1>{{ titulo }}</h1></div>
         </div>
-        <small class="text-secondary font-weight-bold text-uppercase" style="letter-spacing: 1px;">Módulo de Productos</small>
+        <small class="text-secondary font-weight-bold text-uppercase" style="letter-spacing:1px;">Módulo de Productos</small>
     </div>
 
     <form method="post" action="." id="formProducto">
@@ -132,43 +152,59 @@
             <div class="card-body p-4 p-md-5">
                 <div class="row">
                     {% for field in form.visible_fields %}
-                        <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold text-dark small mb-1 text-uppercase" style="letter-spacing: 0.5px;">
-                                {{ field.label }}
-                            </label>
-                            
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text bg-white border-right-0">
-                                        {# --- ICONOS DINÁMICOS SEGÚN EL CAMPO --- #}
-                                        {% if 'nombre' in field.name %}<i class="fas fa-tag"></i>
-                                        {% elif 'categoria' in field.name or 'fk' in field.name %}<i class="fas fa-layer-group"></i>
-                                        {% elif 'precio' in field.name %}<i class="fas fa-dollar-sign"></i>
-                                        {% elif 'stock' in field.name %}<i class="fas fa-cubes"></i>
-                                        {% else %}<i class="fas fa-pen-nib"></i>{% endif %}
-                                    </span>
+                        {% if field.name == 'estado' %}
+                            {# ── Switch bonito para Estado ── #}
+                            <div class="col-md-6 mb-4">
+                                <label class="font-weight-bold text-dark small mb-1 text-uppercase" style="letter-spacing:0.5px;">
+                                    Estado del Producto
+                                </label>
+                                <div class="switch-estado-wrapper" onclick="toggleEstado()">
+                                    <label class="switch-toggle mb-0">
+                                        {{ field }}
+                                        <span class="switch-track"></span>
+                                        <span class="switch-thumb"></span>
+                                    </label>
+                                    <span id="label-estado" class="text-muted">Cargando...</span>
                                 </div>
-                                {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
                             </div>
-
-                            {% if field.errors %}
-                                {% for error in field.errors %}
-                                    <div class="caja-error-roja">
-                                        <i class="fas fa-exclamation-triangle mr-1"></i>
-                                        <span style="font-weight: bold;">{{ error }}</span>
+                        {% else %}
+                            <div class="col-md-6 mb-4">
+                                <label class="font-weight-bold text-dark small mb-1 text-uppercase" style="letter-spacing:0.5px;">
+                                    {{ field.label }}
+                                </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-white border-right-0">
+                                            {% if 'nombre' in field.name %}<i class="fas fa-tag"></i>
+                                            {% elif 'precio' in field.name %}<i class="fas fa-dollar-sign"></i>
+                                            {% elif 'stock' in field.name %}<i class="fas fa-cubes"></i>
+                                            {% elif 'codigo' in field.name %}<i class="fas fa-barcode"></i>
+                                            {% elif 'marca' in field.name %}<i class="fas fa-copyright"></i>
+                                            {% elif 'proveedor' in field.name %}<i class="fas fa-truck"></i>
+                                            {% elif 'descripcion' in field.name %}<i class="fas fa-align-left"></i>
+                                            {% else %}<i class="fas fa-pen-nib"></i>{% endif %}
+                                        </span>
                                     </div>
-                                {% endfor %}
-                            {% endif %}
-                        </div>
+                                    {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+                                </div>
+                                {% if field.errors %}
+                                    {% for error in field.errors %}
+                                        <div class="caja-error-roja">
+                                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                                            <span style="font-weight:bold;">{{ error }}</span>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
 
             <div class="card-footer bg-light d-flex justify-content-end py-4 border-top">
-                <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')" class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold" style="border-radius: 12px;">
+                <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')" class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold" style="border-radius:12px;">
                     <i class="fas fa-times mr-1"></i> Descartar
                 </button>
-
                 <button type="submit" class="btn btn-acerautos-save-crear shadow-sm">
                     <i class="fas fa-save mr-2"></i> Guardar Producto
                 </button>
@@ -180,10 +216,35 @@
 
 {% block js %}
 <script>
+    // ── Inicializar label del switch según estado del checkbox ──
+    function actualizarLabel() {
+        var cb = document.getElementById('{{ form.estado.id_for_label }}');
+        var label = document.getElementById('label-estado');
+        if (cb.checked) {
+            label.textContent = '✅ Producto Activo';
+            label.style.color = '#2e7d32';
+        } else {
+            label.textContent = '❌ Producto Inactivo';
+            label.style.color = '#c62828';
+        }
+    }
+
+    function toggleEstado() {
+        var cb = document.getElementById('{{ form.estado.id_for_label }}');
+        cb.checked = !cb.checked;
+        actualizarLabel();
+    }
+
+    // Ejecutar al cargar la página
+    actualizarLabel();
+
+    // ── SweetAlert submit ──
+    var hayErrores = {{ form.errors|yesno:"true,false" }};
+
     $(function () {
         $('#formProducto').on('submit', function (e) {
+            if (hayErrores) return;
             if (!this.checkValidity()) { return; }
-
             e.preventDefault();
             var formulario = this;
             Swal.fire({

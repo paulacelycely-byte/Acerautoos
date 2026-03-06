@@ -4,12 +4,10 @@
 
 {% block css %}
 <style>
-    /* --- LÓGICA DE SWITCH GRIS --- */
     .custom-switch .custom-control-label::before { height: 1.5rem; width: 2.75rem; border-radius: 2rem; }
     .custom-switch .custom-control-label::after { width: calc(1.5rem - 4px); height: calc(1.5rem - 4px); border-radius: 2rem; }
     .custom-control-input:checked ~ .custom-control-label::before { background-color: #454d55 !important; border-color: #454d55 !important; }
 
-    /* --- ESTÉTICA PREMIUM --- */
     .header-premium {
         background: linear-gradient(145deg, #ffffff, #f8f9fa);
         border-radius: 20px; padding: 25px; margin-bottom: 30px;
@@ -20,12 +18,10 @@
     .card-form-premium { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; background: #fff; }
     .card-header-dark { background: #454d55; color: white; padding: 15px 25px; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; }
     .form-control { border-radius: 0 12px 12px 0 !important; border: 1px solid #d1d3e2; padding: 12px 15px; }
-    
-    /* --- ESTILO DE ALERTAS DE ERROR --- */
+
     .error-feedback {
         color: #e74a3b; font-size: 0.75rem; font-weight: 700;
         margin-top: 5px; display: block; text-transform: uppercase;
-        animation: fadeInDown 0.3s;
     }
     .is-invalid-custom { border: 1px solid #e74a3b !important; border-left: none !important; }
 
@@ -34,18 +30,32 @@
         color: white !important; padding: 12px 35px; border-radius: 12px;
         font-weight: 700; text-transform: uppercase; border: none;
     }
+
+    /* ── Ojito ── */
+    .toggle-password {
+        cursor: pointer;
+        border-radius: 0 12px 12px 0 !important;
+        border: 1px solid #d1d3e2;
+        border-left: none;
+        background: #f8f9fa;
+        padding: 0 14px;
+        color: #454d55;
+    }
+    .toggle-password:hover { color: #000; }
+    /* Quitar border-radius derecho al input cuando tiene ojito */
+    .password-field { border-radius: 0 !important; }
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container animate__animated animate__fadeIn">
-    
+
     <div class="header-premium">
         <div class="d-flex align-items-center">
-            <div class="title-icon" style="background: #454d55; color: white; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+            <div style="background: #454d55; color: white; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
                 <i class="fas fa-user-shield"></i>
             </div>
-            <div class="title-container">
+            <div>
                 <h1 class="h3 mb-0 font-weight-bold text-dark text-uppercase">
                     {% if form.instance.pk %}Editar Personal{% else %}Registro de Personal{% endif %}
                 </h1>
@@ -53,7 +63,8 @@
         </div>
     </div>
 
-    <form method="post" action="." id="formUsuario" novalidate> {% csrf_token %}
+    <form method="post" action="." id="formUsuario" novalidate>
+        {% csrf_token %}
         <div class="card card-form-premium overflow-hidden">
             <div class="card-header-dark">
                 <i class="fas fa-id-card mr-2"></i> Perfil de Usuario
@@ -71,6 +82,37 @@
                                     </label>
                                 </div>
                             </div>
+
+                        {% elif 'password' in field.name %}
+                            {# ── Campo contraseña con ojito ── #}
+                            <div class="col-md-6 mb-4">
+                                <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ field.label }}</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text {% if field.errors %}border-danger text-danger{% endif %}">
+                                            <i class="fas fa-lock"></i>
+                                        </span>
+                                    </div>
+                                    {% if field.errors %}
+                                        {{ field|add_class:'form-control password-field is-invalid-custom shadow-none'|attr:'type:password' }}
+                                    {% else %}
+                                        {{ field|add_class:'form-control password-field border-left-0 shadow-none'|attr:'type:password' }}
+                                    {% endif %}
+                                    <div class="input-group-append">
+                                        <span class="toggle-password input-group-text" data-target="{{ field.id_for_label }}">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                {% if field.errors %}
+                                    {% for error in field.errors %}
+                                        <span class="error-feedback">
+                                            <i class="fas fa-times-circle mr-1"></i> {{ error }}
+                                        </span>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+
                         {% else %}
                             <div class="col-md-6 mb-4">
                                 <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ field.label }}</label>
@@ -82,7 +124,6 @@
                                             {% elif 'cedula' in field.name %}<i class="fas fa-fingerprint"></i>
                                             {% elif 'telefono' in field.name %}<i class="fas fa-phone"></i>
                                             {% elif 'correo' in field.name %}<i class="fas fa-envelope"></i>
-                                            {% elif 'password' in field.name %}<i class="fas fa-lock"></i>
                                             {% else %}<i class="fas fa-edit"></i>{% endif %}
                                         </span>
                                     </div>
@@ -120,19 +161,30 @@
 
 {% block js %}
 <script>
+    // ── Ojito: mostrar/ocultar contraseña ──
+    $('.toggle-password').on('click', function () {
+        var targetId = $(this).data('target');
+        var input = $('#' + targetId);
+        var icon = $(this).find('i');
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            input.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+
+    // ── SweetAlert submit ──
     $(function () {
         $('#formUsuario').on('submit', function (e) {
-            // Si hay errores de Django visibles, no mostramos el SweetAlert hasta que se limpien
             var hasErrors = $('.error-feedback').length > 0;
-            
-            // Validar campos requeridos antes del alert
-            if (!this.checkValidity()) {
-                return; 
-            }
+            if (hasErrors) return;
+            if (!this.checkValidity()) return;
 
             e.preventDefault();
             var formulario = this;
-            
+
             Swal.fire({
                 title: '¿Confirmar registro?',
                 text: "Se validarán los datos en el sistema.",
@@ -143,9 +195,7 @@
                 confirmButtonColor: '#454d55',
                 cancelButtonColor: '#d33',
             }).then((result) => {
-                if (result.isConfirmed) {
-                    formulario.submit();
-                }
+                if (result.isConfirmed) formulario.submit();
             });
         });
     });

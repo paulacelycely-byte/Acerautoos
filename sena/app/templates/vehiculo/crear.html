@@ -4,19 +4,17 @@
 
 {% block css %}
   <style>
-    /* Estilos Premium Acerautos (Rojo y Gris Metalizado) */
     .header-premium {
       background: linear-gradient(145deg, #ffffff, #f8f9fa);
       border-radius: 20px;
       padding: 25px;
       margin-bottom: 30px;
-      border-left: 10px solid #d32f2f; /* Rojo Acerautos */
+      border-left: 10px solid #d32f2f;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    
     .title-icon {
       background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
       color: white;
@@ -27,23 +25,20 @@
       box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
       margin-right: 20px;
     }
-    
     .title-container h1 {
       font-family: 'Segoe UI', sans-serif;
       font-size: 1.9rem; font-weight: 700;
       margin-bottom: 0; color: #2d3436;
       text-transform: uppercase; letter-spacing: 1.5px;
     }
-    
     .card-form-premium {
       border: none;
       border-radius: 20px;
       box-shadow: 0 20px 45px rgba(0, 0, 0, 0.07) !important;
       background: #fff;
     }
-    
     .card-header-dark {
-      background: #2d3436; /* Gris Oscuro */
+      background: #2d3436;
       color: white;
       padding: 15px 25px;
       font-weight: 700;
@@ -51,28 +46,23 @@
       font-size: 0.85rem;
       letter-spacing: 1px;
     }
-    
     .form-control {
       border: 1px solid #d1d3e2;
       padding: 12px 15px;
       border-radius: 10px;
       transition: all 0.3s ease;
     }
-    
     .form-control:focus {
       border-color: #d32f2f;
       box-shadow: 0 0 0 0.2rem rgba(211, 47, 47, 0.1);
     }
-
     .input-group-text {
       background: #f8f9fa;
       border-right: none;
       color: #d32f2f;
       border-radius: 10px 0 0 10px;
     }
-
     .border-left-0 { border-radius: 0 10px 10px 0 !important; }
-
     .btn-acerautos-save {
       background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
       color: white !important;
@@ -85,12 +75,10 @@
       transition: all 0.3s;
       box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
     }
-
     .btn-acerautos-save:hover {
       transform: translateY(-2px);
       box-shadow: 0 12px 20px rgba(211, 47, 47, 0.3);
     }
-
     .caja-error-roja {
       background-color: #fff5f5;
       border: 1px solid #feb2b2;
@@ -131,7 +119,6 @@
             {% for field in form.visible_fields %}
               <div class="col-md-6 mb-4">
                 <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ field.label }}</label>
-
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text">
@@ -141,8 +128,6 @@
                         <i class="fas fa-copyright"></i>
                       {% elif 'modelo' in field.name %}
                         <i class="fas fa-car"></i>
-                      {% elif 'año' in field.name or 'anio' in field.name %}
-                        <i class="fas fa-calendar-alt"></i>
                       {% elif 'cliente' in field.name or 'propietario' in field.name %}
                         <i class="fas fa-user-tie"></i>
                       {% else %}
@@ -152,7 +137,6 @@
                   </div>
                   {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
                 </div>
-
                 {% if field.errors %}
                   {% for error in field.errors %}
                     <div class="caja-error-roja">
@@ -168,10 +152,8 @@
 
         <div class="card-footer bg-light d-flex justify-content-end py-4 border-top">
           <button type="button" onclick="confirmarCancelacion('/principal/vehiculos/listar/')" class="col-md-2 btn btn-light border px-4 mx-2 text-secondary font-weight-bold">
-        <i class="fas fa-times mr-1"></i> Cancelar
-        </button>
+            <i class="fas fa-times mr-1"></i> Cancelar
           </button>
-
           <button type="submit" class="btn btn-acerautos-save">
             <i class="fas fa-save mr-2"></i> Registrar Vehículo
           </button>
@@ -183,8 +165,11 @@
 
 {% block js %}
   <script>
+    var hayErrores = {{ form.errors|yesno:"true,false" }};
+
     $(function () {
       $('#formVehiculo').on('submit', function (e) {
+        if (hayErrores) return;
         if (!this.checkValidity()) return;
 
         e.preventDefault();
@@ -197,7 +182,7 @@
           showCancelButton: true,
           confirmButtonText: 'Sí, Guardar',
           cancelButtonText: 'Revisar',
-          confirmButtonColor: '#d32f2f', // Rojo Acerautos
+          confirmButtonColor: '#d32f2f',
           cancelButtonColor: '#6c757d'
         }).then((result) => {
           if (result.isConfirmed) {

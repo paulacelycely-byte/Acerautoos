@@ -89,3 +89,7 @@ MESSAGE_TAGS = {
     messages.WARNING: 'warning',
     messages.ERROR: 'danger',
 }
+
+# --- CONFIGURACIÓN DE ARCHIVOS MULTIMEDIA ---
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'marcas_logos')

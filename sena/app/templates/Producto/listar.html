@@ -66,6 +66,7 @@
         border-radius: 10px;
         display: flex; align-items: center; justify-content: center;
         font-weight: bold; margin-right: 12px;
+        flex-shrink: 0;
     }
 
     .btn-circle {
@@ -77,24 +78,34 @@
 
     .btn-circle:hover { transform: translateY(-3px); }
 
-    /* Personalización de la barra de búsqueda y paginación */
     .dataTables_filter input {
         border-radius: 10px !important;
         border: 1px solid #ddd !important;
         padding: 6px 12px !important;
         margin-left: 10px !important;
     }
-    
+
     .page-item.active .page-link {
         background-color: #d32f2f !important;
         border-color: #d32f2f !important;
     }
+
+    /* Badge de stock */
+    .badge-stock {
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+    .stock-ok   { background: #e8f5e9; color: #2e7d32; }
+    .stock-bajo { background: #fff3e0; color: #e65100; }
+    .stock-cero { background: #ffebee; color: #c62828; }
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container-fluid animate__animated animate__fadeIn">
-    
+
     <div class="header-premium">
         <div class="d-flex align-items-center">
             <div class="title-icon">
@@ -116,25 +127,62 @@
                 <table class="table table-hover align-middle" id="tabla_productos_acerautos" style="width:100%">
                     <thead>
                         <tr class="text-uppercase small font-weight-bold text-muted" style="border-bottom: 2px solid #f8f9fa;">
-                            <th class="text-center" style="width: 10%;"># ID</th>
-                            <th style="width: 70%;">Información del Producto</th>
-                            <th class="text-center" style="width: 20%;">Opciones</th>
+                            <th class="text-center"># ID</th>
+                            <th>Producto</th>
+                            <th>Código</th>
+                            <th>Marca</th>
+                            <th>Proveedor</th>
+                            <th class="text-center">Precio</th>
+                            <th class="text-center">Stock</th>
+                            <th class="text-center">Stock Mín.</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center">Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for c in object_list %}
                         <tr>
-                            <td class="text-center align-middle font-weight-bold text-secondary">#{{ c.id }}</td>
-                            <td class="align-middle">
+                            <td class="text-center font-weight-bold text-secondary">#{{ c.id }}</td>
+
+                            <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-box">{{ c.nombre|first|upper }}</div>
                                     <div>
                                         <span class="font-weight-bold text-dark d-block">{{ c.nombre }}</span>
-                                        <small class="text-muted">Producto registrado</small>
+                                        <small class="text-muted">{{ c.descripcion|truncatechars:40 }}</small>
                                     </div>
                                 </div>
                             </td>
-                            <td class="text-center align-middle">
+
+                            <td><span class="font-weight-bold">{{ c.codigo }}</span></td>
+
+                            <td>{{ c.marca }}</td>
+
+                            <td>{{ c.proveedor|default:"—" }}</td>
+
+                            <td class="text-center font-weight-bold">${{ c.precio|floatformat:2 }}</td>
+
+                            <td class="text-center">
+                                {% if c.stock == 0 %}
+                                    <span class="badge-stock stock-cero">{{ c.stock }} — Sin stock</span>
+                                {% elif c.stock <= c.stock_minimo %}
+                                    <span class="badge-stock stock-bajo">{{ c.stock }} — Stock bajo</span>
+                                {% else %}
+                                    <span class="badge-stock stock-ok">{{ c.stock }}</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-center">{{ c.stock_minimo }}</td>
+
+                            <td class="text-center">
+                                {% if c.estado %}
+                                    <span class="badge badge-success px-2 py-1" style="border-radius:8px;">Activo</span>
+                                {% else %}
+                                    <span class="badge badge-secondary px-2 py-1" style="border-radius:8px;">Inactivo</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-center">
                                 <a href="{% url 'app:editar_producto' c.id %}" class="btn btn-warning btn-circle" title="Editar">
                                     <i class="fas fa-pen text-white"></i>
                                 </a>
@@ -158,7 +206,6 @@
 
 <script>
     $(document).ready(function () {
-        // La clave es 'retrieve: true' y 'destroy: true' para que no choque si ya existe
         var table = $('#tabla_productos_acerautos').DataTable({
             retrieve: true,
             destroy: true,

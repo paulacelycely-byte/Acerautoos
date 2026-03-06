@@ -23,7 +23,6 @@
     .btn-toggle-menu { background: #ffffff; border: 1px solid #e2e8f0; width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     .user-pill { background: white; border: 1px solid #e2e8f0; border-radius: 50px; padding: 5px 15px; display: flex; align-items: center; gap: 10px; }
     
-    /* Estilos para que DataTables se vea bien en BS5 */
     .dataTables_wrapper .row { margin-bottom: 1rem; align-items: center; }
     .page-item.active .page-link { background-color: #d32f2f !important; border-color: #d32f2f !important; }
   </style>
@@ -69,10 +68,16 @@
         }
     });
 
-    // Notificaciones
+    // Notificaciones Inteligentes (Detecta success, error, info)
     {% if messages %}
       {% for message in messages %}
-        Swal.fire({ icon: 'info', title: "{{ message|escapejs }}", timer: 2000 });
+        Swal.fire({
+          icon: "{{ message.tags|default:'info' }}", // Automático: 'success', 'error', 'warning', 'info'
+          title: "{{ message|escapejs }}",
+          confirmButtonColor: '#0f172a',
+          timer: 3000,
+          timerProgressBar: true
+        });
       {% endfor %}
     {% endif %}
   </script>

@@ -95,9 +95,12 @@
                         <tr class="text-uppercase small font-weight-bold text-muted">
                             <th class="text-center">#</th>
                             <th>Nombre Completo</th>
+                            <th>Tipo Doc</th>
                             <th>Cédula</th>
+                            <th>Teléfono</th>
                             <th>Cargo</th>
                             <th>Email</th>
+                            <th>Fecha_Registro</th>
                             <th class="text-center">Estado</th>
                             <th class="text-center">Acciones</th>
                         </tr>
@@ -112,11 +115,14 @@
                                     <span class="font-weight-bold text-dark">{{ u.nombres }} {{ u.apellidos }}</span>
                                 </div>
                             </td>
+                            <td class="align-middle text-muted">{{ u.get_tipo_documento_display }}</td>
                             <td class="align-middle text-muted">{{ u.cedula }}</td>
+                            <td class="align-middle text-muted">{{ u.telefono }}</td>
                             <td class="align-middle">
                                 <span class="badge-cargo">{{ u.get_cargo_display }}</span>
                             </td>
                             <td class="align-middle small">{{ u.correo }}</td>
+                            <td class="align-middle small">{{ u.fecha_registro|date:"d/m/Y" }}</td>
                             <td class="text-center align-middle">
                                 {% if u.activo %}
                                     <span class="badge-estado badge-activo">
@@ -158,14 +164,14 @@
             autoWidth: false,
             pageLength: 10,
             language: {
-                "sProcessing":     "Procesando...",
-                "sLengthMenu":     "Mostrar _MENU_ registros",
-                "sZeroRecords":    "No se encontraron resultados",
-                "sEmptyTable":     "Ningún dato disponible en esta tabla",
-                "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-                "sSearch":         "<span class='font-weight-bold small text-uppercase'>Buscar:</span>",
+                "sProcessing":    "Procesando...",
+                "sLengthMenu":    "Mostrar _MENU_ registros",
+                "sZeroRecords":   "No se encontraron resultados",
+                "sEmptyTable":    "Ningún dato disponible en esta tabla",
+                "sInfo":          "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
+                "sSearch":        "<span class='font-weight-bold small text-uppercase'>Buscar:</span>",
                 "oPaginate": {
                     "sFirst":    "Primero",
                     "sLast":     "Último",
@@ -177,7 +183,7 @@
                  "<'row'<'col-sm-12'tr>>" +
                  "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
             columnDefs: [
-                { targets: [5, 6], orderable: false }
+                { targets: [7, 8], orderable: false }
             ]
         });
     });
