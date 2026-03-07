@@ -12,7 +12,6 @@
     .card-header-dark { background: #454d55; color: white; padding: 15px 25px; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
     .input-group-text { background: #f8f9fa; border-right: none; color: #454d55; border-radius: 12px 0 0 12px; width: 45px; justify-content: center; }
     .form-control { border-radius: 0 12px 12px 0 !important; border: 1px solid #d1d3e2; padding: 12px 15px; }
-    /* Estilo especial para file input */
     .file-input-wrapper { border-radius: 0 12px 12px 0 !important; border: 1px solid #d1d3e2; padding: 8px 15px; background: #fff; flex: 1; }
     .btn-acerautos-save { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white !important; border: none; padding: 12px 35px; border-radius: 12px; font-weight: 700; text-transform: uppercase; }
     .switch-container { display: flex; align-items: center; padding: 10px; border: 1px solid #d1d3e2; border-radius: 12px; background: #f8f9fa; }
@@ -22,8 +21,35 @@
     .slider:before { position: absolute; content: ""; height: 17px; width: 17px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
     input:checked + .slider { background-color: #454d55; }
     input:checked + .slider:before { transform: translateX(25px); }
-    /* Preview logo */
     #logo-preview { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 2px solid #d1d3e2; display: none; margin-top: 8px; }
+
+    /* ── Autocompletado de países ── */
+    .pais-wrapper { position: relative; flex: 1; }
+    .pais-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #d1d3e2;
+        border-top: none;
+        border-radius: 0 0 12px 12px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 999;
+        display: none;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .pais-dropdown li {
+        padding: 10px 15px;
+        cursor: pointer;
+        list-style: none;
+        font-size: 0.9rem;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background 0.15s;
+    }
+    .pais-dropdown li:hover { background: #f1f5f9; color: #454d55; font-weight: 600; }
+    .pais-dropdown li:last-child { border-bottom: none; }
 </style>
 {% endblock %}
 
@@ -49,33 +75,37 @@
                             <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ field.label }}</label>
 
                             {% if field.name == 'logo' %}
-                            {# ── Campo logo: NO usar add_class en file inputs ── #}
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-image"></i></span>
                                 </div>
-                                <div class="file-input-wrapper">
-                                    {{ field }}
-                                </div>
+                                <div class="file-input-wrapper">{{ field }}</div>
                             </div>
-                            {# Mostrar imagen actual si estamos editando #}
                             {% if field.value %}
                                 <div class="mt-2">
                                     <small class="text-muted">Imagen actual:</small><br>
-                                    <img src="/media/{{ field.value }}" id="logo-current"
-                                         style="width:80px;height:80px;object-fit:cover;border-radius:12px;border:2px solid #d1d3e2;">
+                                    <img src="/media/{{ field.value }}" id="logo-current" style="width:80px;height:80px;object-fit:cover;border-radius:12px;border:2px solid #d1d3e2;">
                                 </div>
                             {% endif %}
-                            {# Preview de la nueva imagen seleccionada #}
                             <img id="logo-preview" src="#" alt="Preview">
 
+                            {% elif field.name == 'pais_origen' %}
+                            <!-- ── Campo País con autocompletado ── -->
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                                </div>
+                                <div class="pais-wrapper">
+                                    {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off'|attr:'id:id_pais_origen'|attr:'placeholder:Escriba para buscar un país...' }}
+                                    <ul class="pais-dropdown" id="paisDropdown"></ul>
+                                </div>
+                            </div>
+
                             {% else %}
-                            {# ── Resto de campos: comportamiento normal ── #}
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
                                         {% if field.name == 'nombre' %}<i class="fas fa-font"></i>
-                                        {% elif field.name == 'pais_origen' %}<i class="fas fa-globe"></i>
                                         {% elif field.name == 'descripcion' %}<i class="fas fa-align-left"></i>
                                         {% else %}<i class="fas fa-pen"></i>{% endif %}
                                     </span>
@@ -120,22 +150,76 @@
 
 {% block js %}
 <script>
-    // Preview de imagen al seleccionar
+    // ── Lista de países ──
+    var PAISES = [
+        "Afganistán","Albania","Alemania","Andorra","Angola","Arabia Saudita","Argelia","Argentina",
+        "Armenia","Australia","Austria","Azerbaiyán","Bahamas","Bangladés","Bélgica","Belice","Benín",
+        "Bielorrusia","Bolivia","Bosnia y Herzegovina","Botsuana","Brasil","Bulgaria","Burkina Faso",
+        "Burundi","Bután","Cabo Verde","Camboya","Camerún","Canadá","Chad","Chile","China","Chipre",
+        "Colombia","Comoras","Corea del Norte","Corea del Sur","Costa Rica","Costa de Marfil","Croacia",
+        "Cuba","Dinamarca","Ecuador","Egipto","El Salvador","Emiratos Árabes Unidos","Eritrea","Eslovaquia",
+        "Eslovenia","España","Estados Unidos","Estonia","Etiopía","Filipinas","Finlandia","Francia",
+        "Gabón","Ghana","Grecia","Guatemala","Guinea","Haití","Honduras","Hungría","India","Indonesia",
+        "Irak","Irán","Irlanda","Islandia","Israel","Italia","Jamaica","Japón","Jordania","Kazajistán",
+        "Kenia","Kuwait","Laos","Lesoto","Letonia","Líbano","Libia","Liechtenstein","Lituania",
+        "Luxemburgo","Macedonia del Norte","Madagascar","Malasia","Malaui","Mali","Malta","Marruecos",
+        "Mauricio","México","Moldavia","Mónaco","Mongolia","Montenegro","Mozambique","Myanmar","Namibia",
+        "Nepal","Nicaragua","Níger","Nigeria","Noruega","Nueva Zelanda","Omán","Países Bajos","Pakistán",
+        "Panamá","Paraguay","Perú","Polonia","Portugal","Puerto Rico","Qatar","Reino Unido","República Checa",
+        "República Dominicana","Ruanda","Rumania","Rusia","San Marino","Senegal","Serbia","Singapur",
+        "Siria","Somalia","Sri Lanka","Sudáfrica","Sudán","Suecia","Suiza","Tailandia","Tanzania",
+        "Timor Oriental","Togo","Trinidad y Tobago","Túnez","Turkmenistán","Turquía","Ucrania","Uganda",
+        "Uruguay","Uzbekistán","Venezuela","Vietnam","Yemen","Zambia","Zimbabue"
+    ];
+
+    // ── Autocompletado ──
+    var inputPais    = document.getElementById('id_pais_origen');
+    var dropdown     = document.getElementById('paisDropdown');
+
+    if (inputPais) {
+        inputPais.addEventListener('input', function () {
+            var q = this.value.trim().toLowerCase();
+            dropdown.innerHTML = '';
+            if (!q) { dropdown.style.display = 'none'; return; }
+
+            var filtrados = PAISES.filter(function(p) {
+                return p.toLowerCase().startsWith(q);
+            });
+            if (!filtrados.length) { dropdown.style.display = 'none'; return; }
+
+            filtrados.forEach(function(pais) {
+                var li = document.createElement('li');
+                li.textContent = pais;
+                li.addEventListener('click', function () {
+                    inputPais.value = pais;
+                    dropdown.style.display = 'none';
+                    dropdown.innerHTML = '';
+                });
+                dropdown.appendChild(li);
+            });
+            dropdown.style.display = 'block';
+        });
+
+        // Cerrar dropdown al hacer click fuera
+        document.addEventListener('click', function(e) {
+            if (!inputPais.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+    }
+
+    // ── Preview de imagen ──
     document.querySelector('input[type="file"]').addEventListener('change', function(e) {
         const preview = document.getElementById('logo-preview');
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(ev) {
-                preview.src = ev.target.result;
-                preview.style.display = 'block';
-            };
+            reader.onload = function(ev) { preview.src = ev.target.result; preview.style.display = 'block'; };
             reader.readAsDataURL(file);
-        } else {
-            preview.style.display = 'none';
-        }
+        } else { preview.style.display = 'none'; }
     });
 
+    // ── Confirmar guardar ──
     var formularioEnviado = false;
     $('#formMarca').on('submit', function (e) {
         if (formularioEnviado) return;
@@ -150,10 +234,7 @@
             confirmButtonColor: '#454d55',
             cancelButtonColor: '#d33',
         }).then((result) => {
-            if (result.isConfirmed) {
-                formularioEnviado = true;
-                form.submit();
-            }
+            if (result.isConfirmed) { formularioEnviado = true; form.submit(); }
         });
     });
 

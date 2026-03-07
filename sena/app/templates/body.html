@@ -93,6 +93,13 @@
         .app-sidebar { width:0; min-width:0; }
         body.sidebar-open .app-sidebar { width:260px; min-width:260px; }
     }
+
+    /* Quitar iconos de validación de Bootstrap */
+    .form-control.is-invalid,
+    .form-control.is-valid {
+        background-image: none !important;
+        padding-right: 15px !important;
+    }
   </style>
 
   <div class="app-wrapper">
@@ -107,13 +114,56 @@
             <h5 class="mb-0 fw-bold text-dark">Acerautos <span class="text-primary">Core</span></h5>
           </div>
         </div>
-        <div class="user-pill">
-          <span class="small fw-bold text-dark">{{ user.username|upper }}</span>
-          <div class="d-flex align-items-center justify-content-center bg-primary text-white"
-               style="width:28px;height:28px;border-radius:50%;font-size:.8rem;font-weight:700;">
-            {{ user.username|slice:':1'|upper }}
+
+        <!-- ── Usuario + Salir ── -->
+        <div class="d-flex align-items-center gap-2">
+
+          <!-- Pill del usuario con dropdown de perfil -->
+          <div class="dropdown">
+            <div class="user-pill" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="cursor:pointer;">
+              <span class="small fw-bold text-dark">{{ user.username|upper }}</span>
+              <div class="d-flex align-items-center justify-content-center bg-primary text-white"
+                   style="width:28px;height:28px;border-radius:50%;font-size:.8rem;font-weight:700;">
+                {{ user.username|slice:':1'|upper }}
+              </div>
+            </div>
+            <!-- Dropdown perfil -->
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2" style="min-width:220px;">
+              <li class="px-3 py-2 border-bottom">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="d-flex align-items-center justify-content-center bg-primary text-white rounded-circle"
+                       style="width:38px;height:38px;font-size:1rem;font-weight:700;">
+                    {{ user.username|slice:':1'|upper }}
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark">{{ user.username|capfirst }}</div>
+                    <small class="text-muted">{{ user.email|default:"Administrador" }}</small>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <a class="dropdown-item py-2" href="{% url 'app:listar_usuario' %}">
+                  <i class="fas fa-user-cog me-2 text-primary"></i> Mi Perfil
+                </a>
+              </li>
+              <li><hr class="dropdown-divider my-1"></li>
+              <li>
+                <form method="post" action="{% url 'login:logout' %}">
+                  {% csrf_token %}
+                  <button type="submit" class="dropdown-item py-2 text-danger fw-bold"
+                          style="background:none;border:none;width:100%;text-align:left;cursor:pointer;">
+                    <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                  </button>
+                </form>
+              </li>
+            </ul>
           </div>
+
+
+
         </div>
+        <!-- ── fin Usuario + Salir ── -->
+
       </nav>
       <main class="p-4">
         {% block contenido %}{% endblock %}
@@ -171,6 +221,149 @@
           });
         {% endfor %}
       {% endif %}
+  });
+  </script>
+
+  <!-- ── Validaciones en tiempo real ── -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    function mostrarError(input, mensaje) {
+        limpiarError(input);
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+        var div = document.createElement('div');
+        div.className = 'caja-error-roja mt-1';
+        div.setAttribute('data-live-error', '1');
+        div.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i><strong>' + mensaje + '</strong>';
+        var contenedor = input.closest('.col-md-6') || input.closest('.mb-4') || input.closest('.form-group') || input.parentNode;
+        contenedor.appendChild(div);
+    }
+
+    function mostrarOk(input) {
+        limpiarError(input);
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+    }
+
+    function limpiarError(input) {
+        input.classList.remove('is-invalid', 'is-valid');
+        var contenedor = input.closest('.col-md-6') || input.closest('.mb-4') || input.closest('.form-group') || input.parentNode;
+        contenedor.querySelectorAll('[data-live-error]').forEach(function(el){ el.remove(); });
+    }
+
+    function esVacio(val) { return !val || val.trim() === '' || val === '--'; }
+
+    function validarCampo(input) {
+        var name  = (input.name  || '').toLowerCase();
+        var val   = input.value;
+        var tipo  = input.type;
+        var label = '';
+        if (input.labels && input.labels[0]) {
+            label = input.labels[0].innerText.trim().replace('*','').trim();
+        } else { label = name; }
+
+        if (input.name === 'csrfmiddlewaretoken') return;
+        if (tipo === 'hidden' || tipo === 'submit' || tipo === 'file') return;
+
+        if (tipo === 'select-one') {
+            if (esVacio(val)) { mostrarError(input, 'Seleccione una opción para "' + label + '".'); }
+            else { mostrarOk(input); }
+            return;
+        }
+
+        var opcionales = ['email','direccion','observacion','descripcion','logo','comprobante'];
+        var esOpcional = opcionales.some(function(op){ return name.includes(op); });
+        if (esOpcional && esVacio(val)) { limpiarError(input); return; }
+        if (!esOpcional && esVacio(val)) { mostrarError(input, 'El campo "' + label + '" es obligatorio.'); return; }
+
+        if (name.includes('nombre') || name.includes('apellido')) {
+            if (!/^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s\-]+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite letras y espacios.'); return; }
+            if (val.trim().length < 2) { mostrarError(input, '"' + label + '" debe tener al menos 2 caracteres.'); return; }
+        }
+        if (name.includes('cedula') || name === 'numero_documento') {
+            if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
+            var len = val.trim().length;
+            if (len < 8 || len > 14) { mostrarError(input, '"' + label + '" debe tener entre 8 y 14 dígitos.'); return; }
+        }
+        if (name === 'nit') {
+            if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
+            var lenNit = val.trim().length;
+            if (lenNit < 9 || lenNit > 10) { mostrarError(input, '"' + label + '" debe tener 9 o 10 dígitos.'); return; }
+        }
+        if (name.includes('telefono')) {
+            if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números, sin espacios ni guiones.'); return; }
+            var lenTel = val.trim().length;
+            if (lenTel !== 7 && lenTel !== 10) { mostrarError(input, '"' + label + '" debe tener 10 dígitos (celular) o 7 (fijo).'); return; }
+            if (lenTel === 10 && !val.trim().startsWith('3') && !val.trim().startsWith('60') && !val.trim().startsWith('61')) { mostrarError(input, 'Celular debe empezar por 3 o fijo por 60/61.'); return; }
+        }
+        if (name.includes('email') || name.includes('correo')) {
+            if (!esVacio(val) && !/^[\w.\+\-]+@[\w\-]+\.[a-zA-Z]{2,}$/.test(val.trim())) { mostrarError(input, '"' + label + '" no tiene formato válido. Ej: correo@dominio.com'); return; }
+        }
+        if (name.includes('placa')) {
+            var placa = val.trim().toUpperCase().replace(/\s/g,'');
+            if (!/^[A-Z]{3}[0-9]{3}$/.test(placa) && !/^[A-Z]{3}[0-9]{2}[A-Z]{1}$/.test(placa)) { mostrarError(input, 'Placa inválida. Use ABC123 (carro) o ABC12D (moto).'); return; }
+        }
+        if (name === 'modelo') {
+            if (!/^\d{4}$/.test(val.trim())) { mostrarError(input, 'El año debe tener exactamente 4 dígitos. Ej: 2019'); return; }
+            var anio = parseInt(val.trim());
+            var actual = new Date().getFullYear();
+            if (anio < 1900 || anio > actual) { mostrarError(input, 'El año debe estar entre 1900 y ' + actual + '.'); return; }
+        }
+        if (name === 'codigo') {
+            if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
+            if (val.trim().length < 3) { mostrarError(input, '"' + label + '" debe tener al menos 3 dígitos.'); return; }
+        }
+        if (name.includes('precio') || name.includes('monto') || name.includes('total')) {
+            var num = parseFloat(val);
+            if (isNaN(num) || num <= 0) { mostrarError(input, '"' + label + '" debe ser mayor a 0.'); return; }
+            if (num > 999999999) { mostrarError(input, '"' + label + '" es demasiado alto.'); return; }
+        }
+        if (name.includes('stock')) {
+            var numStock = parseInt(val);
+            if (isNaN(numStock) || numStock < 0) { mostrarError(input, '"' + label + '" no puede ser negativo.'); return; }
+        }
+        if (name === 'cantidad') {
+            var numCant = parseInt(val);
+            if (isNaN(numCant) || numCant <= 0) { mostrarError(input, '"' + label + '" debe ser mayor a 0.'); return; }
+            if (numCant > 10000) { mostrarError(input, '"' + label + '" no puede superar 10.000 unidades.'); return; }
+        }
+        if (name.includes('km')) {
+            var numKm = parseInt(val);
+            if (isNaN(numKm) || numKm < 0) { mostrarError(input, '"' + label + '" no puede ser negativo.'); return; }
+            if (numKm > 1000000) { mostrarError(input, '"' + label + '" es demasiado alto (máx. 1.000.000 km).'); return; }
+        }
+        if (name.includes('descripcion') || name.includes('mensaje') || name.includes('observacion')) {
+            if (!esVacio(val) && val.trim().length < 5) { mostrarError(input, '"' + label + '" es demasiado corto (mínimo 5 caracteres).'); return; }
+        }
+        if (name === 'password') {
+            if (val.length < 8) { mostrarError(input, 'La contraseña debe tener al menos 8 caracteres.'); return; }
+            if (!/[A-Z]/.test(val)) { mostrarError(input, 'La contraseña debe tener al menos una letra mayúscula.'); return; }
+            if (!/[a-z]/.test(val)) { mostrarError(input, 'La contraseña debe tener al menos una letra minúscula.'); return; }
+            if (!/[0-9]/.test(val)) { mostrarError(input, 'La contraseña debe tener al menos un número.'); return; }
+            if (!/[!@#$%^&*()\-_=+\[\]{};':"\\|,.<>\/?]/.test(val)) { mostrarError(input, 'La contraseña debe tener al menos un carácter especial. Ej: !@#$%&*'); return; }
+        }
+        if (name.includes('confirmacion') || name.includes('password2')) {
+            var passField = document.querySelector('input[name="password"]');
+            if (passField && val !== passField.value) { mostrarError(input, 'Las contraseñas no coinciden.'); return; }
+        }
+        if (tipo === 'date' || tipo === 'datetime-local') {
+            if (!esVacio(val)) {
+                var fechaVal = new Date(val);
+                var ahora = new Date();
+                if (fechaVal > ahora) { mostrarError(input, '"' + label + '" no puede ser una fecha futura.'); return; }
+            }
+        }
+        mostrarOk(input);
+    }
+
+    document.querySelectorAll('form input, form select, form textarea').forEach(function(input) {
+        if (input.type === 'hidden' || input.type === 'submit' || input.name === 'csrfmiddlewaretoken') return;
+        input.addEventListener('input',  function(){ validarCampo(this); });
+        input.addEventListener('change', function(){ validarCampo(this); });
+        input.addEventListener('blur',   function(){ validarCampo(this); });
+    });
+
   });
   </script>
 

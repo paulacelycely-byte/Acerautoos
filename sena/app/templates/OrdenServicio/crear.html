@@ -4,20 +4,34 @@
 
 {% block css %}
 <style>
-    /* Estilos Premium */
     .caja-error-roja { background-color: #fff5f5 !important; border: 1px solid #feb2b2 !important; border-left: 6px solid #454d55 !important; padding: 10px !important; margin-top: 5px !important; border-radius: 8px !important; font-size: 0.85rem; }
     .header-premium { background: linear-gradient(145deg, #ffffff, #f8f9fa); border-radius: 20px; padding: 25px; margin-bottom: 30px; border-left: 10px solid #454d55; box-shadow: 0 15px 35px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; }
     .title-icon { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white; width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 8px 20px rgba(0,0,0,0.15); margin-right: 20px; }
     .title-container h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: 0; color: #2d3436; text-transform: uppercase; letter-spacing: 1.5px; }
     .card-form-premium { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; background: #fff; }
     .card-header-dark { background: #454d55; color: white; padding: 15px 25px; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
-    
     .estado-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 10px; border: 2px solid #dee2e6; background: #f8f9fa; color: #6c757d; font-weight: 600; font-size: 0.82rem; cursor: pointer; transition: all 0.25s; text-transform: uppercase; margin: 4px; }
     .estado-btn.activo-Pendiente { background: #fff3e0; border-color: #e65100; color: #e65100; }
     .estado-btn.activo-EnProceso { background: #e3f2fd; border-color: #1565c0; color: #1565c0; }
     .estado-btn.activo-Terminado { background: #e8f5e9; border-color: #2e7d32; color: #2e7d32; }
-
     .btn-acerautos-save-crear { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white !important; border: none; padding: 12px 35px; border-radius: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+
+    /* Campo fecha automático */
+    .fecha-auto {
+        background: #f1f5f9 !important;
+        color: #454d55 !important;
+        font-weight: 600;
+        cursor: not-allowed;
+    }
+    .badge-fecha {
+        background: #e2e8f0;
+        color: #454d55;
+        font-size: 0.75rem;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-weight: 600;
+        margin-left: 8px;
+    }
 </style>
 {% endblock %}
 
@@ -37,7 +51,7 @@
         <div class="card card-form-premium overflow-hidden">
             <div class="card-header-dark"><i class="fas fa-cogs mr-2"></i> Detalles de la Orden</div>
             <div class="card-body p-4 p-md-5">
-                
+
                 <div class="col-md-12 mb-4">
                     <label class="font-weight-bold text-dark small mb-2 d-block text-uppercase">Estado de la Orden</label>
                     <button type="button" class="estado-btn" data-estado="Pendiente" onclick="seleccionarEstado(this)"><i class="fas fa-clock"></i> Pendiente</button>
@@ -49,22 +63,37 @@
                     {% for field in form.visible_fields %}
                         {% if field.name != 'estado' %}
                         <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ field.label }}</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">
-                                        {% if 'usuario' in field.name|lower %}<i class="fas fa-user"></i>
-                                        {% elif 'vehiculo' in field.name|lower %}<i class="fas fa-car"></i>
-                                        {% elif 'servicio' in field.name|lower %}<i class="fas fa-wrench"></i>
-                                        {% elif 'fecha' in field.name|lower %}<i class="fas fa-calendar-alt"></i>
-                                        {% elif 'km' in field.name|lower %}<i class="fas fa-tachometer-alt"></i>
-                                        {% else %}<i class="fas fa-chevron-right"></i>{% endif %}
-                                    </span>
+
+                            {% if 'fecha' in field.name|lower %}
+                                <!-- Campo fecha automático -->
+                                <label class="font-weight-bold text-dark small mb-1 text-uppercase">
+                                    {{ field.label }}
+                                    <span class="badge-fecha"><i class="fas fa-lock mr-1"></i>Automática</span>
+                                </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
+                                    </div>
+                                    {{ field|add_class:'form-control border-left-0 shadow-none fecha-auto'|attr:'readonly:true'|attr:'id:campo_fecha' }}
                                 </div>
-                                {{ field|add_class:'form-control border-left-0 shadow-none' }}
-                            </div>
-                            
-                            {# Bloque de validación #}
+                                <small class="text-muted mt-1 d-block"><i class="fas fa-info-circle mr-1"></i>La fecha se establece automáticamente con el día de hoy.</small>
+
+                            {% else %}
+                                <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ field.label }}</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            {% if 'usuario' in field.name|lower %}<i class="fas fa-user"></i>
+                                            {% elif 'vehiculo' in field.name|lower %}<i class="fas fa-car"></i>
+                                            {% elif 'servicio' in field.name|lower %}<i class="fas fa-wrench"></i>
+                                            {% elif 'km' in field.name|lower %}<i class="fas fa-tachometer-alt"></i>
+                                            {% else %}<i class="fas fa-chevron-right"></i>{% endif %}
+                                        </span>
+                                    </div>
+                                    {{ field|add_class:'form-control border-left-0 shadow-none' }}
+                                </div>
+                            {% endif %}
+
                             {% if field.errors %}
                                 {% for error in field.errors %}
                                 <div class="caja-error-roja">
@@ -89,16 +118,35 @@
 
 {% block js %}
 <script>
+    // ── Establecer fecha actual automáticamente ──
+    document.addEventListener('DOMContentLoaded', function () {
+        var campoFecha = document.getElementById('campo_fecha');
+        if (campoFecha && !campoFecha.value) {
+            var hoy = new Date();
+            var anio  = hoy.getFullYear();
+            var mes   = String(hoy.getMonth() + 1).padStart(2, '0');
+            var dia   = String(hoy.getDate()).padStart(2, '0');
+            var horas = String(hoy.getHours()).padStart(2, '0');
+            var mins  = String(hoy.getMinutes()).padStart(2, '0');
+            // Intentar datetime-local primero, si no date
+            if (campoFecha.type === 'datetime-local') {
+                campoFecha.value = anio + '-' + mes + '-' + dia + 'T' + horas + ':' + mins;
+            } else {
+                campoFecha.value = anio + '-' + mes + '-' + dia;
+            }
+        }
+    });
+
     function seleccionarEstado(btn) {
         document.querySelectorAll('.estado-btn').forEach(b => b.className = 'estado-btn');
         var estado = btn.dataset.estado;
         btn.classList.add('activo-' + estado.replace(' ', ''));
         document.getElementById('campo-estado').value = estado;
     }
-    // Inicializar estado al cargar
+
     var estadoInicial = document.getElementById('campo-estado').value;
     document.querySelectorAll('.estado-btn').forEach(btn => {
-        if(btn.dataset.estado === estadoInicial) btn.classList.add('activo-' + estadoInicial.replace(' ', ''));
+        if (btn.dataset.estado === estadoInicial) btn.classList.add('activo-' + estadoInicial.replace(' ', ''));
     });
 </script>
 {% endblock %}

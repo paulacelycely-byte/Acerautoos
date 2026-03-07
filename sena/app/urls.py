@@ -3,7 +3,7 @@ from .views.dashboard import views as vistas_dash
 from .views.Cliente import views as vistas_cli
 from .views.Vehiculo import views as vistas_veh
 from .views.Usuario import views as vistas_usr
-from .views.Compra import views as vistas_compra
+from .views.compra import views as vistas_compra
 from .views.Proveedor import views as vistas_prov
 from .views.Marca import views as vistas_marca
 from .views.Producto import views as vistas_prod
@@ -49,6 +49,7 @@ urlpatterns = [
     path('marca/crear/', vistas_marca.MarcaCreateView.as_view(), name='crear_marca'),
     path('marca/editar/<int:pk>/', vistas_marca.MarcaUpdateView.as_view(), name='editar_marca'),
     path('marca/eliminar/<int:pk>/', vistas_marca.MarcaDeleteView.as_view(), name='eliminar_marca'),
+    path('marca/crear-ajax/', vistas_marca.crear_marca_ajax, name='crear_marca_ajax'),  # ← NUEVO
 
     # --- COMPATIBILIDAD (NUEVO) ---
     path('compatibilidad/listar/', vistas_comp.CompatibilidadListView.as_view(), name='listar_compatibilidad'),

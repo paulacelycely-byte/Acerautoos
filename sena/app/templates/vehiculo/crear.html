@@ -89,6 +89,34 @@
       color: #c53030;
       font-size: 0.85rem;
     }
+
+    /* ── Botón "+" junto al select de marca ── */
+    .btn-add-marca {
+      background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+      color: white;
+      border: none;
+      border-radius: 0 10px 10px 0;
+      padding: 0 16px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-add-marca:hover {
+      background: linear-gradient(135deg, #b71c1c 0%, #7f0000 100%);
+    }
+
+    /* ── Modal personalizado ── */
+    .modal-header-dark {
+      background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+      color: white;
+      border-radius: 15px 15px 0 0;
+    }
+    .modal-content {
+      border-radius: 15px;
+      border: none;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+    }
+    .modal-footer { border-top: 1px solid #f0f0f0; }
   </style>
 {% endblock %}
 
@@ -119,24 +147,43 @@
             {% for field in form.visible_fields %}
               <div class="col-md-6 mb-4">
                 <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ field.label }}</label>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">
-                      {% if 'placa' in field.name %}
-                        <i class="fas fa-id-card-alt"></i>
-                      {% elif 'marca' in field.name %}
+
+                {% if 'marca' in field.name %}
+                  <!-- Campo Marca con botón "+" -->
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
                         <i class="fas fa-copyright"></i>
-                      {% elif 'modelo' in field.name %}
-                        <i class="fas fa-car"></i>
-                      {% elif 'cliente' in field.name or 'propietario' in field.name %}
-                        <i class="fas fa-user-tie"></i>
-                      {% else %}
-                        <i class="fas fa-edit"></i>
-                      {% endif %}
-                    </span>
+                      </span>
+                    </div>
+                    {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+                    <div class="input-group-append">
+                      <a href="{% url 'app:crear_marca' %}" target="_blank"
+                         class="btn-add-marca d-flex align-items-center justify-content-center"
+                         title="Agregar nueva marca" style="text-decoration:none;">
+                        <i class="fas fa-plus"></i>
+                      </a>
+                    </div>
                   </div>
-                  {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
-                </div>
+                {% else %}
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        {% if 'placa' in field.name %}
+                          <i class="fas fa-id-card-alt"></i>
+                        {% elif 'modelo' in field.name %}
+                          <i class="fas fa-car"></i>
+                        {% elif 'cliente' in field.name or 'propietario' in field.name %}
+                          <i class="fas fa-user-tie"></i>
+                        {% else %}
+                          <i class="fas fa-edit"></i>
+                        {% endif %}
+                      </span>
+                    </div>
+                    {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+                  </div>
+                {% endif %}
+
                 {% if field.errors %}
                   {% for error in field.errors %}
                     <div class="caja-error-roja">
@@ -161,6 +208,7 @@
       </div>
     </form>
   </div>
+
 {% endblock %}
 
 {% block js %}
@@ -168,13 +216,13 @@
     var hayErrores = {{ form.errors|yesno:"true,false" }};
 
     $(function () {
+
+      // ── Confirmar registro vehículo ──
       $('#formVehiculo').on('submit', function (e) {
         if (hayErrores) return;
         if (!this.checkValidity()) return;
-
         e.preventDefault();
         var formulario = this;
-
         Swal.fire({
           title: '¿Confirmar Registro?',
           text: 'Se creará la ficha técnica del vehículo en el sistema.',
@@ -185,11 +233,10 @@
           confirmButtonColor: '#d32f2f',
           cancelButtonColor: '#6c757d'
         }).then((result) => {
-          if (result.isConfirmed) {
-            formulario.submit();
-          }
+          if (result.isConfirmed) { formulario.submit(); }
         });
       });
+
     });
 
     function confirmarCancelacion(url) {
@@ -203,9 +250,7 @@
         confirmButtonColor: '#d32f2f',
         cancelButtonColor: '#2d3436'
       }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = url;
-        }
+        if (result.isConfirmed) { window.location.href = url; }
       });
     }
   </script>

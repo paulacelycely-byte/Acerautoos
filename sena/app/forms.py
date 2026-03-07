@@ -31,6 +31,10 @@ def val_placa_colombiana(valor):
     placa = str(valor).strip().upper().replace(" ", "")
     if not (re.match(r'^[A-Z]{3}[0-9]{3}$', placa) or re.match(r'^[A-Z]{3}[0-9]{2}[A-Z]{1}$', placa)):
         raise forms.ValidationError("Placa inválida. Use el formato ABC123 (carro) o ABC12D (moto).")
+    # Los 3 dígitos numéricos no pueden ser 000
+    numeros = re.findall(r'[0-9]+', placa)
+    if numeros and numeros[0] == '000':
+        raise forms.ValidationError("La placa no puede tener '000' como dígitos. Ej válido: ABC123.")
     return placa
 
 def val_no_negativo(valor, campo):
@@ -79,17 +83,19 @@ def val_documento_colombiano(valor, campo, tipo_doc=None):
         if not limpio.isdigit() or not (9 <= len(limpio) <= 10):
             raise forms.ValidationError(f"'{campo}': NIT debe tener 9 o 10 dígitos.")
     elif tipo_doc == 'CC':
-        if not limpio.isdigit() or not (6 <= len(limpio) <= 10):
-            raise forms.ValidationError(f"'{campo}': Cédula debe tener entre 6 y 10 dígitos.")
+        if not limpio.isdigit() or not (8 <= len(limpio) <= 14):
+            raise forms.ValidationError(f"'{campo}': Cédula debe tener entre 8 y 14 dígitos.")
     elif tipo_doc == 'CE':
-        if not limpio.isdigit() or not (6 <= len(limpio) <= 7):
-            raise forms.ValidationError(f"'{campo}': Cédula de extranjería debe tener 6 o 7 dígitos.")
+        if not limpio.isdigit() or not (8 <= len(limpio) <= 14):
+            raise forms.ValidationError(f"'{campo}': Cédula de extranjería debe tener entre 8 y 14 dígitos.")
     elif tipo_doc == 'PAS':
         if not re.match(r'^[A-Z0-9]{5,12}$', limpio.upper()):
             raise forms.ValidationError(f"'{campo}': Pasaporte debe tener entre 5 y 12 caracteres alfanuméricos.")
     else:
         if not limpio.isdigit():
             raise forms.ValidationError(f"'{campo}' solo permite números.")
+        if not (8 <= len(limpio) <= 14):
+            raise forms.ValidationError(f"'{campo}' debe tener entre 8 y 14 dígitos.")
     return limpio
 
 
@@ -116,8 +122,8 @@ class UsuarioForm(forms.ModelForm):
 
     def clean_cedula(self):
         cedula = val_solo_numeros(self.cleaned_data['cedula'], "Cédula")
-        if not (6 <= len(cedula) <= 10):
-            raise forms.ValidationError("La cédula debe tener entre 6 y 10 dígitos.")
+        if not (8 <= len(cedula) <= 14):
+            raise forms.ValidationError("La cédula debe tener entre 8 y 14 dígitos.")
         qs = Usuario.objects.filter(cedula=cedula)
         if self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
@@ -142,8 +148,16 @@ class UsuarioForm(forms.ModelForm):
 
     def clean_password(self):
         password = self.cleaned_data.get('password', '')
-        if len(password) < 6:
-            raise forms.ValidationError("La contraseña debe tener al menos 6 caracteres.")
+        if len(password) < 8:
+            raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres.")
+        if not re.search(r'[A-Z]', password):
+            raise forms.ValidationError("La contraseña debe tener al menos una letra mayúscula.")
+        if not re.search(r'[a-z]', password):
+            raise forms.ValidationError("La contraseña debe tener al menos una letra minúscula.")
+        if not re.search(r'[0-9]', password):
+            raise forms.ValidationError("La contraseña debe tener al menos un número.")
+        if not re.search(r'[!@#$%^&*()_+\-=\[\]{};\'\\:"|,.<>\/?]', password):
+            raise forms.ValidationError("La contraseña debe tener al menos un carácter especial. Ej: !@#$%&*")
         return password
 
     def clean(self):
@@ -198,7 +212,7 @@ class ProveedorForm(forms.ModelForm):
 
 
 # ══════════════════════════════════════════════════════════
-#  MARCA  
+#  MARCA
 # ══════════════════════════════════════════════════════════
 
 class MarcaForm(forms.ModelForm):
@@ -210,6 +224,8 @@ class MarcaForm(forms.ModelForm):
         nombre = self.cleaned_data.get('nombre', '').strip()
         if not re.match(r'^[a-zA-ZÁÉÍÓÚáéíóúÑñ0-9\s\-]+$', nombre):
             raise forms.ValidationError("El nombre solo permite letras, números, espacios y guiones.")
+        if nombre and nombre[0].isdigit():
+            raise forms.ValidationError("El nombre de la marca no puede iniciar con un número.")
         if len(nombre) < 2:
             raise forms.ValidationError("El nombre debe tener al menos 2 caracteres.")
         qs = Marca.objects.filter(nombre__iexact=nombre)
