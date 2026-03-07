@@ -4,168 +4,71 @@
 {% block css %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <style>
-    .header-premium {
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        border-radius: 20px;
-        padding: 25px;
-        margin-bottom: 30px;
-        border-left: 10px solid #d32f2f;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .title-icon {
-        background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-        color: white;
-        width: 55px; height: 55px;
-        border-radius: 15px;
-        display: flex;
-        align-items: center; justify-content: center;
-        font-size: 1.5rem;
-        box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
-        margin-right: 20px;
-    }
-
-    .title-container h1 {
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        font-size: 1.9rem; font-weight: 700;
-        margin-bottom: 0; color: #2d3436;
-        text-transform: uppercase; letter-spacing: 1.5px;
-    }
-
-    .btn-nueva-premium {
-        background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
-        color: white !important;
-        padding: 12px 25px; border-radius: 12px;
-        font-weight: 700; text-transform: uppercase; font-size: 0.8rem;
-        display: flex; align-items: center; gap: 10px;
-        box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
-        text-decoration: none;
-    }
-
-    .card-custom {
-        border: none; border-radius: 20px;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.07); background: #fff;
-    }
-
-    .avatar-box {
-        width: 40px; height: 40px;
-        background: #343a40; color: white;
-        border-radius: 10px;
-        display: flex; align-items: center; justify-content: center;
-        font-weight: bold; margin-right: 12px; flex-shrink: 0;
-    }
-
-    .btn-circle {
-        width: 35px; height: 35px; border-radius: 10px;
-        display: inline-flex; align-items: center; justify-content: center;
-        border: none; transition: 0.3s;
-    }
-
-    .btn-circle:hover { transform: translateY(-3px); }
-
-    .dataTables_filter input {
-        border-radius: 10px !important; border: 1px solid #ddd !important;
-        padding: 6px 12px !important; margin-left: 10px !important;
-    }
-
-    .page-item.active .page-link {
-        background-color: #d32f2f !important; border-color: #d32f2f !important;
-    }
-
-    /* Badges de estado */
-    .badge-estado {
-        padding: 6px 12px; border-radius: 8px;
-        font-size: 0.78rem; font-weight: 700;
-    }
-    .estado-pendiente  { background: #fff3e0; color: #e65100; }
-    .estado-proceso    { background: #e3f2fd; color: #1565c0; }
-    .estado-terminado  { background: #e8f5e9; color: #2e7d32; }
-
-    /* Letras negras en la tabla */
-    #tabla_ordenes tbody td { color: #2d3436 !important; }
+    /* Estilos Premium Acerautos */
+    .header-premium { background: linear-gradient(145deg, #ffffff, #f8f9fa); border-radius: 20px; padding: 25px; margin-bottom: 30px; border-left: 10px solid #d32f2f; box-shadow: 0 15px 35px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; position: relative; overflow: hidden; }
+    .title-icon { background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%); color: white; width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2); margin-right: 20px; }
+    .title-container h1 { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 1.9rem; font-weight: 700; margin-bottom: 0; color: #2d3436; text-transform: uppercase; letter-spacing: 1.5px; }
+    .btn-nueva-premium { background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%); color: white !important; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; transition: all 0.3s; box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2); }
+    .card-custom { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; background: #fff; }
+    .avatar-box { width: 40px; height: 40px; background: #343a40; color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px; }
+    .btn-circle { width: 35px; height: 35px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; transition: 0.3s; border: none; }
+    
+    /* CORRECCIÓN PARA DATOS VISIBLES */
+    #tabla_productos td { color: #2d3436 !important; }
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container-fluid animate__animated animate__fadeIn">
-
     <div class="header-premium">
         <div class="d-flex align-items-center">
-            <div class="title-icon">
-                <i class="fas fa-clipboard-list"></i>
-            </div>
-            <div class="title-container">
-                <h1>ÓRDENES DE SERVICIO</h1>
-            </div>
+            <div class="title-icon"><i class="fas fa-boxes"></i></div>
+            <div class="title-container"><h1>GESTIÓN DE PRODUCTOS</h1></div>
         </div>
-        <a href="{% url 'app:orden_servicio_create' %}" class="btn btn-nueva-premium">
-            <i class="fas fa-plus-circle"></i>
-            <span>Nueva Orden</span>
+        <a href="{{ crear_url }}" class="btn btn-nueva-premium">
+            <i class="fas fa-plus-circle"></i> <span>Nuevo Producto</span>
         </a>
     </div>
 
     <div class="card card-custom">
         <div class="card-body p-4">
             <div class="table-responsive">
-                <table class="table table-hover align-middle" id="tabla_ordenes" style="width:100%">
+                <table class="table table-hover align-middle" id="tabla_productos" style="width:100%">
                     <thead>
                         <tr class="text-uppercase small font-weight-bold text-muted" style="border-bottom: 2px solid #f8f9fa;">
-                            <th class="text-center"># Orden</th>
-                            <th>Vehículo</th>
-                            <th>Cliente</th>
-                            <th>Servicio</th>
-                            <th>Responsable</th>
-                            <th class="text-center">Fecha</th>
-                            <th class="text-center">Kilometraje</th>
+                            <th>Cod</th>
+                            <th>Producto / Marca</th>
+                            <th>Proveedor</th>
+                            <th class="text-center">Stock</th>
                             <th class="text-center">Estado</th>
                             <th class="text-center">Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for o in object_list %}
+                        {% for p in object_list %}
                         <tr>
-                            <td class="text-center font-weight-bold">#{{ o.id }}</td>
-
+                            <td class="font-weight-bold text-secondary">{{ p.codigo }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-box">{{ o.vehiculo.placa|first|upper }}</div>
+                                    <div class="avatar-box">{{ p.nombre|first|upper }}</div>
                                     <div>
-                                        <span class="font-weight-bold d-block">{{ o.vehiculo.placa }}</span>
-                                        <small class="text-muted">{{ o.vehiculo.marca }} — {{ o.vehiculo.modelo }}</small>
+                                        <span class="font-weight-bold text-dark d-block" style="font-size: 0.95rem;">{{ p.nombre }}</span>
+                                        <small class="text-muted text-uppercase">{{ p.marca.nombre }}</small>
                                     </div>
                                 </div>
                             </td>
-
-                            <td>{{ o.vehiculo.cliente }}</td>
-
-                            <td>{{ o.servicio }}</td>
-
-                            <td>{{ o.usuario|default:"—" }}</td>
-
-                            <td class="text-center">{{ o.fecha|date:"d/m/Y" }}</td>
-
-                            <td class="text-center">{{ o.km_actual }} km</td>
-
+                            <td class="text-muted">{{ p.proveedor.nombre|default:"Sin asignar" }}</td>
+                            <td class="text-center font-weight-bold">{{ p.stock }}</td>
                             <td class="text-center">
-                                {% if o.estado == 'Pendiente' %}
-                                    <span class="badge-estado estado-pendiente">⏳ Pendiente</span>
-                                {% elif o.estado == 'En Proceso' %}
-                                    <span class="badge-estado estado-proceso">🔧 En Proceso</span>
+                                {% if p.estado %}
+                                    <span class="badge badge-success px-3 py-2">ACTIVO</span>
                                 {% else %}
-                                    <span class="badge-estado estado-terminado">✅ Terminado</span>
+                                    <span class="badge badge-secondary px-3 py-2">INACTIVO</span>
                                 {% endif %}
                             </td>
-
                             <td class="text-center">
-                                <a href="{% url 'app:orden_servicio_edit' o.id %}" class="btn btn-warning btn-circle" title="Editar">
-                                    <i class="fas fa-pen text-white"></i>
-                                </a>
-                                <a href="{% url 'app:orden_servicio_delete' o.id %}" class="btn btn-danger btn-circle ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
-                                    <i class="fas fa-trash-alt text-white"></i>
-                                </a>
+                                <a href="{% url 'app:editar_producto' p.id %}" class="btn btn-warning btn-circle shadow-sm"><i class="fas fa-pen text-white"></i></a>
+                                <a href="{% url 'app:eliminar_producto' p.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;"><i class="fas fa-trash-alt text-white"></i></a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -180,35 +83,15 @@
 {% block js %}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-
 <script>
     $(document).ready(function () {
-        $('#tabla_ordenes').DataTable({
-            retrieve: true,
-            destroy: true,
+        $('#tabla_productos').DataTable({
             responsive: true,
-            autoWidth: false,
-            pageLength: 10,
-            language: {
-                "sSearch": "BUSCAR:",
-                "sLengthMenu": "MOSTRAR _MENU_",
-                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ órdenes",
-                "oPaginate": { "sNext": "Siguiente", "sPrevious": "Anterior" },
-                "sZeroRecords": "No se encontraron órdenes",
-                "sInfoEmpty": "Mostrando 0 de 0 órdenes",
+            language: { 
+                "sSearch": "<span class='font-weight-bold small'>BUSCAR:</span>",
+                "oPaginate": { "sNext": "<i class='fas fa-chevron-right'></i>", "sPrevious": "<i class='fas fa-chevron-left'></i>" }
             }
         });
-
-        {% if messages %}
-            {% for message in messages %}
-            Swal.fire({
-                icon: "{{ message.tags }}",
-                title: "{{ message|escapejs }}",
-                showConfirmButton: false,
-                timer: 2000
-            });
-            {% endfor %}
-        {% endif %}
     });
 </script>
 {% endblock %}

@@ -4,17 +4,17 @@
 
 {% block css %}
 <style>
-    /* Estilos Premium */
+    .caja-error-roja { background-color: #fff5f5 !important; border: 1px solid #feb2b2 !important; border-left: 6px solid #454d55 !important; padding: 10px !important; margin-top: 5px !important; border-radius: 8px !important; }
     .header-premium { background: linear-gradient(145deg, #ffffff, #f8f9fa); border-radius: 20px; padding: 25px; margin-bottom: 30px; border-left: 10px solid #454d55; box-shadow: 0 15px 35px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; }
-    .title-icon { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white; width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); margin-right: 20px; }
+    .title-icon { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white; width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 8px 20px rgba(0,0,0,0.15); margin-right: 20px; }
     .title-container h1 { font-size: 1.9rem; font-weight: 700; color: #2d3436; text-transform: uppercase; letter-spacing: 1.5px; }
     .card-form-premium { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; background: #fff; }
     .card-header-dark { background: #454d55; color: white; padding: 15px 25px; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
     .input-group-text { background: #f8f9fa; border-right: none; color: #454d55; border-radius: 12px 0 0 12px; width: 45px; justify-content: center; }
     .form-control { border-radius: 0 12px 12px 0 !important; border: 1px solid #d1d3e2; padding: 12px 15px; }
+    /* Estilo especial para file input */
+    .file-input-wrapper { border-radius: 0 12px 12px 0 !important; border: 1px solid #d1d3e2; padding: 8px 15px; background: #fff; flex: 1; }
     .btn-acerautos-save { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white !important; border: none; padding: 12px 35px; border-radius: 12px; font-weight: 700; text-transform: uppercase; }
-    
-    /* Switch Elegante */
     .switch-container { display: flex; align-items: center; padding: 10px; border: 1px solid #d1d3e2; border-radius: 12px; background: #f8f9fa; }
     .switch { position: relative; display: inline-block; width: 50px; height: 25px; margin-bottom: 0; }
     .switch input { opacity: 0; width: 0; height: 0; }
@@ -22,6 +22,8 @@
     .slider:before { position: absolute; content: ""; height: 17px; width: 17px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
     input:checked + .slider { background-color: #454d55; }
     input:checked + .slider:before { transform: translateX(25px); }
+    /* Preview logo */
+    #logo-preview { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 2px solid #d1d3e2; display: none; margin-top: 8px; }
 </style>
 {% endblock %}
 
@@ -45,12 +47,51 @@
                         {% if field.name != 'estado' %}
                         <div class="col-md-6 mb-4">
                             <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ field.label }}</label>
+
+                            {% if field.name == 'logo' %}
+                            {# ── Campo logo: NO usar add_class en file inputs ── #}
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-pen"></i></span>
+                                    <span class="input-group-text"><i class="fas fa-image"></i></span>
+                                </div>
+                                <div class="file-input-wrapper">
+                                    {{ field }}
+                                </div>
+                            </div>
+                            {# Mostrar imagen actual si estamos editando #}
+                            {% if field.value %}
+                                <div class="mt-2">
+                                    <small class="text-muted">Imagen actual:</small><br>
+                                    <img src="/media/{{ field.value }}" id="logo-current"
+                                         style="width:80px;height:80px;object-fit:cover;border-radius:12px;border:2px solid #d1d3e2;">
+                                </div>
+                            {% endif %}
+                            {# Preview de la nueva imagen seleccionada #}
+                            <img id="logo-preview" src="#" alt="Preview">
+
+                            {% else %}
+                            {# ── Resto de campos: comportamiento normal ── #}
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        {% if field.name == 'nombre' %}<i class="fas fa-font"></i>
+                                        {% elif field.name == 'pais_origen' %}<i class="fas fa-globe"></i>
+                                        {% elif field.name == 'descripcion' %}<i class="fas fa-align-left"></i>
+                                        {% else %}<i class="fas fa-pen"></i>{% endif %}
+                                    </span>
                                 </div>
                                 {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
                             </div>
+                            {% endif %}
+
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                    <div class="caja-error-roja small">
+                                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                                        <strong>{{ error }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
                         </div>
                         {% endif %}
                     {% endfor %}
@@ -79,8 +120,25 @@
 
 {% block js %}
 <script>
+    // Preview de imagen al seleccionar
+    document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+        const preview = document.getElementById('logo-preview');
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                preview.src = ev.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+
+    var formularioEnviado = false;
     $('#formMarca').on('submit', function (e) {
-        if (!this.checkValidity()) return;
+        if (formularioEnviado) return;
         e.preventDefault();
         var form = this;
         Swal.fire({
@@ -88,18 +146,22 @@
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Guardar',
-            confirmButtonColor: '#454d55'
-        }).then((result) => { if (result.isConfirmed) form.submit(); });
+            cancelButtonText: 'Revisar',
+            confirmButtonColor: '#454d55',
+            cancelButtonColor: '#d33',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                formularioEnviado = true;
+                form.submit();
+            }
+        });
     });
 
     function confirmarCancelacion(url) {
         Swal.fire({
-            title: '¿Cancelar?',
-            text: "Los cambios se perderán.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Sí, salir',
-            confirmButtonColor: '#454d55'
+            title: '¿Cancelar?', text: "Los cambios se perderán.",
+            icon: 'warning', showCancelButton: true,
+            confirmButtonText: 'Sí, salir', confirmButtonColor: '#454d55'
         }).then((result) => { if (result.isConfirmed) window.location.href = url; });
     }
 </script>

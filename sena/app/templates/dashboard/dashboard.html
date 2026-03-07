@@ -7,48 +7,42 @@
         --primary-grad: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
         --success-grad: linear-gradient(135deg, #10b981 0%, #059669 100%);
         --warning-grad: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        --danger-grad: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        --info-grad: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
-        --purple-grad: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-        --dark-grad: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        --danger-grad:  linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        --info-grad:    linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+        --purple-grad:  linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        --dark-grad:    linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        --teal-grad:    linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
     }
 
-    /* Tarjetas con tamaño unificado */
     .stat-card-premium {
         border: none;
         border-radius: 20px;
         position: relative;
         overflow: hidden;
         transition: all 0.3s ease;
-        height: 150px; /* Altura fija para todas */
+        height: 150px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         padding: 1.25rem;
     }
-
     .stat-card-premium:hover {
         transform: translateY(-5px);
         box-shadow: 0 15px 30px rgba(0,0,0,0.15);
     }
-
-    /* Iconos de fondo iguales */
     .card-icon-overlay {
         position: absolute;
-        right: -10px;
-        bottom: -10px;
+        right: -10px; bottom: -10px;
         font-size: 4.5rem;
         opacity: 0.15;
         transform: rotate(-10deg);
         color: white;
     }
-
     .section-divider {
         display: flex;
         align-items: center;
         margin: 2.5rem 0 1.5rem;
     }
-
     .section-divider span {
         font-weight: 800;
         text-transform: uppercase;
@@ -59,8 +53,8 @@
         padding: 6px 16px;
         border-radius: 8px;
         border: 1px solid #e2e8f0;
+        white-space: nowrap;
     }
-
     .section-divider::after {
         content: "";
         flex: 1;
@@ -68,10 +62,9 @@
         background: #e2e8f0;
         margin-left: 15px;
     }
-
     .btn-action-sm {
-        background: rgba(255, 255, 255, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.4);
+        background: rgba(255,255,255,0.2);
+        border: 1px solid rgba(255,255,255,0.4);
         border-radius: 8px;
         color: white;
         font-size: 0.7rem;
@@ -80,26 +73,26 @@
         padding: 5px 15px;
         width: fit-content;
         transition: 0.2s;
+        display: inline-block;
     }
-
-    .btn-action-sm:hover {
-        background: white;
-        color: #1e293b;
-    }
-
+    .btn-action-sm:hover { background: white; color: #1e293b; }
     .card-title-main {
         font-size: 1.25rem;
         font-weight: 700;
         margin: 0;
         line-height: 1.2;
+        color: white;
     }
 </style>
 
 <div class="container-fluid py-4">
-    
+
+    <!-- Encabezado -->
     <div class="d-flex justify-content-between align-items-end mb-4 px-2">
         <div>
-            <h1 class="fw-black text-dark mb-0" style="letter-spacing: -1px;">Acerautoos <span class="text-primary">Core</span></h1>
+            <h1 class="fw-black text-dark mb-0" style="letter-spacing:-1px;">
+                Acerautos <span class="text-primary">Core</span>
+            </h1>
             <p class="text-muted mb-0">Gestión Integral de Autopartes y Taller</p>
         </div>
         <div class="text-end d-none d-md-block">
@@ -108,132 +101,150 @@
         </div>
     </div>
 
+    <!-- ══ Recepción y Vehículos ══ -->
     <div class="section-divider"><span>Recepción y Vehículos</span></div>
     <div class="row g-4">
+
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background: var(--info-grad);">
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--info-grad);">
                 <i class="fas fa-user-tie card-icon-overlay"></i>
                 <h4 class="card-title-main">Clientes</h4>
-                <a href="{% url 'app:listar_cliente' %}" class="btn-action-sm">GESTIONAR</a>
+                <a href="{% url 'app:listar_clientes' %}" class="btn-action-sm">GESTIONAR</a>
             </div>
         </div>
+
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background: var(--info-grad);">
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--info-grad);">
                 <i class="fas fa-car card-icon-overlay"></i>
                 <h4 class="card-title-main">Vehículos</h4>
-                <a href="{% url 'app:listar_vehiculo' %}" class="btn-action-sm">GESTIONAR</a>
+                <a href="{% url 'app:listar_vehiculos' %}" class="btn-action-sm">GESTIONAR</a>
             </div>
         </div>
+
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background: var(--success-grad);">
-                <i class="fas fa-file-import card-icon-overlay"></i>
-                <h4 class="card-title-main">Entradas</h4>
-                <a href="{% url 'app:listar_entrada_vehiculo' %}" class="btn-action-sm">CHECK-IN</a>
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--success-grad);">
+                <i class="fas fa-clipboard-list card-icon-overlay"></i>
+                <h4 class="card-title-main">Órdenes de Servicio</h4>
+                <a href="{% url 'app:orden_servicio_list' %}" class="btn-action-sm">VER ÓRDENES</a>
             </div>
         </div>
+
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background: var(--danger-grad);">
-                <i class="fas fa-sign-out-alt card-icon-overlay"></i>
-                <h4 class="card-title-main">Salidas</h4>
-                <a href="{% url 'app:listar_salida_vehiculo' %}" class="btn-action-sm">CHECK-OUT</a>
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--teal-grad);">
+                <i class="fas fa-list-ul card-icon-overlay"></i>
+                <h4 class="card-title-main">Detalles de Orden</h4>
+                <a href="{% url 'app:detalle_orden_list' %}" class="btn-action-sm">VER DETALLES</a>
             </div>
         </div>
+
     </div>
 
+    <!-- ══ Operaciones y Stock ══ -->
     <div class="section-divider"><span>Operaciones y Stock</span></div>
     <div class="row g-4">
+
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background: var(--purple-grad);">
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--purple-grad);">
                 <i class="fas fa-tools card-icon-overlay"></i>
-                <h4 class="card-title-main">Servicios</h4>
-                <a href="{% url 'app:listar_servicio' %}" class="btn-action-sm">EJECUCIÓN</a>
+                <h4 class="card-title-main">Tipos de Servicio</h4>
+                <a href="{% url 'app:tipo_servicio_list' %}" class="btn-action-sm">CATÁLOGO</a>
             </div>
         </div>
+
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background: var(--dark-grad);">
-                <i class="fas fa-list-check card-icon-overlay"></i>
-                <h4 class="card-title-main">Tipos Servicio</h4>
-                <a href="{% url 'app:listar_tipo_servicio' %}" class="btn-action-sm">CATÁLOGO</a>
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--dark-grad);">
+                <i class="fas fa-puzzle-piece card-icon-overlay"></i>
+                <h4 class="card-title-main">Compatibilidad</h4>
+                <a href="{% url 'app:listar_compatibilidad' %}" class="btn-action-sm">CONSULTAR</a>
             </div>
         </div>
+
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background: var(--warning-grad);">
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--warning-grad);">
                 <i class="fas fa-boxes card-icon-overlay"></i>
                 <h4 class="card-title-main">Productos</h4>
-                <a href="{% url 'app:listar_productos' %}" class="btn-action-sm">STOCK</a>
+                <a href="{% url 'app:listar_producto' %}" class="btn-action-sm">STOCK</a>
             </div>
         </div>
+
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background: var(--warning-grad);">
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--warning-grad);">
                 <i class="fas fa-oil-can card-icon-overlay"></i>
-                <h4 class="card-title-main">Insumos</h4>
-                <a href="{% url 'app:listar_insumo' %}" class="btn-action-sm">CONSUMIBLES</a>
+                <h4 class="card-title-main">Marcas</h4>
+                <a href="{% url 'app:listar_marca' %}" class="btn-action-sm">CATÁLOGO</a>
             </div>
         </div>
+
     </div>
 
+    <!-- ══ Administración Financiera ══ -->
     <div class="section-divider"><span>Administración Financiera</span></div>
     <div class="row g-4">
+
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background: var(--primary-grad);">
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--primary-grad);">
                 <i class="fas fa-truck card-icon-overlay"></i>
                 <h4 class="card-title-main">Proveedores</h4>
                 <a href="{% url 'app:listar_proveedores' %}" class="btn-action-sm">SOCIOS</a>
             </div>
         </div>
+
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background: var(--primary-grad);">
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--primary-grad);">
                 <i class="fas fa-shopping-basket card-icon-overlay"></i>
                 <h4 class="card-title-main">Compras</h4>
-                <a href="{% url 'app:listar_compras' %}" class="btn-action-sm">EGRESOS</a>
+                <a href="{% url 'app:lista_compras' %}" class="btn-action-sm">EGRESOS</a>
             </div>
         </div>
+
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background: var(--primary-grad);">
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--primary-grad);">
                 <i class="fas fa-cash-register card-icon-overlay"></i>
-                <h4 class="card-title-main">Ventas</h4>
-                <a href="{% url 'app:listar_Ventas' %}" class="btn-action-sm">INGRESOS</a>
+                <h4 class="card-title-main">Caja</h4>
+                <a href="{% url 'app:caja_listar' %}" class="btn-action-sm">MOVIMIENTOS</a>
             </div>
         </div>
+
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background: var(--danger-grad);">
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--danger-grad);">
                 <i class="fas fa-file-invoice-dollar card-icon-overlay"></i>
                 <h4 class="card-title-main">Facturación</h4>
-                <a href="{% url 'app:listar_facturas' %}" class="btn-action-sm">DETALLES</a>
+                <a href="{% url 'app:listar_factura' %}" class="btn-action-sm">DETALLES</a>
             </div>
         </div>
+
     </div>
 
-    <div class="section-divider"><span>Sistema y Ajustes</span></div>
+    <!-- ══ Sistema y Configuración ══ -->
+    <div class="section-divider"><span>Sistema y Configuración</span></div>
     <div class="row g-4 mb-5">
+
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background: var(--dark-grad);">
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--dark-grad);">
                 <i class="fas fa-users-cog card-icon-overlay"></i>
                 <h4 class="card-title-main">Usuarios</h4>
-                <a href="{% url 'app:listar_Usuario' %}" class="btn-action-sm">ACCESOS</a>
+                <a href="{% url 'app:listar_usuario' %}" class="btn-action-sm">ACCESOS</a>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background: var(--dark-grad);">
-                <i class="fas fa-layer-group card-icon-overlay"></i>
-                <h4 class="card-title-main">Categorías</h4>
-                <a href="{% url 'app:listar_categoria' %}" class="btn-action-sm">CONFIGURAR</a>
-            </div>
-        </div>
-        <div class="col-xl-6 col-md-12">
-            <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-row align-items-center justify-content-between" style="background: #f8fafc;">
+
+        <div class="col-xl-9 col-md-12">
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-row align-items-center justify-content-between"
+                 style="background:#f8fafc;">
                 <div class="d-flex align-items-center">
-                    <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=6366f1&color=fff" class="rounded-circle shadow-sm me-3" width="50">
+                    <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=6366f1&color=fff"
+                         class="rounded-circle shadow-sm me-3" width="50" alt="avatar">
                     <div>
                         <h6 class="mb-0 fw-bold">{{ user.username|capfirst }}</h6>
                         <small class="text-muted">Sesión de Administrador</small>
                     </div>
                 </div>
-                <a href="{% url 'app:listar_notificacion' %}" class="btn btn-outline-primary btn-sm rounded-pill px-4">
+                <a href="{% url 'app:listar_notificacion' %}"
+                   class="btn btn-outline-primary btn-sm rounded-pill px-4">
                     <i class="fas fa-bell me-1"></i> Notificaciones
                 </a>
             </div>
         </div>
+
     </div>
 </div>
 {% endblock %}

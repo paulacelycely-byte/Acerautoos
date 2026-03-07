@@ -4,7 +4,6 @@
 
 {% block css %}
 <style>
-    /* Estilos Premium Mantenidos */
     .header-premium {
         background: linear-gradient(145deg, #ffffff, #f8f9fa);
         border-radius: 20px;
@@ -34,8 +33,10 @@
     }
     .card-form-premium { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; background: #fff; }
     .card-header-dark { background: #454d55; color: white; padding: 15px 25px; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; }
+    .input-group-text { background: #f8f9fa; border-right: none; color: #454d55; border-radius: 12px 0 0 12px; width: 45px; justify-content: center; }
     .form-control { border-radius: 0 12px 12px 0 !important; border: 1px solid #d1d3e2; padding: 12px 15px; }
     .btn-acerautos-save-crear { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white !important; border: none; padding: 12px 35px; border-radius: 12px; font-weight: 700; text-transform: uppercase; transition: all 0.3s; }
+    .caja-error-roja { background-color: #fff5f5 !important; border: 1px solid #feb2b2 !important; border-left: 6px solid #454d55 !important; padding: 10px !important; margin-top: 5px !important; border-radius: 8px !important; }
 </style>
 {% endblock %}
 
@@ -59,19 +60,42 @@
             <div class="card-body p-4 p-md-5">
                 <div class="row">
                     {% for field in form.visible_fields %}
-                        <div class="col-md-12 mb-4">
-                            <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ field.label }}</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text bg-white border-right-0">
-                                        {% if 'producto' in field.name %}<i class="fas fa-box-open"></i>
-                                        {% else %}<i class="fas fa-car"></i>{% endif %}
-                                    </span>
-                                </div>
-                                {{ field|add_class:'form-control border-left-0 shadow-none' }}
+                    <div class="col-md-12 mb-4">
+                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ field.label }}</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    {% if 'producto' in field.name %}
+                                        <i class="fas fa-box-open"></i>
+                                    {% else %}
+                                        <i class="fas fa-car"></i>
+                                    {% endif %}
+                                </span>
                             </div>
+                            {{ field|add_class:'form-control border-left-0 shadow-none' }}
                         </div>
+                        {% if field.errors %}
+                            {% for error in field.errors %}
+                                <div class="caja-error-roja small">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                                    <strong>{{ error }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                     {% endfor %}
+
+                    {# Errores generales del formulario (como duplicados) #}
+                    {% if form.non_field_errors %}
+                        <div class="col-md-12">
+                            {% for error in form.non_field_errors %}
+                                <div class="caja-error-roja small">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                                    <strong>{{ error }}</strong>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -90,21 +114,25 @@
 
 {% block js %}
 <script>
-    $(function () {
-        $('#formCompatibilidad').on('submit', function (e) {
-            e.preventDefault();
-            var formulario = this;
-            Swal.fire({
-                title: '¿Confirmar relación?',
-                text: "Se vinculará este producto con la marca seleccionada.",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Confirmar',
-                cancelButtonColor: '#d33',
-                confirmButtonColor: '#454d55'
-            }).then((result) => {
-                if (result.isConfirmed) { formulario.submit(); }
-            });
+    var formularioEnviado = false;
+    $('#formCompatibilidad').on('submit', function (e) {
+        if (formularioEnviado) return;
+        e.preventDefault();
+        var formulario = this;
+        Swal.fire({
+            title: '¿Confirmar relación?',
+            text: "Se vinculará este producto con la marca seleccionada.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Revisar',
+            cancelButtonColor: '#d33',
+            confirmButtonColor: '#454d55'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                formularioEnviado = true;
+                formulario.submit();
+            }
         });
     });
 </script>

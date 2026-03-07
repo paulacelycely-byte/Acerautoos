@@ -20,8 +20,7 @@ INSTALLED_APPS = [
     'login',
 ]
 
-# --- VINCULACIÓN COMENTADA PARA EVITAR SUPERUSUARIOS Y BASURA DE DJANGO ---
-# AUTH_USER_MODEL = 'app.Usuario' 
+# AUTH_USER_MODEL = 'app.Usuario'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -77,10 +76,10 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CONFIGURACIÓN DE RUTAS
-LOGIN_REDIRECT_URL = 'app:listar_usuario'  
-LOGOUT_REDIRECT_URL = 'login:login'
-LOGIN_URL = 'login:login'
+# Redireccion tras login/logout
+LOGIN_REDIRECT_URL = '/principal/dashboard/'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/login/'
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'secondary',
@@ -90,6 +89,5 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-# --- CONFIGURACIÓN DE ARCHIVOS MULTIMEDIA ---
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'marcas_logos')

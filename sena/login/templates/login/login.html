@@ -1,103 +1,468 @@
- {% load static %}
- {%load widget_tweaks%}
+{% load static %}
+{% load widget_tweaks %}
 <!doctype html>
-<html lang="en">
-  <!--begin::Head-->
+<html lang="es">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{{ titulo }}</title>
-    <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{% static 'lib/adminlte-3.0.4/plugins/font-awesome-5.11.1/css/all.min.css' %}">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{% static 'lib/adminlte-3.0.4/css/adminlte.min.css' %}">
-    <!-- Google Font: Source Sans Pro -->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-    <!-- Sweetalert2 -->
-    <script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <title>Acerautos — Iniciar Sesión</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --navy:   #0f172a;
+            --navy2:  #1e293b;
+            --indigo: #6366f1;
+            --indigo2:#4338ca;
+            --slate:  #94a3b8;
+            --light:  #f1f5f9;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--navy);
+            overflow: hidden;
+        }
+
+        /* ── Panel izquierdo decorativo ── */
+        .login-left {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 60px;
+            overflow: hidden;
+        }
+
+        /* Fondo animado con gradiente */
+        .login-left::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 50%, rgba(99,102,241,.25) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 80% at 80% 20%, rgba(20,184,166,.15) 0%, transparent 60%),
+                linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            z-index: 0;
+        }
+
+        /* Grid de puntos */
+        .login-left::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px);
+            background-size: 32px 32px;
+            z-index: 0;
+        }
+
+        .left-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(99,102,241,.15);
+            border: 1px solid rgba(99,102,241,.3);
+            border-radius: 50px;
+            padding: 8px 18px;
+            margin-bottom: 40px;
+        }
+
+        .brand-badge-icon {
+            width: 28px; height: 28px;
+            background: linear-gradient(135deg, var(--indigo), var(--indigo2));
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: .75rem; color: white;
+        }
+
+        .brand-badge span {
+            font-family: 'Syne', sans-serif;
+            font-size: .8rem; font-weight: 700;
+            color: var(--light); letter-spacing: .5px;
+        }
+
+        .left-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: white;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .left-title span {
+            background: linear-gradient(90deg, var(--indigo), #14b8a6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .left-desc {
+            font-size: .95rem;
+            color: var(--slate);
+            line-height: 1.7;
+            max-width: 380px;
+            margin-bottom: 50px;
+        }
+
+        /* Tarjetas de stats decorativas */
+        .stat-chips {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .stat-chip {
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 12px;
+            padding: 12px 18px;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .stat-chip i { color: var(--indigo); font-size: .9rem; }
+        .stat-chip-text { font-size: .75rem; color: var(--slate); }
+        .stat-chip-val  { font-size: .9rem; font-weight: 700; color: white; }
+
+        /* Carro animado flotando */
+        .floating-car {
+            position: absolute;
+            bottom: 60px; right: -40px;
+            font-size: 14rem;
+            color: rgba(99,102,241,.06);
+            transform: rotate(-15deg);
+            animation: float 6s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: rotate(-15deg) translateY(0); }
+            50%       { transform: rotate(-15deg) translateY(-20px); }
+        }
+
+        /* ── Panel derecho — formulario ── */
+        .login-right {
+            width: 460px;
+            min-height: 100vh;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 50px;
+            position: relative;
+            animation: slideIn .5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(40px); opacity: 0; }
+            to   { transform: translateX(0);    opacity: 1; }
+        }
+
+        .form-header { margin-bottom: 40px; }
+
+        .form-header h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.9rem; font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 6px;
+        }
+
+        .form-header p { font-size: .9rem; color: #64748b; }
+
+        /* Campos */
+        .field-wrap {
+            margin-bottom: 20px;
+        }
+
+        .field-wrap label {
+            display: block;
+            font-size: .78rem;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            margin-bottom: 8px;
+        }
+
+        .field-inner {
+            position: relative;
+        }
+
+        .field-inner i {
+            position: absolute;
+            left: 16px; top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: .85rem;
+            transition: color .2s;
+        }
+
+        .field-inner input {
+            width: 100%;
+            padding: 13px 16px 13px 44px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .9rem;
+            color: var(--navy);
+            background: #f8fafc;
+            transition: border-color .2s, background .2s, box-shadow .2s;
+            outline: none;
+        }
+
+        .field-inner input:focus {
+            border-color: var(--indigo);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(99,102,241,.1);
+        }
+
+        .field-inner input:focus + i,
+        .field-inner:focus-within i { color: var(--indigo); }
+
+        /* Toggle password */
+        .toggle-pw {
+            position: absolute;
+            right: 14px; top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: .85rem;
+            background: none; border: none; padding: 4px;
+        }
+        .toggle-pw:hover { color: var(--indigo); }
+
+        /* Recordar / olvidé */
+        .form-extras {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .remember {
+            display: flex; align-items: center; gap: 8px;
+            font-size: .84rem; color: #64748b; cursor: pointer;
+        }
+
+        .remember input[type="checkbox"] {
+            width: 16px; height: 16px;
+            accent-color: var(--indigo);
+            cursor: pointer;
+        }
+
+        /* Botón submit */
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--indigo), var(--indigo2));
+            color: white;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .95rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99,102,241,.4);
+        }
+
+        .btn-login:active { transform: translateY(0); }
+
+        /* Footer del form */
+        .form-footer {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #f1f5f9;
+            text-align: center;
+            font-size: .8rem;
+            color: #94a3b8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .login-left  { display: none; }
+            .login-right { width: 100%; padding: 40px 28px; }
+        }
+    </style>
 </head>
-  <!--end::Head-->
-  <!--begin::Body-->
-  <body class="login-page bg-body-secondary">
-    <div class="login-box">
-      <div class="login-logo">
-        <a href="../index2.html"><b>Admin</b>LTE</a>
-      </div>
-      <!-- /.login-logo -->
-      <div class="card">
-        <div class="card-body login-card-body">
-          <p class="login-box-msg">inicio de sesión </p>
-          <form method = "post">
-             {% csrf_token %}
-            <div class="input-group mb-3">
-              {{form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'placerholder:contraseña'}}
-              <div class="input-group-text"><span class="bi bi-envelope"></span></div>
+<body>
+
+    <!-- Panel izquierdo -->
+    <div class="login-left">
+        <i class="fas fa-car-side floating-car"></i>
+        <div class="left-content">
+
+            <div class="brand-badge">
+                <div class="brand-badge-icon"><i class="fas fa-oil-can"></i></div>
+                <span>Acerautos</span>
             </div>
-            <div class="input-group mb-3">
-              {{form.password|add_class:'form-control'|attr:'autocomplete:off'|attr:'placerholder:contraseña'}}
-              <div class="input-group-text"><span class="bi bi-lock-fill"></span></div>
-            </div>
-            <!--begin::Row-->
-            <div class="row">
-              <div class="col-8">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                  <label class="form-check-label" for="flexCheckDefault"> recordar </label>
+
+            <h1 class="left-title">
+                Cambiadero<br>de Aceite<br><span>Acerautos</span>
+            </h1>
+
+            <p class="left-desc">
+                Sistema de gestión para controlar servicios, clientes,
+                inventario y finanzas de tu cambiadero en un solo lugar.
+            </p>
+
+            <div class="stat-chips">
+                <div class="stat-chip">
+                    <i class="fas fa-car"></i>
+                    <div>
+                        <div class="stat-chip-text">Vehículos</div>
+                        <div class="stat-chip-val">Control total</div>
+                    </div>
                 </div>
-              </div>
-              <!-- /.col -->
-              <div class="col-4">
-                <div class="d-grid gap-2">
-                  <button type="submit" class="btn btn-primary">iniciar sesión</button>
+                <div class="stat-chip">
+                    <i class="fas fa-boxes"></i>
+                    <div>
+                        <div class="stat-chip-text">Inventario</div>
+                        <div class="stat-chip-val">Tiempo real</div>
+                    </div>
                 </div>
-              </div>
-              <!-- /.col -->
+                <div class="stat-chip">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <div>
+                        <div class="stat-chip-text">Facturación</div>
+                        <div class="stat-chip-val">Automática</div>
+                    </div>
+                </div>
             </div>
-            <!--end::Row-->
-          </form>
 
-<script type="application/javascript">
-            {% if form.errors %}
-            var errors = '';
-            {% for field in form %}
-            {% for error in field.errors %}
-            errors += '{{ error }}\n';
-            {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-            errors += '{{ error }}\n';
-            {% endfor %}
-            Swal.fire({
-                title: 'Error!',
-                text: errors,
-                icon: 'error'
-            });
-            {% endif %}
-        </script>
-
-
-      <!-- /.social-auth-links -->
-
-      <p class="mb-1">
-        <a href="forgot-password.html">I forgot my password</a>
-      </p>
-      <p class="mb-0">
-        <a href="register.html" class="text-center">Register a new membership</a>
-      </p>
+        </div>
     </div>
 
-    <!-- /.login-card-body -->
-  </div>
-</div>
-<!-- /.login-box -->
+    <!-- Panel derecho — formulario -->
+    <div class="login-right">
 
-<!-- jQuery -->
-<script src="../../plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap 4 -->
-<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
-<script src="../../dist/js/adminlte.min.js"></script>
+        <div class="form-header">
+            <h2>Bienvenido</h2>
+            <p>Ingresa tus credenciales para continuar</p>
+        </div>
+
+        <form method="post" autocomplete="off">
+            {% csrf_token %}
+
+            <!-- Usuario -->
+            <div class="field-wrap">
+                <label for="id_username">Usuario</label>
+                <div class="field-inner">
+                    {{ form.username|add_class:"form-field"|attr:"placeholder:Tu nombre de usuario"|attr:"id:id_username" }}
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+
+            <!-- Contraseña -->
+            <div class="field-wrap">
+                <label for="id_password">Contraseña</label>
+                <div class="field-inner">
+                    {{ form.password|add_class:"form-field"|attr:"placeholder:Tu contraseña"|attr:"id:id_password" }}
+                    <i class="fas fa-lock"></i>
+                    <button type="button" class="toggle-pw" onclick="togglePassword()" id="toggleBtn">
+                        <i class="fas fa-eye" id="eyeIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Extras -->
+            <div class="form-extras">
+                <label class="remember">
+                    <input type="checkbox" name="remember"> Recordarme
+                </label>
+            </div>
+
+            <button type="submit" class="btn-login">
+                <i class="fas fa-arrow-right-to-bracket"></i>
+                Iniciar sesión
+            </button>
+        </form>
+
+        <div class="form-footer">
+            Sistema de Gestión &copy; Acerautos 2026
+        </div>
+
+    </div>
+
+    <script>
+        /* Mostrar/ocultar contraseña */
+        function togglePassword() {
+            const input = document.getElementById('id_password');
+            const icon  = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        /* Corregir estilos del widget_tweaks sobre los inputs */
+        document.querySelectorAll('.form-field').forEach(el => {
+            el.style.width          = '100%';
+            el.style.padding        = '13px 44px 13px 44px';
+            el.style.border         = '2px solid #e2e8f0';
+            el.style.borderRadius   = '12px';
+            el.style.fontFamily     = "'DM Sans', sans-serif";
+            el.style.fontSize       = '.9rem';
+            el.style.color          = '#0f172a';
+            el.style.background     = '#f8fafc';
+            el.style.outline        = 'none';
+            el.style.transition     = 'border-color .2s, box-shadow .2s';
+            el.addEventListener('focus', () => {
+                el.style.borderColor = '#6366f1';
+                el.style.background  = 'white';
+                el.style.boxShadow   = '0 0 0 4px rgba(99,102,241,.1)';
+            });
+            el.addEventListener('blur', () => {
+                el.style.borderColor = '#e2e8f0';
+                el.style.background  = '#f8fafc';
+                el.style.boxShadow   = 'none';
+            });
+        });
+
+        /* Errores del formulario */
+        {% if form.errors %}
+        document.addEventListener('DOMContentLoaded', function() {
+            let errors = '';
+            {% for field in form %}
+                {% for error in field.errors %}
+                    errors += '{{ error|escapejs }}\n';
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                errors += '{{ error|escapejs }}\n';
+            {% endfor %}
+            if (errors) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Credenciales incorrectas',
+                    text: errors,
+                    confirmButtonColor: '#6366f1',
+                    confirmButtonText: 'Intentar de nuevo'
+                });
+            }
+        });
+        {% endif %}
+    </script>
+
 </body>
-</html>                     
+</html>

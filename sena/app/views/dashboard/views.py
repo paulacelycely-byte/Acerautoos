@@ -9,15 +9,15 @@ class DashboardView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Panel de Control'
         
-        context['cant_vehiculos'] = Vehiculo.objects.count()
-        context['cant_ventas'] = VentasFactura.objects.count() 
-        context['cant_clientes'] = Cliente.objects.count()
-        context['cant_productos'] = Producto.objects.count()
-        context['cant_proveedores'] = Proveedor.objects.count()
+        context['cant_vehiculos']  = Vehiculo.objects.count()
+        context['cant_ventas']     = VentasFactura.objects.count() 
+        context['cant_clientes']   = Cliente.objects.count()
+        context['cant_productos']  = Producto.objects.count()
+        context['cant_proveedores']= Proveedor.objects.count()
         
-        # Productos con stock bajo
+        # ✅ Corregido: 'existencia' → 'stock'
         context['stock_bajo'] = Producto.objects.filter(
-            existencia__lte=F('stock_minimo')
+            stock__lte=F('stock_minimo')
         ).count()
         
         return context

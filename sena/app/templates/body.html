@@ -2,46 +2,117 @@
 {% load static %}
 
 {% block body %}
-  {% block css %}
-  {% endblock %}
+  {% block css %}{% endblock %}
 
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
   <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" />
 
   <style>
-    .app-wrapper { display: flex; width: 100%; min-height: 100vh; background: #f8fafc; }
-    .app-sidebar {
-      width: 280px !important; background: #0f172a !important;
-      transition: all 0.4s ease !important;
-      z-index: 1030; position: fixed !important; height: 100vh !important;
-      left: 0; border-right: 1px solid rgba(255, 255, 255, 0.05);
+    html, body { margin:0; padding:0; }
+
+    .app-wrapper {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+        background: #f8fafc;
     }
-    .app-main-container { flex: 1; margin-left: 280px; display: flex; flex-direction: column; min-width: 0; transition: all 0.4s ease; }
-    body.sidebar-hidden .app-sidebar { left: -280px; }
-    body.sidebar-hidden .app-main-container { margin-left: 0; }
-    .app-header { background: rgba(255, 255, 255, 0.8) !important; backdrop-filter: blur(12px); border-bottom: 1px solid #e2e8f0; padding: 0.75rem 1.5rem; z-index: 900; }
-    .btn-toggle-menu { background: #ffffff; border: 1px solid #e2e8f0; width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-    .user-pill { background: white; border: 1px solid #e2e8f0; border-radius: 50px; padding: 5px 15px; display: flex; align-items: center; gap: 10px; }
-    
-    .dataTables_wrapper .row { margin-bottom: 1rem; align-items: center; }
-    .page-item.active .page-link { background-color: #d32f2f !important; border-color: #d32f2f !important; }
+
+    /* ── Sidebar fijo ── */
+    .app-sidebar {
+        width: 260px;
+        min-width: 260px;         /* ocupa espacio en el flex */
+        background: #0f172a;
+        z-index: 1030;
+        height: 100vh;
+        position: sticky;         /* sticky en lugar de fixed: participa en el flex */
+        top: 0;
+        border-right: 1px solid rgba(255,255,255,.05);
+        transition: width .3s ease, min-width .3s ease;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+    }
+
+    /* ── Contenido ── */
+    .app-main-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    /* MINI: sidebar encoge, contenido no se mueve */
+    body.sidebar-mini .app-sidebar {
+        width: 72px;
+        min-width: 72px;
+    }
+
+    /* HIDDEN: sidebar colapsa a 0, contenido llena todo */
+    body.sidebar-hidden .app-sidebar {
+        width: 0;
+        min-width: 0;
+    }
+
+    /* ── Header ── */
+    .app-header {
+        background: rgba(255,255,255,.88) !important;
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid #e2e8f0;
+        padding: .75rem 1.5rem;
+        z-index: 900;
+        position: sticky;
+        top: 0;
+    }
+
+    .btn-toggle-menu {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        width: 38px; height: 38px;
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer;
+        transition: background .2s;
+    }
+    .btn-toggle-menu:hover { background: #f1f5f9; }
+
+    .user-pill {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 50px;
+        padding: 5px 15px;
+        display: flex; align-items: center; gap: 10px;
+    }
+
+    /* ── DataTables ── */
+    .dataTables_wrapper .row     { margin-bottom:1rem; align-items:center; }
+    .page-item.active .page-link { background-color:#d32f2f !important; border-color:#d32f2f !important; }
+
+    @media (max-width: 768px) {
+        .app-sidebar { width:0; min-width:0; }
+        body.sidebar-open .app-sidebar { width:260px; min-width:260px; }
+    }
   </style>
 
   <div class="app-wrapper">
     {% include 'aside.html' %}
     <div class="app-main-container">
-      <nav class="app-header d-flex align-items-center justify-content-between sticky-top">
+      <nav class="app-header d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center">
-          <button class="btn-toggle-menu" id="sidebar-trigger"><i class="fas fa-bars"></i></button>
+          <button class="btn-toggle-menu" id="sidebar-trigger">
+            <i class="fas fa-bars"></i>
+          </button>
           <div class="ms-3 d-none d-md-block">
             <h5 class="mb-0 fw-bold text-dark">Acerautos <span class="text-primary">Core</span></h5>
           </div>
         </div>
         <div class="user-pill">
-            <span class="small fw-bold text-dark">{{ user.username|upper }}</span>
-            <div class="avatar-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; border-radius: 50%;">
-                {{ user.username|slice:':1'|upper }}
-            </div>
+          <span class="small fw-bold text-dark">{{ user.username|upper }}</span>
+          <div class="d-flex align-items-center justify-content-center bg-primary text-white"
+               style="width:28px;height:28px;border-radius:50%;font-size:.8rem;font-weight:700;">
+            {{ user.username|slice:':1'|upper }}
+          </div>
         </div>
       </nav>
       <main class="p-4">
@@ -49,6 +120,7 @@
       </main>
     </div>
   </div>
+
 {% endblock %}
 
 {% block js_base %}
@@ -58,28 +130,48 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
-    // Sidebar Toggle
-    document.addEventListener("DOMContentLoaded", function() {
-        const trigger = document.getElementById('sidebar-trigger');
-        if (trigger) {
-            trigger.addEventListener('click', function() {
-                document.body.classList.toggle('sidebar-hidden');
-            });
-        }
-    });
+  document.addEventListener('DOMContentLoaded', function () {
+      const trigger = document.getElementById('sidebar-trigger');
+      const body    = document.body;
+      const MINI    = 'sidebar-mini';
+      const HIDDEN  = 'sidebar-hidden';
 
-    // Notificaciones Inteligentes (Detecta success, error, info)
-    {% if messages %}
-      {% for message in messages %}
-        Swal.fire({
-          icon: "{{ message.tags|default:'info' }}", // Automático: 'success', 'error', 'warning', 'info'
-          title: "{{ message|escapejs }}",
-          confirmButtonColor: '#0f172a',
-          timer: 3000,
-          timerProgressBar: true
-        });
-      {% endfor %}
-    {% endif %}
+      if (trigger) {
+          trigger.addEventListener('click', function () {
+              if (!body.classList.contains(MINI) && !body.classList.contains(HIDDEN)) {
+                  // normal → mini
+                  body.classList.add(MINI);
+                  localStorage.setItem('sb_state', 'mini');
+              } else if (body.classList.contains(MINI)) {
+                  // mini → hidden (cerrado totalmente)
+                  body.classList.remove(MINI);
+                  body.classList.add(HIDDEN);
+                  localStorage.setItem('sb_state', 'hidden');
+              } else {
+                  // hidden → normal
+                  body.classList.remove(HIDDEN);
+                  localStorage.setItem('sb_state', 'full');
+              }
+          });
+      }
+
+      // Restaurar estado
+      const saved = localStorage.getItem('sb_state');
+      if (saved === 'mini')   body.classList.add(MINI);
+      if (saved === 'hidden') body.classList.add(HIDDEN);
+
+      {% if messages %}
+        {% for message in messages %}
+          Swal.fire({
+            icon: "{{ message.tags|default:'info' }}",
+            title: "{{ message|escapejs }}",
+            confirmButtonColor: '#0f172a',
+            timer: 3000,
+            timerProgressBar: true
+          });
+        {% endfor %}
+      {% endif %}
+  });
   </script>
 
   {% block js %}{% endblock %}

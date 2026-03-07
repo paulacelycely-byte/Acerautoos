@@ -1,18 +1,70 @@
 {% extends "body.html" %}
+{% load widget_tweaks %}
+
+{% block css %}
+<style>
+    /* --- ESTILO PREMIUM GRIS ANTRACITA --- */
+    .header-premium {
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        border-radius: 20px; padding: 25px; margin-bottom: 30px;
+        border-left: 10px solid #4a4a4a;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .title-icon {
+        background: linear-gradient(135deg, #4a4a4a 0%, #2d3436 100%);
+        color: white; width: 55px; height: 55px; border-radius: 15px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        margin-right: 20px;
+    }
+    .card-form-premium { border: none !important; border-radius: 20px !important; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; background: #fff; }
+    .card-header-dark { background: #4a4a4a; color: white; padding: 15px 25px; font-weight: 700; text-transform: uppercase; border-radius: 20px 20px 0 0; }
+    .btn-acerautos-save {
+        background: linear-gradient(135deg, #4a4a4a 0%, #2d3436 100%);
+        color: white !important; border: none; padding: 12px 35px; border-radius: 12px;
+        font-weight: 700; text-transform: uppercase; transition: all 0.3s;
+    }
+    .form-control { border-radius: 12px !important; padding: 12px 15px; border: 1px solid #d1d3e2; }
+</style>
+{% endblock %}
+
 {% block contenido %}
-<h2>
-    {% if form.instance.pk %}
-        ✏️ Editar Producto
-    {% else %}
-        ➕ Agregar Producto
-    {% endif %}
-</h2>
+<div class="container py-4 animate__animated animate__fadeIn">
+    
+    <div class="header-premium">
+        <div class="d-flex align-items-center">
+            <div class="title-icon"><i class="fas fa-boxes"></i></div>
+            <div class="title-container">
+                <h1 class="h3 font-weight-bold text-uppercase" style="letter-spacing:1px;">
+                    {% if form.instance.pk %}Editar Detalle{% else %}Agregar Producto{% endif %}
+                </h1>
+            </div>
+        </div>
+    </div>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Guardar</button>
-</form>
-
-<a href="{% url 'app:detalle_orden_list' %}" style="display:inline-block; margin-top:10px;">⬅ Volver a lista</a>
+    <form method="post" id="formDetalle">
+        {% csrf_token %}
+        <div class="card card-form-premium overflow-hidden">
+            <div class="card-header-dark">
+                <i class="fas fa-info-circle mr-2"></i> Información del Producto en Orden
+            </div>
+            <div class="card-body p-5">
+                {% for field in form %}
+                    <div class="form-group mb-4">
+                        <label class="font-weight-bold text-dark small text-uppercase">{{ field.label }}</label>
+                        {{ field|add_class:'form-control' }}
+                        {% for error in field.errors %}
+                            <small class="text-danger font-weight-bold"><i class="fas fa-times"></i> {{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="card-footer bg-light p-4 d-flex justify-content-end">
+                <a href="{% url 'app:detalle_orden_list' %}" class="btn btn-light border px-4 mx-2 font-weight-bold" style="border-radius: 12px;">Descartar</a>
+                <button type="submit" class="btn btn-acerautos-save"><i class="fas fa-save mr-2"></i> Guardar</button>
+            </div>
+        </div>
+    </form>
+</div>
 {% endblock %}

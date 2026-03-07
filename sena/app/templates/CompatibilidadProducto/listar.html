@@ -44,6 +44,7 @@
         display: inline-flex; align-items: center; justify-content: center;
         transition: 0.3s; border: none;
     }
+    .btn-circle:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 </style>
 {% endblock %}
 
@@ -52,7 +53,7 @@
     <div class="header-premium">
         <div class="d-flex align-items-center">
             <div class="title-icon"><i class="fas fa-cogs"></i></div>
-            <div class="title-container"><h1>{{ titulo }}</h1></div>
+            <div class="title-container"><h1>{{ titulo|default:"COMPATIBILIDAD DE PRODUCTOS" }}</h1></div>
         </div>
         <a href="{% url 'app:crear_compatibilidad' %}" class="btn btn-nueva-premium">
             <i class="fas fa-plus"></i><span>Nueva Relación</span>
@@ -79,17 +80,19 @@
                                 <span class="font-weight-bold text-dark">{{ comp.producto.nombre }}</span>
                             </td>
                             <td class="align-middle">
-                                <span class="badge badge-info p-2" style="background-color: #454d55;">
-                                    {{ comp.marca_vehiculo.nombre }}
+                                <span class="badge p-2 text-white" style="background-color: #454d55; border-radius: 8px;">
+                                    <i class="fas fa-car mr-1"></i> {{ comp.marca_vehiculo.nombre }}
                                 </span>
                             </td>
                             <td class="text-center align-middle">
-                                <a href="{% url 'app:editar_compatibilidad' comp.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
-                                    <i class="fas fa-pen text-white"></i>
-                                </a>
-                                <a href="{% url 'app:eliminar_compatibilidad' comp.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
-                                    <i class="fas fa-trash-alt text-white"></i>
-                                </a>
+                                <div class="d-flex justify-content-center align-items-center" style="gap: 6px;">
+                                    <a href="{% url 'app:editar_compatibilidad' comp.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
+                                        <i class="fas fa-pen text-white"></i>
+                                    </a>
+                                    <a href="{% url 'app:eliminar_compatibilidad' comp.id %}" class="btn btn-danger btn-circle shadow-sm" style="background-color: #d32f2f !important;" title="Eliminar">
+                                        <i class="fas fa-trash-alt text-white"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         {% endfor %}
@@ -107,12 +110,25 @@
         $('#tabla_compatibilidad').DataTable({
             responsive: true,
             autoWidth: false,
-            language: { 
-                "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json" 
-            },
             order: [[0, "desc"]],
             pageLength: 10,
-            columnDefs: [{ orderable: false, targets: [3] }]
+            columnDefs: [{ orderable: false, targets: [3] }],
+            language: {
+                "sProcessing":   "Procesando...",
+                "sLengthMenu":   "Mostrar _MENU_ registros",
+                "sZeroRecords":  "No se encontraron resultados",
+                "sEmptyTable":   "Ningún dato disponible en esta tabla",
+                "sInfo":         "Mostrando del _START_ al _END_ de _TOTAL_ registros",
+                "sInfoEmpty":    "Mostrando 0 registros",
+                "sInfoFiltered": "(filtrado de _MAX_ registros en total)",
+                "sSearch":       "Buscar:",
+                "oPaginate": {
+                    "sFirst":    "Primero",
+                    "sLast":     "Último",
+                    "sNext":     "Siguiente",
+                    "sPrevious": "Anterior"
+                }
+            }
         });
     });
 </script>

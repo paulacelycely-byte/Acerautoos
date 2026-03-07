@@ -2,30 +2,12 @@
 
 {% block css %}
 <style>
-/* ===============================
-   CONTENEDOR GENERAL
-================================*/
+/* Estilos Premium para Pantalla de Eliminación */
 .delete-container { min-height: 80vh; display: flex; justify-content: center; align-items: center; }
-
-/* ===============================
-   CARD ELIMINACIÓN PREMIUM
-================================*/
 .card-delete-premium { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07); background: #ffffff; overflow: hidden; }
-
-/* ===============================
-   ICONO ANIMADO
-================================*/
 .warning-wrapper { font-size: 4.5rem; color: #dc3545; margin-bottom: 1.5rem; display: inline-block; animation: swing 2s infinite ease-in-out; }
 @keyframes swing { 0%,100% { transform: rotate(0deg); } 20% { transform: rotate(10deg); } 40% { transform: rotate(-10deg); } 60% { transform: rotate(5deg); } 80% { transform: rotate(-5deg); } }
-
-/* ===============================
-   CAJA DETALLE REGISTRO
-================================*/
 .delete-details-box { background: #f8f9fa; border-radius: 12px; padding: 25px; border-left: 5px solid #454d55; margin: 25px 0; }
-
-/* ===============================
-   BOTONES CORPORATIVOS
-================================*/
 .btn-modern { padding: 12px 25px; border-radius: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; }
 .btn-volver { background: #f8f9fa; border: 1px solid #d1d3e2; color: #6c757d !important; }
 .btn-eliminar-final { background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%); color: #ffffff !important; border: none; box-shadow: 0 8px 15px rgba(220,53,69,0.2); }
@@ -42,7 +24,7 @@
                 <div class="warning-wrapper"><i class="fas fa-trash-alt"></i></div>
 
                 <h2 class="font-weight-bold text-dark text-uppercase" style="letter-spacing:1px;">Confirmar Eliminación</h2>
-                <p class="text-muted">¿Estás seguro de que deseas eliminar esta orden de servicio?</p>
+                <p class="text-muted">Estás a punto de eliminar un registro de forma permanente.</p>
 
                 <div class="delete-details-box text-left">
                     <small class="text-uppercase font-weight-bold text-muted">Orden seleccionada:</small>
@@ -51,11 +33,11 @@
                     </h4>
                     <hr>
                     <p class="text-muted small mb-0">
-                        <i class="fas fa-info-circle mr-1"></i> Esta acción eliminará el registro permanentemente del sistema Acerautos.
+                        <i class="fas fa-info-circle mr-1"></i> Esta acción no se puede deshacer. Asegúrate de verificar los detalles antes de continuar.
                     </p>
                 </div>
 
-                <form method="post" id="formEliminar" class="mt-4">
+                <form method="post" id="formEliminarOrden" class="mt-4">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-6">
@@ -64,7 +46,7 @@
                             </a>
                         </div>
                         <div class="col-6">
-                            <button type="button" id="btnConfirmarBorrado" class="btn btn-block btn-modern btn-eliminar-final">
+                            <button type="button" id="btnConfirmarBorradoOrden" class="btn btn-block btn-modern btn-eliminar-final">
                                 <i class="fas fa-trash-alt mr-2"></i> Eliminar
                             </button>
                         </div>
@@ -80,11 +62,11 @@
 {% block js %}
 <script>
 $(function () {
-    $('#btnConfirmarBorrado').on('click', function (e) {
+    $('#btnConfirmarBorradoOrden').on('click', function (e) {
         e.preventDefault();
         Swal.fire({
             title: '¿Proceder con la eliminación?',
-            text: "Esta orden de servicio será eliminada de forma permanente.",
+            text: "Esta orden de servicio desaparecerá del sistema.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc3545',
@@ -93,7 +75,7 @@ $(function () {
             cancelButtonText: 'Cancelar',
             reverseButtons: true
         }).then((result) => {
-            if (result.isConfirmed) { $('#formEliminar').submit(); }
+            if (result.isConfirmed) { $('#formEliminarOrden').submit(); }
         });
     });
 });

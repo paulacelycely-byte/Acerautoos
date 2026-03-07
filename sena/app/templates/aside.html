@@ -1,239 +1,257 @@
 {% load static %}
 
 <style>
-    /* Contenedor Principal con efecto de profundidad */
-    .app-sidebar {
-        background: #0f172a !important; /* Slate 900 profundo */
-        border-right: 1px solid rgba(255, 255, 255, 0.05);
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        width: 270px;
-        position: fixed;
-        left: 0;
-        top: 0;
-        z-index: 1030;
-        transition: all 0.3s ease;
+    .sb-brand {
+        display: flex; align-items: center; gap: 12px;
+        padding: 18px 16px 16px;
+        border-bottom: 1px solid rgba(255,255,255,.06);
+        text-decoration: none;
+        overflow: hidden; white-space: nowrap;
+    }
+    .sb-brand-icon {
+        min-width: 36px; height: 36px; flex-shrink: 0;
+        background: linear-gradient(135deg,#6366f1,#4338ca);
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 1rem;
+    }
+    .sb-brand-text {
+        font-size: .95rem; font-weight: 800;
+        color: #f1f5f9; letter-spacing: -.4px;
+        transition: opacity .3s, width .3s;
+    }
+    .sb-brand-text span { color: #6366f1; }
+
+    .sb-scroll {
+        flex: 1; overflow-y: auto; overflow-x: hidden;
+        padding: 8px 0;
+        scrollbar-width: thin; scrollbar-color: #334155 transparent;
     }
 
-    /* Scroll Personalizado "Invisible" */
-    .sidebar-wrapper {
-        flex: 1;
-        overflow-y: auto;
-        padding: 10px 15px;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+    .sb-label {
+        font-size: .6rem; font-weight: 700; letter-spacing: 1.4px;
+        text-transform: uppercase; color: #475569;
+        padding: 14px 18px 4px; white-space: nowrap;
+        transition: opacity .3s, height .3s, padding .3s;
     }
 
-    .sidebar-wrapper::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    .sidebar-wrapper::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    .sidebar-wrapper::-webkit-scrollbar-thumb {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
-    }
-
-    .sidebar-wrapper:hover::-webkit-scrollbar-thumb {
-        background-color: rgba(255, 255, 255, 0.3);
-    }
-
-    /* Header del Logo */
-    .brand-link-pro {
-        padding: 25px;
-        display: flex;
-        align-items: center;
-        background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%);
-        border-bottom: 1px solid rgba(255,255,255,0.03);
-    }
-
-    .logo-box {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-    }
-
-    /* Botones de Navegación */
-    .nav-pills .nav-link {
-        color: #94a3b8 !important;
-        font-weight: 500;
-        padding: 12px 18px !important;
-        margin-bottom: 5px;
-        border-radius: 14px !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        align-items: center;
+    .sb-item {
+        display: flex; align-items: center; gap: 12px;
+        padding: 9px 14px; color: #94a3b8;
+        text-decoration: none; border-radius: 10px;
+        margin: 2px 8px; white-space: nowrap;
+        transition: background .2s, color .2s;
         position: relative;
     }
+    .sb-item:hover  { background: #1e293b; color: #f1f5f9; }
+    .sb-item.active {
+        background: linear-gradient(90deg,#6366f1,#4338ca);
+        color: white; box-shadow: 0 4px 14px rgba(99,102,241,.3);
+    }
+    .sb-item i { min-width: 20px; font-size: .9rem; text-align: center; flex-shrink: 0; }
+    .sb-item-text { font-size: .82rem; font-weight: 600; transition: opacity .3s; }
 
-    .nav-pills .nav-link:hover {
-        background: rgba(255, 255, 255, 0.05) !important;
-        color: #ffffff !important;
-        transform: scale(1.02);
+    .sb-badge {
+        margin-left: auto; background: #ef4444; color: white;
+        font-size: .58rem; font-weight: 800;
+        padding: 2px 7px; border-radius: 20px; flex-shrink: 0;
+        transition: opacity .3s;
     }
 
-    /* Estado Activo con Gradiente */
-    .nav-pills .nav-link.active {
-        background: linear-gradient(90deg, #6366f1 0%, #4f46e5 100%) !important;
-        color: #ffffff !important;
-        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
+    .sb-footer {
+        padding: 12px 14px; border-top: 1px solid rgba(255,255,255,.06);
+        display: flex; align-items: center; gap: 10px;
+        overflow: hidden; white-space: nowrap;
     }
+    .sb-avatar {
+        min-width: 34px; height: 34px; border-radius: 50%;
+        object-fit: cover; flex-shrink: 0;
+        border: 2px solid rgba(99,102,241,.5);
+    }
+    .sb-user-info { flex:1; min-width:0; transition: opacity .3s; }
+    .sb-user-name { font-size: .8rem; font-weight: 700; color: #f1f5f9; overflow: hidden; text-overflow: ellipsis; }
+    .sb-user-role { font-size: .65rem; color: #64748b; }
 
-    .nav-pills .nav-link i {
-        font-size: 1.1rem;
-        width: 25px;
-        transition: transform 0.3s;
+    .sb-logout-btn {
+        min-width: 32px; height: 32px; flex-shrink: 0;
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 8px;
+        color: #64748b;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: background .2s, color .2s;
+        font-size: .85rem;
     }
+    .sb-logout-btn:hover { background: #ef4444; color: white; border-color: #ef4444; }
 
-    .nav-link:hover i {
-        transform: rotate(10deg);
-    }
+    /* ── Ocultar textos en modo mini ── */
+    body.sidebar-mini .sb-brand-text,
+    body.sidebar-mini .sb-item-text,
+    body.sidebar-mini .sb-user-info,
+    body.sidebar-mini .sb-badge     { opacity: 0; pointer-events: none; }
+    body.sidebar-mini .sb-label     { opacity:0; height:0; padding:0; overflow:hidden; }
 
-    .nav-header {
-        font-size: 0.65rem !important;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        color: #475569 !important;
-        margin: 20px 0 10px 15px;
+    /* ── Tooltips en modo mini ── */
+    body.sidebar-mini .sb-item::after {
+        content: attr(data-tip);
+        position: fixed; left: 82px;
+        background: #1e293b; color: #f1f5f9;
+        font-size: .72rem; font-weight: 600;
+        padding: 5px 12px; border-radius: 7px;
+        white-space: nowrap; pointer-events: none;
+        opacity: 0; transition: opacity .15s;
+        border: 1px solid rgba(255,255,255,.1);
+        z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,.4);
     }
-
-    /* Perfil Inferior Flotante */
-    .sidebar-footer {
-        padding: 20px;
-        background: rgba(0, 0, 0, 0.2);
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .user-card-mini {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        padding: 12px;
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-
-    .btn-logout-minimal {
-        width: 100%;
-        padding: 10px;
-        background: rgba(239, 68, 68, 0.1);
-        color: #f87171 !important;
-        border: 1px solid rgba(239, 68, 68, 0.2);
-        border-radius: 12px;
-        font-weight: 700;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: 0.3s;
-    }
-
-    .btn-logout-minimal:hover {
-        background: #ef4444;
-        color: white !important;
-    }
+    body.sidebar-mini .sb-item:hover::after { opacity: 1; }
 </style>
 
-<aside class="app-sidebar">
-    <div class="brand-link-pro">
-        <div class="logo-box me-3">
-            <i class="fas fa-bolt text-white"></i>
-        </div>
-        <div>
-            <span class="text-white fw-bold d-block" style="letter-spacing: 0.5px;">ACERAUTOS</span>
-            <span class="text-primary fw-bold" style="font-size: 0.6rem;">CORE v3.0</span>
-        </div>
-    </div>
+<nav class="app-sidebar">
 
-    <div class="sidebar-wrapper">
-        <nav class="mt-2">
-            <ul class="nav nav-pills flex-column" role="menu">
-                
-                <li class="nav-item">
-                    <a href="{% url 'app:dashboard' %}" class="nav-link {% if 'dashboard' in request.path %}active{% endif %}">
-                        <i class="fas fa-layer-group me-3"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li>
+    <!-- Brand -->
+    <a href="{% url 'app:dashboard' %}" class="sb-brand">
+        <div class="sb-brand-icon"><i class="fas fa-car-side"></i></div>
+        <span class="sb-brand-text">Acerautos <span>Core</span></span>
+    </a>
 
-                <li class="nav-header">Operaciones</li>
-                
-                <li class="nav-item">
-                    <a href="{% url 'app:listar_clientes' %}" class="nav-link {% if 'clientes' in request.path %}active{% endif %}">
-                        <i class="fas fa-user-circle me-3"></i><p>Clientes</p>
-                    </a>
-                </li>
+    <div class="sb-scroll">
 
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-car me-3"></i><p>Flota</p>
-                    </a>
-                </li>
+        <!-- Dashboard -->
+        <div class="sb-label">General</div>
 
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-sign-in-alt me-3"></i><p>Entradas</p>
-                    </a>
-                </li>
-
-                <li class="nav-header">Inventario</li>
-
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-box-open me-3"></i><p>Productos</p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-vial me-3"></i><p>Insumos</p>
-                    </a>
-                </li>
-
-                <li class="nav-header">Finanzas</li>
-
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-receipt me-3"></i><p>Ventas</p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-file-invoice me-3"></i><p>Facturación</p>
-                    </a>
-                </li>
-                
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-fingerprint me-3"></i><p>Seguridad</p>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-
-    <div class="sidebar-footer">
-        <div class="user-card-mini">
-            <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=6366f1&color=fff" class="rounded-circle me-3" width="35">
-            <div class="overflow-hidden">
-                <h6 class="text-white mb-0 small fw-bold text-truncate">{{ user.username|capfirst }}</h6>
-                <small class="text-muted" style="font-size: 0.6rem;">Administrador</small>
-            </div>
-        </div>
-        <a href="/accounts/login/" class="btn-logout-minimal">
-            <i class="fas fa-sign-out-alt me-2"></i> SALIR
+        <a href="{% url 'app:dashboard' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+           data-tip="Dashboard">
+            <i class="fas fa-chart-squares"></i>
+            <span class="sb-item-text">Dashboard</span>
         </a>
+
+        <!-- Recepción -->
+        <div class="sb-label">Recepción</div>
+
+        <a href="{% url 'app:listar_clientes' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_clientes' %}active{% endif %}"
+           data-tip="Clientes">
+            <i class="fas fa-user-tie"></i>
+            <span class="sb-item-text">Clientes</span>
+        </a>
+
+        <a href="{% url 'app:listar_vehiculos' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_vehiculos' %}active{% endif %}"
+           data-tip="Vehículos">
+            <i class="fas fa-car"></i>
+            <span class="sb-item-text">Vehículos</span>
+        </a>
+
+        <a href="{% url 'app:orden_servicio_list' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'orden_servicio_list' %}active{% endif %}"
+           data-tip="Órdenes">
+            <i class="fas fa-clipboard-list"></i>
+            <span class="sb-item-text">Órdenes de Servicio</span>
+        </a>
+
+        <a href="{% url 'app:detalle_orden_list' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'detalle_orden_list' %}active{% endif %}"
+           data-tip="Detalles Orden">
+            <i class="fas fa-list-ul"></i>
+            <span class="sb-item-text">Detalles de Orden</span>
+        </a>
+
+        <a href="{% url 'app:listar_compatibilidad' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_compatibilidad' %}active{% endif %}"
+           data-tip="Compatibilidad">
+            <i class="fas fa-puzzle-piece"></i>
+            <span class="sb-item-text">Compatibilidad</span>
+        </a>
+
+        <!-- Operaciones -->
+        <div class="sb-label">Operaciones</div>
+
+        <a href="{% url 'app:tipo_servicio_list' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'tipo_servicio_list' %}active{% endif %}"
+           data-tip="Tipos Servicio">
+            <i class="fas fa-list-check"></i>
+            <span class="sb-item-text">Tipos de Servicio</span>
+        </a>
+
+        <a href="{% url 'app:listar_producto' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_producto' %}active{% endif %}"
+           data-tip="Productos">
+            <i class="fas fa-boxes"></i>
+            <span class="sb-item-text">Productos</span>
+        </a>
+
+        <a href="{% url 'app:listar_marca' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_marca' %}active{% endif %}"
+           data-tip="Marcas">
+            <i class="fas fa-oil-can"></i>
+            <span class="sb-item-text">Marcas</span>
+        </a>
+
+        <!-- Finanzas -->
+        <div class="sb-label">Finanzas</div>
+
+        <a href="{% url 'app:listar_proveedores' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_proveedores' %}active{% endif %}"
+           data-tip="Proveedores">
+            <i class="fas fa-truck"></i>
+            <span class="sb-item-text">Proveedores</span>
+        </a>
+
+        <a href="{% url 'app:lista_compras' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'lista_compras' %}active{% endif %}"
+           data-tip="Compras">
+            <i class="fas fa-shopping-basket"></i>
+            <span class="sb-item-text">Compras</span>
+        </a>
+
+        <a href="{% url 'app:caja_listar' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'caja_listar' %}active{% endif %}"
+           data-tip="Caja">
+            <i class="fas fa-cash-register"></i>
+            <span class="sb-item-text">Caja</span>
+        </a>
+
+        <a href="{% url 'app:listar_factura' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_factura' %}active{% endif %}"
+           data-tip="Facturación">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span class="sb-item-text">Facturación</span>
+        </a>
+
+        <!-- Sistema -->
+        <div class="sb-label">Sistema</div>
+
+        <a href="{% url 'app:listar_usuario' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_usuario' %}active{% endif %}"
+           data-tip="Usuarios">
+            <i class="fas fa-users-cog"></i>
+            <span class="sb-item-text">Usuarios</span>
+        </a>
+
+        <a href="{% url 'app:listar_notificacion' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_notificacion' %}active{% endif %}"
+           data-tip="Notificaciones">
+            <i class="fas fa-bell"></i>
+            <span class="sb-item-text">Notificaciones</span>
+            <span class="sb-badge" id="notif-count" style="display:none;"></span>
+        </a>
+
     </div>
-</aside>
+
+    <div class="sb-footer">
+        <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=6366f1&color=fff"
+             class="sb-avatar" alt="avatar">
+        <div class="sb-user-info">
+            <div class="sb-user-name">{{ user.username|capfirst }}</div>
+            <div class="sb-user-role">Administrador</div>
+        </div>
+        <form method="post" action="{% url 'login:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="sb-logout-btn" title="Cerrar sesión">
+                <i class="fas fa-right-from-bracket"></i>
+            </button>
+        </form>
+    </div>
+
+</nav>

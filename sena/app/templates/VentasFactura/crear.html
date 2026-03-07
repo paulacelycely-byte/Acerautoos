@@ -4,7 +4,6 @@
 
 {% block css %}
 <style>
-
 /* ========= CAJA ERROR ========= */
 .caja-error-roja {
     background-color: #fff5f5 !important;
@@ -115,103 +114,75 @@
 .btn-light {
     border-radius: 12px !important;
 }
-
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container animate__animated animate__fadeIn">
 
-    <!-- HEADER -->
     <div class="header-premium">
         <div class="d-flex align-items-center">
-            <div class="title-icon">
-                <i class="fas fa-shopping-cart"></i>
-            </div>
-            <div class="title-container">
-                <h1>{{ titulo }}</h1>
-            </div>
+            <div class="title-icon"><i class="fas fa-shopping-cart"></i></div>
+            <div class="title-container"><h1>{{ titulo }}</h1></div>
         </div>
-        <small class="font-weight-bold text-uppercase"
-               style="letter-spacing: 1px; color: #454d55;">
+        <small class="font-weight-bold text-uppercase" style="letter-spacing: 1px; color: #454d55;">
             Registro de Ventas
         </small>
     </div>
 
-    <!-- FORM -->
     <form method="post" action="." id="formVentas">
         {% csrf_token %}
         <div class="card card-form-premium overflow-hidden">
-
             <div class="card-header-dark">
-                <i class="fas fa-file-invoice-dollar mr-2"></i>
-                Detalles de la Transacción
+                <i class="fas fa-file-invoice-dollar mr-2"></i> Detalles de la Transacción
             </div>
-
             <div class="card-body p-4 p-md-5">
                 <div class="row">
                     {% for field in form.visible_fields %}
                     <div class="col-md-6 mb-4">
-
-                        <label class="font-weight-bold text-dark small mb-1 text-uppercase"
-                               style="letter-spacing: 0.5px;">
-                            {{ field.label }}
-                        </label>
-
+                        <label class="font-weight-bold text-dark small mb-1 text-uppercase" style="letter-spacing: 0.5px;">{{ field.label }}</label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text border-right-0">
-
-                                    {% if 'total' in field.name %}
-                                        <i class="fas fa-dollar-sign"></i>
-                                    {% elif 'productos' in field.name %}
-                                        <i class="fas fa-boxes"></i>
-                                    {% elif 'cliente' in field.name %}
-                                        <i class="fas fa-user"></i>
-                                    {% else %}
-                                        <i class="fas fa-tag"></i>
-                                    {% endif %}
-
+                                    {% if 'total' in field.name %}<i class="fas fa-dollar-sign"></i>
+                                    {% elif 'productos' in field.name %}<i class="fas fa-boxes"></i>
+                                    {% elif 'cliente' in field.name %}<i class="fas fa-user"></i>
+                                    {% else %}<i class="fas fa-tag"></i>{% endif %}
                                 </span>
                             </div>
-
                             {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
-
                         </div>
-
                         {% if field.errors %}
                             {% for error in field.errors %}
                             <div class="caja-error-roja">
-                                <i class="fas fa-exclamation-triangle mr-1"></i>
-                                <strong>{{ error }}</strong>
+                                <i class="fas fa-exclamation-triangle mr-1"></i> <strong>{{ error }}</strong>
                             </div>
                             {% endfor %}
                         {% endif %}
-
                     </div>
                     {% endfor %}
                 </div>
             </div>
 
             <div class="card-footer bg-light d-flex justify-content-end py-4 border-top">
-
-                <button type="button"
-                        onclick="confirmarCancelacion('{{ listar_url }}')"
-                        class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold">
-                    <i class="fas fa-times mr-1"></i>
-                    Descartar
+                <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')" class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold">
+                    <i class="fas fa-times mr-1"></i> Descartar
                 </button>
-
-                <button type="submit"
-                        class="btn btn-acerautos-save-crear shadow-sm">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    Finalizar Venta
+                <button type="submit" class="btn btn-acerautos-save-crear shadow-sm">
+                    <i class="fas fa-check-circle mr-2"></i> Finalizar Venta
                 </button>
-
             </div>
-
         </div>
     </form>
-
 </div>
+{% endblock %}
+
+{% block js %}
+<script>
+    function confirmarCancelacion(url) {
+        if (confirm("¿Estás seguro de que deseas descartar la operación? Los cambios no se guardarán.")) {
+            window.location.href = url;
+        }
+    }
+</script>
 {% endblock %}

@@ -1,99 +1,70 @@
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView,UpdateView,DeleteView
 from django.urls import reverse_lazy
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django.contrib import messages
+from django.shortcuts import get_object_or_404
+from django.views import View
 
 from app.models import OrdenServicio
-from app.forms import OrdenServicioForm   # 👈 Asegúrate que tu form se llame así
+from app.forms import OrdenServicioForm
 
 
-# ==============================
-# LISTAR
-# ==============================
 class OrdenServicioListView(ListView):
     model = OrdenServicio
-    template_name = 'Servicio/listar.html'
-    context_object_name = 'servicio'
-
-    # @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+    template_name = 'OrdenServicio/listar.html'
+    context_object_name = 'ordenes'  
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Listado de Órdenes de Servicio'
-        context['crear_url'] = reverse_lazy('app:crear_servicio')
+        context['titulo'] = 'Órdenes de Servicio'
         return context
 
 
-# ==============================
-# CREAR
-# ==============================
 class OrdenServicioCreateView(CreateView):
     model = OrdenServicio
     form_class = OrdenServicioForm
-    template_name = 'Servicio/crear.html'
+    template_name = 'OrdenServicio/crear.html'
     success_url = reverse_lazy('app:orden_servicio_list')
-
-    # @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Crear Orden de Servicio'
+        context['titulo'] = 'Nueva Orden de Servicio'
         context['listar_url'] = reverse_lazy('app:orden_servicio_list')
         return context
 
     def form_valid(self, form):
-        messages.success(self.request, 'Se creó una nueva orden de servicio')
+        messages.success(self.request, 'Orden de servicio creada correctamente.')
         return super().form_valid(form)
 
 
-# ==============================
-# EDITAR
-# ==============================
 class OrdenServicioUpdateView(UpdateView):
     model = OrdenServicio
     form_class = OrdenServicioForm
-    template_name = 'Servicio/crear.html'
+    template_name = 'OrdenServicio/crear.html'
     success_url = reverse_lazy('app:orden_servicio_list')
-
-    # @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Editar Orden de Servicio'
-        context['listar_url'] = reverse_lazy('app:listar_servicio')
-        return context
-
-    def form_valid(self, form):
-        messages.success(self.request, 'Se actualizó la orden de servicio')
-        return super().form_valid(form)
-
-
-# ==============================
-# ELIMINAR
-# ==============================
-class OrdenServicioDeleteView(DeleteView):
-    model = OrdenServicio
-    template_name = 'Servicio/eliminar.html'
-    success_url = reverse_lazy('app:orden_servicio_list')
-
-    # @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar Orden de Servicio'
         context['listar_url'] = reverse_lazy('app:orden_servicio_list')
         return context
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, 'Se eliminó la orden de servicio')
-        return super().delete(request, *args, **kwargs)
+    def form_valid(self, form):
+        messages.success(self.request, 'Orden de servicio actualizada correctamente.')
+        return super().form_valid(form)
+
+
+class OrdenServicioDeleteView(View):
+    def get(self, request, pk):
+        orden = get_object_or_404(OrdenServicio, pk=pk)
+        return render(request, 'OrdenServicio/eliminar.html', {
+            'object': orden,
+            'titulo': 'Eliminar Orden de Servicio',
+            'listar_url': reverse_lazy('app:orden_servicio_list')
+        })
+
+    def post(self, request, pk):
+        orden = get_object_or_404(OrdenServicio, pk=pk)
+        orden.delete()
+        messages.success(request, 'Orden de servicio eliminada correctamente.')
+        return redirect('app:orden_servicio_list')
