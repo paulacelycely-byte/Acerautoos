@@ -6,9 +6,6 @@
 
 <style>
 
-/* ===============================
-   HEADER PREMIUM ROJO
-================================*/
 .header-premium {
     background: linear-gradient(145deg, #ffffff, #f8f9fa);
     border-radius: 20px;
@@ -24,97 +21,106 @@
 .title-icon {
     background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
     color: white;
-    width: 55px;
-    height: 55px;
+    width: 55px; height: 55px;
     border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     font-size: 1.5rem;
     box-shadow: 0 8px 20px rgba(211,47,47,0.2);
     margin-right: 20px;
 }
 
 .title-container h1 {
-    font-size: 1.9rem;
-    font-weight: 700;
-    margin-bottom: 0;
-    color: #2d3436;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
+    font-size: 1.9rem; font-weight: 700; margin-bottom: 0;
+    color: #2d3436; text-transform: uppercase; letter-spacing: 1.5px;
 }
 
-/* ===============================
-   BOTÓN NUEVO
-================================*/
 .btn-nueva-premium {
     background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
-    color: white !important;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: 0.3s;
-    box-shadow: 0 8px 15px rgba(211,47,47,0.2);
+    color: white !important; border: none;
+    padding: 12px 25px; border-radius: 12px;
+    font-weight: 700; text-transform: uppercase; font-size: 0.8rem;
+    letter-spacing: 1px; display: flex; align-items: center; gap: 10px;
+    transition: 0.3s; box-shadow: 0 8px 15px rgba(211,47,47,0.2);
 }
+.btn-nueva-premium:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
-.btn-nueva-premium:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.1);
-}
-
-/* ===============================
-   CARD TABLA
-================================*/
 .card-custom {
-    border: none;
-    border-radius: 20px;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.07);
-    background: #fff;
+    border: none; border-radius: 20px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.07); background: #fff;
 }
 
-/* ===============================
-   AVATAR LETRA
-================================*/
 .avatar-box {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
-    color: white;
+    width: 40px; height: 40px;
     border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    margin-right: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; margin-right: 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    color: white;
+}
+.avatar-ingreso { background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%); }
+.avatar-egreso  { background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%); }
+
+.filtro-fechas {
+    background: #f8f9fa; border-radius: 15px;
+    padding: 20px 25px; margin-bottom: 20px; border: 1px solid #e9ecef;
+}
+.filtro-fechas label {
+    font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; color: #6c757d; letter-spacing: 0.5px;
+}
+.filtro-fechas .form-control {
+    border-radius: 10px !important; border: 1px solid #d1d3e2;
+    padding: 8px 12px; font-size: 0.9rem;
+}
+.btn-filtrar {
+    background: #454d55; color: white; border: none;
+    border-radius: 10px; padding: 8px 20px;
+    font-weight: 700; font-size: 0.8rem; text-transform: uppercase; transition: 0.3s;
+}
+.btn-filtrar:hover { filter: brightness(1.2); color: white; }
+.btn-limpiar {
+    background: #e9ecef; color: #6c757d; border: none;
+    border-radius: 10px; padding: 8px 20px;
+    font-weight: 700; font-size: 0.8rem; text-transform: uppercase; transition: 0.3s;
+}
+.btn-limpiar:hover { background: #dee2e6; }
+.btn-rango {
+    background: white; border: 1px solid #d1d3e2; border-radius: 8px;
+    padding: 6px 14px; font-size: 0.78rem; font-weight: 600;
+    color: #454d55; transition: 0.2s; cursor: pointer;
+}
+.btn-rango:hover, .btn-rango.active {
+    background: #454d55; color: white; border-color: #454d55;
 }
 
-/* ===============================
-   BOTONES CIRCULARES
-================================*/
-.btn-circle {
-    width: 35px;
-    height: 35px;
-    border-radius: 10px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.3s;
-    border: none;
-    color: white !important;
+.card-saldo {
+    border: none; border-radius: 20px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.07);
+    overflow: hidden; margin-top: 25px;
 }
-
-.btn-circle:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+.saldo-header {
+    background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
+    color: white; padding: 18px 25px;
+    font-weight: 700; text-transform: uppercase;
+    font-size: 0.85rem; letter-spacing: 1px;
 }
+.saldo-body { background: #fff; padding: 25px; }
+.saldo-item {
+    border-radius: 12px; padding: 15px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.saldo-ingreso { background: #f0fff4; border-left: 4px solid #27ae60; }
+.saldo-egreso  { background: #fff5f5; border-left: 4px solid #e53e3e; }
+.saldo-total   { background: #f0f4ff; border-left: 4px solid #454d55; }
+.saldo-label {
+    font-size: 0.8rem; font-weight: 700;
+    text-transform: uppercase; color: #6c757d;
+}
+.saldo-valor { font-size: 1.3rem; font-weight: 800; }
+.saldo-ingreso .saldo-valor { color: #27ae60; }
+.saldo-egreso  .saldo-valor { color: #e53e3e; }
+.saldo-total   .saldo-valor { color: #454d55; }
+.saldo-total   .saldo-valor.negativo { color: #e53e3e !important; }
 
 </style>
 {% endblock %}
@@ -126,21 +132,48 @@
     <!-- HEADER -->
     <div class="header-premium">
         <div class="d-flex align-items-center">
-            <div class="title-icon">
-                <i class="fas fa-box"></i>
-            </div>
+            <div class="title-icon"><i class="fas fa-cash-register"></i></div>
             <div class="title-container">
                 <h1>{{ titulo|default:"GESTIÓN DE CAJA" }}</h1>
             </div>
         </div>
-
         <a href="{{ crear_url }}" class="btn btn-nueva-premium">
             <i class="fas fa-plus-circle"></i>
             <span>Nuevo Movimiento</span>
         </a>
     </div>
 
-    <!-- CARD TABLA -->
+    <!-- FILTRO POR RANGO DE FECHAS -->
+    <div class="filtro-fechas">
+        <div class="d-flex align-items-end flex-wrap" style="gap:12px;">
+            <div>
+                <label><i class="fas fa-calendar-alt mr-1"></i> Desde</label>
+                <input type="date" id="fechaDesde" class="form-control" style="min-width:160px;">
+            </div>
+            <div>
+                <label><i class="fas fa-calendar-alt mr-1"></i> Hasta</label>
+                <input type="date" id="fechaHasta" class="form-control" style="min-width:160px;">
+            </div>
+            <div class="d-flex" style="gap:8px; padding-top:20px;">
+                <button class="btn-filtrar" onclick="aplicarFiltro()">
+                    <i class="fas fa-search mr-1"></i> Filtrar
+                </button>
+                <button class="btn-limpiar" onclick="limpiarFiltro()">
+                    <i class="fas fa-times mr-1"></i> Limpiar
+                </button>
+            </div>
+        </div>
+        <div class="mt-3 d-flex flex-wrap" style="gap:8px;">
+            <span class="text-muted small font-weight-bold mr-2 align-self-center">Rangos rápidos:</span>
+            <button class="btn-rango" onclick="setRango(15, this)">Últimos 15 días</button>
+            <button class="btn-rango" onclick="setRango(30, this)">Últimos 30 días</button>
+            <button class="btn-rango" onclick="setRangoMes(this)">Este mes</button>
+            <button class="btn-rango" onclick="setRangoMesAnterior(this)">Mes anterior</button>
+            <button class="btn-rango" onclick="setRango(90, this)">Últimos 3 meses</button>
+        </div>
+    </div>
+
+    <!-- TABLA -->
     <div class="card card-custom">
         <div class="card-body p-4">
             <div class="table-responsive">
@@ -150,58 +183,89 @@
                             <th class="text-center">#</th>
                             <th>Tipo</th>
                             <th>Descripción</th>
+                            <th>Categoría</th>
+                            <th>Método Pago</th>
                             <th>Monto</th>
                             <th>Fecha</th>
-                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         {% for c in object_list %}
-                        <tr>
+                        <tr data-fecha="{{ c.fecha|date:'Y-m-d' }}"
+                            data-tipo="{{ c.tipo }}"
+                            data-monto="{{ c.monto }}">
 
-                            <td class="text-center font-weight-bold text-secondary">
-                                {{ forloop.counter }}
-                            </td>
+                            <td class="text-center font-weight-bold text-secondary">{{ forloop.counter }}</td>
 
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-box">
+                                    <div class="avatar-box {% if c.tipo == 'INGRESO' %}avatar-ingreso{% else %}avatar-egreso{% endif %}">
                                         {{ c.tipo|first|upper }}
                                     </div>
-                                    <div>
-                                        <span class="font-weight-bold text-dark">
-                                            {{ c.tipo }}
-                                        </span>
-                                    </div>
+                                    <span class="font-weight-bold {% if c.tipo == 'INGRESO' %}text-success{% else %}text-danger{% endif %}">
+                                        {{ c.tipo }}
+                                    </span>
                                 </div>
                             </td>
 
                             <td class="text-muted">{{ c.descripcion }}</td>
-                            <td class="text-muted">${{ c.monto }}</td>
-                            <td class="text-muted">{{ c.fecha|date:"d M Y H:i" }}</td>
+                            <td class="text-muted">{{ c.categoria }}</td>
+                            <td class="text-muted">{{ c.metodo_pago }}</td>
 
-                            <td class="text-center">
-                                <a href="{% url 'app:caja_editar' c.id %}"
-                                   class="btn btn-warning btn-circle shadow-sm"
-                                   title="Editar">
-                                    <i class="fas fa-pen"></i>
-                                </a>
-
-                                <a href="{% url 'app:caja_eliminar' c.id %}"
-                                   class="btn btn-danger btn-circle shadow-sm ml-1"
-                                   style="background-color:#d32f2f !important;"
-                                   title="Eliminar">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
-
+                            <td class="font-weight-bold {% if c.tipo == 'INGRESO' %}text-success{% else %}text-danger{% endif %}">
+                                {% if c.tipo == 'INGRESO' %}+{% else %}-{% endif %}${{ c.monto|floatformat:0 }}
                             </td>
 
+                            <td class="text-muted">{{ c.fecha|date:"d M Y H:i" }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
-
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESUMEN DE CAJA -->
+    <div class="card card-saldo">
+        <div class="saldo-header">
+            <i class="fas fa-wallet mr-2"></i> Resumen de Caja
+            <span id="saldo-rango-label" class="ml-2 font-weight-normal" style="font-size:0.78rem; opacity:0.8;"></span>
+        </div>
+        <div class="saldo-body">
+            <div class="row">
+
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="saldo-item saldo-ingreso">
+                        <div>
+                            <div class="saldo-label"><i class="fas fa-arrow-up mr-1"></i> Total Ingresos</div>
+                            <div class="saldo-valor" id="total-ingresos">${{ total_ingresos|floatformat:0 }}</div>
+                        </div>
+                        <i class="fas fa-plus-circle fa-2x text-success" style="opacity:0.2;"></i>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="saldo-item saldo-egreso">
+                        <div>
+                            <div class="saldo-label"><i class="fas fa-arrow-down mr-1"></i> Total Egresos</div>
+                            <div class="saldo-valor" id="total-egresos">${{ total_egresos|floatformat:0 }}</div>
+                        </div>
+                        <i class="fas fa-minus-circle fa-2x text-danger" style="opacity:0.2;"></i>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="saldo-item saldo-total">
+                        <div>
+                            <div class="saldo-label"><i class="fas fa-balance-scale mr-1"></i> Saldo en Caja</div>
+                            <div class="saldo-valor {% if saldo_caja < 0 %}negativo{% endif %}" id="saldo-caja">
+                                ${{ saldo_caja|floatformat:0 }}
+                            </div>
+                        </div>
+                        <i class="fas fa-cash-register fa-2x" style="opacity:0.2; color:#454d55;"></i>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -215,25 +279,142 @@
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 
 <script>
-$(document).ready(function () {
+// Totales originales desde Django para restaurar al limpiar
+var totalIngresosOriginal = {{ total_ingresos }};
+var totalEgresosOriginal  = {{ total_egresos }};
+var saldoOriginal         = {{ saldo_caja }};
 
-    $('#tabla_caja').DataTable({
-        responsive: true,
-        autoWidth: false,
-        pageLength: 10,
-        language: {
-            sSearch: "Buscar:",
-            sLengthMenu: "Mostrar _MENU_",
-            sInfo: "Mostrando _START_ a _END_ de _TOTAL_",
-            oPaginate: {
-                sNext: "Siguiente",
-                sPrevious: "Anterior"
-            },
-            sEmptyTable: "No hay datos disponibles",
-            sZeroRecords: "No se encontraron resultados"
+// DataTable
+var tabla = $('#tabla_caja').DataTable({
+    responsive: true,
+    autoWidth: false,
+    pageLength: 10,
+    order: [[6, 'desc']],
+    language: {
+        sSearch: "Buscar:",
+        sLengthMenu: "Mostrar _MENU_",
+        sInfo: "Mostrando _START_ a _END_ de _TOTAL_",
+        oPaginate: { sNext: "Siguiente", sPrevious: "Anterior" },
+        sEmptyTable: "No hay movimientos registrados",
+        sZeroRecords: "No se encontraron resultados"
+    }
+});
+
+// Aplicar filtro por rango
+function aplicarFiltro() {
+    var desde = $('#fechaDesde').val();
+    var hasta = $('#fechaHasta').val();
+
+    if (!desde || !hasta) {
+        Swal.fire({ icon: 'warning', title: 'Fechas incompletas', text: 'Selecciona fecha de inicio y fin.', confirmButtonColor: '#454d55' });
+        return;
+    }
+    if (desde > hasta) {
+        Swal.fire({ icon: 'warning', title: 'Rango inválido', text: 'La fecha inicio no puede ser mayor a la fecha fin.', confirmButtonColor: '#454d55' });
+        return;
+    }
+
+    // Filtrar tabla
+    $.fn.dataTable.ext.search = [];
+    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+        var fechaFila = $(tabla.row(dataIndex).node()).data('fecha');
+        return fechaFila >= desde && fechaFila <= hasta;
+    });
+    tabla.draw();
+
+    // Recalcular resumen con el rango filtrado
+    recalcularResumen(desde, hasta);
+    $('#saldo-rango-label').text('— ' + formatFecha(desde) + ' al ' + formatFecha(hasta));
+}
+
+function limpiarFiltro() {
+    $('#fechaDesde').val('');
+    $('#fechaHasta').val('');
+    $.fn.dataTable.ext.search = [];
+    tabla.draw();
+    $('.btn-rango').removeClass('active');
+
+    // Restaurar totales originales desde Django
+    $('#total-ingresos').text('$' + formatNum(totalIngresosOriginal));
+    $('#total-egresos').text('$' + formatNum(totalEgresosOriginal));
+    $('#saldo-caja').text('$' + formatNum(saldoOriginal));
+    $('#saldo-caja').toggleClass('negativo', saldoOriginal < 0);
+    $('#saldo-rango-label').text('— Todo el historial');
+}
+
+function recalcularResumen(desde, hasta) {
+    var ingresos = 0;
+    var egresos  = 0;
+
+    // Recorrer TODAS las filas (no solo las visibles en la página actual)
+    $('#tabla_caja tbody tr').each(function() {
+        var fecha = $(this).data('fecha');
+        var tipo  = String($(this).data('tipo'));
+        var monto = parseFloat($(this).data('monto'));
+
+        if (fecha >= desde && fecha <= hasta) {
+            if (tipo === 'INGRESO') ingresos += monto;
+            else                    egresos  += monto;
         }
     });
 
+    var saldo = ingresos - egresos;
+    $('#total-ingresos').text('$' + formatNum(ingresos));
+    $('#total-egresos').text('$' + formatNum(egresos));
+    $('#saldo-caja').text('$' + formatNum(saldo));
+    $('#saldo-caja').toggleClass('negativo', saldo < 0);
+}
+
+// Rangos rápidos
+function setRango(dias, btn) {
+    var hoy   = new Date();
+    var desde = new Date();
+    desde.setDate(hoy.getDate() - (dias - 1));
+    $('#fechaDesde').val(toISO(desde));
+    $('#fechaHasta').val(toISO(hoy));
+    $('.btn-rango').removeClass('active');
+    $(btn).addClass('active');
+    aplicarFiltro();
+}
+
+function setRangoMes(btn) {
+    var hoy   = new Date();
+    var desde = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+    $('#fechaDesde').val(toISO(desde));
+    $('#fechaHasta').val(toISO(hoy));
+    $('.btn-rango').removeClass('active');
+    $(btn).addClass('active');
+    aplicarFiltro();
+}
+
+function setRangoMesAnterior(btn) {
+    var hoy   = new Date();
+    var desde = new Date(hoy.getFullYear(), hoy.getMonth() - 1, 1);
+    var hasta = new Date(hoy.getFullYear(), hoy.getMonth(), 0);
+    $('#fechaDesde').val(toISO(desde));
+    $('#fechaHasta').val(toISO(hasta));
+    $('.btn-rango').removeClass('active');
+    $(btn).addClass('active');
+    aplicarFiltro();
+}
+
+function toISO(d) {
+    return d.toISOString().split('T')[0];
+}
+
+function formatFecha(iso) {
+    var p = iso.split('-');
+    return p[2] + '/' + p[1] + '/' + p[0];
+}
+
+function formatNum(n) {
+    return parseFloat(n).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+// Al cargar: últimos 15 días por defecto
+$(document).ready(function () {
+    $('#saldo-rango-label').text('— Todo el historial');
+    setRango(15, $('.btn-rango').first()[0]);
 });
 </script>
 {% endblock %}

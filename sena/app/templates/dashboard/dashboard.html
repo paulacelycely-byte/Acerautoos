@@ -12,76 +12,58 @@
         --purple-grad:  linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
         --dark-grad:    linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
         --teal-grad:    linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+        --rose-grad:    linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+        --orange-grad:  linear-gradient(135deg, #f97316 0%, #c2410c 100%);
     }
 
     .stat-card-premium {
-        border: none;
-        border-radius: 20px;
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        height: 150px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 1.25rem;
+        border: none; border-radius: 20px; position: relative;
+        overflow: hidden; transition: all 0.3s ease; height: 155px;
+        display: flex; flex-direction: column;
+        justify-content: space-between; padding: 1.25rem;
     }
-    .stat-card-premium:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-    }
+    .stat-card-premium:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.18); }
     .card-icon-overlay {
-        position: absolute;
-        right: -10px; bottom: -10px;
-        font-size: 4.5rem;
-        opacity: 0.15;
-        transform: rotate(-10deg);
-        color: white;
+        position: absolute; right: -10px; bottom: -10px;
+        font-size: 4.5rem; opacity: 0.15;
+        transform: rotate(-10deg); color: white;
+    }
+    .card-step {
+        position: absolute; top: 12px; right: 14px;
+        background: rgba(255,255,255,0.2); color: white;
+        font-size: 0.65rem; font-weight: 800;
+        padding: 2px 9px; border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.35);
+        letter-spacing: 0.5px;
     }
     .section-divider {
-        display: flex;
-        align-items: center;
-        margin: 2.5rem 0 1.5rem;
+        display: flex; align-items: center; margin: 2.5rem 0 1.5rem;
     }
     .section-divider span {
-        font-weight: 800;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        letter-spacing: 1.2px;
-        color: #475569;
-        background: #f1f5f9;
-        padding: 6px 16px;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        white-space: nowrap;
+        font-weight: 800; text-transform: uppercase; font-size: 0.8rem;
+        letter-spacing: 1.2px; color: #475569; background: #f1f5f9;
+        padding: 6px 16px; border-radius: 8px;
+        border: 1px solid #e2e8f0; white-space: nowrap;
     }
     .section-divider::after {
-        content: "";
-        flex: 1;
-        height: 2px;
-        background: #e2e8f0;
-        margin-left: 15px;
+        content: ""; flex: 1; height: 2px;
+        background: #e2e8f0; margin-left: 15px;
     }
     .btn-action-sm {
         background: rgba(255,255,255,0.2);
         border: 1px solid rgba(255,255,255,0.4);
-        border-radius: 8px;
-        color: white;
-        font-size: 0.7rem;
-        font-weight: 700;
-        text-decoration: none;
-        padding: 5px 15px;
-        width: fit-content;
-        transition: 0.2s;
-        display: inline-block;
+        border-radius: 8px; color: white; font-size: 0.7rem;
+        font-weight: 700; text-decoration: none; padding: 5px 15px;
+        width: fit-content; transition: 0.2s; display: inline-block;
     }
     .btn-action-sm:hover { background: white; color: #1e293b; }
     .card-title-main {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin: 0;
-        line-height: 1.2;
-        color: white;
+        font-size: 1.15rem; font-weight: 700;
+        margin: 0; line-height: 1.2; color: white;
+    }
+    .card-subtitle {
+        font-size: 0.68rem; color: rgba(255,255,255,0.75);
+        margin-top: 3px; font-weight: 500;
     }
 </style>
 
@@ -91,7 +73,7 @@
     <div class="d-flex justify-content-between align-items-end mb-4 px-2">
         <div>
             <h1 class="fw-black text-dark mb-0" style="letter-spacing:-1px;">
-                Acerautos <span class="text-primary">Core</span>
+                Acerautos <span class="text-primary"></span>
             </h1>
             <p class="text-muted mb-0">Gestión Integral de Autopartes y Taller</p>
         </div>
@@ -101,128 +83,185 @@
         </div>
     </div>
 
-    <!-- ══ Recepción y Vehículos ══ -->
-    <div class="section-divider"><span>Recepción y Vehículos</span></div>
+    <!-- ══ PASO 1: Recepción ══ -->
+    <div class="section-divider"><span>① Recepción de Clientes y Vehículos</span></div>
     <div class="row g-4">
 
         <div class="col-xl-3 col-md-6">
             <div class="stat-card-premium text-white shadow-sm" style="background:var(--info-grad);">
+                <span class="card-step">PASO 1</span>
                 <i class="fas fa-user-tie card-icon-overlay"></i>
-                <h4 class="card-title-main">Clientes</h4>
+                <div>
+                    <h4 class="card-title-main">Clientes</h4>
+                    <p class="card-subtitle">Registrar y gestionar clientes</p>
+                </div>
                 <a href="{% url 'app:listar_clientes' %}" class="btn-action-sm">GESTIONAR</a>
             </div>
         </div>
 
         <div class="col-xl-3 col-md-6">
             <div class="stat-card-premium text-white shadow-sm" style="background:var(--info-grad);">
+                <span class="card-step">PASO 2</span>
                 <i class="fas fa-car card-icon-overlay"></i>
-                <h4 class="card-title-main">Vehículos</h4>
+                <div>
+                    <h4 class="card-title-main">Vehículos</h4>
+                    <p class="card-subtitle">Asociar vehículo al cliente</p>
+                </div>
                 <a href="{% url 'app:listar_vehiculos' %}" class="btn-action-sm">GESTIONAR</a>
             </div>
         </div>
 
         <div class="col-xl-3 col-md-6">
             <div class="stat-card-premium text-white shadow-sm" style="background:var(--success-grad);">
+                <span class="card-step">PASO 3</span>
                 <i class="fas fa-clipboard-list card-icon-overlay"></i>
-                <h4 class="card-title-main">Órdenes de Servicio</h4>
+                <div>
+                    <h4 class="card-title-main">Órdenes de Servicio</h4>
+                    <p class="card-subtitle">Crear orden para el vehículo</p>
+                </div>
                 <a href="{% url 'app:orden_servicio_list' %}" class="btn-action-sm">VER ÓRDENES</a>
             </div>
         </div>
 
         <div class="col-xl-3 col-md-6">
             <div class="stat-card-premium text-white shadow-sm" style="background:var(--teal-grad);">
-                <i class="fas fa-list-ul card-icon-overlay"></i>
-                <h4 class="card-title-main">Detalles de Orden</h4>
-                <a href="{% url 'app:detalle_orden_list' %}" class="btn-action-sm">VER DETALLES</a>
+                <span class="card-step">PASO 4</span>
+                <i class="fas fa-screwdriver-wrench card-icon-overlay"></i>
+                <div>
+                    <h4 class="card-title-main">Tipos de Servicio</h4>
+                    <p class="card-subtitle">Definir qué servicio se realiza</p>
+                </div>
+                <a href="{% url 'app:tipo_servicio_list' %}" class="btn-action-sm">CATÁLOGO</a>
             </div>
         </div>
 
     </div>
 
-    <!-- ══ Operaciones y Stock ══ -->
-    <div class="section-divider"><span>Operaciones y Stock</span></div>
+    <!-- ══ PASO 2: Ejecución ══ -->
+    <div class="section-divider"><span>② Ejecución de la Orden</span></div>
     <div class="row g-4">
 
         <div class="col-xl-3 col-md-6">
             <div class="stat-card-premium text-white shadow-sm" style="background:var(--purple-grad);">
-                <i class="fas fa-tools card-icon-overlay"></i>
-                <h4 class="card-title-main">Tipos de Servicio</h4>
-                <a href="{% url 'app:tipo_servicio_list' %}" class="btn-action-sm">CATÁLOGO</a>
+                <span class="card-step">PASO 5</span>
+                <i class="fas fa-list-ul card-icon-overlay"></i>
+                <div>
+                    <h4 class="card-title-main">Detalles de Orden</h4>
+                    <p class="card-subtitle">Agregar productos y servicios</p>
+                </div>
+                <a href="{% url 'app:detalle_orden_list' %}" class="btn-action-sm">VER DETALLES</a>
             </div>
         </div>
 
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--dark-grad);">
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--purple-grad);">
+                <span class="card-step">PASO 6</span>
                 <i class="fas fa-puzzle-piece card-icon-overlay"></i>
-                <h4 class="card-title-main">Compatibilidad</h4>
+                <div>
+                    <h4 class="card-title-main">Compatibilidad</h4>
+                    <p class="card-subtitle">Verificar piezas compatibles</p>
+                </div>
                 <a href="{% url 'app:listar_compatibilidad' %}" class="btn-action-sm">CONSULTAR</a>
             </div>
         </div>
 
         <div class="col-xl-3 col-md-6">
             <div class="stat-card-premium text-white shadow-sm" style="background:var(--warning-grad);">
+                <span class="card-step">PASO 7</span>
                 <i class="fas fa-boxes card-icon-overlay"></i>
-                <h4 class="card-title-main">Productos</h4>
+                <div>
+                    <h4 class="card-title-main">Productos</h4>
+                    <p class="card-subtitle">Consultar y controlar stock</p>
+                </div>
                 <a href="{% url 'app:listar_producto' %}" class="btn-action-sm">STOCK</a>
             </div>
         </div>
 
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--warning-grad);">
-                <i class="fas fa-oil-can card-icon-overlay"></i>
-                <h4 class="card-title-main">Marcas</h4>
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--orange-grad);">
+                <span class="card-step">PASO 8</span>
+                <i class="fas fa-tags card-icon-overlay"></i>
+                <div>
+                    <h4 class="card-title-main">Marcas</h4>
+                    <p class="card-subtitle">Gestionar marcas de productos</p>
+                </div>
                 <a href="{% url 'app:listar_marca' %}" class="btn-action-sm">CATÁLOGO</a>
             </div>
         </div>
 
     </div>
 
-    <!-- ══ Administración Financiera ══ -->
-    <div class="section-divider"><span>Administración Financiera</span></div>
+    <!-- ══ PASO 3: Abastecimiento ══ -->
+    <div class="section-divider"><span>③ Abastecimiento</span></div>
     <div class="row g-4">
 
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-6 col-md-6">
             <div class="stat-card-premium text-white shadow-sm" style="background:var(--primary-grad);">
+                <span class="card-step">PASO 9</span>
                 <i class="fas fa-truck card-icon-overlay"></i>
-                <h4 class="card-title-main">Proveedores</h4>
+                <div>
+                    <h4 class="card-title-main">Proveedores</h4>
+                    <p class="card-subtitle">Gestionar socios y proveedores de partes</p>
+                </div>
                 <a href="{% url 'app:listar_proveedores' %}" class="btn-action-sm">SOCIOS</a>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-6 col-md-6">
             <div class="stat-card-premium text-white shadow-sm" style="background:var(--primary-grad);">
+                <span class="card-step">PASO 10</span>
                 <i class="fas fa-shopping-basket card-icon-overlay"></i>
-                <h4 class="card-title-main">Compras</h4>
+                <div>
+                    <h4 class="card-title-main">Compras</h4>
+                    <p class="card-subtitle">Registrar egresos y compras de productos</p>
+                </div>
                 <a href="{% url 'app:lista_compras' %}" class="btn-action-sm">EGRESOS</a>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--primary-grad);">
+    </div>
+
+    <!-- ══ PASO 4: Cobro y Cierre ══ -->
+    <div class="section-divider"><span>④ Cobro y Cierre</span></div>
+    <div class="row g-4">
+
+        <div class="col-xl-6 col-md-6">
+            <div class="stat-card-premium text-white shadow-sm" style="background:var(--success-grad);">
+                <span class="card-step">PASO 11</span>
                 <i class="fas fa-cash-register card-icon-overlay"></i>
-                <h4 class="card-title-main">Caja</h4>
+                <div>
+                    <h4 class="card-title-main">Caja</h4>
+                    <p class="card-subtitle">Registrar movimientos de caja y pagos</p>
+                </div>
                 <a href="{% url 'app:caja_listar' %}" class="btn-action-sm">MOVIMIENTOS</a>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-6 col-md-6">
             <div class="stat-card-premium text-white shadow-sm" style="background:var(--danger-grad);">
+                <span class="card-step">PASO 12</span>
                 <i class="fas fa-file-invoice-dollar card-icon-overlay"></i>
-                <h4 class="card-title-main">Facturación</h4>
+                <div>
+                    <h4 class="card-title-main">Facturación</h4>
+                    <p class="card-subtitle">Generar y gestionar facturas al cliente</p>
+                </div>
                 <a href="{% url 'app:listar_factura' %}" class="btn-action-sm">DETALLES</a>
             </div>
         </div>
 
     </div>
 
-    <!-- ══ Sistema y Configuración ══ -->
-    <div class="section-divider"><span>Sistema y Configuración</span></div>
+    <!-- ══ Sistema ══ -->
+    <div class="section-divider"><span>⑤ Sistema y Configuración</span></div>
     <div class="row g-4 mb-5">
 
         <div class="col-xl-3 col-md-6">
             <div class="stat-card-premium text-white shadow-sm" style="background:var(--dark-grad);">
                 <i class="fas fa-users-cog card-icon-overlay"></i>
-                <h4 class="card-title-main">Usuarios</h4>
+                <div>
+                    <h4 class="card-title-main">Usuarios</h4>
+                    <p class="card-subtitle">Gestionar accesos y permisos</p>
+                </div>
                 <a href="{% url 'app:listar_usuario' %}" class="btn-action-sm">ACCESOS</a>
             </div>
         </div>

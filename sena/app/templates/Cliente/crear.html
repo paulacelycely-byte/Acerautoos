@@ -4,7 +4,6 @@
 
 {% block css %}
 <style>
-    /* Mantenemos tus estilos originales que están perfectos */
     .caja-error-roja {
         background-color: #fff5f5 !important;
         border: 1px solid #feb2b2 !important;
@@ -75,6 +74,14 @@
         padding: 12px 15px;
     }
 
+    /* Selector de indicativo sin border-radius derecho */
+    .indicativo-select {
+        border-radius: 0 !important;
+        border-right: none !important;
+        max-width: 200px;
+        flex: 0 0 200px;
+    }
+
     .btn-acerautos-save-crear {
         background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
         color: white !important;
@@ -105,6 +112,10 @@
 
     <form method="post" action="." id="formCliente">
         {% csrf_token %}
+
+        {# Campo telefono oculto — lo llenamos via JS al enviar #}
+        {{ form.telefono.as_hidden }}
+
         <div class="card card-form-premium overflow-hidden">
             <div class="card-header-dark">
                 <i class="fas fa-id-badge mr-2"></i> Información del Cliente
@@ -112,35 +123,86 @@
 
             <div class="card-body p-4 p-md-5">
                 <div class="row">
-                    {% for field in form.visible_fields %}
-                        <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold text-dark small mb-1 text-uppercase">
-                                {{ field.label }}
-                            </label>
-                            
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text bg-white border-right-0">
-                                        {% if 'nombre' in field.name %}<i class="fas fa-signature"></i>
-                                        {% elif 'documento' in field.name %}<i class="fas fa-id-card"></i>
-                                        {% elif 'telefono' in field.name %}<i class="fas fa-phone"></i>
-                                        {% elif 'email' in field.name %}<i class="fas fa-envelope"></i>
-                                        {% else %}<i class="fas fa-info-circle"></i>{% endif %}
-                                    </span>
-                                </div>
-                                {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
-                            </div>
 
-                            {% if field.errors %}
-                                {% for error in field.errors %}
-                                    <div class="caja-error-roja">
-                                        <i class="fas fa-exclamation-triangle mr-1"></i>
-                                        <span style="font-weight: bold;">{{ error }}</span>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
+                    {# ── Nombre ── #}
+                    <div class="col-md-6 mb-4">
+                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ form.nombre.label }}</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-white border-right-0"><i class="fas fa-signature"></i></span>
+                            </div>
+                            {{ form.nombre|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
                         </div>
-                    {% endfor %}
+                        {% for error in form.nombre.errors %}
+                            <div class="caja-error-roja"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
+                        {% endfor %}
+                    </div>
+
+                    {# ── Tipo de documento ── #}
+                    <div class="col-md-6 mb-4">
+                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ form.tipo_documento.label }}</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-white border-right-0"><i class="fas fa-id-card"></i></span>
+                            </div>
+                            {{ form.tipo_documento|add_class:'form-control border-left-0 shadow-none' }}
+                        </div>
+                        {% for error in form.tipo_documento.errors %}
+                            <div class="caja-error-roja"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
+                        {% endfor %}
+                    </div>
+
+                    {# ── Número de documento ── #}
+                    <div class="col-md-6 mb-4">
+                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ form.numero_documento.label }}</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-white border-right-0"><i class="fas fa-fingerprint"></i></span>
+                            </div>
+                            {{ form.numero_documento|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+                        </div>
+                        {% for error in form.numero_documento.errors %}
+                            <div class="caja-error-roja"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
+                        {% endfor %}
+                    </div>
+
+                    {# ── Teléfono: indicativo + número en una fila ── #}
+                    <div class="col-md-6 mb-4">
+                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">
+                            <i class="fas fa-phone mr-1"></i> Teléfono
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-white border-right-0"><i class="fas fa-globe"></i></span>
+                            </div>
+                            {{ form.indicativo_telefono|add_class:'form-control indicativo-select shadow-none'|attr:'id:id_indicativo_cliente' }}
+                            {{ form.numero_telefono|add_class:'form-control shadow-none'|attr:'autocomplete:off'|attr:'placeholder:Ej: 3107928076' }}
+                        </div>
+                        {% for error in form.indicativo_telefono.errors %}
+                            <div class="caja-error-roja"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
+                        {% endfor %}
+                        {% for error in form.numero_telefono.errors %}
+                            <div class="caja-error-roja"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
+                        {% endfor %}
+                        {% for error in form.telefono.errors %}
+                            <div class="caja-error-roja"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
+                        {% endfor %}
+                    </div>
+
+                    {# ── Email ── #}
+                    <div class="col-md-6 mb-4">
+                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ form.email.label }}</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-white border-right-0"><i class="fas fa-envelope"></i></span>
+                            </div>
+                            {{ form.email|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+                        </div>
+                        {% for error in form.email.errors %}
+                            <div class="caja-error-roja"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
+                        {% endfor %}
+                    </div>
+
                 </div>
             </div>
 
@@ -148,7 +210,6 @@
                 <a href="{% url 'app:listar_clientes' %}" class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold" style="border-radius: 12px;">
                     <i class="fas fa-times mr-1"></i> Cancelar
                 </a>
-
                 <button type="submit" class="btn btn-acerautos-save-crear shadow-sm">
                     <i class="fas fa-save mr-2"></i> Guardar Cliente
                 </button>

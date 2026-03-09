@@ -2,85 +2,216 @@
 
 {% block contenido %}
 <style>
-    .card-premium {
-        border: none;
-        border-radius: 18px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-        background: #ffffff;
-    }
+  .card-premium {
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    background: #ffffff;
+  }
+  .card-header-premium {
+    background: linear-gradient(135deg, #4a4a4a, #2f2f2f);
+    color: white;
+    padding: 20px 24px;
+    border-radius: 18px 18px 0 0;
+  }
+  .btn-premium {
+    border-radius: 10px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  .btn-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  }
+  .section-toggle {
+    display: none;
+  }
+  .section-toggle.visible {
+    display: block;
+    animation: fadeIn .3s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .tipo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 2px solid #dee2e6;
+    font-weight: 600;
+    transition: all .25s;
+    background: white;
+    user-select: none;
+  }
+  .tipo-badge.selected-servicio {
+    border-color: #0d6efd;
+    background: #e7f1ff;
+    color: #0d6efd;
+  }
+  .tipo-badge.selected-producto {
+    border-color: #198754;
+    background: #d1e7dd;
+    color: #198754;
+  }
 
-    .card-header-premium {
-        background: linear-gradient(135deg, #4a4a4a, #2f2f2f);
-        color: white;
-        padding: 20px;
-        border-radius: 18px 18px 0 0;
-    }
-
-    .btn-premium {
-        border-radius: 10px;
-        padding: 8px 18px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .btn-premium:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-    }
-
-    .alert-premium-error {
-        background: linear-gradient(145deg, #fff5f5, #ffecec);
-        border-left: 6px solid #4a4a4a;
-        padding: 15px 20px;
-        border-radius: 12px;
-        font-weight: 600;
-        color: #842029;
-        margin-bottom: 20px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-        animation: fadeIn 0.3s ease-in-out;
-    }
+  /* ── Modal Pago ── */
+  .modal-pago .modal-content {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 20px 50px rgba(0,0,0,.18);
+  }
+  .modal-pago .modal-header {
+    background: linear-gradient(135deg, #4a4a4a, #2f2f2f);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 18px 24px;
+  }
+  .metodo-card {
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    padding: 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: all .2s;
+    font-weight: 600;
+    font-size: .9rem;
+  }
+  .metodo-card:hover { border-color: #4a4a4a; background: #f5f5f5; }
+  .metodo-card.activo { border-color: #0d6efd; background: #e7f1ff; color: #0d6efd; }
+  .metodo-card i { display: block; font-size: 1.6rem; margin-bottom: 6px; }
 </style>
 
-<div class="container mt-5">
-    <div class="card card-premium">
-        
-        <div class="card-header-premium">
-            <h3 class="mb-0">
-                <i class="fas fa-file-invoice mr-2"></i>
-                Crear Factura
-            </h3>
-        </div>
+<div class="container mt-5 mb-5">
+  <div class="card card-premium">
 
-        <div class="card-body p-4">
-
-            <!-- 🔴 Errores generales -->
-            {% if form.non_field_errors %}
-                <div class="alert-premium-error">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
-                    {% for error in form.non_field_errors %}
-                        {{ error }}
-                    {% endfor %}
-                </div>
-            {% endif %}
-
-            <form method="post">
-                {% csrf_token %}
-                
-                {{ form.as_p }}
-
-                <div class="mt-4 d-flex gap-2">
-                    <button type="submit" class="btn btn-success btn-premium">
-                        <i class="fas fa-save mr-1"></i> Guardar
-                    </button>
-
-                    <a href="{% url 'app:listar_facturas' %}" class="btn btn-danger btn-premium">
-                        <i class="fas fa-times mr-1"></i> Cancelar
-                    </a>
-                </div>
-            </form>
-
-        </div>
+    <div class="card-header-premium d-flex align-items-center justify-content-between">
+      <h3 class="mb-0"><i class="fas fa-file-invoice mr-2"></i> Crear Factura</h3>
+      <a href="{% url 'app:listar_factura' %}" class="btn btn-light btn-sm btn-premium">
+        <i class="fas fa-list mr-1"></i> Ver todas
+      </a>
     </div>
+
+    <div class="card-body p-4">
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger rounded-3">
+          {% for e in form.non_field_errors %}<div>{{ e }}</div>{% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="post" id="facturaForm">
+        {% csrf_token %}
+
+        <!-- TIPO DE FACTURA -->
+        <div class="mb-4">
+          <label class="form-label fw-bold mb-2">
+            <i class="fas fa-tag mr-1"></i> ¿A qué se le quiere hacer la factura?
+          </label>
+          <div class="d-flex gap-3 flex-wrap">
+            <label class="tipo-badge {% if form.tipo.value == 'SERVICIO' or not form.tipo.value %}selected-servicio{% endif %}" id="badge-servicio">
+              <input type="radio" name="tipo" value="SERVICIO" class="d-none"
+                {% if form.tipo.value == 'SERVICIO' or not form.tipo.value %}checked{% endif %}>
+              <i class="fas fa-wrench"></i> Orden de Servicio
+            </label>
+            <label class="tipo-badge {% if form.tipo.value == 'PRODUCTO' %}selected-producto{% endif %}" id="badge-producto">
+              <input type="radio" name="tipo" value="PRODUCTO" class="d-none"
+                {% if form.tipo.value == 'PRODUCTO' %}checked{% endif %}>
+              <i class="fas fa-box"></i> Venta de Producto
+            </label>
+          </div>
+          {% if form.tipo.errors %}
+            <div class="text-danger small mt-1">{{ form.tipo.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- NÚMERO DE FACTURA -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">
+            <i class="fas fa-hashtag mr-1"></i> Número de Factura
+          </label>
+          {{ form.numero_factura }}
+          {% if form.numero_factura.errors %}
+            <div class="text-danger small mt-1">{{ form.numero_factura.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- SECCIÓN SERVICIO -->
+        <div id="seccion-servicio" class="section-toggle {% if form.tipo.value != 'PRODUCTO' %}visible{% endif %}">
+          <div class="mb-3">
+            <label class="form-label fw-bold">
+              <i class="fas fa-clipboard-list mr-1"></i> Orden de Servicio
+            </label>
+            {{ form.orden_servicio }}
+            {% if form.orden_servicio.errors %}
+              <div class="text-danger small mt-1">{{ form.orden_servicio.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- SECCIÓN PRODUCTO -->
+        <div id="seccion-producto" class="section-toggle {% if form.tipo.value == 'PRODUCTO' %}visible{% endif %}">
+          <div class="row">
+            <div class="col-md-8 mb-3">
+              <label class="form-label fw-bold">
+                <i class="fas fa-box mr-1"></i> Producto
+              </label>
+              {{ form.producto }}
+              {% if form.producto.errors %}
+                <div class="text-danger small mt-1">{{ form.producto.errors.0 }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label fw-bold">
+                <i class="fas fa-sort-numeric-up mr-1"></i> Cantidad
+              </label>
+              {{ form.cantidad }}
+              {% if form.cantidad.errors %}
+                <div class="text-danger small mt-1">{{ form.cantidad.errors.0 }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+          <button type="submit" class="btn btn-success btn-premium">
+            <i class="fas fa-save mr-1"></i> Guardar Factura
+          </button>
+          <a href="{% url 'app:listar_factura' %}" class="btn btn-danger btn-premium">
+            <i class="fas fa-times mr-1"></i> Cancelar
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
+<script>
+// ── Cambio de tipo ────────────────────────────────────────
+const badgeServicio = document.getElementById('badge-servicio');
+const badgeProducto = document.getElementById('badge-producto');
+const secServicio   = document.getElementById('seccion-servicio');
+const secProducto   = document.getElementById('seccion-producto');
+
+function activarTipo(tipo) {
+  if (tipo === 'SERVICIO') {
+    badgeServicio.className = 'tipo-badge selected-servicio';
+    badgeProducto.className = 'tipo-badge';
+    secServicio.classList.add('visible');
+    secProducto.classList.remove('visible');
+  } else {
+    badgeProducto.className = 'tipo-badge selected-producto';
+    badgeServicio.className = 'tipo-badge';
+    secProducto.classList.add('visible');
+    secServicio.classList.remove('visible');
+  }
+}
+
+badgeServicio.addEventListener('click', () => activarTipo('SERVICIO'));
+badgeProducto.addEventListener('click', () => activarTipo('PRODUCTO'));
+</script>
 {% endblock %}

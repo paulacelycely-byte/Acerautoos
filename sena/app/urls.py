@@ -14,6 +14,7 @@ from .views.tipo_servicio import views as vistas_tipo_serv
 from .views.Orden_servicio import views as vistas_orden
 from .views.DetalleOrdenProducto import views as vistas_detalles
 from .views.CompatibilidadProducto import views as vistas_comp
+from .views.factura import views as vistas_factura
 
 app_name = 'app'
 
@@ -49,9 +50,9 @@ urlpatterns = [
     path('marca/crear/', vistas_marca.MarcaCreateView.as_view(), name='crear_marca'),
     path('marca/editar/<int:pk>/', vistas_marca.MarcaUpdateView.as_view(), name='editar_marca'),
     path('marca/eliminar/<int:pk>/', vistas_marca.MarcaDeleteView.as_view(), name='eliminar_marca'),
-    path('marca/crear-ajax/', vistas_marca.crear_marca_ajax, name='crear_marca_ajax'),  # ← NUEVO
+    path('marca/crear-ajax/', vistas_marca.crear_marca_ajax, name='crear_marca_ajax'),
 
-    # --- COMPATIBILIDAD (NUEVO) ---
+    # --- COMPATIBILIDAD ---
     path('compatibilidad/listar/', vistas_comp.CompatibilidadListView.as_view(), name='listar_compatibilidad'),
     path('compatibilidad/crear/', vistas_comp.CompatibilidadCreateView.as_view(), name='crear_compatibilidad'),
     path('compatibilidad/editar/<int:pk>/', vistas_comp.CompatibilidadUpdateView.as_view(), name='editar_compatibilidad'),
@@ -69,11 +70,11 @@ urlpatterns = [
     path('producto/editar/<int:pk>/', vistas_prod.ProductoUpdateView.as_view(), name='editar_producto'),
     path('producto/eliminar/<int:pk>/', vistas_prod.ProductoDeleteView.as_view(), name='eliminar_producto'),
 
-    # --- VENTAS ---
-    path('ventas/listar/', vistas_ventas.VentasFacturaListView.as_view(), name='listar_factura'),
-    path('ventas/crear/', vistas_ventas.VentasFacturaCreateView.as_view(), name='crear_factura'),
-    path('ventas/editar/<int:pk>/', vistas_ventas.VentasFacturaUpdateView.as_view(), name='editar_factura'),
-    path('ventas/eliminar/<int:pk>/', vistas_ventas.VentasFacturaDeleteView.as_view(), name='eliminar_factura'),
+    # --- VENTAS (VentasFactura antiguo) ---
+    path('ventas/listar/', vistas_ventas.VentasFacturaListView.as_view(), name='listar_ventas'),
+    path('ventas/crear/', vistas_ventas.VentasFacturaCreateView.as_view(), name='crear_venta'),
+    path('ventas/editar/<int:pk>/', vistas_ventas.VentasFacturaUpdateView.as_view(), name='editar_venta'),
+    path('ventas/eliminar/<int:pk>/', vistas_ventas.VentasFacturaDeleteView.as_view(), name='eliminar_venta'),
 
     # --- NOTIFICACIONES ---
     path('notificaciones/listar/', vistas_notif.NotificacionListView.as_view(), name='listar_notificacion'),
@@ -104,4 +105,11 @@ urlpatterns = [
     path('detalles/add/', vistas_detalles.DetalleOrdenCreateView.as_view(), name='detalle_orden_add'),
     path('detalles/edit/<int:pk>/', vistas_detalles.DetalleOrdenUpdateView.as_view(), name='detalle_orden_edit'),
     path('detalles/delete/<int:pk>/', vistas_detalles.DetalleOrdenDeleteView.as_view(), name='detalle_orden_delete'),
+
+    # --- FACTURAS ---
+    path('factura/listar/', vistas_factura.FacturaListView.as_view(), name='listar_factura'),
+    path('factura/crear/', vistas_factura.FacturaCreateView.as_view(), name='crear_factura'),
+    path('factura/detalle/<int:pk>/', vistas_factura.FacturaDetailView.as_view(), name='detalle_factura'),
+    path('factura/eliminar/<int:pk>/', vistas_factura.FacturaDeleteView.as_view(), name='eliminar_factura'),
+    path('factura/pagar/<int:pk>/', vistas_factura.PagarFacturaView.as_view(), name='pagar_factura'),
 ]

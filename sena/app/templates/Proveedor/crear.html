@@ -35,6 +35,15 @@
     .input-group-text { background: #f8f9fa; border-right: none; color: #454d55; border-radius: 12px 0 0 12px; width: 45px; justify-content: center; }
     .form-control { border-radius: 0 12px 12px 0 !important; border: 1px solid #d1d3e2; padding: 12px 15px; transition: all 0.3s ease; }
     .form-control:focus { border-color: #454d55 !important; box-shadow: 0 0 0 0.2rem rgba(69,77,85,0.1) !important; }
+
+    /* Selector de indicativo */
+    .indicativo-select {
+        border-radius: 0 !important;
+        border-right: none !important;
+        max-width: 200px;
+        flex: 0 0 200px;
+    }
+
     .btn-acerautos-save-crear { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white !important; border: none; padding: 12px 35px; border-radius: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
     .btn-acerautos-save-crear:hover { transform: translateY(-2px); filter: brightness(1.2); }
 </style>
@@ -56,40 +65,82 @@
 
     <form method="post" action="." id="formProveedor">
         {% csrf_token %}
+
+        {# Campo telefono oculto — lo llena el form en clean() #}
+        {{ form.telefono.as_hidden }}
+
         <div class="card card-form-premium overflow-hidden">
             <div class="card-header-dark">
                 <i class="fas fa-id-card mr-2"></i> Información del Proveedor
             </div>
             <div class="card-body p-4 p-md-5">
                 <div class="row">
-                    {% for field in form.visible_fields %}
-                        <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold text-dark small mb-1 text-uppercase" style="letter-spacing: 0.5px;">
-                                {{ field.label }}
-                            </label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text border-right-0">
-                                        {% if 'nombre' in field.name %}<i class="fas fa-user"></i>
-                                        {% elif 'documento' in field.name %}<i class="fas fa-fingerprint"></i>
-                                        {% elif 'telefono' in field.name %}<i class="fas fa-phone"></i>
-                                        {% elif 'email' in field.name %}<i class="fas fa-envelope"></i>
-                                        {% elif 'direccion' in field.name %}<i class="fas fa-map-marked-alt"></i>
-                                        {% else %}<i class="fas fa-tag"></i>{% endif %}
-                                    </span>
-                                </div>
-                                {{ field|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+
+                    {# ── Nombre ── #}
+                    <div class="col-md-6 mb-4">
+                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ form.nombre.label }}</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text border-right-0"><i class="fas fa-user"></i></span>
                             </div>
-                            {% if field.errors %}
-                                {% for error in field.errors %}
-                                    <div class="caja-error-roja small">
-                                        <i class="fas fa-exclamation-triangle mr-1"></i>
-                                        <span style="font-weight: bold;">{{ error }}</span>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
+                            {{ form.nombre|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
                         </div>
-                    {% endfor %}
+                        {% for error in form.nombre.errors %}
+                            <div class="caja-error-roja small"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
+                        {% endfor %}
+                    </div>
+
+                    {# ── NIT ── #}
+                    <div class="col-md-6 mb-4">
+                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ form.nit.label }}</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text border-right-0"><i class="fas fa-tag"></i></span>
+                            </div>
+                            {{ form.nit|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+                        </div>
+                        {% for error in form.nit.errors %}
+                            <div class="caja-error-roja small"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
+                        {% endfor %}
+                    </div>
+
+                    {# ── Teléfono: indicativo + número en una fila ── #}
+                    <div class="col-md-6 mb-4">
+                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">
+                            <i class="fas fa-phone mr-1"></i> Teléfono
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text border-right-0"><i class="fas fa-globe"></i></span>
+                            </div>
+                            {{ form.indicativo_telefono|add_class:'form-control indicativo-select shadow-none' }}
+                            {{ form.numero_telefono|add_class:'form-control shadow-none'|attr:'autocomplete:off'|attr:'placeholder:Ej: 3107928076' }}
+                        </div>
+                        {% for error in form.indicativo_telefono.errors %}
+                            <div class="caja-error-roja small"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
+                        {% endfor %}
+                        {% for error in form.numero_telefono.errors %}
+                            <div class="caja-error-roja small"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
+                        {% endfor %}
+                        {% for error in form.telefono.errors %}
+                            <div class="caja-error-roja small"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
+                        {% endfor %}
+                    </div>
+
+                    {# ── Dirección ── #}
+                    <div class="col-md-6 mb-4">
+                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ form.direccion.label }}</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text border-right-0"><i class="fas fa-map-marked-alt"></i></span>
+                            </div>
+                            {{ form.direccion|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+                        </div>
+                        {% for error in form.direccion.errors %}
+                            <div class="caja-error-roja small"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
+                        {% endfor %}
+                    </div>
+
                 </div>
             </div>
             <div class="card-footer bg-light d-flex justify-content-end py-4 border-top">
@@ -113,12 +164,9 @@
 
     $(function () {
         $('#formProveedor').on('submit', function (e) {
-            // Si ya fue confirmado por SweetAlert, dejar pasar sin interceptar
             if (formularioEnviado) return;
-
             e.preventDefault();
             var formulario = this;
-
             Swal.fire({
                 title: '¿Confirmar Registro?',
                 text: "La información del proveedor será almacenada.",
@@ -130,7 +178,7 @@
                 cancelButtonColor: '#d33',
             }).then((result) => {
                 if (result.isConfirmed) {
-                    formularioEnviado = true;  // marcar para no interceptar el siguiente submit
+                    formularioEnviado = true;
                     formulario.submit();
                 }
             });

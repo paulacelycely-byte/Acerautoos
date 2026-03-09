@@ -220,3 +220,79 @@ class Notificacion(models.Model):
     mensaje  = models.TextField()
     leido    = models.BooleanField(default=False)
     fecha    = models.DateTimeField(auto_now_add=True)
+    
+
+
+class Factura(models.Model):
+    TIPO_FACTURA = [
+        ('SERVICIO', 'Orden de Servicio'),
+        ('PRODUCTO', 'Venta de Producto'),
+    ]
+    METODOS_PAGO = [
+        ('Efectivo',       'Efectivo'),
+        ('Transferencia',  'Transferencia Bancaria'),
+        ('TarjetaDebito',  'Tarjeta Débito'),
+        ('TarjetaCredito', 'Tarjeta Crédito'),
+        ('Nequi',          'Nequi'),
+        ('Daviplata',      'Daviplata'),
+    ]
+    ESTADOS_PAGO = [
+        ('Pendiente', 'Pendiente'),
+        ('Pagada',    'Pagada'),
+    ]
+
+    tipo            = models.CharField(max_length=10, choices=TIPO_FACTURA, default='SERVICIO')
+    numero_factura  = models.CharField(max_length=20, unique=True)
+    fecha_emision   = models.DateTimeField(auto_now_add=True)
+
+    # Relaciones opcionales según el tipo
+    orden_servicio = models.ForeignKey(
+        'OrdenServicio', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='facturas_nueva'
+)
+    producto        = models.ForeignKey(
+        'Producto', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='factura'
+    )
+    cantidad        = models.PositiveIntegerField(default=1, null=True, blank=True)
+
+    # Montos
+    subtotal        = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    iva             = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total           = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+
+    # Pago
+    estado_pago     = models.CharField(max_length=10, choices=ESTADOS_PAGO, default='Pendiente')
+    metodo_pago     = models.CharField(max_length=20, choices=METODOS_PAGO, null=True, blank=True)
+    fecha_pago      = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Factura {self.numero_factura} - {self.get_tipo_display()}"
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.tipo == 'SERVICIO' and not self.orden_servicio:
+            raise ValidationError("Debe seleccionar una Orden de Servicio para facturas de tipo Servicio.")
+        if self.tipo == 'PRODUCTO' and not self.producto:
+            raise ValidationError("Debe seleccionar un Producto para facturas de tipo Producto.")
+
+    def save(self, *args, **kwargs):
+        is_new = not self.pk
+        super().save(*args, **kwargs)
+        # Registrar en caja cuando se pague
+        if not is_new and self.estado_pago == 'Pagada':
+            if not Caja.objects.filter(descripcion__contains=self.numero_factura).exists():
+                Caja.objects.create(
+                    descripcion=f"Factura {self.numero_factura} - {self.get_tipo_display()}",
+                    monto=self.total,
+                    tipo='INGRESO',
+                    categoria='Ventas' if self.tipo == 'PRODUCTO' else 'Servicios',
+                    metodo_pago=self.metodo_pago or 'Efectivo',
+                )
+                if self.tipo == 'SERVICIO' and self.orden_servicio:
+                    self.orden_servicio.estado = 'Terminado'
+                    self.orden_servicio.save()
+
+    class Meta:
+        db_table = 'factura'
+        ordering = ['-fecha_emision']

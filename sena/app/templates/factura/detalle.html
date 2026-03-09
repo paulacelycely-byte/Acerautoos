@@ -4,51 +4,94 @@
 <div class="container-fluid animate__animated animate__fadeIn">
     <div class="row">
         <div class="col-12">
-            <a href="{% url 'app:listar_facturas' %}" class="btn btn-default btn-flat mb-3">
+            <a href="{% url 'app:listar_factura' %}" class="btn btn-default btn-flat mb-3">
                 <i class="fas fa-arrow-left"></i> Volver al listado
             </a>
 
             <div class="invoice p-3 mb-3 shadow-sm">
-                <div class="row">
-                    <div class="col-12">
-                        <h4>
-                            <i class="fas fa-car-side"></i> ACERAUTOOS S.A.S.
-                            <small class="float-right">Fecha: {{ factura.fecha|date:"d/m/Y" }}</small>
-                        </h4>
+
+                <!-- ENCABEZADO DEL TALLER -->
+                <div class="row mb-3">
+                    <div class="col-12 text-center border-bottom pb-3">
+                        <h3 class="mb-0"><i class="fas fa-car-side mr-2"></i><strong>ACERAUTOOS S.A.S.</strong></h3>
+                        <p class="mb-0 text-muted" style="font-size:.9rem;">
+                            Taller de Autopartes y Servicios Automotrices
+                        </p>
+                        <p class="mb-0 text-muted" style="font-size:.85rem;">
+                            <i class="fas fa-map-marker-alt mr-1"></i> Calle 13 # 14-25, Sogamoso, Boyacá
+                            &nbsp;|&nbsp;
+                            <i class="fas fa-phone mr-1"></i> 310 000 0000
+                            &nbsp;|&nbsp;
+                            <i class="fas fa-envelope mr-1"></i> contacto@acerautoos.com
+                        </p>
+                        <p class="mb-0" style="font-size:.85rem;">
+                            <strong>Responsable:</strong> {{ request.user.get_full_name|default:request.user.username }}
+                        </p>
+                        <small class="text-muted">Fecha: {{ factura.fecha_emision|date:"d/m/Y H:i" }}</small>
                     </div>
                 </div>
 
-                <div class="row invoice-info mt-4">
+                <!-- INFO DE LA FACTURA -->
+                <div class="row invoice-info mt-2">
                     <div class="col-sm-4 invoice-col">
-                        De:
-                        <address>
-                            <strong>Administración Acerautoos</strong><br>
-                            Sogamoso, Boyacá<br>
-                            Email: contacto@acerautoos.com
+                        <strong>Generado por:</strong>
+                        <address class="mt-1">
+                            <strong>{{ request.user.get_full_name|default:request.user.username }}</strong><br>
+                            Administradora<br>
+                            Acerautoos S.A.S.<br>
+                            Sogamoso, Boyacá
                         </address>
                     </div>
                     <div class="col-sm-4 invoice-col">
-                        Para:
-                        <address>
-                            <strong>{{ factura.venta.cliente.nombre|default:"Cliente General" }}</strong><br>
-                            ID Venta: #{{ factura.venta.id }}
+                        <strong>
+                            {% if factura.tipo == 'SERVICIO' %}
+                                Cliente / Vehículo:
+                            {% else %}
+                                Cliente:
+                            {% endif %}
+                        </strong>
+                        <address class="mt-1">
+                            {% if factura.tipo == 'SERVICIO' and factura.orden_servicio %}
+                                <strong>{{ factura.orden_servicio.cliente.nombre|default:"Cliente General" }}</strong><br>
+                                Vehículo: {{ factura.orden_servicio.vehiculo }}<br>
+                                Servicio: {{ factura.orden_servicio.servicio.nombre }}
+                            {% elif factura.tipo == 'PRODUCTO' and factura.producto %}
+                                <strong>Cliente General</strong><br>
+                                Producto: {{ factura.producto.nombre }}<br>
+                                Cantidad: {{ factura.cantidad }}
+                            {% endif %}
                         </address>
                     </div>
                     <div class="col-sm-4 invoice-col">
-                        <b>Factura #{{ factura.id }}</b><br>
-                        <br>
-                        <b>Orden de Servicio:</b> {{ factura.venta.id }}<br>
-                        <b>Estado:</b> <span class="badge badge-success">Pagado</span>
+                        <b>Factura # {{ factura.numero_factura }}</b><br><br>
+                        <b>Tipo:</b>
+                        {% if factura.tipo == 'SERVICIO' %}
+                            <span class="badge badge-info">Servicio</span>
+                        {% else %}
+                            <span class="badge badge-success">Producto</span>
+                        {% endif %}<br>
+                        <b>Estado:</b>
+                        {% if factura.estado_pago == 'Pagada' %}
+                            <span class="badge badge-success">Pagada</span>
+                        {% else %}
+                            <span class="badge badge-warning">Pendiente</span>
+                        {% endif %}<br>
+                        {% if factura.metodo_pago %}
+                            <b>Método Pago:</b> {{ factura.get_metodo_pago_display }}<br>
+                        {% endif %}
+                        {% if factura.fecha_pago %}
+                            <b>Fecha Pago:</b> {{ factura.fecha_pago|date:"d/m/Y H:i" }}
+                        {% endif %}
                     </div>
                 </div>
 
+                <!-- RESUMEN DE VALORES -->
                 <div class="row mt-4">
                     <div class="col-6">
-                        <p class="lead">Métodos de Pago:</p>
-                        <img src="https://adminlte.io/themes/v3/dist/img/credit/visa.png" alt="Visa">
-                        <img src="https://adminlte.io/themes/v3/dist/img/credit/mastercard.png" alt="Mastercard">
-                        <p class="text-muted well well-sm shadow-none mt-2" style="font-size: 13px;">
-                            Esta factura es un comprobante oficial de los servicios prestados en nuestro taller.
+                        <p class="lead">Nota:</p>
+                        <p class="text-muted" style="font-size: 13px;">
+                            Esta factura es un comprobante oficial de los servicios y/o productos
+                            adquiridos en nuestro taller. Conserve este documento.
                         </p>
                     </div>
                     <div class="col-6">
@@ -57,16 +100,16 @@
                             <table class="table">
                                 <tr>
                                     <th style="width:50%">Subtotal:</th>
-                                    <td>${{ factura.subtotal }}</td>
+                                    <td>${{ factura.subtotal|floatformat:0 }}</td>
                                 </tr>
                                 <tr>
                                     <th>IVA (19%):</th>
-                                    <td>${{ factura.iva }}</td>
+                                    <td>${{ factura.iva|floatformat:0 }}</td>
                                 </tr>
                                 <tr>
                                     <th>Total:</th>
                                     <td class="text-bold text-primary" style="font-size: 1.2rem;">
-                                        ${{ factura.total }}
+                                        <strong>${{ factura.total|floatformat:0 }}</strong>
                                     </td>
                                 </tr>
                             </table>
@@ -74,13 +117,18 @@
                     </div>
                 </div>
 
+                <!-- BOTONES -->
                 <div class="row no-print">
                     <div class="col-12">
-                        <button type="button" onclick="window.print();" class="btn btn-default btn-flat">
+                        <a href="{% url 'app:listar_factura' %}" class="btn btn-default btn-flat">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </a>
+                        <button type="button" onclick="window.print();" class="btn btn-default btn-flat ml-2">
                             <i class="fas fa-print"></i> Imprimir
                         </button>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
