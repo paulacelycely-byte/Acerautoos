@@ -2,11 +2,23 @@ from django import forms
 import re
 from datetime import date
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from .models import (
-    Proveedor, Producto, Compra, Cliente, Marca, Vehiculo,Factura,
+    Proveedor, Producto, Compra, Cliente, Marca, Vehiculo, Factura,
     TipoServicio, OrdenServicio, VentasFactura, Usuario,
     Notificacion, Caja, DetalleOrdenProducto, CompatibilidadProducto
 )
+
+
+# ══════════════════════════════════════════════════════════
+#  WIDGET PERSONALIZADO PARA EMOJIS EN SELECT
+# ══════════════════════════════════════════════════════════
+
+class SelectConEmoji(forms.Select):
+    def create_option(self, name, value, label, selected, index, **kwargs):
+        option = super().create_option(name, value, label, selected, index, **kwargs)
+        option['label'] = mark_safe(label)
+        return option
 
 
 # ══════════════════════════════════════════════════════════
@@ -115,14 +127,14 @@ def val_telefono_colombiano(valor, campo):
             return limpio
         else:
             raise forms.ValidationError(
-                f"'{campo}': celular debe empezar por 3 (ej: 3107928076) "
-                f"o fijo con indicativo por 60/61 (ej: 6012345678)."
+                f"'{campo}': celular debe empezar por 3  "
+                f"o fijo con indicativo por 60/61 ."
             )
     elif len(limpio) == 7:
         return limpio
     else:
         raise forms.ValidationError(
-            f"'{campo}' inválido. Use 10 dígitos para celular (ej: 3107928076) "
+            f"'{campo}' inválido. Use 10 dígitos para celular  "
             f"o 7 dígitos para fijo local (ej: 2345678). "
             f"Recibido: {len(limpio)} dígitos."
         )
@@ -159,13 +171,13 @@ class UsuarioForm(forms.ModelForm):
         choices=INDICATIVOS_PAISES,
         required=False,
         label="Indicativo",
-        widget=forms.Select(attrs={'class': 'form-control'}),
+        widget=SelectConEmoji(attrs={'class': 'form-control'}),
     )
     numero_telefono = forms.CharField(
         max_length=15,
         required=False,
         label="Teléfono",
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 3107928076'}),
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
 
     class Meta:
@@ -267,13 +279,13 @@ class ProveedorForm(forms.ModelForm):
         choices=INDICATIVOS_PAISES,
         required=True,
         label="Indicativo",
-        widget=forms.Select(attrs={'class': 'form-control'}),
+        widget=SelectConEmoji(attrs={'class': 'form-control'}),
     )
     numero_telefono = forms.CharField(
         max_length=15,
         required=True,
         label="Teléfono",
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 3107928076'}),
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
 
     class Meta:
@@ -513,13 +525,13 @@ class ClienteForm(forms.ModelForm):
         choices=INDICATIVOS_PAISES,
         required=True,
         label="Indicativo",
-        widget=forms.Select(attrs={'class': 'form-control'}),
+        widget=SelectConEmoji(attrs={'class': 'form-control'}),
     )
     numero_telefono = forms.CharField(
         max_length=15,
         required=True,
         label="Teléfono",
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 3107928076'}),
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
 
     class Meta:
@@ -683,11 +695,9 @@ class OrdenServicioForm(forms.ModelForm):
         if not fecha:
             return timezone.now()
 
-        # No puede ser futura
         if fecha > timezone.now():
             raise forms.ValidationError("La fecha de la orden no puede ser una fecha futura.")
 
-        # No puede ser anterior a 30 días
         limite = timezone.now() - timezone.timedelta(days=30)
         if fecha < limite:
             raise forms.ValidationError(
@@ -711,13 +721,11 @@ class OrdenServicioForm(forms.ModelForm):
         vehiculo = cleaned.get('vehiculo')
         estado   = cleaned.get('estado')
 
-        # No se puede crear una orden nueva directamente como Terminado
         if not self.instance.pk and estado == 'Terminado':
             self.add_error('estado',
                 "No puede crear una orden con estado 'Terminado'. "
                 "Inicie con 'Pendiente' o 'En Proceso'.")
 
-        # No puede haber dos órdenes activas para el mismo vehículo
         if vehiculo and not self.instance.pk:
             orden_activa = OrdenServicio.objects.filter(
                 vehiculo=vehiculo,
@@ -906,8 +914,11 @@ class CompatibilidadProductoForm(forms.ModelForm):
                     f"y la marca '{marca_vehiculo.nombre}'."
                 )
         return cleaned
-    
-   
+
+
+# ══════════════════════════════════════════════════════════
+#  FACTURA
+# ══════════════════════════════════════════════════════════
 
 class FacturaForm(forms.ModelForm):
     class Meta:
@@ -942,7 +953,6 @@ class FacturaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Solo órdenes terminadas o en proceso
         self.fields['orden_servicio'].queryset = OrdenServicio.objects.filter(
             estado__in=['En Proceso', 'Terminado']
         ).select_related('vehiculo', 'servicio')
