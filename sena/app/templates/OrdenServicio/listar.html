@@ -4,10 +4,11 @@
 {% block css %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <style>
-    .header-premium { background: linear-gradient(145deg, #ffffff, #f8f9fa); border-radius: 20px; padding: 25px; margin-bottom: 30px; border-left: 10px solid #454d55; box-shadow: 0 15px 35px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; position: relative; overflow: hidden; }
+    .header-premium { background: linear-gradient(145deg, #ffffff, #f8f9fa); border-radius: 20px; padding: 25px; margin-bottom: 30px; border-left: 10px solid #454d55; box-shadow: 0 15px 35px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; }
     .title-icon { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white; width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 8px 20px rgba(0,0,0,0.15); margin-right: 20px; }
-    .title-container h1 { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 1.9rem; font-weight: 700; margin-bottom: 0; color: #2d3436; text-transform: uppercase; letter-spacing: 1.5px; }
-    .btn-nueva-premium { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white !important; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; transition: all 0.3s; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+    .title-container h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: 0; color: #2d3436; text-transform: uppercase; letter-spacing: 1.5px; }
+    .btn-nueva-premium { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white !important; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; transition: all 0.3s; box-shadow: 0 8px 15px rgba(0,0,0,0.1); text-decoration: none; }
+    .btn-nueva-premium:hover { transform: translateY(-2px); filter: brightness(1.2); color: white !important; }
     .card-custom { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; background: #fff; }
     .btn-circle { width: 35px; height: 35px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; transition: 0.3s; border: none; }
     .badge-estado { padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.75rem; }
@@ -21,9 +22,17 @@
             <div class="title-icon"><i class="fas fa-tools"></i></div>
             <div class="title-container"><h1>ÓRDENES DE SERVICIO</h1></div>
         </div>
-        <a href="{% url 'app:orden_servicio_create' %}" class="btn btn-nueva-premium">
-            <i class="fas fa-plus-circle"></i> <span>Nueva Orden</span>
-        </a>
+        <div class="d-flex align-items-center" style="gap:10px;">
+            <a href="{% url 'app:reporte_ordenes_pdf' %}" class="btn-nueva-premium" style="background:linear-gradient(135deg,#c0392b,#96281b);">
+                <i class="fas fa-file-pdf"></i><span>PDF</span>
+            </a>
+            <a href="{% url 'app:reporte_ordenes_excel' %}" class="btn-nueva-premium" style="background:linear-gradient(135deg,#1e8449,#145a32);">
+                <i class="fas fa-file-excel"></i><span>Excel</span>
+            </a>
+            <a href="{% url 'app:orden_servicio_create' %}" class="btn-nueva-premium">
+                <i class="fas fa-plus-circle"></i><span>Nueva Orden</span>
+            </a>
+        </div>
     </div>
 
     <div class="card card-custom">
@@ -32,17 +41,14 @@
                 <table class="table table-hover align-middle" id="tabla_ordenes" style="width:100%">
                     <thead>
                         <tr class="text-uppercase small font-weight-bold text-muted">
-                            <th>#</th>
-                            <th>Vehículo</th>
-                            <th>Servicio</th>
-                            <th>KM</th>
-                            <th>Estado</th>
-                            <th>Fecha</th>
+                            <th>#</th><th>Vehículo</th><th>Servicio</th>
+                            <th>KM</th><th>Estado</th><th>Fecha</th>
                             <th class="text-center">Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for o in ordenes %} <tr>
+                        {% for o in ordenes %}
+                        <tr>
                             <td class="font-weight-bold">{{ o.id }}</td>
                             <td>{{ o.vehiculo }}</td>
                             <td class="text-secondary">{{ o.servicio }}</td>
@@ -78,7 +84,7 @@
     $(document).ready(function () {
         $('#tabla_ordenes').DataTable({
             responsive: true,
-            language: { 
+            language: {
                 "sSearch": "<span class='font-weight-bold small'>BUSCAR:</span>",
                 "oPaginate": { "sNext": "<i class='fas fa-chevron-right'></i>", "sPrevious": "<i class='fas fa-chevron-left'></i>" }
             }

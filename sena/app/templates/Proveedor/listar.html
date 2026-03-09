@@ -4,121 +4,37 @@
 {% block css %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <style>
-    /* --- ENCABEZADO PREMIUM ESTILO ACERAUTOS (ROJO) --- */
-    .header-premium {
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        border-radius: 20px;
-        padding: 25px;
-        margin-bottom: 30px;
-        border-left: 10px solid #d32f2f;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .title-icon {
-        background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-        color: white;
-        width: 55px;
-        height: 55px;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
-        margin-right: 20px;
-    }
-
-    .title-container h1 {
-        font-size: 1.9rem;
-        font-weight: 700;
-        margin-bottom: 0;
-        color: #2d3436;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-    }
-
-    .btn-nueva-premium {
-        background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
-        color: white !important;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        letter-spacing: 1px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: 0.3s;
-        box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
-    }
-
-    .btn-nueva-premium:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.1);
-    }
-
-    .card-custom {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
-        background: #fff;
-    }
-
-    .avatar-box {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
-        color: white;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        margin-right: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    .btn-circle {
-        width: 35px;
-        height: 35px;
-        border-radius: 10px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: 0.3s;
-        border: none;
-        color: white !important;
-    }
-
-    .btn-circle:hover { 
-        transform: translateY(-3px); 
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-    }
+    .header-premium { background: linear-gradient(145deg, #ffffff, #f8f9fa); border-radius: 20px; padding: 25px; margin-bottom: 30px; border-left: 10px solid #d32f2f; box-shadow: 0 15px 35px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; }
+    .title-icon { background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%); color: white; width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 8px 20px rgba(211,47,47,0.2); margin-right: 20px; }
+    .title-container h1 { font-size: 1.9rem; font-weight: 700; margin-bottom: 0; color: #2d3436; text-transform: uppercase; letter-spacing: 1.5px; }
+    .btn-nueva-premium { background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%); color: white !important; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; transition: 0.3s; box-shadow: 0 8px 15px rgba(211,47,47,0.2); text-decoration: none; }
+    .btn-nueva-premium:hover { transform: translateY(-2px); filter: brightness(1.1); color: white !important; }
+    .card-custom { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; background: #fff; }
+    .avatar-box { width: 40px; height: 40px; background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .btn-circle { width: 35px; height: 35px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; transition: 0.3s; border: none; color: white !important; }
+    .btn-circle:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container-fluid animate__animated animate__fadeIn">
-    
+
     <div class="header-premium">
         <div class="d-flex align-items-center">
-            <div class="title-icon">
-                <i class="fas fa-truck"></i>
-            </div>
-            <div class="title-container">
-                <h1>{{ titulo|default:"DIRECTORIO DE PROVEEDORES" }}</h1>
-            </div>
+            <div class="title-icon"><i class="fas fa-truck"></i></div>
+            <div class="title-container"><h1>{{ titulo|default:"DIRECTORIO DE PROVEEDORES" }}</h1></div>
         </div>
-
-        <a href="{{ crear_url }}" class="btn btn-nueva-premium">
-            <i class="fas fa-plus-circle"></i>
-            <span>Nuevo Proveedor</span>
-        </a>
+        <div class="d-flex align-items-center" style="gap:10px;">
+            <a href="{% url 'app:reporte_proveedores_pdf' %}" class="btn-nueva-premium" style="background:linear-gradient(135deg,#c0392b,#96281b);">
+                <i class="fas fa-file-pdf"></i><span>PDF</span>
+            </a>
+            <a href="{% url 'app:reporte_proveedores_excel' %}" class="btn-nueva-premium" style="background:linear-gradient(135deg,#1e8449,#145a32);">
+                <i class="fas fa-file-excel"></i><span>Excel</span>
+            </a>
+            <a href="{{ crear_url }}" class="btn-nueva-premium">
+                <i class="fas fa-plus-circle"></i><span>Nuevo Proveedor</span>
+            </a>
+        </div>
     </div>
 
     <div class="card card-custom">
@@ -127,67 +43,28 @@
                 <table class="table table-hover align-middle" id="tabla_pro" style="width:100%">
                     <thead>
                         <tr class="text-uppercase small font-weight-bold text-muted">
-                            <th class="text-center">#</th>
-                            <th>Proveedor</th>
-                            <th>NIT / Documento</th>
-                            <th>Teléfono</th>
-                            <th>Dirección</th>
-                            <th class="text-center">Acciones</th>
+                            <th class="text-center">#</th><th>Proveedor</th>
+                            <th>NIT / Documento</th><th>Teléfono</th>
+                            <th>Dirección</th><th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for p in object_list %}
                         <tr>
-                            <td class="text-center font-weight-bold text-secondary">
-                                {{ forloop.counter }}
-                            </td>
-
+                            <td class="text-center font-weight-bold text-secondary">{{ forloop.counter }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-box">
-                                        {{ p.nombre|first|upper }}
-                                    </div>
-                                    <div>
-                                        <span class="font-weight-bold text-dark">
-                                            {{ p.nombre }}
-                                        </span>
-                                    </div>
+                                    <div class="avatar-box">{{ p.nombre|first|upper }}</div>
+                                    <span class="font-weight-bold text-dark">{{ p.nombre }}</span>
                                 </div>
                             </td>
-
-                            <td>
-                                <span class="badge badge-light p-2 text-dark font-weight-bold" style="font-size: 0.9rem; border: 1px solid #ebedef;">
-                                    {{ p.nit }}
-                                </span>
-                            </td>
-                            
+                            <td><span class="badge badge-light p-2 text-dark font-weight-bold" style="font-size:0.9rem; border:1px solid #ebedef;">{{ p.nit }}</span></td>
                             <td class="text-dark font-weight-bold">{{ p.telefono }}</td>
-                            
                             <td class="text-muted">{{ p.direccion|default:"No registrada" }}</td>
-
                             <td class="text-center">
-                                <a href="{% url 'app:editar_proveedor' p.id %}" 
-                                   class="btn btn-warning btn-circle shadow-sm" title="Editar">
-                                    <i class="fas fa-pen"></i>
-                                </a>
-
-                                <button class="btn btn-info btn-circle shadow-sm mx-1"
-                                    onclick="verDetalle(
-                                        '{{ p.nombre }}',
-                                        '{{ p.nit }}',
-                                        '{{ p.telefono }}',
-                                        '{{ p.direccion }}'
-                                    )"
-                                    title="Ver Detalles">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-
-                                <a href="{% url 'app:eliminar_proveedor' p.id %}"
-                                   class="btn btn-danger btn-circle shadow-sm"
-                                   style="background-color: #d32f2f !important;"
-                                   title="Eliminar">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
+                                <a href="{% url 'app:editar_proveedor' p.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar"><i class="fas fa-pen"></i></a>
+                                <button class="btn btn-info btn-circle shadow-sm mx-1" onclick="verDetalle('{{ p.nombre }}','{{ p.nit }}','{{ p.telefono }}','{{ p.direccion }}')" title="Ver Detalles"><i class="fas fa-eye"></i></button>
+                                <a href="{% url 'app:eliminar_proveedor' p.id %}" class="btn btn-danger btn-circle shadow-sm" style="background-color:#d32f2f !important;" title="Eliminar"><i class="fas fa-trash-alt"></i></a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -203,23 +80,11 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
     $(document).ready(function () {
         $('#tabla_pro').DataTable({
-            responsive: true,
-            autoWidth: false,
-            language: {
-                sSearch: "Buscar:",
-                sLengthMenu: "Mostrar _MENU_ registros",
-                sInfo: "Mostrando _START_ a _END_ de _TOTAL_ proveedores",
-                oPaginate: {
-                    sNext: "Siguiente",
-                    sPrevious: "Anterior"
-                },
-                sEmptyTable: "No hay datos disponibles en la tabla",
-                sZeroRecords: "No se encontraron resultados"
-            }
+            responsive: true, autoWidth: false,
+            language: { sSearch: "Buscar:", sLengthMenu: "Mostrar _MENU_ registros", sInfo: "Mostrando _START_ a _END_ de _TOTAL_ proveedores", oPaginate: { sNext: "Siguiente", sPrevious: "Anterior" }, sEmptyTable: "No hay datos disponibles", sZeroRecords: "No se encontraron resultados" }
         });
     });
 
@@ -227,15 +92,11 @@
         Swal.fire({
             title: '<strong>Información del Proveedor</strong>',
             icon: 'info',
-            html: `
-                <div class="text-left" style="font-size: 0.95rem;">
-                    <hr>
-                    <p><b>🏢 Razón Social:</b> ${nombre}</p>
-                    <p><b>🆔 NIT:</b> ${nit}</p>
-                    <p><b>📞 Teléfono:</b> ${telefono}</p>
-                    <p><b>📍 Dirección:</b> ${direccion}</p>
-                </div>
-            `,
+            html: `<div class="text-left" style="font-size:0.95rem;"><hr>
+                <p><b>🏢 Razón Social:</b> ${nombre}</p>
+                <p><b>🆔 NIT:</b> ${nit}</p>
+                <p><b>📞 Teléfono:</b> ${telefono}</p>
+                <p><b>📍 Dirección:</b> ${direccion}</p></div>`,
             confirmButtonColor: '#d32f2f',
             confirmButtonText: '<i class="fa fa-thumbs-up"></i> Entendido'
         });

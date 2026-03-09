@@ -2,17 +2,8 @@
 
 {% block contenido %}
 <style>
-  .card-premium {
-    border: none;
-    border-radius: 18px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-  }
-  .card-header-premium {
-    background: linear-gradient(135deg, #4a4a4a, #2f2f2f);
-    color: white;
-    padding: 20px 24px;
-    border-radius: 18px 18px 0 0;
-  }
+  .card-premium { border: none; border-radius: 18px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+  .card-header-premium { background: linear-gradient(135deg, #4a4a4a, #2f2f2f); color: white; padding: 20px 24px; border-radius: 18px 18px 0 0; }
   .badge-pendiente { background: #fff3cd; color: #856404; border-radius:8px; padding:4px 10px; font-weight:600; }
   .badge-pagada    { background: #d1e7dd; color: #0f5132; border-radius:8px; padding:4px 10px; font-weight:600; }
   .badge-servicio  { background: #cfe2ff; color: #084298; border-radius:8px; padding:4px 10px; font-size:.8rem; }
@@ -20,8 +11,8 @@
   .table thead th  { background: #f8f9fa; font-weight:700; border-bottom: 2px solid #dee2e6; }
   .btn-pagar { background: linear-gradient(135deg,#198754,#146c43); color:white; border:none; border-radius:8px; padding:5px 14px; font-weight:600; font-size:.85rem; }
   .btn-pagar:hover { transform:translateY(-1px); box-shadow: 0 4px 10px rgba(25,135,84,.3); color:white; }
-
-  /* Modal */
+  .btn-reporte { border:none; border-radius:10px; padding:8px 18px; font-weight:700; text-transform:uppercase; font-size:0.78rem; display:inline-flex; align-items:center; gap:8px; transition:0.3s; text-decoration:none; color:white; }
+  .btn-reporte:hover { transform:translateY(-2px); opacity:.9; color:white; }
   .modal-pago .modal-content { border-radius: 16px; border: none; box-shadow: 0 20px 50px rgba(0,0,0,.18); }
   .modal-pago .modal-header  { background: linear-gradient(135deg,#4a4a4a,#2f2f2f); color:white; border-radius:16px 16px 0 0; }
   .metodo-card { border:2px solid #dee2e6; border-radius:12px; padding:14px; cursor:pointer; text-align:center; transition:all .2s; font-weight:600; font-size:.9rem; }
@@ -34,9 +25,17 @@
   <div class="card card-premium">
     <div class="card-header-premium d-flex align-items-center justify-content-between">
       <h3 class="mb-0"><i class="fas fa-file-invoice mr-2"></i> Facturas</h3>
-      <a href="{% url 'app:crear_factura' %}" class="btn btn-light btn-sm" style="border-radius:10px;font-weight:600;">
-        <i class="fas fa-plus mr-1"></i> Nueva Factura
-      </a>
+      <div class="d-flex align-items-center" style="gap:10px;">
+        <a href="{% url 'app:reporte_facturas_pdf' %}" class="btn-reporte" style="background:linear-gradient(135deg,#c0392b,#96281b);">
+          <i class="fas fa-file-pdf"></i> PDF
+        </a>
+        <a href="{% url 'app:reporte_facturas_excel' %}" class="btn-reporte" style="background:linear-gradient(135deg,#1e8449,#145a32);">
+          <i class="fas fa-file-excel"></i> Excel
+        </a>
+        <a href="{% url 'app:crear_factura' %}" class="btn btn-light btn-sm" style="border-radius:10px;font-weight:600;">
+          <i class="fas fa-plus mr-1"></i> Nueva Factura
+        </a>
+      </div>
     </div>
 
     <div class="card-body p-0">
@@ -52,17 +51,9 @@
         <table class="table table-hover mb-0">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Tipo</th>
-              <th>N° Factura</th>
-              <th>Descripción</th>
-              <th>Subtotal</th>
-              <th>IVA</th>
-              <th>Total</th>
-              <th>Estado</th>
-              <th>Método Pago</th>
-              <th>Fecha</th>
-              <th>Acciones</th>
+              <th>#</th><th>Tipo</th><th>N° Factura</th><th>Descripción</th>
+              <th>Subtotal</th><th>IVA</th><th>Total</th><th>Estado</th>
+              <th>Método Pago</th><th>Fecha</th><th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -101,25 +92,19 @@
               <td>
                 <div class="d-flex gap-1 flex-wrap">
                   {% if f.estado_pago == 'Pendiente' %}
-                    <button class="btn-pagar"
-                      onclick="abrirModalPagar({{ f.pk }}, '{{ f.numero_factura }}', '{% url 'app:pagar_factura' f.pk %}')">
+                    <button class="btn-pagar" onclick="abrirModalPagar({{ f.pk }}, '{{ f.numero_factura }}', '{% url 'app:pagar_factura' f.pk %}')">
                       <i class="fas fa-dollar-sign mr-1"></i> Pagar
                     </button>
                   {% endif %}
-                  <a href="{% url 'app:detalle_factura' f.pk %}" class="btn btn-sm btn-info" style="border-radius:8px;">
-                    <i class="fas fa-eye"></i>
-                  </a>
-                  <a href="{% url 'app:eliminar_factura' f.pk %}" class="btn btn-sm btn-danger" style="border-radius:8px;">
-                    <i class="fas fa-trash"></i>
-                  </a>
+                  <a href="{% url 'app:detalle_factura' f.pk %}" class="btn btn-sm btn-info" style="border-radius:8px;"><i class="fas fa-eye"></i></a>
+                  <a href="{% url 'app:eliminar_factura' f.pk %}" class="btn btn-sm btn-danger" style="border-radius:8px;"><i class="fas fa-trash"></i></a>
                 </div>
               </td>
             </tr>
             {% empty %}
             <tr>
               <td colspan="11" class="text-center text-muted py-4">
-                <i class="fas fa-file-invoice fa-2x mb-2 d-block"></i>
-                No hay facturas registradas.
+                <i class="fas fa-file-invoice fa-2x mb-2 d-block"></i>No hay facturas registradas.
               </td>
             </tr>
             {% endfor %}
@@ -130,7 +115,7 @@
   </div>
 </div>
 
-<!-- ═══════════════ MODAL PAGAR ═══════════════ -->
+<!-- MODAL PAGAR -->
 <div class="modal fade modal-pago" id="modalPagar" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -139,49 +124,19 @@
         <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
       </div>
       <div class="modal-body p-4">
-        <p class="text-muted mb-3">
-          Método de pago para la factura <strong id="modalNumFactura"></strong>
-        </p>
-
+        <p class="text-muted mb-3">Método de pago para la factura <strong id="modalNumFactura"></strong></p>
         <div class="row g-2 mb-4">
-          <div class="col-4">
-            <div class="metodo-card" onclick="seleccionarMetodo('Efectivo',this)">
-              <i class="fas fa-money-bill-wave"></i> Efectivo
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="metodo-card" onclick="seleccionarMetodo('Transferencia',this)">
-              <i class="fas fa-university"></i> Transferencia
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="metodo-card" onclick="seleccionarMetodo('TarjetaDebito',this)">
-              <i class="fas fa-credit-card"></i> T. Débito
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="metodo-card" onclick="seleccionarMetodo('TarjetaCredito',this)">
-              <i class="fas fa-credit-card"></i> T. Crédito
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="metodo-card" onclick="seleccionarMetodo('Nequi',this)">
-              <i class="fas fa-mobile-alt"></i> Nequi
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="metodo-card" onclick="seleccionarMetodo('Daviplata',this)">
-              <i class="fas fa-mobile-alt"></i> Daviplata
-            </div>
-          </div>
+          <div class="col-4"><div class="metodo-card" onclick="seleccionarMetodo('Efectivo',this)"><i class="fas fa-money-bill-wave"></i> Efectivo</div></div>
+          <div class="col-4"><div class="metodo-card" onclick="seleccionarMetodo('Transferencia',this)"><i class="fas fa-university"></i> Transferencia</div></div>
+          <div class="col-4"><div class="metodo-card" onclick="seleccionarMetodo('TarjetaDebito',this)"><i class="fas fa-credit-card"></i> T. Débito</div></div>
+          <div class="col-4"><div class="metodo-card" onclick="seleccionarMetodo('TarjetaCredito',this)"><i class="fas fa-credit-card"></i> T. Crédito</div></div>
+          <div class="col-4"><div class="metodo-card" onclick="seleccionarMetodo('Nequi',this)"><i class="fas fa-mobile-alt"></i> Nequi</div></div>
+          <div class="col-4"><div class="metodo-card" onclick="seleccionarMetodo('Daviplata',this)"><i class="fas fa-mobile-alt"></i> Daviplata</div></div>
         </div>
-
         <form method="post" id="formPagar" action="">
           {% csrf_token %}
           <input type="hidden" name="metodo_pago" id="metodoPagoInput">
-          <div id="errorMetodo" class="text-danger small mb-2 d-none">
-            <i class="fas fa-exclamation-triangle mr-1"></i> Seleccione un método de pago.
-          </div>
+          <div id="errorMetodo" class="text-danger small mb-2 d-none"><i class="fas fa-exclamation-triangle mr-1"></i> Seleccione un método de pago.</div>
           <button type="submit" class="btn btn-success w-100" style="border-radius:10px;font-weight:600;padding:10px;">
             <i class="fas fa-check-circle mr-1"></i> Confirmar Pago
           </button>
@@ -200,14 +155,12 @@ function abrirModalPagar(facturaId, numFactura, urlPagar) {
   document.getElementById('errorMetodo').classList.add('d-none');
   $('#modalPagar').modal('show');
 }
-
 function seleccionarMetodo(val, el) {
   document.querySelectorAll('.metodo-card').forEach(c => c.classList.remove('activo'));
   el.classList.add('activo');
   document.getElementById('metodoPagoInput').value = val;
   document.getElementById('errorMetodo').classList.add('d-none');
 }
-
 document.getElementById('formPagar').addEventListener('submit', function(e) {
   if (!document.getElementById('metodoPagoInput').value) {
     e.preventDefault();

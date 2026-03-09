@@ -4,115 +4,38 @@
 {% block css %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 <style>
-    /* --- ENCABEZADO PREMIUM ESTILO ACERAUTOS --- */
-    .header-premium {
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        border-radius: 20px;
-        padding: 25px;
-        margin-bottom: 30px;
-        border-left: 10px solid #d32f2f;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .title-icon {
-        background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-        color: white;
-        width: 55px; height: 55px;
-        border-radius: 15px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.5rem;
-        box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
-        margin-right: 20px;
-    }
-
-    .title-container h1 {
-        font-family: 'Segoe UI', sans-serif;
-        font-size: 1.9rem;
-        font-weight: 700;
-        margin-bottom: 0;
-        color: #2d3436;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-    }
-
-    .btn-nueva-premium {
-        background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
-        color: white !important;
-        border: none; padding: 12px 25px; border-radius: 12px;
-        font-weight: 700; text-transform: uppercase;
-        font-size: 0.8rem; letter-spacing: 1px;
-        display: flex; align-items: center; gap: 10px;
-        transition: all 0.3s;
-        box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
-    }
-
-    .btn-nueva-premium:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.1);
-        box-shadow: 0 12px 20px rgba(211, 47, 47, 0.3);
-    }
-
-    .card-custom {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
-        background: #fff;
-    }
-
-    .avatar-box {
-        width: 40px; height: 40px;
-        background: #343a40; color: white;
-        border-radius: 10px;
-        display: flex; align-items: center; justify-content: center;
-        font-weight: bold; margin-right: 12px;
-    }
-
-    .btn-circle {
-        width: 40px; height: 40px;
-        border-radius: 12px;
-        display: inline-flex; align-items: center; justify-content: center;
-        transition: 0.3s; border: none;
-    }
-
-    .btn-circle:hover { 
-        transform: translateY(-3px); 
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
-    }
-
-    /* Ajuste para los badges de la tabla */
-    .badge-metodo {
-        background-color: #f1f3f5;
-        color: #212529 !important;
-        border: 1px solid #dee2e6;
-        font-weight: 600;
-        padding: 8px 12px;
-        border-radius: 8px;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-    }
+    .header-premium { background: linear-gradient(145deg, #ffffff, #f8f9fa); border-radius: 20px; padding: 25px; margin-bottom: 30px; border-left: 10px solid #d32f2f; box-shadow: 0 15px 35px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; }
+    .title-icon { background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%); color: white; width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 8px 20px rgba(211,47,47,0.2); margin-right: 20px; }
+    .title-container h1 { font-family: 'Segoe UI', sans-serif; font-size: 1.9rem; font-weight: 700; margin-bottom: 0; color: #2d3436; text-transform: uppercase; letter-spacing: 1.5px; }
+    .btn-nueva-premium { background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%); color: white !important; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; transition: all 0.3s; box-shadow: 0 8px 15px rgba(211,47,47,0.2); text-decoration: none; }
+    .btn-nueva-premium:hover { transform: translateY(-2px); filter: brightness(1.1); color: white !important; }
+    .card-custom { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; background: #fff; }
+    .avatar-box { width: 40px; height: 40px; background: #343a40; color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px; }
+    .btn-circle { width: 40px; height: 40px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; transition: 0.3s; border: none; }
+    .btn-circle:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .badge-metodo { background-color: #f1f3f5; color: #212529 !important; border: 1px solid #dee2e6; font-weight: 600; padding: 8px 12px; border-radius: 8px; text-transform: uppercase; font-size: 0.75rem; }
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container-fluid animate__animated animate__fadeIn">
-    
+
     <div class="header-premium">
         <div class="d-flex align-items-center">
-            <div class="title-icon">
-                <i class="fas fa-shopping-cart"></i>
-            </div>
-            <div class="title-container">
-                <h1>HISTORIAL DE COMPRAS</h1>
-            </div>
+            <div class="title-icon"><i class="fas fa-shopping-cart"></i></div>
+            <div class="title-container"><h1>HISTORIAL DE COMPRAS</h1></div>
         </div>
-
-        <a href="{% url 'app:crear_compra' %}" class="btn btn-nueva-premium">
-            <i class="fas fa-plus-circle"></i>
-            <span>Registrar Nueva Compra</span>
-        </a>
+        <div class="d-flex align-items-center" style="gap:10px;">
+            <a href="{% url 'app:reporte_compras_pdf' %}" class="btn-nueva-premium" style="background:linear-gradient(135deg,#c0392b,#96281b);">
+                <i class="fas fa-file-pdf"></i><span>PDF</span>
+            </a>
+            <a href="{% url 'app:reporte_compras_excel' %}" class="btn-nueva-premium" style="background:linear-gradient(135deg,#1e8449,#145a32);">
+                <i class="fas fa-file-excel"></i><span>Excel</span>
+            </a>
+            <a href="{% url 'app:crear_compra' %}" class="btn-nueva-premium">
+                <i class="fas fa-plus-circle"></i><span>Registrar Nueva Compra</span>
+            </a>
+        </div>
     </div>
 
     <div class="card card-custom">
@@ -144,23 +67,13 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle">
-                                <span class="text-dark font-weight-medium">{{ c.producto.nombre }}</span>
-                            </td>
-                            <td class="text-center align-middle">
-                                <span class="font-weight-bold text-dark" style="font-size: 1.05rem;">{{ c.cantidad }}</span>
-                            </td>
-                            <td class="text-center align-middle">
-                                <span class="badge badge-metodo">
-                                    {{ c.metodo_pago }}
-                                </span>
-                            </td>
-                            <td class="align-middle">
-                                <span class="text-danger font-weight-bold">$ {{ c.total_pagado }}</span>
-                            </td>
+                            <td class="align-middle"><span class="text-dark font-weight-medium">{{ c.producto.nombre }}</span></td>
+                            <td class="text-center align-middle"><span class="font-weight-bold text-dark" style="font-size:1.05rem;">{{ c.cantidad }}</span></td>
+                            <td class="text-center align-middle"><span class="badge badge-metodo">{{ c.metodo_pago }}</span></td>
+                            <td class="align-middle"><span class="text-danger font-weight-bold">$ {{ c.total_pagado }}</span></td>
                             <td class="align-middle text-dark small">{{ c.fecha|date:"d/m/Y H:i" }}</td>
                             <td class="text-center align-middle">
-                                <a href="{% url 'app:editar_compra' c.id %}" class="btn btn-warning btn-circle shadow-sm" title="Corregir datos">
+                                <a href="{% url 'app:editar_compra' c.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
                                     <i class="fas fa-pen text-white"></i>
                                 </a>
                             </td>
@@ -177,24 +90,16 @@
 {% block js %}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-
 <script>
     $(document).ready(function () {
         $('#tabla_compras').DataTable({
-            destroy: true,
-            responsive: true,
-            autoWidth: false,
-            order: [[0, "desc"]],
+            destroy: true, responsive: true, autoWidth: false, order: [[0, "desc"]],
             language: {
                 "sSearch": "<span class='font-weight-bold small'>FILTRAR:</span>",
                 "sLengthMenu": "Mostrar _MENU_",
                 "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                "sInfoEmpty": "0 registros",
-                "sZeroRecords": "No se encontraron facturas",
-                "oPaginate": {
-                    "sNext": "<i class='fas fa-chevron-right'></i>",
-                    "sPrevious": "<i class='fas fa-chevron-left'></i>"
-                }
+                "sZeroRecords": "No se encontraron registros",
+                "oPaginate": { "sNext": "<i class='fas fa-chevron-right'></i>", "sPrevious": "<i class='fas fa-chevron-left'></i>" }
             }
         });
     });

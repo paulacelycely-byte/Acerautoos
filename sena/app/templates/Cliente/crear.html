@@ -3,215 +3,299 @@
 {% load widget_tweaks %}
 
 {% block css %}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-    .caja-error-roja {
-        background-color: #fff5f5 !important;
-        border: 1px solid #feb2b2 !important;
-        border-left: 6px solid #454d55 !important; 
-        padding: 10px !important;
-        margin-top: 5px !important;
-        border-radius: 8px !important;
+    :root {
+        --rojo:   #d32f2f;
+        --rojo2:  #b71c1c;
+        --carbon: #1a1a1a;
+        --gris:   #f2f2f0;
+        --borde:  #e0ddd8;
+        --texto:  #2a2a2a;
+        --muted:  #888;
     }
 
-    .header-premium {
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        border-radius: 20px;
-        padding: 25px;
-        margin-bottom: 30px;
-        border-left: 10px solid #454d55;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+    /* ── Encabezado tipo taller ── */
+    .taller-header {
+        position: relative;
+        background: var(--carbon);
+        border-radius: 16px;
+        padding: 28px 32px;
+        margin-bottom: 28px;
+        overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
-
-    .title-icon {
-        background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
-        color: white;
-        width: 55px; height: 55px;
-        border-radius: 15px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.5rem;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        margin-right: 20px;
+    .taller-header::before {
+        content: '';
+        position: absolute;
+        top: 0; right: 0;
+        width: 260px; height: 100%;
+        background: repeating-linear-gradient(
+            -55deg, transparent, transparent 14px,
+            rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px
+        );
     }
-
-    .title-container h1 {
-        font-family: 'Segoe UI', sans-serif;
-        font-size: 1.9rem;
-        font-weight: 700;
-        margin-bottom: 0;
-        color: #2d3436;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
+    .taller-header::after {
+        content: '';
+        position: absolute;
+        left: 0; top: 0;
+        width: 5px; height: 100%;
+        background: var(--rojo);
+        border-radius: 16px 0 0 16px;
     }
-
-    .card-form-premium {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
-        background: #fff;
-    }
-
-    .card-header-dark {
-        background: #454d55; 
-        color: white;
-        padding: 15px 25px;
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.85rem;
-    }
-
-    .input-group-text {
-        background: #f8f9fa;
-        color: #454d55;
-        border-radius: 12px 0 0 12px;
-    }
-
-    .form-control {
-        border-radius: 0 12px 12px 0 !important;
-        border: 1px solid #d1d3e2;
-        padding: 12px 15px;
-    }
-
-    /* Selector de indicativo sin border-radius derecho */
-    .indicativo-select {
-        border-radius: 0 !important;
-        border-right: none !important;
-        max-width: 200px;
-        flex: 0 0 200px;
-    }
-
-    .btn-acerautos-save-crear {
-        background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
-        color: white !important;
-        border: none;
-        padding: 12px 35px;
+    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
+    .header-icon-wrap {
+        width: 56px; height: 56px;
+        background: var(--rojo);
         border-radius: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        transition: all 0.3s;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; color: white;
+        box-shadow: 0 0 0 4px rgba(211,47,47,.25);
+        flex-shrink: 0;
     }
+    .header-titulo {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 2rem; font-weight: 800;
+        color: white; letter-spacing: 1px;
+        text-transform: uppercase; line-height: 1; margin: 0;
+    }
+    .header-sub {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem; color: rgba(255,255,255,.45);
+        margin-top: 4px; letter-spacing: .5px;
+    }
+    .header-badge {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: .8rem; font-weight: 700;
+        color: rgba(255,255,255,.4);
+        text-transform: uppercase; letter-spacing: 1px;
+        position: relative;
+    }
+
+    /* ── Tarjeta del formulario ── */
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid var(--borde);
+        overflow: hidden;
+    }
+    .form-card-header {
+        background: var(--carbon);
+        padding: 14px 24px;
+        display: flex; align-items: center; gap: 10px;
+    }
+    .form-card-header span {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: .85rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1px;
+        color: rgba(255,255,255,.7);
+    }
+    .form-card-header i { color: var(--rojo); font-size: .9rem; }
+
+    .form-card-body { padding: 32px; }
+
+    /* ── Campos ── */
+    .field-group { margin-bottom: 22px; }
+    .field-label {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .72rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .9px;
+        color: var(--muted); display: block; margin-bottom: 7px;
+    }
+    .field-inner { position: relative; }
+    .field-inner .field-icon {
+        position: absolute; left: 14px; top: 50%;
+        transform: translateY(-50%);
+        color: #bbb; font-size: .85rem;
+        pointer-events: none;
+        transition: color .2s;
+    }
+    .field-inner input,
+    .field-inner select {
+        width: 100%;
+        padding: 12px 14px 12px 40px;
+        border: 1.5px solid var(--borde);
+        border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .9rem; color: var(--texto);
+        background: var(--gris);
+        outline: none;
+        transition: border-color .2s, background .2s, box-shadow .2s;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+    .field-inner input:focus,
+    .field-inner select:focus {
+        border-color: var(--rojo);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(211,47,47,.1);
+    }
+    .field-inner:focus-within .field-icon { color: var(--rojo); }
+
+    /* Teléfono con indicativo */
+    .phone-wrap { display: flex; gap: 8px; }
+    .phone-wrap select {
+        width: 180px; flex-shrink: 0;
+        padding-left: 14px;
+    }
+    .phone-wrap input { flex: 1; }
+
+    /* Error */
+    .field-error {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem; color: var(--rojo);
+        margin-top: 5px; display: flex; align-items: center; gap: 5px;
+    }
+
+    /* ── Footer botones ── */
+    .form-card-footer {
+        background: var(--gris);
+        border-top: 1px solid var(--borde);
+        padding: 20px 32px;
+        display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+    }
+    .btn-cancelar {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .82rem; font-weight: 600;
+        text-transform: uppercase; letter-spacing: .5px;
+        padding: 10px 22px; border-radius: 10px;
+        border: 1.5px solid var(--borde);
+        background: white; color: var(--muted);
+        text-decoration: none; transition: .2s;
+    }
+    .btn-cancelar:hover { background: var(--borde); color: var(--texto); }
+    .btn-guardar {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .82rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px;
+        padding: 11px 28px; border-radius: 10px;
+        border: none; background: var(--rojo);
+        color: white; cursor: pointer;
+        box-shadow: 0 4px 14px rgba(211,47,47,.35);
+        transition: .2s;
+        display: flex; align-items: center; gap: 8px;
+    }
+    .btn-guardar:hover { background: var(--rojo2); transform: translateY(-1px); }
+
+    /* Ocultar campo hidden de teléfono */
+    #id_telefono { display: none; }
 </style>
 {% endblock %}
 
 {% block contenido %}
-<div class="container animate__animated animate__fadeIn">
-    
-    <div class="header-premium">
-        <div class="d-flex align-items-center">
-            <div class="title-icon">
-                <i class="fas fa-user-plus"></i>
-            </div>
-            <div class="title-container">
-                <h1>{{ titulo }}</h1>
+<div class="container animate__animated animate__fadeIn" style="max-width:860px;">
+
+    <!-- Encabezado -->
+    <div class="taller-header">
+        <div class="header-left">
+            <div class="header-icon-wrap"><i class="fas fa-user-plus"></i></div>
+            <div>
+                <h1 class="header-titulo">{{ titulo }}</h1>
+                <div class="header-sub">Completa los datos del nuevo cliente</div>
             </div>
         </div>
-        <small class="text-secondary font-weight-bold text-uppercase">Acerautos S.A.S</small>
+        <span class="header-badge">Acerautos S.A.S</span>
     </div>
 
     <form method="post" action="." id="formCliente">
         {% csrf_token %}
-
-        {# Campo telefono oculto — lo llenamos via JS al enviar #}
         {{ form.telefono.as_hidden }}
 
-        <div class="card card-form-premium overflow-hidden">
-            <div class="card-header-dark">
-                <i class="fas fa-id-badge mr-2"></i> Información del Cliente
+        <div class="form-card">
+            <div class="form-card-header">
+                <i class="fas fa-id-badge"></i>
+                <span>Información del Cliente</span>
             </div>
 
-            <div class="card-body p-4 p-md-5">
+            <div class="form-card-body">
                 <div class="row">
 
-                    {# ── Nombre ── #}
-                    <div class="col-md-6 mb-4">
-                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ form.nombre.label }}</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text bg-white border-right-0"><i class="fas fa-signature"></i></span>
+                    <!-- Nombre -->
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.nombre.label }}</label>
+                            <div class="field-inner">
+                                <i class="fas fa-signature field-icon"></i>
+                                {{ form.nombre|add_class:'form-field'|attr:'autocomplete:off' }}
                             </div>
-                            {{ form.nombre|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+                            {% for error in form.nombre.errors %}
+                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+                            {% endfor %}
                         </div>
-                        {% for error in form.nombre.errors %}
-                            <div class="caja-error-roja"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
-                        {% endfor %}
                     </div>
 
-                    {# ── Tipo de documento ── #}
-                    <div class="col-md-6 mb-4">
-                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ form.tipo_documento.label }}</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text bg-white border-right-0"><i class="fas fa-id-card"></i></span>
+                    <!-- Tipo documento -->
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.tipo_documento.label }}</label>
+                            <div class="field-inner">
+                                <i class="fas fa-id-card field-icon"></i>
+                                {{ form.tipo_documento|add_class:'form-field' }}
                             </div>
-                            {{ form.tipo_documento|add_class:'form-control border-left-0 shadow-none' }}
+                            {% for error in form.tipo_documento.errors %}
+                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+                            {% endfor %}
                         </div>
-                        {% for error in form.tipo_documento.errors %}
-                            <div class="caja-error-roja"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
-                        {% endfor %}
                     </div>
 
-                    {# ── Número de documento ── #}
-                    <div class="col-md-6 mb-4">
-                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ form.numero_documento.label }}</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text bg-white border-right-0"><i class="fas fa-fingerprint"></i></span>
+                    <!-- Número documento -->
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.numero_documento.label }}</label>
+                            <div class="field-inner">
+                                <i class="fas fa-fingerprint field-icon"></i>
+                                {{ form.numero_documento|add_class:'form-field'|attr:'autocomplete:off' }}
                             </div>
-                            {{ form.numero_documento|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+                            {% for error in form.numero_documento.errors %}
+                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+                            {% endfor %}
                         </div>
-                        {% for error in form.numero_documento.errors %}
-                            <div class="caja-error-roja"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
-                        {% endfor %}
                     </div>
 
-                    {# ── Teléfono: indicativo + número en una fila ── #}
-                    <div class="col-md-6 mb-4">
-                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">
-                            <i class="fas fa-phone mr-1"></i> Teléfono
-                        </label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text bg-white border-right-0"><i class="fas fa-globe"></i></span>
+                    <!-- Teléfono -->
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label"><i class="fas fa-phone mr-1"></i> Teléfono</label>
+                            <div class="phone-wrap">
+                                <div class="field-inner" style="width:180px; flex-shrink:0;">
+                                    {{ form.indicativo_telefono|add_class:'form-field'|attr:'id:id_indicativo_cliente' }}
+                                </div>
+                                <div class="field-inner" style="flex:1;">
+                                    <i class="fas fa-mobile-alt field-icon"></i>
+                                    {{ form.numero_telefono|add_class:'form-field'|attr:'autocomplete:off'|attr:'placeholder:Ej: 3107928076' }}
+                                </div>
                             </div>
-                            {{ form.indicativo_telefono|add_class:'form-control indicativo-select shadow-none'|attr:'id:id_indicativo_cliente' }}
-                            {{ form.numero_telefono|add_class:'form-control shadow-none'|attr:'autocomplete:off'|attr:'placeholder:Ej: 3107928076' }}
+                            {% for error in form.telefono.errors %}
+                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+                            {% endfor %}
                         </div>
-                        {% for error in form.indicativo_telefono.errors %}
-                            <div class="caja-error-roja"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
-                        {% endfor %}
-                        {% for error in form.numero_telefono.errors %}
-                            <div class="caja-error-roja"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
-                        {% endfor %}
-                        {% for error in form.telefono.errors %}
-                            <div class="caja-error-roja"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
-                        {% endfor %}
                     </div>
 
-                    {# ── Email ── #}
-                    <div class="col-md-6 mb-4">
-                        <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ form.email.label }}</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text bg-white border-right-0"><i class="fas fa-envelope"></i></span>
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.email.label }}</label>
+                            <div class="field-inner">
+                                <i class="fas fa-envelope field-icon"></i>
+                                {{ form.email|add_class:'form-field'|attr:'autocomplete:off' }}
                             </div>
-                            {{ form.email|add_class:'form-control border-left-0 shadow-none'|attr:'autocomplete:off' }}
+                            {% for error in form.email.errors %}
+                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+                            {% endfor %}
                         </div>
-                        {% for error in form.email.errors %}
-                            <div class="caja-error-roja"><i class="fas fa-exclamation-triangle mr-1"></i><span style="font-weight:bold;">{{ error }}</span></div>
-                        {% endfor %}
                     </div>
 
                 </div>
             </div>
 
-            <div class="card-footer bg-light d-flex justify-content-end py-4 border-top">
-                <a href="{% url 'app:listar_clientes' %}" class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold" style="border-radius: 12px;">
+            <div class="form-card-footer">
+                <a href="{% url 'app:listar_clientes' %}" class="btn-cancelar">
                     <i class="fas fa-times mr-1"></i> Cancelar
                 </a>
-                <button type="submit" class="btn btn-acerautos-save-crear shadow-sm">
-                    <i class="fas fa-save mr-2"></i> Guardar Cliente
+                <button type="submit" class="btn-guardar">
+                    <i class="fas fa-save"></i> Guardar Cliente
                 </button>
             </div>
         </div>
@@ -221,19 +305,61 @@
 
 {% block js %}
 <script>
+    /* Aplicar estilos a los inputs generados por widget_tweaks */
+    document.querySelectorAll('.form-field').forEach(el => {
+        el.style.width          = '100%';
+        el.style.padding        = '12px 14px 12px 40px';
+        el.style.border         = '1.5px solid #e0ddd8';
+        el.style.borderRadius   = '10px';
+        el.style.fontFamily     = "'DM Sans', sans-serif";
+        el.style.fontSize       = '.9rem';
+        el.style.color          = '#2a2a2a';
+        el.style.background     = '#f2f2f0';
+        el.style.outline        = 'none';
+        el.style.transition     = 'border-color .2s, box-shadow .2s';
+        el.style.webkitAppearance = 'none';
+        el.style.appearance     = 'none';
+
+        el.addEventListener('focus', () => {
+            el.style.borderColor = '#d32f2f';
+            el.style.background  = 'white';
+            el.style.boxShadow   = '0 0 0 3px rgba(211,47,47,.1)';
+        });
+        el.addEventListener('blur', () => {
+            el.style.borderColor = '#e0ddd8';
+            el.style.background  = '#f2f2f0';
+            el.style.boxShadow   = 'none';
+        });
+    });
+
+    /* Combinar indicativo + número → campo oculto telefono */
+    function actualizarTelefono() {
+        var indicativo = $('#id_indicativo_cliente').val() || '';
+        var numero     = $('[name="numero_telefono"]').val() || '';
+        // Extraer solo el código numérico del indicativo (ej: "co +57 Colombia" → "+57")
+        var match = indicativo.match(/\+\d+/);
+        var codigo = match ? match[0] : indicativo;
+        $('#id_telefono').val((codigo + ' ' + numero).trim());
+    }
+
     $(function () {
+        // Actualizar al cambiar cualquiera de los dos campos
+        $('#id_indicativo_cliente, [name="numero_telefono"]').on('input change', actualizarTelefono);
+        actualizarTelefono(); // ejecutar al cargar
+
         $('#formCliente').on('submit', function (e) {
             e.preventDefault();
+            actualizarTelefono(); // asegurar antes de enviar
             var formulario = this;
             Swal.fire({
                 title: '¿Confirmar registro?',
-                text: "Se guardarán los datos del cliente en Acerautos.",
+                text: "Se guardarán los datos del cliente.",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Sí, guardar',
                 cancelButtonText: 'Revisar',
-                confirmButtonColor: '#454d55',
-                cancelButtonColor: '#d33',
+                confirmButtonColor: '#d32f2f',
+                cancelButtonColor: '#888',
             }).then((result) => {
                 if (result.isConfirmed) { formulario.submit(); }
             });

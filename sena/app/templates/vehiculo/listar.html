@@ -3,7 +3,6 @@
 
 {% block css %}
 <style>
-    /* --- ENCABEZADO PREMIUM ESTILO ACERAUTOS --- */
     .header-premium {
         background: linear-gradient(145deg, #ffffff, #f8f9fa);
         border-radius: 20px;
@@ -15,7 +14,6 @@
         align-items: center;
         justify-content: space-between;
     }
-
     .title-icon {
         background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
         color: white;
@@ -26,111 +24,68 @@
         box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
         margin-right: 20px;
     }
-
     .title-container h1 {
         font-family: 'Segoe UI', sans-serif;
-        font-size: 1.9rem;
-        font-weight: 700;
-        margin-bottom: 0;
-        color: #2d3436;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
+        font-size: 1.9rem; font-weight: 700;
+        margin-bottom: 0; color: #2d3436;
+        text-transform: uppercase; letter-spacing: 1.5px;
     }
-
     .btn-nueva-premium {
         background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
         color: white !important;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        letter-spacing: 1px;
-        display: flex; align-items: center; gap: 10px;
-        transition: all 0.3s ease;
-        box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
+        border: none; padding: 12px 25px; border-radius: 12px;
+        font-weight: 700; text-transform: uppercase; font-size: 0.8rem;
+        letter-spacing: 1px; display: flex; align-items: center; gap: 10px;
+        transition: all 0.3s ease; box-shadow: 0 8px 15px rgba(211,47,47,0.2);
+        text-decoration: none;
     }
-
-    .btn-nueva-premium:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.1);
-    }
-
-    /* --- TABLA Y TARJETA --- */
-    .card-custom {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
-        background: #fff;
-    }
-
+    .btn-nueva-premium:hover { transform: translateY(-2px); filter: brightness(1.1); color: white !important; }
+    .card-custom { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; background: #fff; }
     .placa-box {
         font-family: 'Monaco', 'Courier New', monospace;
-        font-weight: bold;
-        color: #d32f2f;
-        background-color: #fdf2f2;
-        padding: 5px 12px;
-        border-radius: 8px;
-        border: 1px solid #f9d5d5;
-        text-transform: uppercase;
-        display: inline-block;
+        font-weight: bold; color: #d32f2f; background-color: #fdf2f2;
+        padding: 5px 12px; border-radius: 8px; border: 1px solid #f9d5d5;
+        text-transform: uppercase; display: inline-block;
     }
-
     .avatar-owner {
-        width: 40px; height: 40px;
-        background: #2d3436;
-        color: white;
-        border-radius: 10px;
-        display: flex; align-items: center; justify-content: center;
-        font-weight: bold;
-        margin-right: 12px;
+        width: 40px; height: 40px; background: #2d3436; color: white;
+        border-radius: 10px; display: flex; align-items: center; justify-content: center;
+        font-weight: bold; margin-right: 12px;
     }
-
     .btn-circle {
-        width: 35px; height: 35px;
-        border-radius: 10px;
+        width: 35px; height: 35px; border-radius: 10px;
         display: inline-flex; align-items: center; justify-content: center;
-        transition: 0.3s;
-        border: none;
+        transition: 0.3s; border: none;
     }
-
     .btn-circle:hover { transform: translateY(-3px); }
-
-    /* Personalización de DataTables para que coincida con el diseño */
     .dataTables_filter input {
-        border: 2px solid #f1f2f6 !important;
-        border-radius: 10px !important;
-        padding: 6px 15px !important;
-        margin-left: 10px !important;
-        outline: none !important;
+        border: 2px solid #f1f2f6 !important; border-radius: 10px !important;
+        padding: 6px 15px !important; margin-left: 10px !important; outline: none !important;
     }
     .dataTables_filter input:focus { border-color: #d32f2f !important; }
-    
-    .page-item.active .page-link {
-        background-color: #d32f2f !important;
-        border-color: #d32f2f !important;
-    }
+    .page-item.active .page-link { background-color: #d32f2f !important; border-color: #d32f2f !important; }
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container-fluid animate__animated animate__fadeIn">
-    
+
     <div class="header-premium">
         <div class="d-flex align-items-center">
-            <div class="title-icon">
-                <i class="fas fa-car"></i>
-            </div>
-            <div class="title-container">
-                <h1>{{ titulo|upper }}</h1>
-            </div>
+            <div class="title-icon"><i class="fas fa-car"></i></div>
+            <div class="title-container"><h1>{{ titulo|upper }}</h1></div>
         </div>
-
-        <a href="{% url 'app:crear_vehiculo' %}" class="btn btn-nueva-premium">
-            <i class="fas fa-plus-circle"></i>
-            <span>Nuevo Vehículo</span>
-        </a>
+        <div class="d-flex align-items-center" style="gap:10px;">
+            <a href="{% url 'app:reporte_vehiculos_pdf' %}" class="btn-nueva-premium" style="background:linear-gradient(135deg,#c0392b,#96281b);">
+                <i class="fas fa-file-pdf"></i><span>PDF</span>
+            </a>
+            <a href="{% url 'app:reporte_vehiculos_excel' %}" class="btn-nueva-premium" style="background:linear-gradient(135deg,#1e8449,#145a32);">
+                <i class="fas fa-file-excel"></i><span>Excel</span>
+            </a>
+            <a href="{% url 'app:crear_vehiculo' %}" class="btn-nueva-premium">
+                <i class="fas fa-plus-circle"></i><span>Nuevo Vehículo</span>
+            </a>
+        </div>
     </div>
 
     <div class="card card-custom">
@@ -139,22 +94,18 @@
                 <table class="table table-hover align-middle" id="tabla_vehiculos" style="width:100%">
                     <thead>
                         <tr class="text-uppercase small font-weight-bold text-muted" style="border-bottom: 2px solid #f8f9fa;">
-                            <th style="width: 15%;">Placa</th>
-                            <th style="width: 20%;">Marca</th>
-                            <th style="width: 20%;">Modelo / Año</th>
-                            <th style="width: 30%;">Propietario</th>
-                            <th class="text-center" style="width: 15%;">Opciones</th>
+                            <th style="width:15%;">Placa</th>
+                            <th style="width:20%;">Marca</th>
+                            <th style="width:20%;">Modelo / Año</th>
+                            <th style="width:30%;">Propietario</th>
+                            <th class="text-center" style="width:15%;">Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for v in vehiculos %}
                         <tr>
-                            <td class="align-middle">
-                                <span class="placa-box">{{ v.placa }}</span>
-                            </td>
-                            <td class="align-middle">
-                                <span class="font-weight-bold text-dark">{{ v.marca.nombre }}</span>
-                            </td>
+                            <td class="align-middle"><span class="placa-box">{{ v.placa }}</span></td>
+                            <td class="align-middle"><span class="font-weight-bold text-dark">{{ v.marca.nombre }}</span></td>
                             <td class="align-middle text-dark">
                                 <span class="font-weight-bold">{{ v.modelo }}</span>
                                 <small class="text-muted d-block">Acerautos Fleet</small>
@@ -172,7 +123,7 @@
                                 <a href="{% url 'app:editar_vehiculo' v.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
                                     <i class="fas fa-pen text-white"></i>
                                 </a>
-                                <a href="{% url 'app:eliminar_vehiculo' v.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
+                                <a href="{% url 'app:eliminar_vehiculo' v.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color:#d32f2f !important;" title="Eliminar">
                                     <i class="fas fa-trash-alt text-white"></i>
                                 </a>
                             </td>
@@ -189,15 +140,11 @@
 {% block js %}
 <script>
     $(document).ready(function () {
-        // Inicializamos la tabla con el ID correcto y configuración para Bootstrap 5
         if ($.fn.DataTable.isDataTable('#tabla_vehiculos')) {
             $('#tabla_vehiculos').DataTable().destroy();
         }
-
         $('#tabla_vehiculos').DataTable({
-            responsive: true,
-            autoWidth: false,
-            pageLength: 10,
+            responsive: true, autoWidth: false, pageLength: 10,
             language: {
                 "sSearch": "<span class='text-muted small font-weight-bold'>BUSCAR:</span>",
                 "sLengthMenu": "Mostrar _MENU_",
@@ -208,7 +155,6 @@
                     "sPrevious": "<i class='fas fa-chevron-left'></i>"
                 }
             },
-            // Estructura DOM: Filtro arriba, tabla al medio, paginación abajo
             dom: "<'row mb-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
                  "<'row'<'col-sm-12'tr>>" +
                  "<'row mt-3'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",

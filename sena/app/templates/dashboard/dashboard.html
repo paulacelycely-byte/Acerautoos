@@ -3,287 +3,327 @@
 
 {% block contenido %}
 <style>
-    :root {
-        --primary-grad: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
-        --success-grad: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        --warning-grad: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        --danger-grad:  linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        --info-grad:    linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
-        --purple-grad:  linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-        --dark-grad:    linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        --teal-grad:    linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
-        --rose-grad:    linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
-        --orange-grad:  linear-gradient(135deg, #f97316 0%, #c2410c 100%);
-    }
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap');
 
-    .stat-card-premium {
-        border: none; border-radius: 20px; position: relative;
-        overflow: hidden; transition: all 0.3s ease; height: 155px;
-        display: flex; flex-direction: column;
-        justify-content: space-between; padding: 1.25rem;
-    }
-    .stat-card-premium:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.18); }
-    .card-icon-overlay {
-        position: absolute; right: -10px; bottom: -10px;
-        font-size: 4.5rem; opacity: 0.15;
-        transform: rotate(-10deg); color: white;
-    }
-    .card-step {
-        position: absolute; top: 12px; right: 14px;
-        background: rgba(255,255,255,0.2); color: white;
-        font-size: 0.65rem; font-weight: 800;
-        padding: 2px 9px; border-radius: 20px;
-        border: 1px solid rgba(255,255,255,0.35);
-        letter-spacing: 0.5px;
-    }
-    .section-divider {
-        display: flex; align-items: center; margin: 2.5rem 0 1.5rem;
-    }
-    .section-divider span {
-        font-weight: 800; text-transform: uppercase; font-size: 0.8rem;
-        letter-spacing: 1.2px; color: #475569; background: #f1f5f9;
-        padding: 6px 16px; border-radius: 8px;
-        border: 1px solid #e2e8f0; white-space: nowrap;
-    }
-    .section-divider::after {
-        content: ""; flex: 1; height: 2px;
-        background: #e2e8f0; margin-left: 15px;
-    }
-    .btn-action-sm {
-        background: rgba(255,255,255,0.2);
-        border: 1px solid rgba(255,255,255,0.4);
-        border-radius: 8px; color: white; font-size: 0.7rem;
-        font-weight: 700; text-decoration: none; padding: 5px 15px;
-        width: fit-content; transition: 0.2s; display: inline-block;
-    }
-    .btn-action-sm:hover { background: white; color: #1e293b; }
-    .card-title-main {
-        font-size: 1.15rem; font-weight: 700;
-        margin: 0; line-height: 1.2; color: white;
-    }
-    .card-subtitle {
-        font-size: 0.68rem; color: rgba(255,255,255,0.75);
-        margin-top: 3px; font-weight: 500;
-    }
+  :root { --red: #d32f2f; --border: rgba(255,255,255,0.09); }
+
+  .dc {
+    display: block; text-decoration: none; position: relative;
+    border-radius: 14px; overflow: hidden; height: 150px;
+    border: 1px solid var(--border);
+    background: rgba(10,10,10,0.65);
+    backdrop-filter: blur(6px);
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+    cursor: pointer;
+  }
+  .dc:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.5);
+    border-color: rgba(255,255,255,0.22);
+    text-decoration: none;
+  }
+  .dc::before {
+    content: ''; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--accent, #d32f2f);
+    border-radius: 14px 0 0 14px;
+    transition: width .22s;
+  }
+  .dc:hover::before { width: 6px; }
+
+  .dc-bg-icon {
+    position: absolute; right: -5px; bottom: -10px;
+    font-size: 5.5rem; color: white; opacity: 0.04;
+    pointer-events: none; transition: opacity .22s, transform .22s;
+  }
+  .dc:hover .dc-bg-icon { opacity: 0.09; transform: rotate(-5deg) scale(1.05); }
+
+  .dc-inner {
+    position: relative; z-index: 1; height: 100%;
+    padding: 1rem 1.2rem 1rem 1.5rem;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .dc-step {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.6rem; font-weight: 800; letter-spacing: 2px;
+    color: var(--accent, #d32f2f); text-transform: uppercase;
+  }
+  .dc-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.45rem; font-weight: 800; letter-spacing: 0.5px;
+    color: #fff; margin: 0; line-height: 1.1; text-transform: uppercase;
+  }
+  .dc-sub { font-size: 0.72rem; color: rgba(255,255,255,0.45); margin: 3px 0 0; }
+  .dc-cta {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
+    color: var(--accent, #d32f2f); text-transform: uppercase;
+    transition: letter-spacing .2s;
+  }
+  .dc:hover .dc-cta { letter-spacing: 2.5px; }
+
+  .sdiv { display: flex; align-items: center; gap: 14px; margin: 2rem 0 1rem; }
+  .sdiv-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2rem; font-weight: 900; color: var(--red); line-height: 1; opacity: 0.7;
+  }
+  .sdiv-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: rgba(255,255,255,0.35);
+  }
+  .sdiv-line {
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, rgba(211,47,47,0.4), rgba(255,255,255,0.05));
+  }
+
+  .dash-head {
+    background: rgba(0,0,0,0.5); border: 1px solid var(--border);
+    border-left: 4px solid var(--red); border-radius: 14px;
+    padding: 1.4rem 2rem; margin-bottom: 0.5rem;
+    backdrop-filter: blur(8px);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .dash-head-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2.2rem; font-weight: 900; letter-spacing: 2px;
+    color: #fff; text-transform: uppercase; line-height: 1; margin: 0;
+  }
+  .dash-head-title span { color: var(--red); }
+  .dash-head-sub { font-size: 0.8rem; color: rgba(255,255,255,0.4); margin: 5px 0 0; letter-spacing: 0.5px; }
+
+  .user-strip {
+    background: rgba(0,0,0,0.5); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 100%; backdrop-filter: blur(6px);
+  }
+  .user-avatar {
+    width: 46px; height: 46px; border-radius: 50%; background: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.4rem; font-weight: 900; color: #fff; flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.15);
+  }
+  .btn-notif {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(211,47,47,0.12); border: 1px solid rgba(211,47,47,0.35);
+    color: #fff; border-radius: 50px; padding: 8px 20px;
+    font-size: 0.78rem; font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    text-decoration: none; transition: .2s;
+  }
+  .btn-notif:hover { background: var(--red); border-color: var(--red); color: #fff; text-decoration: none; }
+
+  .badge-active {
+    background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.35);
+    color: #10b981; font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem; letter-spacing: 2px; font-weight: 700;
+    padding: 4px 14px; border-radius: 50px; display: inline-block;
+  }
 </style>
 
-<div class="container-fluid py-4">
+<div class="container-fluid py-3 px-4">
 
-    <!-- Encabezado -->
-    <div class="d-flex justify-content-between align-items-end mb-4 px-2">
-        <div>
-            <h1 class="fw-black text-dark mb-0" style="letter-spacing:-1px;">
-                Acerautos <span class="text-primary"></span>
-            </h1>
-            <p class="text-muted mb-0">Gestión Integral de Autopartes y Taller</p>
-        </div>
-        <div class="text-end d-none d-md-block">
-            <div class="fw-bold text-dark">{% now "l, d F Y" %}</div>
-            <span class="badge bg-success-subtle text-success border border-success-subtle px-3">SISTEMA ACTIVO</span>
-        </div>
+  <div class="dash-head mb-3">
+    <div>
+      <h1 class="dash-head-title">ACER<span>AUTOS</span></h1>
+      <p class="dash-head-sub">GESTIÓN INTEGRAL DE AUTOPARTES Y TALLER</p>
     </div>
-
-    <!-- ══ PASO 1: Recepción ══ -->
-    <div class="section-divider"><span>① Recepción de Clientes y Vehículos</span></div>
-    <div class="row g-4">
-
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--info-grad);">
-                <span class="card-step">PASO 1</span>
-                <i class="fas fa-user-tie card-icon-overlay"></i>
-                <div>
-                    <h4 class="card-title-main">Clientes</h4>
-                    <p class="card-subtitle">Registrar y gestionar clientes</p>
-                </div>
-                <a href="{% url 'app:listar_clientes' %}" class="btn-action-sm">GESTIONAR</a>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--info-grad);">
-                <span class="card-step">PASO 2</span>
-                <i class="fas fa-car card-icon-overlay"></i>
-                <div>
-                    <h4 class="card-title-main">Vehículos</h4>
-                    <p class="card-subtitle">Asociar vehículo al cliente</p>
-                </div>
-                <a href="{% url 'app:listar_vehiculos' %}" class="btn-action-sm">GESTIONAR</a>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--success-grad);">
-                <span class="card-step">PASO 3</span>
-                <i class="fas fa-clipboard-list card-icon-overlay"></i>
-                <div>
-                    <h4 class="card-title-main">Órdenes de Servicio</h4>
-                    <p class="card-subtitle">Crear orden para el vehículo</p>
-                </div>
-                <a href="{% url 'app:orden_servicio_list' %}" class="btn-action-sm">VER ÓRDENES</a>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--teal-grad);">
-                <span class="card-step">PASO 4</span>
-                <i class="fas fa-screwdriver-wrench card-icon-overlay"></i>
-                <div>
-                    <h4 class="card-title-main">Tipos de Servicio</h4>
-                    <p class="card-subtitle">Definir qué servicio se realiza</p>
-                </div>
-                <a href="{% url 'app:tipo_servicio_list' %}" class="btn-action-sm">CATÁLOGO</a>
-            </div>
-        </div>
-
+    <div class="text-end d-none d-md-block">
+      <div style="color:rgba(255,255,255,0.7);font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:1px;">{% now "l, d F Y" %}</div>
+      <div class="badge-active mt-2">● SISTEMA ACTIVO</div>
     </div>
+  </div>
 
-    <!-- ══ PASO 2: Ejecución ══ -->
-    <div class="section-divider"><span>② Ejecución de la Orden</span></div>
-    <div class="row g-4">
-
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--purple-grad);">
-                <span class="card-step">PASO 5</span>
-                <i class="fas fa-list-ul card-icon-overlay"></i>
-                <div>
-                    <h4 class="card-title-main">Detalles de Orden</h4>
-                    <p class="card-subtitle">Agregar productos y servicios</p>
-                </div>
-                <a href="{% url 'app:detalle_orden_list' %}" class="btn-action-sm">VER DETALLES</a>
-            </div>
+  <!-- 01 Recepción -->
+  <div class="sdiv">
+    <span class="sdiv-num">01</span>
+    <span class="sdiv-label">Recepción de Clientes y Vehículos</span>
+    <div class="sdiv-line"></div>
+  </div>
+  <div class="row g-3">
+    <div class="col-xl-3 col-md-6">
+      <a href="{% url 'app:listar_clientes' %}" class="dc" style="--accent:#3b82f6;">
+        <i class="fas fa-user-tie dc-bg-icon"></i>
+        <div class="dc-inner">
+          <span class="dc-step">PASO 01</span>
+          <div><h4 class="dc-title">Clientes</h4><p class="dc-sub">Registrar y gestionar clientes del taller</p></div>
+          <span class="dc-cta">Gestionar →</span>
         </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--purple-grad);">
-                <span class="card-step">PASO 6</span>
-                <i class="fas fa-puzzle-piece card-icon-overlay"></i>
-                <div>
-                    <h4 class="card-title-main">Compatibilidad</h4>
-                    <p class="card-subtitle">Verificar piezas compatibles</p>
-                </div>
-                <a href="{% url 'app:listar_compatibilidad' %}" class="btn-action-sm">CONSULTAR</a>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--warning-grad);">
-                <span class="card-step">PASO 7</span>
-                <i class="fas fa-boxes card-icon-overlay"></i>
-                <div>
-                    <h4 class="card-title-main">Productos</h4>
-                    <p class="card-subtitle">Consultar y controlar stock</p>
-                </div>
-                <a href="{% url 'app:listar_producto' %}" class="btn-action-sm">STOCK</a>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--orange-grad);">
-                <span class="card-step">PASO 8</span>
-                <i class="fas fa-tags card-icon-overlay"></i>
-                <div>
-                    <h4 class="card-title-main">Marcas</h4>
-                    <p class="card-subtitle">Gestionar marcas de productos</p>
-                </div>
-                <a href="{% url 'app:listar_marca' %}" class="btn-action-sm">CATÁLOGO</a>
-            </div>
-        </div>
-
+      </a>
     </div>
-
-    <!-- ══ PASO 3: Abastecimiento ══ -->
-    <div class="section-divider"><span>③ Abastecimiento</span></div>
-    <div class="row g-4">
-
-        <div class="col-xl-6 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--primary-grad);">
-                <span class="card-step">PASO 9</span>
-                <i class="fas fa-truck card-icon-overlay"></i>
-                <div>
-                    <h4 class="card-title-main">Proveedores</h4>
-                    <p class="card-subtitle">Gestionar socios y proveedores de partes</p>
-                </div>
-                <a href="{% url 'app:listar_proveedores' %}" class="btn-action-sm">SOCIOS</a>
-            </div>
+    <div class="col-xl-3 col-md-6">
+      <a href="{% url 'app:listar_vehiculos' %}" class="dc" style="--accent:#60a5fa;">
+        <i class="fas fa-car dc-bg-icon"></i>
+        <div class="dc-inner">
+          <span class="dc-step">PASO 02</span>
+          <div><h4 class="dc-title">Vehículos</h4><p class="dc-sub">Asociar vehículos a los clientes</p></div>
+          <span class="dc-cta">Gestionar →</span>
         </div>
-
-        <div class="col-xl-6 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--primary-grad);">
-                <span class="card-step">PASO 10</span>
-                <i class="fas fa-shopping-basket card-icon-overlay"></i>
-                <div>
-                    <h4 class="card-title-main">Compras</h4>
-                    <p class="card-subtitle">Registrar egresos y compras de productos</p>
-                </div>
-                <a href="{% url 'app:lista_compras' %}" class="btn-action-sm">EGRESOS</a>
-            </div>
-        </div>
-
+      </a>
     </div>
-
-    <!-- ══ PASO 4: Cobro y Cierre ══ -->
-    <div class="section-divider"><span>④ Cobro y Cierre</span></div>
-    <div class="row g-4">
-
-        <div class="col-xl-6 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--success-grad);">
-                <span class="card-step">PASO 11</span>
-                <i class="fas fa-cash-register card-icon-overlay"></i>
-                <div>
-                    <h4 class="card-title-main">Caja</h4>
-                    <p class="card-subtitle">Registrar movimientos de caja y pagos</p>
-                </div>
-                <a href="{% url 'app:caja_listar' %}" class="btn-action-sm">MOVIMIENTOS</a>
-            </div>
+    <div class="col-xl-3 col-md-6">
+      <a href="{% url 'app:orden_servicio_list' %}" class="dc" style="--accent:#10b981;">
+        <i class="fas fa-clipboard-list dc-bg-icon"></i>
+        <div class="dc-inner">
+          <span class="dc-step">PASO 03</span>
+          <div><h4 class="dc-title">Órdenes de Servicio</h4><p class="dc-sub">Crear órdenes para el vehículo</p></div>
+          <span class="dc-cta">Ver Órdenes →</span>
         </div>
-
-        <div class="col-xl-6 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--danger-grad);">
-                <span class="card-step">PASO 12</span>
-                <i class="fas fa-file-invoice-dollar card-icon-overlay"></i>
-                <div>
-                    <h4 class="card-title-main">Facturación</h4>
-                    <p class="card-subtitle">Generar y gestionar facturas al cliente</p>
-                </div>
-                <a href="{% url 'app:listar_factura' %}" class="btn-action-sm">DETALLES</a>
-            </div>
-        </div>
-
+      </a>
     </div>
-
-    <!-- ══ Sistema ══ -->
-    <div class="section-divider"><span>⑤ Sistema y Configuración</span></div>
-    <div class="row g-4 mb-5">
-
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-premium text-white shadow-sm" style="background:var(--dark-grad);">
-                <i class="fas fa-users-cog card-icon-overlay"></i>
-                <div>
-                    <h4 class="card-title-main">Usuarios</h4>
-                    <p class="card-subtitle">Gestionar accesos y permisos</p>
-                </div>
-                <a href="{% url 'app:listar_usuario' %}" class="btn-action-sm">ACCESOS</a>
-            </div>
+    <div class="col-xl-3 col-md-6">
+      <a href="{% url 'app:tipo_servicio_list' %}" class="dc" style="--accent:#14b8a6;">
+        <i class="fas fa-screwdriver-wrench dc-bg-icon"></i>
+        <div class="dc-inner">
+          <span class="dc-step">PASO 04</span>
+          <div><h4 class="dc-title">Tipos de Servicio</h4><p class="dc-sub">Definir los servicios disponibles</p></div>
+          <span class="dc-cta">Catálogo →</span>
         </div>
-
-        <div class="col-xl-9 col-md-12">
-            <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-row align-items-center justify-content-between"
-                 style="background:#f8fafc;">
-                <div class="d-flex align-items-center">
-                    <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=6366f1&color=fff"
-                         class="rounded-circle shadow-sm me-3" width="50" alt="avatar">
-                    <div>
-                        <h6 class="mb-0 fw-bold">{{ user.username|capfirst }}</h6>
-                        <small class="text-muted">Sesión de Administrador</small>
-                    </div>
-                </div>
-                <a href="{% url 'app:listar_notificacion' %}"
-                   class="btn btn-outline-primary btn-sm rounded-pill px-4">
-                    <i class="fas fa-bell me-1"></i> Notificaciones
-                </a>
-            </div>
-        </div>
-
+      </a>
     </div>
+  </div>
+
+  <!-- 02 Ejecución -->
+  <div class="sdiv">
+    <span class="sdiv-num">02</span>
+    <span class="sdiv-label">Ejecución de la Orden</span>
+    <div class="sdiv-line"></div>
+  </div>
+  <div class="row g-3">
+    <div class="col-xl-3 col-md-6">
+      <a href="{% url 'app:detalle_orden_list' %}" class="dc" style="--accent:#8b5cf6;">
+        <i class="fas fa-list-ul dc-bg-icon"></i>
+        <div class="dc-inner">
+          <span class="dc-step">PASO 05</span>
+          <div><h4 class="dc-title">Detalles de Orden</h4><p class="dc-sub">Agregar productos y servicios</p></div>
+          <span class="dc-cta">Ver Detalles →</span>
+        </div>
+      </a>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <a href="{% url 'app:listar_compatibilidad' %}" class="dc" style="--accent:#a78bfa;">
+        <i class="fas fa-puzzle-piece dc-bg-icon"></i>
+        <div class="dc-inner">
+          <span class="dc-step">PASO 06</span>
+          <div><h4 class="dc-title">Compatibilidad</h4><p class="dc-sub">Verificar piezas compatibles</p></div>
+          <span class="dc-cta">Consultar →</span>
+        </div>
+      </a>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <a href="{% url 'app:listar_producto' %}" class="dc" style="--accent:#f59e0b;">
+        <i class="fas fa-boxes dc-bg-icon"></i>
+        <div class="dc-inner">
+          <span class="dc-step">PASO 07</span>
+          <div><h4 class="dc-title">Productos</h4><p class="dc-sub">Consultar y controlar el stock</p></div>
+          <span class="dc-cta">Ver Stock →</span>
+        </div>
+      </a>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <a href="{% url 'app:listar_marca' %}" class="dc" style="--accent:#fb923c;">
+        <i class="fas fa-tags dc-bg-icon"></i>
+        <div class="dc-inner">
+          <span class="dc-step">PASO 08</span>
+          <div><h4 class="dc-title">Marcas</h4><p class="dc-sub">Gestionar marcas de productos</p></div>
+          <span class="dc-cta">Catálogo →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 03 Abastecimiento -->
+  <div class="sdiv">
+    <span class="sdiv-num">03</span>
+    <span class="sdiv-label">Abastecimiento</span>
+    <div class="sdiv-line"></div>
+  </div>
+  <div class="row g-3">
+    <div class="col-xl-6 col-md-6">
+      <a href="{% url 'app:listar_proveedores' %}" class="dc" style="--accent:#6366f1;">
+        <i class="fas fa-truck dc-bg-icon"></i>
+        <div class="dc-inner">
+          <span class="dc-step">PASO 09</span>
+          <div><h4 class="dc-title">Proveedores</h4><p class="dc-sub">Gestionar socios y proveedores de partes</p></div>
+          <span class="dc-cta">Ver Socios →</span>
+        </div>
+      </a>
+    </div>
+    <div class="col-xl-6 col-md-6">
+      <a href="{% url 'app:lista_compras' %}" class="dc" style="--accent:#818cf8;">
+        <i class="fas fa-shopping-basket dc-bg-icon"></i>
+        <div class="dc-inner">
+          <span class="dc-step">PASO 10</span>
+          <div><h4 class="dc-title">Compras</h4><p class="dc-sub">Registrar egresos y compras de productos</p></div>
+          <span class="dc-cta">Ver Egresos →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 04 Cobro -->
+  <div class="sdiv">
+    <span class="sdiv-num">04</span>
+    <span class="sdiv-label">Cobro y Cierre</span>
+    <div class="sdiv-line"></div>
+  </div>
+  <div class="row g-3">
+    <div class="col-xl-6 col-md-6">
+      <a href="{% url 'app:caja_listar' %}" class="dc" style="--accent:#10b981;">
+        <i class="fas fa-cash-register dc-bg-icon"></i>
+        <div class="dc-inner">
+          <span class="dc-step">PASO 11</span>
+          <div><h4 class="dc-title">Caja</h4><p class="dc-sub">Registrar movimientos de caja y pagos</p></div>
+          <span class="dc-cta">Movimientos →</span>
+        </div>
+      </a>
+    </div>
+    <div class="col-xl-6 col-md-6">
+      <a href="{% url 'app:listar_factura' %}" class="dc" style="--accent:#d32f2f;">
+        <i class="fas fa-file-invoice-dollar dc-bg-icon"></i>
+        <div class="dc-inner">
+          <span class="dc-step">PASO 12</span>
+          <div><h4 class="dc-title">Facturación</h4><p class="dc-sub">Generar y gestionar facturas al cliente</p></div>
+          <span class="dc-cta">Ver Facturas →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 05 Sistema -->
+  <div class="sdiv">
+    <span class="sdiv-num">05</span>
+    <span class="sdiv-label">Sistema y Configuración</span>
+    <div class="sdiv-line"></div>
+  </div>
+  <div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+      <a href="{% url 'app:listar_usuario' %}" class="dc" style="--accent:#94a3b8;">
+        <i class="fas fa-users-cog dc-bg-icon"></i>
+        <div class="dc-inner">
+          <div></div>
+          <div><h4 class="dc-title">Usuarios</h4><p class="dc-sub">Gestionar accesos y permisos del sistema</p></div>
+          <span class="dc-cta">Accesos →</span>
+        </div>
+      </a>
+    </div>
+    <div class="col-xl-9 col-md-12">
+      <div class="user-strip">
+        <div class="d-flex align-items-center gap-3">
+          <div class="user-avatar">{{ user.username|slice:':1'|upper }}</div>
+          <div>
+            <div style="color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;">{{ user.username }}</div>
+            <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;">{{ user.email|default:"Administrador del sistema" }}</div>
+          </div>
+        </div>
+        <a href="{% url 'app:listar_notificacion' %}" class="btn-notif">
+          <i class="fas fa-bell"></i> Notificaciones
+        </a>
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endblock %}
