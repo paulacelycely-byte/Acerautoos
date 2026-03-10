@@ -1,20 +1,26 @@
 """
 UTILIDADES PARA EXPORTACION DE REPORTES
-Modulo con funciones para exportar datos a PDF y Excel
 """
-
+import os
 from weasyprint import HTML
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from django.http import HttpResponse
 from django.template.loader import render_to_string
+from django.conf import settings
 
-# ====== EXPORTACION A PDF ======
+# Ruta absoluta al logo — WeasyPrint necesita file:/// para cargar imágenes locales
+LOGO_PATH = 'file:///' + os.path.join(
+    settings.BASE_DIR, 'app', 'static', 'imagenes', 'logo empresa.jpeg'
+).replace('\\', '/')
+
+
 def exportar_pdf(titulo, columnas, datos, nombre_archivo):
     contexto = {
         'titulo': titulo,
         'columnas': columnas,
         'datos': datos,
+        'logo_url': LOGO_PATH,
     }
     html_string = render_to_string('reportes/reporte_pdf.html', contexto)
     html_object = HTML(string=html_string, base_url='.')
@@ -24,7 +30,6 @@ def exportar_pdf(titulo, columnas, datos, nombre_archivo):
     return response
 
 
-# ====== EXPORTACION A EXCEL ======
 def exportar_excel(titulo, columnas, datos, nombre_archivo):
     workbook = Workbook()
     worksheet = workbook.active

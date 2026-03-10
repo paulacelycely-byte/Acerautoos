@@ -1,128 +1,138 @@
 {% extends 'body.html' %}
 {% load static %}
 
-{% block contenido %}
+{% block css %}
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap');
 
-  :root { --red: #d32f2f; --border: rgba(255,255,255,0.09); }
+:root { --red: #d32f2f; --border: rgba(255,255,255,0.09); }
 
-  .dc {
-    display: block; text-decoration: none; position: relative;
-    border-radius: 14px; overflow: hidden; height: 150px;
-    border: 1px solid var(--border);
-    background: rgba(10,10,10,0.65);
-    backdrop-filter: blur(6px);
-    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
-    cursor: pointer;
-  }
-  .dc:hover {
-    transform: translateY(-5px) scale(1.01);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.5);
-    border-color: rgba(255,255,255,0.22);
-    text-decoration: none;
-  }
-  .dc::before {
-    content: ''; position: absolute;
-    left: 0; top: 0; bottom: 0; width: 4px;
-    background: var(--accent, #d32f2f);
-    border-radius: 14px 0 0 14px;
-    transition: width .22s;
-  }
-  .dc:hover::before { width: 6px; }
+.dash-wrapper {
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.82)),
+    url("{% static 'imagenes/fondo2.jpg' %}") center/cover no-repeat fixed;
+}
 
-  .dc-bg-icon {
-    position: absolute; right: -5px; bottom: -10px;
-    font-size: 5.5rem; color: white; opacity: 0.50;
-    pointer-events: none; transition: opacity .22s, transform .22s;
-  }
-  .dc:hover .dc-bg-icon { opacity: 0.09; transform: rotate(-5deg) scale(1.05); }
+.dc {
+  display: block; text-decoration: none; position: relative;
+  border-radius: 14px; overflow: hidden; height: 150px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(30,30,30,0.88);
+  backdrop-filter: blur(10px);
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+  cursor: pointer;
+}
+.dc:hover {
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+  border-color: rgba(255,255,255,0.3);
+  background: rgba(40,40,40,0.92);
+  text-decoration: none;
+}
+.dc::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--accent, #d32f2f);
+  border-radius: 14px 0 0 14px;
+  transition: width .22s;
+}
+.dc:hover::before { width: 6px; }
 
-  .dc-inner {
-    position: relative; z-index: 1; height: 100%;
-    padding: 1rem 1.2rem 1rem 1.5rem;
-    display: flex; flex-direction: column; justify-content: space-between;
-  }
-  .dc-step {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.6rem; font-weight: 800; letter-spacing: 2px;
-    color: var(--accent, #d32f2f); text-transform: uppercase;
-  }
-  .dc-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1.45rem; font-weight: 800; letter-spacing: 0.5px;
-    color: #fff; margin: 0; line-height: 1.1; text-transform: uppercase;
-  }
-  .dc-sub { font-size: 0.72rem; color: rgba(255,255,255,0.45); margin: 3px 0 0; }
-  .dc-cta {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
-    color: var(--accent, #d32f2f); text-transform: uppercase;
-    transition: letter-spacing .2s;
-  }
-  .dc:hover .dc-cta { letter-spacing: 2.5px; }
+/* Icono de fondo — más pequeño, esquina, outline */
+.dc-bg-icon {
+  position: absolute; right: 14px; bottom: 12px;
+  font-size: 3rem; color: white; opacity: 0.10;
+  pointer-events: none; transition: opacity .22s, transform .22s;
+  line-height: 1;
+}
+.dc:hover .dc-bg-icon { opacity: 0.18; transform: scale(1.08); }
 
-  .sdiv { display: flex; align-items: center; gap: 14px; margin: 2rem 0 1rem; }
-  .sdiv-num {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 2rem; font-weight: 900; color: var(--red); line-height: 1; opacity: 0.7;
-  }
-  .sdiv-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.72rem; font-weight: 700; letter-spacing: 3px;
-    text-transform: uppercase; color: rgba(255,255,255,0.35);
-  }
-  .sdiv-line {
-    flex: 1; height: 1px;
-    background: linear-gradient(90deg, rgba(211,47,47,0.4), rgba(255,255,255,0.05));
-  }
+/* Línea decorativa técnica en esquina superior derecha */
+.dc-corner {
+  position: absolute; top: 0; right: 0;
+  width: 48px; height: 48px;
+  border-top: 2px solid var(--accent, #d32f2f);
+  border-right: 2px solid var(--accent, #d32f2f);
+  border-radius: 0 14px 0 0;
+  opacity: 0.35;
+  transition: opacity .22s;
+}
+.dc:hover .dc-corner { opacity: 0.7; }
 
-  .dash-head {
-    background: rgba(0,0,0,0.5); border: 1px solid var(--border);
-    border-left: 4px solid var(--red); border-radius: 14px;
-    padding: 1.4rem 2rem; margin-bottom: 0.5rem;
-    backdrop-filter: blur(8px);
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .dash-head-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 2.2rem; font-weight: 900; letter-spacing: 2px;
-    color: #fff; text-transform: uppercase; line-height: 1; margin: 0;
-  }
-  .dash-head-title span { color: var(--red); }
-  .dash-head-sub { font-size: 0.8rem; color: rgba(255,255,255,0.4); margin: 5px 0 0; letter-spacing: 0.5px; }
+.dc-inner {
+  position: relative; z-index: 1; height: 100%;
+  padding: 1rem 1.2rem 1rem 1.5rem;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.dc-step {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.6rem; font-weight: 800; letter-spacing: 2px;
+  color: var(--accent, #d32f2f); text-transform: uppercase;
+}
+.dc-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.45rem; font-weight: 800; letter-spacing: 0.5px;
+  color: #fff; margin: 0; line-height: 1.1; text-transform: uppercase;
+}
+.dc-sub { font-size: 0.72rem; color: rgba(255,255,255,0.45); margin: 3px 0 0; }
+.dc-cta {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
+  color: var(--accent, #d32f2f); text-transform: uppercase;
+  transition: letter-spacing .2s;
+}
+.dc:hover .dc-cta { letter-spacing: 2.5px; }
 
-  .user-strip {
-    background: rgba(0,0,0,0.5); border: 1px solid var(--border);
-    border-radius: 14px; padding: 1rem 1.5rem;
-    display: flex; align-items: center; justify-content: space-between;
-    height: 100%; backdrop-filter: blur(6px);
-  }
-  .user-avatar {
-    width: 46px; height: 46px; border-radius: 50%; background: var(--red);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1.4rem; font-weight: 900; color: #fff; flex-shrink: 0;
-    border: 2px solid rgba(255,255,255,0.15);
-  }
-  .btn-notif {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(211,47,47,0.12); border: 1px solid rgba(211,47,47,0.35);
-    color: #fff; border-radius: 50px; padding: 8px 20px;
-    font-size: 0.78rem; font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-    text-decoration: none; transition: .2s;
-  }
-  .btn-notif:hover { background: var(--red); border-color: var(--red); color: #fff; text-decoration: none; }
+.sdiv { display: flex; align-items: center; gap: 14px; margin: 2rem 0 1rem; }
+.sdiv-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2rem; font-weight: 900; color: var(--red); line-height: 1;
+}
+.sdiv-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.78rem; font-weight: 800; letter-spacing: 3px;
+  text-transform: uppercase; color: rgba(255,255,255,0.85);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.9);
+}
+.sdiv-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.03));
+}
 
-  .badge-active {
-    background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.35);
-    color: #10b981; font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.65rem; letter-spacing: 2px; font-weight: 700;
-    padding: 4px 14px; border-radius: 50px; display: inline-block;
-  }
+.dash-head {
+  background: rgba(0,0,0,0.5); border: 1px solid var(--border);
+  border-left: 4px solid var(--red); border-radius: 14px;
+  padding: 1.4rem 2rem; margin-bottom: 0.5rem;
+  backdrop-filter: blur(8px);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.dash-head-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2.2rem; font-weight: 900; letter-spacing: 2px;
+  color: #fff; text-transform: uppercase; line-height: 1; margin: 0;
+}
+.dash-head-title span { color: var(--red); }
+.dash-head-sub { font-size: 0.8rem; color: rgba(255,255,255,0.4); margin: 5px 0 0; letter-spacing: 0.5px; }
+
+.user-avatar {
+  width: 46px; height: 46px; border-radius: 50%; background: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.4rem; font-weight: 900; color: #fff; flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.15);
+}
+.badge-active {
+  background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.35);
+  color: #10b981; font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.65rem; letter-spacing: 2px; font-weight: 700;
+  padding: 4px 14px; border-radius: 50px; display: inline-block;
+}
 </style>
+{% endblock %}
 
+{% block contenido %}
+<div class="dash-wrapper">
 <div class="container-fluid py-3 px-4">
 
   <div class="dash-head mb-3">
@@ -145,7 +155,8 @@
   <div class="row g-3">
     <div class="col-xl-3 col-md-6">
       <a href="{% url 'app:listar_clientes' %}" class="dc" style="--accent:#3b82f6;">
-        <i class="fas fa-user-tie dc-bg-icon"></i>
+        <div class="dc-corner"></div>
+        <i class="fas fa-id-card-alt dc-bg-icon"></i>
         <div class="dc-inner">
           <span class="dc-step">PASO 01</span>
           <div><h4 class="dc-title">Clientes</h4><p class="dc-sub">Registrar y gestionar clientes del taller</p></div>
@@ -155,7 +166,8 @@
     </div>
     <div class="col-xl-3 col-md-6">
       <a href="{% url 'app:listar_vehiculos' %}" class="dc" style="--accent:#60a5fa;">
-        <i class="fas fa-car dc-bg-icon"></i>
+        <div class="dc-corner"></div>
+        <i class="fas fa-car-side dc-bg-icon"></i>
         <div class="dc-inner">
           <span class="dc-step">PASO 02</span>
           <div><h4 class="dc-title">Vehículos</h4><p class="dc-sub">Asociar vehículos a los clientes</p></div>
@@ -165,7 +177,8 @@
     </div>
     <div class="col-xl-3 col-md-6">
       <a href="{% url 'app:orden_servicio_list' %}" class="dc" style="--accent:#10b981;">
-        <i class="fas fa-clipboard-list dc-bg-icon"></i>
+        <div class="dc-corner"></div>
+        <i class="fas fa-file-alt dc-bg-icon"></i>
         <div class="dc-inner">
           <span class="dc-step">PASO 03</span>
           <div><h4 class="dc-title">Órdenes de Servicio</h4><p class="dc-sub">Crear órdenes para el vehículo</p></div>
@@ -175,7 +188,8 @@
     </div>
     <div class="col-xl-3 col-md-6">
       <a href="{% url 'app:tipo_servicio_list' %}" class="dc" style="--accent:#14b8a6;">
-        <i class="fas fa-screwdriver-wrench dc-bg-icon"></i>
+        <div class="dc-corner"></div>
+        <i class="fas fa-tools dc-bg-icon"></i>
         <div class="dc-inner">
           <span class="dc-step">PASO 04</span>
           <div><h4 class="dc-title">Tipos de Servicio</h4><p class="dc-sub">Definir los servicios disponibles</p></div>
@@ -194,7 +208,8 @@
   <div class="row g-3">
     <div class="col-xl-3 col-md-6">
       <a href="{% url 'app:detalle_orden_list' %}" class="dc" style="--accent:#8b5cf6;">
-        <i class="fas fa-list-ul dc-bg-icon"></i>
+        <div class="dc-corner"></div>
+        <i class="fas fa-layer-group dc-bg-icon"></i>
         <div class="dc-inner">
           <span class="dc-step">PASO 05</span>
           <div><h4 class="dc-title">Detalles de Orden</h4><p class="dc-sub">Agregar productos y servicios</p></div>
@@ -204,7 +219,8 @@
     </div>
     <div class="col-xl-3 col-md-6">
       <a href="{% url 'app:listar_compatibilidad' %}" class="dc" style="--accent:#a78bfa;">
-        <i class="fas fa-puzzle-piece dc-bg-icon"></i>
+        <div class="dc-corner"></div>
+        <i class="fas fa-exchange-alt dc-bg-icon"></i>
         <div class="dc-inner">
           <span class="dc-step">PASO 06</span>
           <div><h4 class="dc-title">Compatibilidad</h4><p class="dc-sub">Verificar piezas compatibles</p></div>
@@ -214,7 +230,8 @@
     </div>
     <div class="col-xl-3 col-md-6">
       <a href="{% url 'app:listar_producto' %}" class="dc" style="--accent:#f59e0b;">
-        <i class="fas fa-boxes dc-bg-icon"></i>
+        <div class="dc-corner"></div>
+        <i class="fas fa-cubes dc-bg-icon"></i>
         <div class="dc-inner">
           <span class="dc-step">PASO 07</span>
           <div><h4 class="dc-title">Productos</h4><p class="dc-sub">Consultar y controlar el stock</p></div>
@@ -224,7 +241,8 @@
     </div>
     <div class="col-xl-3 col-md-6">
       <a href="{% url 'app:listar_marca' %}" class="dc" style="--accent:#fb923c;">
-        <i class="fas fa-tags dc-bg-icon"></i>
+        <div class="dc-corner"></div>
+        <i class="fas fa-trademark dc-bg-icon"></i>
         <div class="dc-inner">
           <span class="dc-step">PASO 08</span>
           <div><h4 class="dc-title">Marcas</h4><p class="dc-sub">Gestionar marcas de productos</p></div>
@@ -243,7 +261,8 @@
   <div class="row g-3">
     <div class="col-xl-6 col-md-6">
       <a href="{% url 'app:listar_proveedores' %}" class="dc" style="--accent:#6366f1;">
-        <i class="fas fa-truck dc-bg-icon"></i>
+        <div class="dc-corner"></div>
+        <i class="fas fa-industry dc-bg-icon"></i>
         <div class="dc-inner">
           <span class="dc-step">PASO 09</span>
           <div><h4 class="dc-title">Proveedores</h4><p class="dc-sub">Gestionar socios y proveedores de partes</p></div>
@@ -253,7 +272,8 @@
     </div>
     <div class="col-xl-6 col-md-6">
       <a href="{% url 'app:lista_compras' %}" class="dc" style="--accent:#818cf8;">
-        <i class="fas fa-shopping-basket dc-bg-icon"></i>
+        <div class="dc-corner"></div>
+        <i class="fas fa-receipt dc-bg-icon"></i>
         <div class="dc-inner">
           <span class="dc-step">PASO 10</span>
           <div><h4 class="dc-title">Compras</h4><p class="dc-sub">Registrar egresos y compras de productos</p></div>
@@ -272,6 +292,7 @@
   <div class="row g-3">
     <div class="col-xl-6 col-md-6">
       <a href="{% url 'app:caja_listar' %}" class="dc" style="--accent:#10b981;">
+        <div class="dc-corner"></div>
         <i class="fas fa-cash-register dc-bg-icon"></i>
         <div class="dc-inner">
           <span class="dc-step">PASO 11</span>
@@ -282,7 +303,8 @@
     </div>
     <div class="col-xl-6 col-md-6">
       <a href="{% url 'app:listar_factura' %}" class="dc" style="--accent:#d32f2f;">
-        <i class="fas fa-file-invoice-dollar dc-bg-icon"></i>
+        <div class="dc-corner"></div>
+        <i class="fas fa-file-invoice dc-bg-icon"></i>
         <div class="dc-inner">
           <span class="dc-step">PASO 12</span>
           <div><h4 class="dc-title">Facturación</h4><p class="dc-sub">Generar y gestionar facturas al cliente</p></div>
@@ -298,10 +320,11 @@
     <span class="sdiv-label">Sistema y Configuración</span>
     <div class="sdiv-line"></div>
   </div>
-  <div class="row g-3 mb-4">
-    <div class="col-xl-3 col-md-6">
+  <div class="row g-3">
+    <div class="col-xl-6 col-md-6">
       <a href="{% url 'app:listar_usuario' %}" class="dc" style="--accent:#94a3b8;">
-        <i class="fas fa-users-cog dc-bg-icon"></i>
+        <div class="dc-corner"></div>
+        <i class="fas fa-user-shield dc-bg-icon"></i>
         <div class="dc-inner">
           <div></div>
           <div><h4 class="dc-title">Usuarios</h4><p class="dc-sub">Gestionar accesos y permisos del sistema</p></div>
@@ -309,21 +332,27 @@
         </div>
       </a>
     </div>
-    <div class="col-xl-9 col-md-12">
-      <div class="user-strip">
-        <div class="d-flex align-items-center gap-3">
-          <div class="user-avatar">{{ user.username|slice:':1'|upper }}</div>
-          <div>
-            <div style="color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;">{{ user.username }}</div>
-            <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;">{{ user.email|default:"Administrador del sistema" }}</div>
+    <div class="col-xl-6 col-md-6">
+      <a href="{% url 'app:listar_notificacion' %}" class="dc" style="--accent:#f59e0b;">
+        <div class="dc-corner"></div>
+        <i class="fas fa-bell dc-bg-icon"></i>
+        <div class="dc-inner">
+          <div class="d-flex align-items-center gap-3">
+            <div class="user-avatar">{{ user.username|slice:':1'|upper }}</div>
+            <div>
+              <div style="color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;">{{ user.username }}</div>
+              <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;">{{ user.email|default:"Administrador del sistema" }}</div>
+            </div>
           </div>
+          <div><h4 class="dc-title">Notificaciones</h4><p class="dc-sub">Ver alertas y avisos del sistema</p></div>
+          <span class="dc-cta">Ver Notificaciones →</span>
         </div>
-        <a href="{% url 'app:listar_notificacion' %}" class="btn-notif">
-          <i class="fas fa-bell"></i> Notificaciones
-        </a>
-      </div>
+      </a>
     </div>
   </div>
 
+  <div style="height:2rem;"></div>
+
+</div>
 </div>
 {% endblock %}
