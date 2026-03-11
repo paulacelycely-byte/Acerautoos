@@ -1,111 +1,164 @@
 {% extends 'body.html' %}
 
 {% block css %}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-    /* Tarjeta Premium Limpia */
-    .card-delete-premium {
-        border: none;
-        border-radius: 20px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-        overflow: hidden;
-        background: #fff;
+    :root {
+        --rojo:   #d32f2f;
+        --carbon: #1a1a1a;
+        --gris:   #f2f2f0;
+        --borde:  #e0ddd8;
+        --muted:  #888;
     }
 
-    /* --- TU ICONO ANIMADO RECUPERADO --- */
-    .warning-wrapper {
-        font-size: 4.5rem;
-        color: #dc3545; /* Mantenemos el rojo solo en el icono para que resalte */
-        margin-bottom: 1.5rem;
+    .delete-wrap { min-height: 80vh; display: flex; align-items: center; justify-content: center; }
+
+    .delete-card {
+        background: white; border-radius: 20px;
+        border: 1px solid var(--borde); overflow: hidden;
+        width: 100%; max-width: 500px;
+    }
+    .delete-card-top {
+        background: var(--carbon); position: relative;
+        padding: 32px; text-align: center; overflow: hidden;
+    }
+    .delete-card-top::before {
+        content: ''; position: absolute; inset: 0;
+        background: repeating-linear-gradient(
+            -55deg, transparent, transparent 14px,
+            rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px
+        );
+    }
+    .delete-card-top::after {
+        content: ''; position: absolute; left: 0; top: 0;
+        width: 5px; height: 100%; background: var(--rojo);
+    }
+    .delete-icon {
+        position: relative; width: 72px; height: 72px;
+        background: var(--rojo); border-radius: 18px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.8rem; color: white; margin: 0 auto 16px;
+        box-shadow: 0 0 0 6px rgba(211,47,47,.2);
         animation: swing 2s infinite ease-in-out;
-        display: inline-block;
     }
-
     @keyframes swing {
         0%, 100% { transform: rotate(0deg); }
-        20% { transform: rotate(10deg); }
-        40% { transform: rotate(-10deg); }
-        60% { transform: rotate(5deg); }
-        80% { transform: rotate(-5deg); }
+        20%       { transform: rotate(10deg); }
+        40%       { transform: rotate(-10deg); }
+        60%       { transform: rotate(5deg); }
+        80%       { transform: rotate(-5deg); }
+    }
+    .delete-card-top h2 {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 1.6rem; font-weight: 800;
+        color: white; text-transform: uppercase;
+        letter-spacing: 1px; margin: 0; position: relative;
+    }
+    .delete-card-top p {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .82rem; color: rgba(255,255,255,.45);
+        margin: 6px 0 0; position: relative;
     }
 
-    /* Caja de detalles neutra */
-    .category-details {
-        background-color: #f8f9fa;
-        border-radius: 12px;
-        padding: 25px;
-        border-left: 5px solid #454d55;
-        margin: 25px 0;
+    .delete-card-body { padding: 28px; }
+
+    .producto-info {
+        background: var(--gris); border-radius: 12px;
+        border-left: 4px solid var(--rojo);
+        padding: 18px 20px; margin-bottom: 20px;
+    }
+    .producto-info-label {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .7rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1px;
+        color: var(--muted); margin-bottom: 6px;
+    }
+    .producto-nombre {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 1.5rem; font-weight: 800;
+        color: var(--carbon); line-height: 1;
+    }
+    .producto-info-sub {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .85rem; color: var(--muted); margin-top: 4px;
     }
 
-    /* Botones estilo Acerautos */
-    .btn-modern {
-        padding: 12px 25px;
-        border-radius: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: all 0.3s;
+    .alerta-info {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem; color: var(--muted);
+        display: flex; align-items: flex-start; gap: 8px;
+        background: #fff8f8; border: 1px solid #fdd;
+        border-radius: 10px; padding: 12px 14px; margin-bottom: 24px;
     }
+    .alerta-info i { color: var(--rojo); margin-top: 1px; flex-shrink: 0; }
 
-    .btn-volver {
-        background: #f8f9fa;
-        color: #6c757d !important;
-        border: 1px solid #d1d3e2;
+    .delete-actions { display: flex; gap: 10px; }
+    .btn-cancelar {
+        flex: 1; font-family: 'DM Sans', sans-serif;
+        font-size: .82rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .5px;
+        padding: 12px; border-radius: 10px;
+        border: 1.5px solid var(--borde);
+        background: white; color: var(--muted);
+        text-decoration: none; text-align: center; transition: .2s;
     }
-
-    .btn-eliminar-final {
-        background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%);
-        color: white !important;
-        border: none;
-        box-shadow: 0 8px 15px rgba(220, 53, 69, 0.2);
+    .btn-cancelar:hover { background: var(--gris); color: var(--carbon); }
+    .btn-eliminar {
+        flex: 1; font-family: 'DM Sans', sans-serif;
+        font-size: .82rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .5px;
+        padding: 12px; border-radius: 10px;
+        border: none; background: var(--rojo); color: white;
+        cursor: pointer; box-shadow: 0 4px 14px rgba(211,47,47,.35);
+        transition: .2s;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-
-    .btn-modern:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 20px rgba(0,0,0,0.1);
-    }
+    .btn-eliminar:hover { background: #b71c1c; transform: translateY(-1px); }
 </style>
 {% endblock %}
 
 {% block contenido %}
-<div class="container d-flex justify-content-center align-items-center animate__animated animate__fadeIn" style="min-height: 80vh;">
-    <div class="col-md-7 col-lg-6">
-        <div class="card card-delete-premium">
-            <div class="card-body p-5 text-center">
-                
-                <div class="warning-wrapper">
-                    <i class="fas fa-exclamation-triangle"></i>
+<div class="delete-wrap animate__animated animate__fadeIn">
+    <div class="delete-card">
+
+        <div class="delete-card-top">
+            <div class="delete-icon"><i class="fas fa-trash-alt"></i></div>
+            <h2>Confirmar Eliminación</h2>
+            <p>Esta acción no se puede deshacer</p>
+        </div>
+
+        <div class="delete-card-body">
+
+            <div class="producto-info">
+                <div class="producto-info-label">Producto a eliminar</div>
+                <div class="producto-nombre">{{ object.nombre }}</div>
+                <div class="producto-info-sub">
+                    <i class="fas fa-barcode me-1"></i> Cód: {{ object.codigo }}
                 </div>
-
-                <h2 class="font-weight-bold text-dark text-uppercase" style="letter-spacing: 1px;">Confirmar Acción</h2>
-                <p class="text-muted">Estás a punto de retirar un elemento del sistema central.</p>
-
-                <div class="category-details text-left">
-                    <small class="text-uppercase font-weight-bold text-muted" style="letter-spacing: 0.5px;">Registro a eliminar:</small>
-                    <h4 class="mb-0 text-dark font-weight-bold mt-1">{{ object.nombre }}</h4>
-                    <hr>
-                    <p class="text-muted small mb-0">
-                        <i class="fas fa-info-circle mr-1"></i> Esta operación eliminará el registro de la base de datos de Acerautos de forma permanente.
-                    </p>
+                <div class="producto-info-sub">
+                    <i class="fas fa-copyright me-1"></i> {{ object.marca.nombre }}
+                    &nbsp;·&nbsp;
+                    <i class="fas fa-cubes me-1"></i> Stock: {{ object.stock }}
                 </div>
-
-                <form method="post" id="formEliminar" class="mt-4">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-6">
-                            <button type="button" onclick="confirmarCancelacion('{{ listar_url }}')" class="btn btn-block btn-modern btn-volver">
-                                <i class="fas fa-times mr-2"></i> Cancelar
-                            </button>
-                        </div>
-                        <div class="col-6">
-                            <button type="button" id="btnConfirmarBorrado" class="btn btn-block btn-modern btn-eliminar-final">
-                                <i class="fas fa-trash-alt mr-2"></i> Eliminar
-                            </button>
-                        </div>
-                    </div>
-                </form>
-
             </div>
+
+            <div class="alerta-info">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Si este producto está asociado a órdenes de servicio o detalles de orden, puede afectar el historial del taller.</span>
+            </div>
+
+            <form method="post" id="formEliminar">
+                {% csrf_token %}
+                <div class="delete-actions">
+                    <a href="{{ listar_url }}" class="btn-cancelar">
+                        <i class="fas fa-times me-1"></i> Cancelar
+                    </a>
+                    <button type="button" id="btnConfirmar" class="btn-eliminar">
+                        <i class="fas fa-trash-alt"></i> Eliminar
+                    </button>
+                </div>
+            </form>
+
         </div>
     </div>
 </div>
@@ -113,31 +166,20 @@
 
 {% block js %}
 <script>
-    $(function () {
-        $('#btnConfirmarBorrado').on('click', function (e) {
-            e.preventDefault();
-
-            Swal.fire({
-                title: '¿Proceder con la eliminación?',
-                text: "Esta acción no se puede deshacer.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#454d55',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'No, mantener',
-                reverseButtons: true,
-                backdrop: true // Fondo oscuro normal, sin el rojo invasivo
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $('#formEliminar').submit();
-                }
-            });
+    $('#btnConfirmar').on('click', function () {
+        Swal.fire({
+            title: '¿Proceder?',
+            text: "Se eliminará '{{ object.nombre }}' permanentemente.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d32f2f',
+            cancelButtonColor: '#1a1a1a',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) { $('#formEliminar').submit(); }
         });
     });
-
-    function confirmarCancelacion(url) {
-        window.location.href = url;
-    }
 </script>
 {% endblock %}

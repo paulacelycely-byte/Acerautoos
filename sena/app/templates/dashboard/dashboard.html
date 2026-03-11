@@ -5,19 +5,19 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap');
 
-:root { --red: #d32f2f; --border: rgba(255,255,255,0.09); }
+:root { --red: #d31414; --border: rgba(255,255,255,0.09); }
 
 .dash-wrapper {
   min-height: 100vh;
   background:
-    linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.82)),
+    linear-gradient(rgba(37, 36, 36, 0.75), rgba(40, 40, 40, 0.82)),
     url("{% static 'imagenes/fondo2.jpg' %}") center/cover no-repeat fixed;
 }
 
 .dc {
   display: block; text-decoration: none; position: relative;
   border-radius: 14px; overflow: hidden; height: 150px;
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid rgba(20, 18, 18, 0.15);
   background: rgba(30,30,30,0.88);
   backdrop-filter: blur(10px);
   transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
@@ -33,22 +33,21 @@
 .dc::before {
   content: ''; position: absolute;
   left: 0; top: 0; bottom: 0; width: 4px;
-  background: var(--accent, #d32f2f);
+  background: var(--accent, #c30a0a);
   border-radius: 14px 0 0 14px;
   transition: width .22s;
 }
 .dc:hover::before { width: 6px; }
 
-/* Icono de fondo — más pequeño, esquina, outline */
 .dc-bg-icon {
   position: absolute; right: 14px; bottom: 12px;
-  font-size: 3rem; color: white; opacity: 0.10;
-  pointer-events: none; transition: opacity .22s, transform .22s;
-  line-height: 1;
+  width: 48px; height: 48px;
+  color: white; opacity: 0.10;
+  pointer-events: none;
+  transition: opacity .22s, transform .22s;
 }
-.dc:hover .dc-bg-icon { opacity: 0.18; transform: scale(1.08); }
+.dc:hover .dc-bg-icon { opacity: 0.20; transform: scale(1.08); }
 
-/* Línea decorativa técnica en esquina superior derecha */
 .dc-corner {
   position: absolute; top: 0; right: 0;
   width: 48px; height: 48px;
@@ -132,6 +131,72 @@
 {% endblock %}
 
 {% block contenido %}
+
+<!-- SVG sprite oculto -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-clientes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="8" r="4"/>
+    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+  </symbol>
+  <symbol id="ico-vehiculos" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 12l2-5h12l2 5"/>
+    <rect x="2" y="12" width="20" height="6" rx="2"/>
+    <circle cx="6.5" cy="18.5" r="2"/>
+    <circle cx="17.5" cy="18.5" r="2"/>
+  </symbol>
+  <symbol id="ico-ordenes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6" y="2" width="12" height="18" rx="2"/>
+    <path d="M10 7h4M10 11h4M10 15h2"/>
+  </symbol>
+  <symbol id="ico-servicio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17.5 3a4 4 0 0 1 0 8 4 4 0 0 1-3-1.35L5 19H4v-1L13.35 9A4 4 0 0 1 17.5 3z"/>
+  </symbol>
+  <symbol id="ico-detalles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 6h16M4 10h10M4 14h12M4 18h8"/>
+  </symbol>
+  <symbol id="ico-compat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 3H6a2 2 0 0 0-2 2v5h2.5a2.5 2.5 0 0 1 0 5H4v5a2 2 0 0 0 2 2h5v-2.5a2.5 2.5 0 0 1 5 0V20h5a2 2 0 0 0 2-2v-5h-2.5a2.5 2.5 0 0 1 0-5H21V5a2 2 0 0 0-2-2h-5v2.5a2.5 2.5 0 0 1-5 0V3z"/>
+  </symbol>
+  <symbol id="ico-productos" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2L2 7v10l10 5 10-5V7L12 2z"/>
+    <path d="M2 7l10 5 10-5M12 12v10"/>
+  </symbol>
+  <symbol id="ico-marcas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 3h9l9 9-9 9-9-9V3z"/>
+    <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="ico-proveedores" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="1" y="6" width="13" height="11" rx="1"/>
+    <path d="M14 9h5l3 4v5h-8V9z"/>
+    <circle cx="5.5" cy="18.5" r="1.5"/>
+    <circle cx="18.5" cy="18.5" r="1.5"/>
+  </symbol>
+  <symbol id="ico-compras" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M1 1h4l2.5 11.5h10L20 6H7"/>
+    <circle cx="9.5" cy="20.5" r="1.5"/>
+    <circle cx="18.5" cy="20.5" r="1.5"/>
+  </symbol>
+  <symbol id="ico-caja" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="9" width="20" height="12" rx="2"/>
+    <path d="M7 9V6a5 5 0 0 1 10 0v3"/>
+    <path d="M10 14h4M10 17h4"/>
+  </symbol>
+  <symbol id="ico-factura" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="2" width="16" height="20" rx="2"/>
+    <path d="M12 7v10M9.5 9c0-1 1.1-2 2.5-2s2.5.9 2.5 2-1.1 2-2.5 2-2.5.9-2.5 2 1.1 2 2.5 2 2.5-1 2.5-2"/>
+  </symbol>
+  <symbol id="ico-usuarios" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="7" r="3"/>
+    <path d="M2 20c0-3.5 3.1-6 7-6"/>
+    <circle cx="17" cy="7" r="3"/>
+    <path d="M22 20c0-3.5-3.1-6-7-6s-7 2.5-7 6"/>
+  </symbol>
+  <symbol id="ico-notif" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2a7 7 0 0 1 7 7v4l2 3H3l2-3V9a7 7 0 0 1 7-7z"/>
+    <path d="M9.5 18a2.5 2.5 0 0 0 5 0"/>
+  </symbol>
+</svg>
+
 <div class="dash-wrapper">
 <div class="container-fluid py-3 px-4">
 
@@ -146,7 +211,7 @@
     </div>
   </div>
 
-  <!-- 01 Recepción -->
+  <!-- 01 Recepción — AZUL -->
   <div class="sdiv">
     <span class="sdiv-num">01</span>
     <span class="sdiv-label">Recepción de Clientes y Vehículos</span>
@@ -156,7 +221,7 @@
     <div class="col-xl-3 col-md-6">
       <a href="{% url 'app:listar_clientes' %}" class="dc" style="--accent:#3b82f6;">
         <div class="dc-corner"></div>
-        <i class="fas fa-id-card-alt dc-bg-icon"></i>
+        <svg class="dc-bg-icon"><use href="#ico-clientes"/></svg>
         <div class="dc-inner">
           <span class="dc-step">PASO 01</span>
           <div><h4 class="dc-title">Clientes</h4><p class="dc-sub">Registrar y gestionar clientes del taller</p></div>
@@ -165,9 +230,9 @@
       </a>
     </div>
     <div class="col-xl-3 col-md-6">
-      <a href="{% url 'app:listar_vehiculos' %}" class="dc" style="--accent:#60a5fa;">
+      <a href="{% url 'app:listar_vehiculos' %}" class="dc" style="--accent:#3b82f6;">
         <div class="dc-corner"></div>
-        <i class="fas fa-car-side dc-bg-icon"></i>
+        <svg class="dc-bg-icon"><use href="#ico-vehiculos"/></svg>
         <div class="dc-inner">
           <span class="dc-step">PASO 02</span>
           <div><h4 class="dc-title">Vehículos</h4><p class="dc-sub">Asociar vehículos a los clientes</p></div>
@@ -176,9 +241,9 @@
       </a>
     </div>
     <div class="col-xl-3 col-md-6">
-      <a href="{% url 'app:orden_servicio_list' %}" class="dc" style="--accent:#10b981;">
+      <a href="{% url 'app:orden_servicio_list' %}" class="dc" style="--accent:#3b82f6;">
         <div class="dc-corner"></div>
-        <i class="fas fa-file-alt dc-bg-icon"></i>
+        <svg class="dc-bg-icon"><use href="#ico-ordenes"/></svg>
         <div class="dc-inner">
           <span class="dc-step">PASO 03</span>
           <div><h4 class="dc-title">Órdenes de Servicio</h4><p class="dc-sub">Crear órdenes para el vehículo</p></div>
@@ -187,9 +252,9 @@
       </a>
     </div>
     <div class="col-xl-3 col-md-6">
-      <a href="{% url 'app:tipo_servicio_list' %}" class="dc" style="--accent:#14b8a6;">
+      <a href="{% url 'app:tipo_servicio_list' %}" class="dc" style="--accent:#3b82f6;">
         <div class="dc-corner"></div>
-        <i class="fas fa-tools dc-bg-icon"></i>
+        <svg class="dc-bg-icon"><use href="#ico-servicio"/></svg>
         <div class="dc-inner">
           <span class="dc-step">PASO 04</span>
           <div><h4 class="dc-title">Tipos de Servicio</h4><p class="dc-sub">Definir los servicios disponibles</p></div>
@@ -199,7 +264,7 @@
     </div>
   </div>
 
-  <!-- 02 Ejecución -->
+  <!-- 02 Ejecución — VIOLETA -->
   <div class="sdiv">
     <span class="sdiv-num">02</span>
     <span class="sdiv-label">Ejecución de la Orden</span>
@@ -209,7 +274,7 @@
     <div class="col-xl-3 col-md-6">
       <a href="{% url 'app:detalle_orden_list' %}" class="dc" style="--accent:#8b5cf6;">
         <div class="dc-corner"></div>
-        <i class="fas fa-layer-group dc-bg-icon"></i>
+        <svg class="dc-bg-icon"><use href="#ico-detalles"/></svg>
         <div class="dc-inner">
           <span class="dc-step">PASO 05</span>
           <div><h4 class="dc-title">Detalles de Orden</h4><p class="dc-sub">Agregar productos y servicios</p></div>
@@ -218,9 +283,9 @@
       </a>
     </div>
     <div class="col-xl-3 col-md-6">
-      <a href="{% url 'app:listar_compatibilidad' %}" class="dc" style="--accent:#a78bfa;">
+      <a href="{% url 'app:listar_compatibilidad' %}" class="dc" style="--accent:#8b5cf6;">
         <div class="dc-corner"></div>
-        <i class="fas fa-exchange-alt dc-bg-icon"></i>
+        <svg class="dc-bg-icon"><use href="#ico-compat"/></svg>
         <div class="dc-inner">
           <span class="dc-step">PASO 06</span>
           <div><h4 class="dc-title">Compatibilidad</h4><p class="dc-sub">Verificar piezas compatibles</p></div>
@@ -229,9 +294,9 @@
       </a>
     </div>
     <div class="col-xl-3 col-md-6">
-      <a href="{% url 'app:listar_producto' %}" class="dc" style="--accent:#f59e0b;">
+      <a href="{% url 'app:listar_producto' %}" class="dc" style="--accent:#8b5cf6;">
         <div class="dc-corner"></div>
-        <i class="fas fa-cubes dc-bg-icon"></i>
+        <svg class="dc-bg-icon"><use href="#ico-productos"/></svg>
         <div class="dc-inner">
           <span class="dc-step">PASO 07</span>
           <div><h4 class="dc-title">Productos</h4><p class="dc-sub">Consultar y controlar el stock</p></div>
@@ -240,9 +305,9 @@
       </a>
     </div>
     <div class="col-xl-3 col-md-6">
-      <a href="{% url 'app:listar_marca' %}" class="dc" style="--accent:#fb923c;">
+      <a href="{% url 'app:listar_marca' %}" class="dc" style="--accent:#8b5cf6;">
         <div class="dc-corner"></div>
-        <i class="fas fa-trademark dc-bg-icon"></i>
+        <svg class="dc-bg-icon"><use href="#ico-marcas"/></svg>
         <div class="dc-inner">
           <span class="dc-step">PASO 08</span>
           <div><h4 class="dc-title">Marcas</h4><p class="dc-sub">Gestionar marcas de productos</p></div>
@@ -252,7 +317,7 @@
     </div>
   </div>
 
-  <!-- 03 Abastecimiento -->
+  <!-- 03 Abastecimiento — ÁMBAR -->
   <div class="sdiv">
     <span class="sdiv-num">03</span>
     <span class="sdiv-label">Abastecimiento</span>
@@ -260,9 +325,9 @@
   </div>
   <div class="row g-3">
     <div class="col-xl-6 col-md-6">
-      <a href="{% url 'app:listar_proveedores' %}" class="dc" style="--accent:#6366f1;">
+      <a href="{% url 'app:listar_proveedores' %}" class="dc" style="--accent:#f59e0b;">
         <div class="dc-corner"></div>
-        <i class="fas fa-industry dc-bg-icon"></i>
+        <svg class="dc-bg-icon"><use href="#ico-proveedores"/></svg>
         <div class="dc-inner">
           <span class="dc-step">PASO 09</span>
           <div><h4 class="dc-title">Proveedores</h4><p class="dc-sub">Gestionar socios y proveedores de partes</p></div>
@@ -271,9 +336,9 @@
       </a>
     </div>
     <div class="col-xl-6 col-md-6">
-      <a href="{% url 'app:lista_compras' %}" class="dc" style="--accent:#818cf8;">
+      <a href="{% url 'app:lista_compras' %}" class="dc" style="--accent:#f59e0b;">
         <div class="dc-corner"></div>
-        <i class="fas fa-receipt dc-bg-icon"></i>
+        <svg class="dc-bg-icon"><use href="#ico-compras"/></svg>
         <div class="dc-inner">
           <span class="dc-step">PASO 10</span>
           <div><h4 class="dc-title">Compras</h4><p class="dc-sub">Registrar egresos y compras de productos</p></div>
@@ -283,7 +348,7 @@
     </div>
   </div>
 
-  <!-- 04 Cobro -->
+  <!-- 04 Cobro — VERDE -->
   <div class="sdiv">
     <span class="sdiv-num">04</span>
     <span class="sdiv-label">Cobro y Cierre</span>
@@ -293,7 +358,7 @@
     <div class="col-xl-6 col-md-6">
       <a href="{% url 'app:caja_listar' %}" class="dc" style="--accent:#10b981;">
         <div class="dc-corner"></div>
-        <i class="fas fa-cash-register dc-bg-icon"></i>
+        <svg class="dc-bg-icon"><use href="#ico-caja"/></svg>
         <div class="dc-inner">
           <span class="dc-step">PASO 11</span>
           <div><h4 class="dc-title">Caja</h4><p class="dc-sub">Registrar movimientos de caja y pagos</p></div>
@@ -302,9 +367,9 @@
       </a>
     </div>
     <div class="col-xl-6 col-md-6">
-      <a href="{% url 'app:listar_factura' %}" class="dc" style="--accent:#d32f2f;">
+      <a href="{% url 'app:listar_factura' %}" class="dc" style="--accent:#10b981;">
         <div class="dc-corner"></div>
-        <i class="fas fa-file-invoice dc-bg-icon"></i>
+        <svg class="dc-bg-icon"><use href="#ico-factura"/></svg>
         <div class="dc-inner">
           <span class="dc-step">PASO 12</span>
           <div><h4 class="dc-title">Facturación</h4><p class="dc-sub">Generar y gestionar facturas al cliente</p></div>
@@ -314,7 +379,7 @@
     </div>
   </div>
 
-  <!-- 05 Sistema -->
+  <!-- 05 Sistema — ROJO -->
   <div class="sdiv">
     <span class="sdiv-num">05</span>
     <span class="sdiv-label">Sistema y Configuración</span>
@@ -322,9 +387,9 @@
   </div>
   <div class="row g-3">
     <div class="col-xl-6 col-md-6">
-      <a href="{% url 'app:listar_usuario' %}" class="dc" style="--accent:#94a3b8;">
+      <a href="{% url 'app:listar_usuario' %}" class="dc" style="--accent:#d31414;">
         <div class="dc-corner"></div>
-        <i class="fas fa-user-shield dc-bg-icon"></i>
+        <svg class="dc-bg-icon"><use href="#ico-usuarios"/></svg>
         <div class="dc-inner">
           <div></div>
           <div><h4 class="dc-title">Usuarios</h4><p class="dc-sub">Gestionar accesos y permisos del sistema</p></div>
@@ -333,9 +398,9 @@
       </a>
     </div>
     <div class="col-xl-6 col-md-6">
-      <a href="{% url 'app:listar_notificacion' %}" class="dc" style="--accent:#f59e0b;">
+      <a href="{% url 'app:listar_notificacion' %}" class="dc" style="--accent:#d31414;">
         <div class="dc-corner"></div>
-        <i class="fas fa-bell dc-bg-icon"></i>
+        <svg class="dc-bg-icon"><use href="#ico-notif"/></svg>
         <div class="dc-inner">
           <div class="d-flex align-items-center gap-3">
             <div class="user-avatar">{{ user.username|slice:':1'|upper }}</div>

@@ -2,37 +2,153 @@
 {% load static %}
 
 {% block css %}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-    .header-premium { background: linear-gradient(145deg, #ffffff, #f8f9fa); border-radius: 20px; padding: 25px; margin-bottom: 30px; border-left: 10px solid #d32f2f; box-shadow: 0 15px 35px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; }
-    .title-icon { background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%); color: white; width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2); margin-right: 20px; }
-    .title-container h1 { font-size: 1.9rem; font-weight: 700; color: #2d3436; text-transform: uppercase; letter-spacing: 1.5px; margin: 0; }
-    .img-thumb { width: 50px; height: 50px; border-radius: 12px; object-fit: cover; border: 2px solid #edf2f7; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .avatar-placeholder { width: 50px; height: 50px; border-radius: 12px; background: #d32f2f; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; }
-    .btn-circle { width: 38px; height: 38px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; border: none; transition: 0.3s; color: white !important; }
-    .btn-circle:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-    .badge-categoria { background-color: #4a90d9; color: white; padding: 5px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; }
-    .badge-activo { background-color: #27ae60; color: white; padding: 5px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; }
-    .badge-inactivo { background-color: #95a5a6; color: white; padding: 5px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; }
+    :root {
+        --rojo:   #d32f2f;
+        --rojo2:  #b71c1c;
+        --carbon: #1a1a1a;
+        --gris:   #f2f2f0;
+        --borde:  #e0ddd8;
+        --texto:  #2a2a2a;
+        --muted:  #888;
+    }
+
+    .taller-header {
+        position: relative; background: var(--carbon);
+        border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
+        overflow: hidden; display: flex; align-items: center; justify-content: space-between;
+    }
+    .taller-header::before {
+        content: ''; position: absolute; top: 0; right: 0;
+        width: 260px; height: 100%;
+        background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
+    }
+    .taller-header::after {
+        content: ''; position: absolute; left: 0; top: 0;
+        width: 5px; height: 100%; background: var(--rojo); border-radius: 16px 0 0 16px;
+    }
+    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
+    .header-icon-wrap {
+        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; color: white; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
+    }
+    .header-titulo {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 2rem; font-weight: 800; color: white;
+        letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
+    }
+    .header-sub {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px;
+    }
+    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
+    .btn-accion {
+        font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px; padding: 10px 18px; border-radius: 10px;
+        display: flex; align-items: center; gap: 8px; border: none; cursor: pointer;
+        text-decoration: none; transition: transform .2s, box-shadow .2s;
+    }
+    .btn-accion:hover { transform: translateY(-2px); }
+    .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
+    .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
+
+    .tabla-wrap { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
+
+    #tabla_marca {
+        font-family: 'DM Sans', sans-serif; font-size: .875rem;
+        border-collapse: collapse; width: 100%;
+    }
+    #tabla_marca thead tr { background: var(--gris); border-bottom: 2px solid var(--borde); }
+    #tabla_marca thead th {
+        font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 14px 16px; border: none;
+    }
+    #tabla_marca tbody tr { border-bottom: 1px solid var(--borde); transition: background .15s; }
+    #tabla_marca tbody tr:hover { background: #fafaf8; }
+    #tabla_marca tbody tr:last-child { border-bottom: none; }
+    #tabla_marca tbody td { padding: 13px 16px; color: var(--texto) !important; vertical-align: middle; border: none; }
+
+    .marca-logo { width: 42px; height: 42px; border-radius: 10px; object-fit: cover; border: 1px solid var(--borde); background: var(--gris); }
+    .marca-avatar {
+        width: 42px; height: 42px; background: var(--rojo); color: white;
+        border-radius: 10px; display: flex; align-items: center; justify-content: center;
+        font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 800;
+    }
+    .marca-nombre { font-weight: 600; color: var(--carbon); font-size: .9rem; }
+
+    .badge-cat {
+        font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .4px;
+        border-radius: 6px; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .cat-auto     { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .cat-repuesto { background: #f3e8ff; color: #7c3aed; border: 1px solid #e9d5ff; }
+
+    .badge-estado {
+        font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .4px;
+        border-radius: 6px; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .estado-activo   { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+    .estado-inactivo { background: var(--gris); color: var(--muted); border: 1px solid var(--borde); }
+
+    .btn-fila {
+        width: 32px; height: 32px; border-radius: 8px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border: none; cursor: pointer; transition: .2s; font-size: .8rem;
+    }
+    .btn-fila:hover { transform: translateY(-2px); }
+    .btn-edit { background: #f39c12; color: white; }
+    .btn-view { background: #0ea5e9; color: white; }
+    .btn-del  { background: var(--rojo); color: white; }
+
+    .dataTables_wrapper { padding: 16px 20px; }
+    .dataTables_filter input {
+        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
+        padding: 6px 12px !important; font-family: 'DM Sans', sans-serif !important;
+        font-size: .85rem !important; outline: none !important; transition: border-color .2s;
+    }
+    .dataTables_filter input:focus { border-color: var(--rojo) !important; }
+    .dataTables_filter label, .dataTables_length label,
+    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
+    .dataTables_length select {
+        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
+        padding: 4px 8px !important; appearance: none !important;
+        background-image: none !important; background: white !important;
+    }
+    .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
+    .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
+    .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
+    .paginate_button.disabled { display: inline-block !important; opacity: .4; }
+    .dataTables_paginate { display: block !important; }
 </style>
 {% endblock %}
 
 {% block contenido %}
-<div class="container-fluid animate__animated animate__fadeIn">
-    <div class="header-premium">
-        <div class="d-flex align-items-center">
-            <div class="title-icon"><i class="fas fa-car-side"></i></div>
-            <div class="title-container"><h1>{{ titulo|default:"MARCAS" }}</h1></div>
+<div class="container-fluid py-2">
+
+    <div class="taller-header">
+        <div class="header-left">
+            <div class="header-icon-wrap"><i class="fas fa-car-side"></i></div>
+            <div>
+                <h1 class="header-titulo">{{ titulo|default:"Marcas" }}</h1>
+                <div class="header-sub">Catálogo de marcas registradas</div>
+            </div>
         </div>
-        <a href="{{ crear_url }}" class="btn btn-danger" style="border-radius: 12px; padding: 12px 25px; font-weight: 700;">
-            <i class="fas fa-plus-circle"></i> NUEVA MARCA
-        </a>
+        <div class="header-actions">
+            <a href="{{ crear_url }}" class="btn-accion btn-nuevo">
+                <i class="fas fa-plus"></i> Nueva Marca
+            </a>
+        </div>
     </div>
 
-    <div class="card shadow-sm" style="border-radius: 20px; border: none;">
-        <div class="card-body p-4">
-            <table class="table table-hover align-middle" id="tabla_marca" style="width:100%">
+    <div class="tabla-wrap">
+        <div class="table-responsive">
+            <table id="tabla_marca" style="width:100%">
                 <thead>
-                    <tr class="text-uppercase small text-muted">
+                    <tr>
                         <th>Logo</th>
                         <th>Nombre</th>
                         <th>Categoría</th>
@@ -47,39 +163,38 @@
                     <tr>
                         <td>
                             {% if m.logo %}
-                                <img src="{{ m.logo.url }}" class="img-thumb" alt="{{ m.nombre }}">
+                                <img src="{{ m.logo.url }}" class="marca-logo" alt="{{ m.nombre }}">
                             {% else %}
-                                <div class="avatar-placeholder">{{ m.nombre|first|upper }}</div>
+                                <div class="marca-avatar">{{ m.nombre|first|upper }}</div>
                             {% endif %}
                         </td>
-                        <td class="font-weight-bold text-dark">{{ m.nombre }}</td>
+                        <td><span class="marca-nombre">{{ m.nombre }}</span></td>
                         <td>
                             {% if m.categoria == 'AUTO' %}
-                                <span class="badge-categoria"><i class="fas fa-car mr-1"></i> Vehículo</span>
+                                <span class="badge-cat cat-auto"><i class="fas fa-car"></i> Vehículo</span>
                             {% else %}
-                                <span class="badge-categoria" style="background-color: #8e44ad;"><i class="fas fa-cogs mr-1"></i> Repuesto</span>
+                                <span class="badge-cat cat-repuesto"><i class="fas fa-cogs"></i> Repuesto</span>
                             {% endif %}
                         </td>
-                        <td>{{ m.pais_origen|default:"—" }}</td>
-                        <td class="text-muted small">{{ m.descripcion|truncatechars:35|default:"—" }}</td>
+                        <td style="color:var(--muted);">{{ m.pais_origen|default:"—" }}</td>
+                        <td style="color:var(--muted); font-size:.82rem;">{{ m.descripcion|truncatechars:35|default:"—" }}</td>
                         <td>
                             {% if m.estado %}
-                                <span class="badge-activo"><i class="fas fa-check-circle mr-1"></i> Activo</span>
+                                <span class="badge-estado estado-activo"><i class="fas fa-check-circle"></i> Activo</span>
                             {% else %}
-                                <span class="badge-inactivo"><i class="fas fa-times-circle mr-1"></i> Inactivo</span>
+                                <span class="badge-estado estado-inactivo"><i class="fas fa-times-circle"></i> Inactivo</span>
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <div class="d-flex justify-content-center align-items-center" style="gap: 6px;">
-                                <a href="{% url 'app:editar_marca' m.id %}" class="btn btn-warning btn-circle" title="Editar">
+                            <div class="d-flex justify-content-center" style="gap:6px;">
+                                <a href="{% url 'app:editar_marca' m.id %}" class="btn-fila btn-edit" title="Editar">
                                     <i class="fas fa-pen"></i>
                                 </a>
-                                <button class="btn btn-info btn-circle"
-                                        onclick="verDetalle('{{ m.nombre }}', '{{ m.get_categoria_display }}', '{{ m.pais_origen|default:'' }}', '{{ m.descripcion|default:''|escapejs }}', '{% if m.logo %}{{ m.logo.url }}{% endif %}')"
-                                        title="Ver detalles">
+                                <button class="btn-fila btn-view" title="Ver detalle"
+                                    onclick="verDetalle('{{ m.nombre }}', '{{ m.get_categoria_display }}', '{{ m.pais_origen|default:'' }}', '{{ m.descripcion|default:''|escapejs }}', '{% if m.logo %}{{ m.logo.url }}{% endif %}')">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <a href="{% url 'app:eliminar_marca' m.id %}" class="btn btn-danger btn-circle" title="Eliminar">
+                                <a href="{% url 'app:eliminar_marca' m.id %}" class="btn-fila btn-del ms-1" title="Eliminar">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
                             </div>
@@ -95,48 +210,47 @@
 
 {% block js %}
 <script>
-    function verDetalle(nombre, cat, pais, desc, imgUrl) {
-        Swal.fire({
-            title: nombre,
-            html: `
-                <div class="text-center">
-                    ${imgUrl
-                        ? `<img src="${imgUrl}" style="width:120px;height:120px;border-radius:20px;object-fit:cover;margin-bottom:20px;box-shadow:0 10px 20px rgba(0,0,0,0.1);">`
-                        : '<div class="mb-4 text-muted"><i class="fas fa-image fa-4x"></i><p>Sin imagen</p></div>'
-                    }
-                    <div class="text-left px-3">
-                        <p><strong>Categoría:</strong> ${cat}</p>
-                        <p><strong>País de origen:</strong> ${pais || '—'}</p>
-                        <p><strong>Descripción:</strong> ${desc || 'Sin descripción'}</p>
-                    </div>
-                </div>
-            `,
-            confirmButtonColor: '#d32f2f',
-            confirmButtonText: 'Cerrar'
-        });
-    }
-
-    $(document).ready(function () {
-        $('#tabla_marca').DataTable({
-            responsive: true,
-            columnDefs: [{ orderable: false, targets: 6 }],
-            language: {
-                "sProcessing":   "Procesando...",
-                "sLengthMenu":   "Mostrar _MENU_ registros",
-                "sZeroRecords":  "No se encontraron resultados",
-                "sEmptyTable":   "Ningún dato disponible en esta tabla",
-                "sInfo":         "Mostrando del _START_ al _END_ de _TOTAL_ registros",
-                "sInfoEmpty":    "Mostrando 0 registros",
-                "sInfoFiltered": "(filtrado de _MAX_ registros en total)",
-                "sSearch":       "Buscar:",
-                "oPaginate": {
-                    "sFirst":    "Primero",
-                    "sLast":     "Último",
-                    "sNext":     "Siguiente",
-                    "sPrevious": "Anterior"
+function verDetalle(nombre, cat, pais, desc, imgUrl) {
+    Swal.fire({
+        title: nombre,
+        html: `
+            <div class="text-center">
+                ${imgUrl
+                    ? `<img src="${imgUrl}" style="width:100px;height:100px;border-radius:16px;object-fit:cover;margin-bottom:16px;box-shadow:0 8px 20px rgba(0,0,0,.12);">`
+                    : '<div style="margin-bottom:16px;color:#888;"><i class="fas fa-image fa-3x"></i><p style="font-size:.8rem;margin-top:6px;">Sin imagen</p></div>'
                 }
-            }
-        });
+                <div style="text-align:left;font-family:DM Sans,sans-serif;font-size:.88rem;">
+                    <p><strong>Categoría:</strong> ${cat}</p>
+                    <p><strong>País de origen:</strong> ${pais || '—'}</p>
+                    <p><strong>Descripción:</strong> ${desc || 'Sin descripción'}</p>
+                </div>
+            </div>
+        `,
+        confirmButtonColor: '#d32f2f',
+        confirmButtonText: 'Cerrar'
     });
+}
+
+$(document).ready(function () {
+    $('#tabla_marca').DataTable({
+        responsive: true,
+        autoWidth: false,
+        order: [[1, "asc"]],
+        pagingType: "full_numbers",
+        columnDefs: [{ orderable: false, targets: [0, 6] }],
+        language: {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible",
+            "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando 0 a 0 de 0 registros",
+            "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
+            "sSearch":         "Buscar:",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": { "sFirst": "«", "sLast": "»", "sNext": "›", "sPrevious": "‹" }
+        }
+    });
+});
 </script>
 {% endblock %}

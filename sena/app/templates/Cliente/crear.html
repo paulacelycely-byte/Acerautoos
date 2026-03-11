@@ -525,26 +525,21 @@ function renderLista(filtro) {
 }
 
 function seleccionar(p) {
-    /* Actualizar visualmente el botón */
     paisSelected.innerHTML = `
         <img src="${flagUrl(p.iso)}" alt="${p.nombre}" style="width:22px;height:15px;object-fit:cover;border-radius:2px;">
         <span class="pais-label">${p.code} ${p.nombre}</span>
         <i class="fas fa-chevron-down pais-chevron"></i>
     `;
-    /* Actualizar el select oculto de Django */
     hiddenInput.value = p.code;
-    /* Marcar opción activa */
     document.querySelectorAll('.pais-option').forEach(el =>
         el.classList.toggle('selected', el.dataset.code === p.code)
     );
-    /* Cerrar dropdown */
     paisDropdown.classList.remove('open');
     paisBuscar.value = '';
     renderLista('');
     actualizarTelefono();
 }
 
-/* ── Abrir / cerrar ── */
 paisSelected.addEventListener('click', () => {
     paisDropdown.classList.toggle('open');
     if (paisDropdown.classList.contains('open')) {
@@ -552,10 +547,8 @@ paisSelected.addEventListener('click', () => {
     }
 });
 
-/* ── Búsqueda en tiempo real ── */
 paisBuscar.addEventListener('input', () => renderLista(paisBuscar.value));
 
-/* ── Cerrar al hacer clic fuera ── */
 document.addEventListener('click', e => {
     if (!paisDropdown.contains(e.target)) {
         paisDropdown.classList.remove('open');
@@ -564,10 +557,8 @@ document.addEventListener('click', e => {
     }
 });
 
-/* ── Inicializar lista ── */
 renderLista('');
 
-/* ── Si hay valor previo (edición), pre-seleccionar ── */
 (function preseleccionarValorExistente() {
     const valorActual = hiddenInput.value;
     if (valorActual) {
@@ -634,7 +625,9 @@ $(function () {
             confirmButtonColor: '#d32f2f',
             cancelButtonColor: '#888',
         }).then((result) => {
-            if (result.isConfirmed) { formulario.submit(); }
+            if (result.isConfirmed) {
+                $(formulario).off('submit').submit(); // ← CORRECCIÓN: desactiva el listener antes de enviar
+            }
         });
     });
 });

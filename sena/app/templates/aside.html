@@ -3,9 +3,6 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
 
-/* ═══════════════════════════════════
-   ASIDE ACERAUTOS — EDICIÓN TALLER
-═══════════════════════════════════ */
 .app-sidebar {
     font-family: 'DM Sans', sans-serif;
     background: #0d0d0d;
@@ -14,7 +11,6 @@
     flex-direction: column;
 }
 
-/* ── Brand ── */
 .sb-brand {
     display: flex; align-items: center; gap: 14px;
     padding: 16px 18px;
@@ -24,8 +20,6 @@
     border-bottom: 1px solid rgba(255,255,255,.04);
     position: relative;
 }
-
-/* línea roja inferior del brand */
 .sb-brand::after {
     content: '';
     position: absolute;
@@ -33,12 +27,10 @@
     height: 2px;
     background: linear-gradient(90deg, #d32f2f, transparent);
 }
-
 .sb-logo {
     min-width: 40px; height: 40px; flex-shrink: 0;
     border-radius: 10px; overflow: hidden;
-    box-shadow: 0 0 0 2px rgba(211,47,47,.4),
-                0 0 12px rgba(211,47,47,.2);
+    box-shadow: 0 0 0 2px rgba(211,47,47,.4), 0 0 12px rgba(211,47,47,.2);
 }
 .sb-logo img { width: 40px; height: 40px; object-fit: cover; }
 
@@ -49,16 +41,13 @@
     text-transform: uppercase; line-height: 1;
     transition: opacity .3s;
 }
-.sb-brand-name em {
-    font-style: normal; color: #d32f2f;
-}
+.sb-brand-name em { font-style: normal; color: #d32f2f; }
 .sb-brand-sub {
     font-size: .62rem; color: rgba(255,255,255,.3);
     letter-spacing: 1.5px; text-transform: uppercase;
     margin-top: 2px; transition: opacity .3s;
 }
 
-/* ── Scroll ── */
 .sb-scroll {
     flex: 1; overflow-y: auto; overflow-x: hidden;
     padding: 10px 0 16px;
@@ -66,7 +55,6 @@
 }
 .sb-scroll::-webkit-scrollbar { display: none; }
 
-/* ── Sección label ── */
 .sb-section {
     display: flex; align-items: center; gap: 8px;
     padding: 18px 16px 6px;
@@ -90,7 +78,6 @@
     flex-shrink: 0; transition: opacity .3s;
 }
 
-/* ── Item ── */
 .sb-item {
     display: flex; align-items: center; gap: 12px;
     padding: 8px 14px; margin: 1px 10px;
@@ -100,8 +87,6 @@
     transition: all .2s;
     overflow: hidden;
 }
-
-/* efecto hover: borde izquierdo rojo */
 .sb-item::before {
     content: '';
     position: absolute;
@@ -111,37 +96,32 @@
     transform: scaleY(0);
     transition: transform .2s;
 }
-
 .sb-item:hover {
     background: rgba(255,255,255,.05);
     color: #fff;
 }
 .sb-item:hover::before { transform: scaleY(1); }
-
-/* activo */
 .sb-item.active {
     background: rgba(211,47,47,.12);
     color: #fff;
     border: 1px solid rgba(211,47,47,.25);
 }
 .sb-item.active::before { transform: scaleY(1); }
-.sb-item.active .sb-icon { color: #d32f2f; }
 
-/* icono */
+/* SVG icon */
 .sb-icon {
-    min-width: 18px; font-size: .88rem;
-    text-align: center; flex-shrink: 0;
+    min-width: 18px; width: 18px; height: 18px;
+    flex-shrink: 0;
+    color: rgba(255,255,255,.35);
     transition: color .2s;
 }
-
-.sb-item:hover .sb-icon { color: #d32f2f; }
+.sb-item:hover .sb-icon,
+.sb-item.active .sb-icon { color: #d32f2f; }
 
 .sb-item-text {
     font-size: .82rem; font-weight: 500;
     transition: opacity .3s; flex: 1;
 }
-
-/* badge paso */
 .sb-step {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: .6rem; font-weight: 800; letter-spacing: .5px;
@@ -151,21 +131,17 @@
     padding: 1px 6px; border-radius: 5px;
     flex-shrink: 0; transition: opacity .3s;
 }
-
 .sb-item.active .sb-step {
     background: rgba(211,47,47,.3);
     color: #fca5a5;
     border-color: rgba(211,47,47,.4);
 }
-
-/* notif badge */
 .sb-badge {
     margin-left: auto; background: #d32f2f; color: white;
     font-size: .55rem; font-weight: 800; padding: 2px 6px;
     border-radius: 20px; flex-shrink: 0; transition: opacity .3s;
 }
 
-/* ── Footer ── */
 .sb-footer {
     padding: 12px 14px;
     background: #111;
@@ -173,16 +149,12 @@
     display: flex; align-items: center; gap: 10px;
     overflow: hidden; white-space: nowrap;
 }
-
-.sb-avatar-wrap {
-    position: relative; flex-shrink: 0;
-}
+.sb-avatar-wrap { position: relative; flex-shrink: 0; }
 .sb-avatar {
     width: 36px; height: 36px; border-radius: 10px;
     object-fit: cover;
     border: 2px solid rgba(211,47,47,.5);
 }
-/* punto verde online */
 .sb-avatar-wrap::after {
     content: '';
     position: absolute;
@@ -192,16 +164,9 @@
     border-radius: 50%;
     border: 2px solid #111;
 }
-
 .sb-user-info { flex:1; min-width:0; transition: opacity .3s; }
-.sb-user-name {
-    font-size: .8rem; font-weight: 700; color: #f1f5f9;
-    overflow: hidden; text-overflow: ellipsis;
-}
-.sb-user-role {
-    font-size: .62rem; color: rgba(255,255,255,.3);
-    text-transform: uppercase; letter-spacing: .5px;
-}
+.sb-user-name { font-size: .8rem; font-weight: 700; color: #f1f5f9; overflow: hidden; text-overflow: ellipsis; }
+.sb-user-role { font-size: .62rem; color: rgba(255,255,255,.3); text-transform: uppercase; letter-spacing: .5px; }
 
 .sb-logout-btn {
     min-width: 30px; height: 30px; flex-shrink: 0;
@@ -209,13 +174,14 @@
     border: 1px solid rgba(255,255,255,.08);
     border-radius: 8px; color: rgba(255,255,255,.3);
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; transition: all .2s; font-size: .82rem;
+    cursor: pointer; transition: all .2s;
 }
 .sb-logout-btn:hover {
     background: #d32f2f; color: white;
     border-color: #d32f2f;
     box-shadow: 0 0 12px rgba(211,47,47,.4);
 }
+.sb-logout-btn svg { width: 15px; height: 15px; }
 
 /* ══ MODO MINI ══ */
 body.sidebar-mini .sb-brand-name,
@@ -225,9 +191,6 @@ body.sidebar-mini .sb-user-info,
 body.sidebar-mini .sb-badge,
 body.sidebar-mini .sb-step         { opacity: 0; pointer-events: none; }
 body.sidebar-mini .sb-section       { opacity: 0; height: 0; padding: 0; overflow: hidden; }
-body.sidebar-mini .sb-section-label,
-body.sidebar-mini .sb-section-line,
-body.sidebar-mini .sb-section-num   { opacity: 0; }
 
 body.sidebar-mini .sb-item::after {
     content: attr(data-tip);
@@ -239,11 +202,117 @@ body.sidebar-mini .sb-item::after {
     opacity: 0; transition: opacity .15s;
     border: 1px solid rgba(211,47,47,.3);
     z-index: 9999;
-    box-shadow: 0 4px 16px rgba(0,0,0,.5),
-                0 0 0 1px rgba(211,47,47,.1);
+    box-shadow: 0 4px 16px rgba(0,0,0,.5), 0 0 0 1px rgba(211,47,47,.1);
 }
 body.sidebar-mini .sb-item:hover::after { opacity: 1; }
 </style>
+
+<!-- SVG ICON SPRITES — minimalistas, stroke only -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- dashboard: cuadrícula 2x2 -->
+  <symbol id="ico-dashboard" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="7" height="7" rx="1.5"/>
+    <rect x="11" y="2" width="7" height="7" rx="1.5"/>
+    <rect x="2" y="11" width="7" height="7" rx="1.5"/>
+    <rect x="11" y="11" width="7" height="7" rx="1.5"/>
+  </symbol>
+
+  <!-- clientes: persona -->
+  <symbol id="ico-clientes" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="10" cy="6.5" r="3"/>
+    <path d="M3 17c0-3.3 3.1-6 7-6s7 2.7 7 6"/>
+  </symbol>
+
+  <!-- vehiculos: auto -->
+  <symbol id="ico-vehiculos" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 10l1.5-4h11L17 10"/>
+    <rect x="2" y="10" width="16" height="5" rx="1.5"/>
+    <circle cx="5.5" cy="15.5" r="1.5"/>
+    <circle cx="14.5" cy="15.5" r="1.5"/>
+  </symbol>
+
+  <!-- ordenes: clipboard -->
+  <symbol id="ico-ordenes" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="3" width="10" height="14" rx="1.5"/>
+    <path d="M8 3V2M12 3V2"/>
+    <path d="M8 7h4M8 10h4M8 13h2"/>
+  </symbol>
+
+  <!-- tipo servicio: llave inglesa -->
+  <symbol id="ico-servicio" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14.5 3a3.5 3.5 0 0 1 0 7 3.5 3.5 0 0 1-2.5-1.06L4 17H3v-1l8.06-8a3.5 3.5 0 0 1 3.44-5z"/>
+  </symbol>
+
+  <!-- detalles orden: lista con check -->
+  <symbol id="ico-detalles" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 6h12M4 10h8M4 14h10"/>
+  </symbol>
+
+  <!-- compatibilidad: puzzle -->
+  <symbol id="ico-compat" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 3H5a2 2 0 0 0-2 2v4h2a2 2 0 0 1 0 4H3v4a2 2 0 0 0 2 2h4v-2a2 2 0 0 1 4 0v2h4a2 2 0 0 0 2-2v-4h-2a2 2 0 0 1 0-4h2V5a2 2 0 0 0-2-2h-4v2a2 2 0 0 1-4 0V3z"/>
+  </symbol>
+
+  <!-- productos: caja -->
+  <symbol id="ico-productos" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 2L2 6v8l8 4 8-4V6L10 2z"/>
+    <path d="M2 6l8 4 8-4M10 10v8"/>
+  </symbol>
+
+  <!-- marcas: etiqueta -->
+  <symbol id="ico-marcas" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 3h7l7 7-7 7-7-7V3z"/>
+    <circle cx="7" cy="7" r="1" fill="currentColor" stroke="none"/>
+  </symbol>
+
+  <!-- proveedores: camión -->
+  <symbol id="ico-proveedores" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="1" y="5" width="11" height="9" rx="1"/>
+    <path d="M12 8h4l2 3v3h-6V8z"/>
+    <circle cx="4.5" cy="15.5" r="1.5"/>
+    <circle cx="15.5" cy="15.5" r="1.5"/>
+  </symbol>
+
+  <!-- compras: carrito -->
+  <symbol id="ico-compras" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M1 1h3l2 9h9l2-6H6"/>
+    <circle cx="8" cy="17" r="1.5"/>
+    <circle cx="15" cy="17" r="1.5"/>
+  </symbol>
+
+  <!-- caja: caja registradora -->
+  <symbol id="ico-caja" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="8" width="16" height="9" rx="1.5"/>
+    <path d="M6 8V5a4 4 0 0 1 8 0v3"/>
+    <path d="M9 12h2M9 14.5h2M6 12h.5M13.5 12h.5"/>
+  </symbol>
+
+  <!-- factura: documento con signo $ -->
+  <symbol id="ico-factura" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="2" width="12" height="16" rx="1.5"/>
+    <path d="M10 6v8M8 7.5c0-.8.9-1.5 2-1.5s2 .7 2 1.5S11.1 9 10 9s-2 .7-2 1.5S9 12 10 12s2 .7 2 1.5"/>
+  </symbol>
+
+  <!-- usuarios: grupo -->
+  <symbol id="ico-usuarios" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="7.5" cy="6" r="2.5"/>
+    <path d="M1 17c0-3 2.9-5 6.5-5"/>
+    <circle cx="14" cy="6" r="2.5"/>
+    <path d="M19 17c0-3-2.9-5-6.5-5s-6.5 2-6.5 5"/>
+  </symbol>
+
+  <!-- notificaciones: campana -->
+  <symbol id="ico-notif" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 2a6 6 0 0 1 6 6v3l1.5 2.5H2.5L4 11V8a6 6 0 0 1 6-6z"/>
+    <path d="M8 15a2 2 0 0 0 4 0"/>
+  </symbol>
+
+  <!-- logout: flecha salir -->
+  <symbol id="ico-logout" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 10h5M15.5 7.5L18 10l-2.5 2.5"/>
+    <path d="M10 3H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h5"/>
+  </symbol>
+</svg>
 
 <nav class="app-sidebar">
 
@@ -268,7 +337,7 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
         <a href="{% url 'app:dashboard' %}"
            class="sb-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
            data-tip="Dashboard">
-            <i class="fas fa-gauge-high sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-dashboard"/></svg>
             <span class="sb-item-text">Dashboard</span>
         </a>
 
@@ -281,28 +350,28 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
         <a href="{% url 'app:listar_clientes' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_clientes' %}active{% endif %}"
            data-tip="Clientes">
-            <i class="fas fa-user-tie sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-clientes"/></svg>
             <span class="sb-item-text">Clientes</span>
             <span class="sb-step">P1</span>
         </a>
         <a href="{% url 'app:listar_vehiculos' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_vehiculos' %}active{% endif %}"
            data-tip="Vehículos">
-            <i class="fas fa-car sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-vehiculos"/></svg>
             <span class="sb-item-text">Vehículos</span>
             <span class="sb-step">P2</span>
         </a>
         <a href="{% url 'app:orden_servicio_list' %}"
            class="sb-item {% if request.resolver_match.url_name == 'orden_servicio_list' %}active{% endif %}"
            data-tip="Órdenes">
-            <i class="fas fa-clipboard-list sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-ordenes"/></svg>
             <span class="sb-item-text">Órdenes de Servicio</span>
             <span class="sb-step">P3</span>
         </a>
         <a href="{% url 'app:tipo_servicio_list' %}"
            class="sb-item {% if request.resolver_match.url_name == 'tipo_servicio_list' %}active{% endif %}"
            data-tip="Tipos Servicio">
-            <i class="fas fa-screwdriver-wrench sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-servicio"/></svg>
             <span class="sb-item-text">Tipos de Servicio</span>
             <span class="sb-step">P4</span>
         </a>
@@ -316,28 +385,28 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
         <a href="{% url 'app:detalle_orden_list' %}"
            class="sb-item {% if request.resolver_match.url_name == 'detalle_orden_list' %}active{% endif %}"
            data-tip="Detalles Orden">
-            <i class="fas fa-list-ul sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-detalles"/></svg>
             <span class="sb-item-text">Detalles de Orden</span>
             <span class="sb-step">P5</span>
         </a>
         <a href="{% url 'app:listar_compatibilidad' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_compatibilidad' %}active{% endif %}"
            data-tip="Compatibilidad">
-            <i class="fas fa-puzzle-piece sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-compat"/></svg>
             <span class="sb-item-text">Compatibilidad</span>
             <span class="sb-step">P6</span>
         </a>
         <a href="{% url 'app:listar_producto' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_producto' %}active{% endif %}"
            data-tip="Productos">
-            <i class="fas fa-boxes-stacked sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-productos"/></svg>
             <span class="sb-item-text">Productos</span>
             <span class="sb-step">P7</span>
         </a>
         <a href="{% url 'app:listar_marca' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_marca' %}active{% endif %}"
            data-tip="Marcas">
-            <i class="fas fa-tags sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-marcas"/></svg>
             <span class="sb-item-text">Marcas</span>
             <span class="sb-step">P8</span>
         </a>
@@ -351,14 +420,14 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
         <a href="{% url 'app:listar_proveedores' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_proveedores' %}active{% endif %}"
            data-tip="Proveedores">
-            <i class="fas fa-truck sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-proveedores"/></svg>
             <span class="sb-item-text">Proveedores</span>
             <span class="sb-step">P9</span>
         </a>
         <a href="{% url 'app:lista_compras' %}"
            class="sb-item {% if request.resolver_match.url_name == 'lista_compras' %}active{% endif %}"
            data-tip="Compras">
-            <i class="fas fa-shopping-basket sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-compras"/></svg>
             <span class="sb-item-text">Compras</span>
             <span class="sb-step">P10</span>
         </a>
@@ -372,14 +441,14 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
         <a href="{% url 'app:caja_listar' %}"
            class="sb-item {% if request.resolver_match.url_name == 'caja_listar' %}active{% endif %}"
            data-tip="Caja">
-            <i class="fas fa-cash-register sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-caja"/></svg>
             <span class="sb-item-text">Caja</span>
             <span class="sb-step">P11</span>
         </a>
         <a href="{% url 'app:listar_factura' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_factura' %}active{% endif %}"
            data-tip="Facturación">
-            <i class="fas fa-file-invoice-dollar sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-factura"/></svg>
             <span class="sb-item-text">Facturación</span>
             <span class="sb-step">P12</span>
         </a>
@@ -393,13 +462,13 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
         <a href="{% url 'app:listar_usuario' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_usuario' %}active{% endif %}"
            data-tip="Usuarios">
-            <i class="fas fa-users-cog sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-usuarios"/></svg>
             <span class="sb-item-text">Usuarios</span>
         </a>
         <a href="{% url 'app:listar_notificacion' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_notificacion' %}active{% endif %}"
            data-tip="Notificaciones">
-            <i class="fas fa-bell sb-icon"></i>
+            <svg class="sb-icon"><use href="#ico-notif"/></svg>
             <span class="sb-item-text">Notificaciones</span>
             <span class="sb-badge" id="notif-count" style="display:none;"></span>
         </a>
@@ -419,7 +488,7 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
         <form method="post" action="{% url 'login:logout' %}">
             {% csrf_token %}
             <button type="submit" class="sb-logout-btn" title="Cerrar sesión">
-                <i class="fas fa-right-from-bracket"></i>
+                <svg><use href="#ico-logout"/></svg>
             </button>
         </form>
     </div>
