@@ -1,6 +1,8 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.shortcuts import redirect
+from django.db.models import ProtectedError
 from app.models import TipoServicio
 from app.forms import TipoServicioForm
 
@@ -38,7 +40,7 @@ class TipoServicioCreateView(CreateView):
 class TipoServicioUpdateView(UpdateView):
     model = TipoServicio
     form_class = TipoServicioForm
-    template_name = 'TipoServicio/editar.html'
+    template_name = 'TipoServicio/crear.html'
     success_url = reverse_lazy('app:tipo_servicio_list') 
     
     def get_context_data(self, **kwargs):
@@ -66,6 +68,18 @@ class TipoServicioDeleteView(DeleteView):
         context['listar_url'] = reverse_lazy('app:tipo_servicio_list')
         return context
     
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, 'Tipo de servicio eliminado exitosamente')
-        return super().delete(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        try:
+            self.object = self.get_object()
+            nombre = self.object.nombre
+            self.object.delete()
+            messages.success(request, f'El servicio "{nombre}" fue eliminado exitosamente.')
+            return redirect(self.success_url)
+        except ProtectedError:
+            nombre = self.get_object().nombre
+            messages.error(
+                request,
+                f'No se puede eliminar "{nombre}" porque tiene órdenes de servicio asociadas. '
+                f'Elimina primero esas órdenes e intenta de nuevo.'
+            )
+            return redirect('app:tipo_servicio_list')

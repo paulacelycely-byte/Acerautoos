@@ -2,85 +2,281 @@
 {% load static %}
 
 {% block css %}
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-    .header-premium { background: linear-gradient(145deg, #ffffff, #f8f9fa); border-radius: 20px; padding: 25px; margin-bottom: 30px; border-left: 10px solid #454d55; box-shadow: 0 15px 35px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; position: relative; overflow: hidden; }
-    .title-icon { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white; width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 8px 20px rgba(0,0,0,0.15); margin-right: 20px; }
-    .title-container h1 { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 1.9rem; font-weight: 700; margin-bottom: 0; color: #2d3436; text-transform: uppercase; letter-spacing: 1.5px; }
-    .btn-nueva-premium { background: linear-gradient(135deg, #454d55 0%, #2f353a 100%); color: white !important; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; transition: all 0.3s; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
-    .card-custom { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; background: #fff; }
-    .btn-circle { width: 35px; height: 35px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; transition: 0.3s; border: none; }
-    .badge-estado { padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 0.75rem; }
+    :root {
+        --rojo:   #d32f2f;
+        --rojo2:  #b71c1c;
+        --carbon: #1a1a1a;
+        --gris:   #f2f2f0;
+        --borde:  #e0ddd8;
+        --texto:  #2a2a2a;
+        --muted:  #888;
+    }
+
+    .taller-header {
+        position: relative;
+        background: var(--carbon);
+        border-radius: 16px;
+        padding: 28px 32px;
+        margin-bottom: 28px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .taller-header::before {
+        content: '';
+        position: absolute;
+        top: 0; right: 0;
+        width: 260px; height: 100%;
+        background: repeating-linear-gradient(
+            -55deg, transparent, transparent 14px,
+            rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px
+        );
+    }
+    .taller-header::after {
+        content: '';
+        position: absolute;
+        left: 0; top: 0;
+        width: 5px; height: 100%;
+        background: var(--rojo);
+        border-radius: 16px 0 0 16px;
+    }
+    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
+    .header-icon-wrap {
+        width: 56px; height: 56px;
+        background: var(--rojo);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; color: white;
+        box-shadow: 0 0 0 4px rgba(211,47,47,.25);
+        flex-shrink: 0;
+    }
+    .header-titulo {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 2rem; font-weight: 800;
+        color: white; letter-spacing: 1px;
+        text-transform: uppercase; line-height: 1; margin: 0;
+    }
+    .header-sub {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem; color: rgba(255,255,255,.45);
+        margin-top: 4px; letter-spacing: .5px;
+    }
+    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
+    .btn-accion {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px;
+        padding: 10px 18px; border-radius: 10px;
+        display: flex; align-items: center; gap: 8px;
+        border: none; cursor: pointer; text-decoration: none;
+        transition: transform .2s, box-shadow .2s;
+    }
+    .btn-accion:hover { transform: translateY(-2px); }
+    .btn-pdf   { background: #c0392b; color: white !important; }
+    .btn-excel { background: #1e7e45; color: white !important; }
+    .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
+    .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
+
+    .tabla-wrap {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid var(--borde);
+        overflow: hidden;
+    }
+
+    #tabla_ordenes {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .875rem;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    #tabla_ordenes thead tr {
+        background: var(--gris);
+        border-bottom: 2px solid var(--borde);
+    }
+    #tabla_ordenes thead th {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: .78rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1.2px;
+        color: var(--muted); padding: 14px 16px; border: none;
+    }
+    #tabla_ordenes tbody tr {
+        border-bottom: 1px solid var(--borde);
+        transition: background .15s;
+    }
+    #tabla_ordenes tbody tr:hover { background: #fafaf8; }
+    #tabla_ordenes tbody tr:last-child { border-bottom: none; }
+    #tabla_ordenes tbody td {
+        padding: 13px 16px; color: var(--texto);
+        vertical-align: middle; border: none;
+    }
+
+    /* Placa */
+    .placa-box {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: .95rem; font-weight: 800;
+        color: var(--rojo); background: #fff5f5;
+        border: 1px solid rgba(211,47,47,.2);
+        border-radius: 8px; padding: 4px 12px;
+        text-transform: uppercase; letter-spacing: 1px;
+        display: inline-block;
+    }
+
+    /* Badges de estado */
+    .badge-estado {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .7rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .6px;
+        border-radius: 6px; padding: 4px 10px;
+        display: inline-block;
+    }
+    .estado-pendiente  { background: #fff8e1; color: #f59e0b; border: 1px solid #fde68a; }
+    .estado-proceso    { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
+    .estado-terminado  { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+
+    /* Badge servicio */
+    .badge-servicio {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .7rem; font-weight: 600;
+        background: var(--gris); color: var(--texto);
+        border: 1px solid var(--borde);
+        border-radius: 6px; padding: 3px 9px;
+        text-transform: uppercase; letter-spacing: .4px;
+    }
+
+    .btn-fila {
+        width: 32px; height: 32px; border-radius: 8px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border: none; cursor: pointer; transition: .2s; font-size: .8rem;
+    }
+    .btn-fila:hover { transform: translateY(-2px); }
+    .btn-edit { background: #f39c12; color: white; }
+    .btn-del  { background: var(--rojo); color: white; }
+
+    /* DataTables override */
+    .dataTables_wrapper { padding: 16px 20px; }
+    .dataTables_filter input {
+        border: 1.5px solid var(--borde) !important;
+        border-radius: 8px !important; padding: 6px 12px !important;
+        font-family: 'DM Sans', sans-serif !important; font-size: .85rem !important;
+        outline: none !important; transition: border-color .2s;
+    }
+    .dataTables_filter input:focus { border-color: var(--rojo) !important; }
+    .dataTables_filter label,
+    .dataTables_length label,
+    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
+    .dataTables_length select {
+        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
+        padding: 4px 8px !important; appearance: none !important;
+        background-image: none !important; background: white !important;
+    }
+    .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
+    .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
+    .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
+    .paginate_button.disabled { display: inline-block !important; opacity: .4; }
+    .dataTables_paginate { display: block !important; }
 </style>
 {% endblock %}
 
 {% block contenido %}
-<div class="container-fluid animate__animated animate__fadeIn">
-    <div class="header-premium">
-        <div class="d-flex align-items-center">
-            <div class="title-icon"><i class="fas fa-tools"></i></div>
-            <div class="title-container"><h1>ÓRDENES DE SERVICIO</h1></div>
+<div class="container-fluid py-2">
+
+    <div class="taller-header">
+        <div class="header-left">
+            <div class="header-icon-wrap"><i class="fas fa-tools"></i></div>
+            <div>
+                <h1 class="header-titulo">Órdenes de Servicio</h1>
+                <div class="header-sub">Registro de órdenes del taller</div>
+            </div>
         </div>
-        <a href="{% url 'app:orden_servicio_create' %}" class="btn btn-nueva-premium">
-            <i class="fas fa-plus-circle"></i> <span>Nueva Orden</span>
-        </a>
+        <div class="header-actions">
+            <a href="{% url 'app:reporte_ordenes_pdf' %}" class="btn-accion btn-pdf">
+                <i class="fas fa-file-pdf"></i> PDF
+            </a>
+            <a href="{% url 'app:reporte_ordenes_excel' %}" class="btn-accion btn-excel">
+                <i class="fas fa-file-excel"></i> Excel
+            </a>
+            <a href="{% url 'app:orden_servicio_create' %}" class="btn-accion btn-nuevo">
+                <i class="fas fa-plus"></i> Nueva Orden
+            </a>
+        </div>
     </div>
 
-    <div class="card card-custom">
-        <div class="card-body p-4">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle" id="tabla_ordenes" style="width:100%">
-                    <thead>
-                        <tr class="text-uppercase small font-weight-bold text-muted">
-                            <th>#</th>
-                            <th>Vehículo</th>
-                            <th>Servicio</th>
-                            <th>KM</th>
-                            <th>Estado</th>
-                            <th>Fecha</th>
-                            <th class="text-center">Opciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for o in ordenes %} <tr>
-                            <td class="font-weight-bold">{{ o.id }}</td>
-                            <td>{{ o.vehiculo }}</td>
-                            <td class="text-secondary">{{ o.servicio }}</td>
-                            <td>{{ o.km_actual }}</td>
-                            <td>
-                                {% if o.estado == 'Pendiente' %}
-                                    <span class="badge badge-warning badge-estado">PENDIENTE</span>
-                                {% elif o.estado == 'En Proceso' %}
-                                    <span class="badge badge-info badge-estado">EN PROCESO</span>
-                                {% else %}
-                                    <span class="badge badge-success badge-estado">TERMINADO</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ o.fecha|date:"d/m/Y H:i" }}</td>
-                            <td class="text-center">
-                                <a href="{% url 'app:orden_servicio_edit' o.id %}" class="btn btn-warning btn-circle shadow-sm"><i class="fas fa-pen text-white"></i></a>
-                                <a href="{% url 'app:orden_servicio_delete' o.id %}" class="btn btn-danger btn-circle shadow-sm ml-1"><i class="fas fa-trash-alt text-white"></i></a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+    <div class="tabla-wrap">
+        <div class="table-responsive">
+            <table id="tabla_ordenes" style="width:100%">
+                <thead>
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th>Vehículo</th>
+                        <th>Servicio</th>
+                        <th>KM</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for o in ordenes %}
+                    <tr>
+                        <td class="text-center" style="font-weight:700; color:var(--muted); font-size:.8rem;">{{ o.id }}</td>
+                        <td><span class="placa-box">{{ o.vehiculo }}</span></td>
+                        <td><span class="badge-servicio">{{ o.servicio }}</span></td>
+                        <td style="font-weight:600; color:var(--carbon);">{{ o.km_actual }} km</td>
+                        <td>
+                            {% if o.estado == 'Pendiente' %}
+                                <span class="badge-estado estado-pendiente">Pendiente</span>
+                            {% elif o.estado == 'En Proceso' %}
+                                <span class="badge-estado estado-proceso">En Proceso</span>
+                            {% else %}
+                                <span class="badge-estado estado-terminado">Terminado</span>
+                            {% endif %}
+                        </td>
+                        <td style="color:var(--muted); font-size:.82rem;">{{ o.fecha|date:"d/m/Y H:i" }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'app:orden_servicio_edit' o.id %}" class="btn-fila btn-edit" title="Editar">
+                                <i class="fas fa-pen"></i>
+                            </a>
+                            <a href="{% url 'app:orden_servicio_delete' o.id %}" class="btn-fila btn-del ms-1" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 {% endblock %}
 
 {% block js %}
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 <script>
     $(document).ready(function () {
         $('#tabla_ordenes').DataTable({
             responsive: true,
-            language: { 
-                "sSearch": "<span class='font-weight-bold small'>BUSCAR:</span>",
-                "oPaginate": { "sNext": "<i class='fas fa-chevron-right'></i>", "sPrevious": "<i class='fas fa-chevron-left'></i>" }
+            autoWidth: false,
+            order: [[0, "desc"]],
+            pagingType: "full_numbers",
+            language: {
+                "sProcessing":     "Procesando...",
+                "sLengthMenu":     "Mostrar _MENU_ registros",
+                "sZeroRecords":    "No se encontraron resultados",
+                "sEmptyTable":     "Ningún dato disponible",
+                "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "sInfoEmpty":      "Mostrando 0 a 0 de 0 registros",
+                "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
+                "sSearch":         "Buscar:",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst":    "«",
+                    "sLast":     "»",
+                    "sNext":     "›",
+                    "sPrevious": "‹"
+                }
             }
         });
     });

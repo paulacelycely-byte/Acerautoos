@@ -2,185 +2,279 @@
 {% load static %}
 
 {% block css %}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-    /* --- ENCABEZADO PREMIUM ESTILO ACERAUTOS --- */
-    .header-premium {
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        border-radius: 20px;
-        padding: 25px;
-        margin-bottom: 30px;
-        border-left: 10px solid #d32f2f;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+    :root {
+        --rojo:   #d32f2f;
+        --rojo2:  #b71c1c;
+        --carbon: #1a1a1a;
+        --gris:   #f2f2f0;
+        --borde:  #e0ddd8;
+        --texto:  #2a2a2a;
+        --muted:  #888;
+    }
+
+    .taller-header {
+        position: relative;
+        background: var(--carbon);
+        border-radius: 16px;
+        padding: 28px 32px;
+        margin-bottom: 28px;
+        overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
-
-    .title-icon {
-        background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-        color: white;
-        width: 55px; height: 55px;
-        border-radius: 15px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.5rem;
-        box-shadow: 0 8px 20px rgba(211, 47, 47, 0.2);
-        margin-right: 20px;
+    .taller-header::before {
+        content: '';
+        position: absolute;
+        top: 0; right: 0;
+        width: 260px; height: 100%;
+        background: repeating-linear-gradient(
+            -55deg, transparent, transparent 14px,
+            rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px
+        );
+    }
+    .taller-header::after {
+        content: '';
+        position: absolute;
+        left: 0; top: 0;
+        width: 5px; height: 100%;
+        background: var(--rojo);
+        border-radius: 16px 0 0 16px;
     }
 
-    .title-container h1 {
-        font-family: 'Segoe UI', sans-serif;
-        font-size: 1.9rem;
-        font-weight: 700;
-        margin-bottom: 0;
-        color: #2d3436;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-    }
+    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
 
-    .btn-nueva-premium {
-        background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
-        color: white !important;
-        border: none;
-        padding: 12px 25px;
+    .header-icon-wrap {
+        width: 56px; height: 56px;
+        background: var(--rojo);
         border-radius: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        letter-spacing: 1px;
-        display: flex; align-items: center; gap: 10px;
-        transition: all 0.3s ease;
-        box-shadow: 0 8px 15px rgba(211, 47, 47, 0.2);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; color: white;
+        box-shadow: 0 0 0 4px rgba(211,47,47,.25);
+        flex-shrink: 0;
     }
 
-    .btn-nueva-premium:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.1);
+    .header-titulo {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 2rem; font-weight: 800;
+        color: white; letter-spacing: 1px;
+        text-transform: uppercase; line-height: 1;
+        margin: 0;
     }
 
-    /* --- TABLA Y TARJETA --- */
-    .card-custom {
+    .header-sub {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem; color: rgba(255,255,255,.45);
+        margin-top: 4px; letter-spacing: .5px;
+    }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
+
+    .btn-accion {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px;
+        padding: 10px 18px; border-radius: 10px;
+        display: flex; align-items: center; gap: 8px;
+        border: none; cursor: pointer; text-decoration: none;
+        transition: transform .2s, box-shadow .2s;
+    }
+    .btn-accion:hover { transform: translateY(-2px); }
+    .btn-pdf   { background: #c0392b; color: white !important; }
+    .btn-excel { background: #1e7e45; color: white !important; }
+    .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
+    .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
+
+    .tabla-wrap {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid var(--borde);
+        overflow: hidden;
+    }
+
+    #tabla_vehiculos {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .875rem;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    #tabla_vehiculos thead tr {
+        background: var(--gris);
+        border-bottom: 2px solid var(--borde);
+    }
+
+    #tabla_vehiculos thead th {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: .78rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1.2px;
+        color: var(--muted); padding: 14px 16px;
         border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important;
-        background: #fff;
     }
 
+    #tabla_vehiculos tbody tr {
+        border-bottom: 1px solid var(--borde);
+        transition: background .15s;
+    }
+    #tabla_vehiculos tbody tr:hover { background: #fafaf8; }
+    #tabla_vehiculos tbody tr:last-child { border-bottom: none; }
+
+    #tabla_vehiculos tbody td {
+        padding: 13px 16px; color: var(--texto);
+        vertical-align: middle; border: none;
+    }
+
+    /* Placa estilo monospace */
     .placa-box {
-        font-family: 'Monaco', 'Courier New', monospace;
-        font-weight: bold;
-        color: #d32f2f;
-        background-color: #fdf2f2;
-        padding: 5px 12px;
-        border-radius: 8px;
-        border: 1px solid #f9d5d5;
-        text-transform: uppercase;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: .95rem; font-weight: 800;
+        color: var(--rojo); background: #fff5f5;
+        border: 1px solid rgba(211,47,47,.2);
+        border-radius: 8px; padding: 4px 12px;
+        text-transform: uppercase; letter-spacing: 1px;
         display: inline-block;
     }
 
-    .avatar-owner {
-        width: 40px; height: 40px;
-        background: #2d3436;
+    /* Avatar propietario */
+    .cliente-avatar {
+        width: 38px; height: 38px;
+        background: var(--carbon);
         color: white;
         border-radius: 10px;
         display: flex; align-items: center; justify-content: center;
-        font-weight: bold;
-        margin-right: 12px;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 1rem; font-weight: 800;
+        flex-shrink: 0;
     }
 
-    .btn-circle {
-        width: 35px; height: 35px;
-        border-radius: 10px;
+    .cliente-nombre { font-weight: 600; color: var(--carbon); font-size: .9rem; }
+
+    /* Badge marca */
+    .badge-marca {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .7rem; font-weight: 600;
+        background: var(--gris); color: var(--texto);
+        border: 1px solid var(--borde);
+        border-radius: 6px; padding: 3px 9px;
+        text-transform: uppercase; letter-spacing: .4px;
+    }
+
+    .btn-fila {
+        width: 32px; height: 32px; border-radius: 8px;
         display: inline-flex; align-items: center; justify-content: center;
-        transition: 0.3s;
-        border: none;
+        border: none; cursor: pointer; transition: .2s;
+        font-size: .8rem;
     }
+    .btn-fila:hover { transform: translateY(-2px); }
+    .btn-edit { background: #f39c12; color: white; }
+    .btn-del  { background: var(--rojo); color: white; }
 
-    .btn-circle:hover { transform: translateY(-3px); }
-
-    /* Personalización de DataTables para que coincida con el diseño */
+    /* DataTables override */
+    .dataTables_wrapper { padding: 16px 20px; }
     .dataTables_filter input {
-        border: 2px solid #f1f2f6 !important;
-        border-radius: 10px !important;
-        padding: 6px 15px !important;
-        margin-left: 10px !important;
+        border: 1.5px solid var(--borde) !important;
+        border-radius: 8px !important;
+        padding: 6px 12px !important;
+        font-family: 'DM Sans', sans-serif !important;
+        font-size: .85rem !important;
         outline: none !important;
+        transition: border-color .2s;
     }
-    .dataTables_filter input:focus { border-color: #d32f2f !important; }
-    
-    .page-item.active .page-link {
-        background-color: #d32f2f !important;
-        border-color: #d32f2f !important;
+    .dataTables_filter input:focus { border-color: var(--rojo) !important; }
+    .dataTables_filter label,
+    .dataTables_length label,
+    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
+    .dataTables_length select {
+        border: 1.5px solid var(--borde) !important;
+        border-radius: 8px !important;
+        padding: 4px 8px !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        background-image: none !important;
+        background: white !important;
     }
+    .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
+    .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
+    .paginate_button.current a, .paginate_button.current a:hover { color: white !important; }
+    .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
+    .paginate_button.disabled { display: inline-block !important; opacity: .4; }
+    .dataTables_paginate { display: block !important; }
 </style>
 {% endblock %}
 
 {% block contenido %}
-<div class="container-fluid animate__animated animate__fadeIn">
-    
-    <div class="header-premium">
-        <div class="d-flex align-items-center">
-            <div class="title-icon">
-                <i class="fas fa-car"></i>
-            </div>
-            <div class="title-container">
-                <h1>{{ titulo|upper }}</h1>
+<div class="container-fluid py-2">
+
+    <!-- Encabezado -->
+    <div class="taller-header">
+        <div class="header-left">
+            <div class="header-icon-wrap"><i class="fas fa-car"></i></div>
+            <div>
+                <h1 class="header-titulo">{{ titulo|default:"Vehículos" }}</h1>
+                <div class="header-sub">Registro de vehículos del taller</div>
             </div>
         </div>
-
-        <a href="{% url 'app:crear_vehiculo' %}" class="btn btn-nueva-premium">
-            <i class="fas fa-plus-circle"></i>
-            <span>Nuevo Vehículo</span>
-        </a>
+        <div class="header-actions">
+            <a href="{% url 'app:reporte_vehiculos_pdf' %}" class="btn-accion btn-pdf">
+                <i class="fas fa-file-pdf"></i> PDF
+            </a>
+            <a href="{% url 'app:reporte_vehiculos_excel' %}" class="btn-accion btn-excel">
+                <i class="fas fa-file-excel"></i> Excel
+            </a>
+            <a href="{% url 'app:crear_vehiculo' %}" class="btn-accion btn-nuevo">
+                <i class="fas fa-plus"></i> Nuevo Vehículo
+            </a>
+        </div>
     </div>
 
-    <div class="card card-custom">
-        <div class="card-body p-4">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle" id="tabla_vehiculos" style="width:100%">
-                    <thead>
-                        <tr class="text-uppercase small font-weight-bold text-muted" style="border-bottom: 2px solid #f8f9fa;">
-                            <th style="width: 15%;">Placa</th>
-                            <th style="width: 20%;">Marca</th>
-                            <th style="width: 20%;">Modelo / Año</th>
-                            <th style="width: 30%;">Propietario</th>
-                            <th class="text-center" style="width: 15%;">Opciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for v in vehiculos %}
-                        <tr>
-                            <td class="align-middle">
-                                <span class="placa-box">{{ v.placa }}</span>
-                            </td>
-                            <td class="align-middle">
-                                <span class="font-weight-bold text-dark">{{ v.marca.nombre }}</span>
-                            </td>
-                            <td class="align-middle text-dark">
-                                <span class="font-weight-bold">{{ v.modelo }}</span>
-                                <small class="text-muted d-block">Acerautos Fleet</small>
-                            </td>
-                            <td class="align-middle">
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-owner">{{ v.cliente.nombre|first|upper }}</div>
-                                    <div>
-                                        <span class="font-weight-bold text-dark d-block">{{ v.cliente.nombre }}</span>
-                                        <small class="text-muted">ID: {{ v.cliente.numero_documento }}</small>
-                                    </div>
+    <!-- Tabla -->
+    <div class="tabla-wrap">
+        <div class="table-responsive">
+            <table id="tabla_vehiculos" style="width:100%">
+                <thead>
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th>Placa</th>
+                        <th>Marca</th>
+                        <th>Modelo / Año</th>
+                        <th>Propietario</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in vehiculos %}
+                    <tr>
+                        <td class="text-center" style="font-weight:700; color:var(--muted); font-size:.8rem;">{{ v.id }}</td>
+                        <td><span class="placa-box">{{ v.placa }}</span></td>
+                        <td><span class="badge-marca">{{ v.marca.nombre }}</span></td>
+                        <td>
+                            <span style="font-weight:600; color:var(--carbon);">{{ v.modelo }}</span>
+                            <small class="d-block" style="color:var(--muted); font-size:.75rem;">Año</small>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center" style="gap:10px;">
+                                <div class="cliente-avatar">{{ v.cliente.nombre|first|upper }}</div>
+                                <div>
+                                    <span class="cliente-nombre d-block">{{ v.cliente.nombre }}</span>
+                                    <small style="color:var(--muted); font-size:.75rem;">Doc: {{ v.cliente.numero_documento }}</small>
                                 </div>
-                            </td>
-                            <td class="text-center align-middle">
-                                <a href="{% url 'app:editar_vehiculo' v.id %}" class="btn btn-warning btn-circle shadow-sm" title="Editar">
-                                    <i class="fas fa-pen text-white"></i>
-                                </a>
-                                <a href="{% url 'app:eliminar_vehiculo' v.id %}" class="btn btn-danger btn-circle shadow-sm ml-1" style="background-color: #d32f2f !important;" title="Eliminar">
-                                    <i class="fas fa-trash-alt text-white"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <a href="{% url 'app:editar_vehiculo' v.id %}" class="btn-fila btn-edit" title="Editar">
+                                <i class="fas fa-pen"></i>
+                            </a>
+                            <a href="{% url 'app:eliminar_vehiculo' v.id %}" class="btn-fila btn-del ms-1" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -189,29 +283,28 @@
 {% block js %}
 <script>
     $(document).ready(function () {
-        // Inicializamos la tabla con el ID correcto y configuración para Bootstrap 5
-        if ($.fn.DataTable.isDataTable('#tabla_vehiculos')) {
-            $('#tabla_vehiculos').DataTable().destroy();
-        }
-
         $('#tabla_vehiculos').DataTable({
             responsive: true,
             autoWidth: false,
-            pageLength: 10,
+            order: [[0, "desc"]],
+            pagingType: "full_numbers",
             language: {
-                "sSearch": "<span class='text-muted small font-weight-bold'>BUSCAR:</span>",
-                "sLengthMenu": "Mostrar _MENU_",
-                "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ vehículos",
-                "sZeroRecords": "No se encontraron vehículos",
+                "sProcessing":     "Procesando...",
+                "sLengthMenu":     "Mostrar _MENU_ registros",
+                "sZeroRecords":    "No se encontraron resultados",
+                "sEmptyTable":     "Ningún dato disponible",
+                "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "sInfoEmpty":      "Mostrando 0 a 0 de 0 registros",
+                "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
+                "sSearch":         "Buscar:",
+                "sLoadingRecords": "Cargando...",
                 "oPaginate": {
-                    "sNext": "<i class='fas fa-chevron-right'></i>",
-                    "sPrevious": "<i class='fas fa-chevron-left'></i>"
+                    "sFirst":    "«",
+                    "sLast":     "»",
+                    "sNext":     "›",
+                    "sPrevious": "‹"
                 }
-            },
-            // Estructura DOM: Filtro arriba, tabla al medio, paginación abajo
-            dom: "<'row mb-3'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                 "<'row'<'col-sm-12'tr>>" +
-                 "<'row mt-3'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            }
         });
     });
 </script>

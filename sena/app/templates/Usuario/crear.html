@@ -3,157 +3,295 @@
 {% load widget_tweaks %}
 
 {% block css %}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+    :root {
+        --rojo:   #d32f2f;
+        --rojo2:  #b71c1c;
+        --carbon: #1a1a1a;
+        --gris:   #f2f2f0;
+        --borde:  #e0ddd8;
+        --texto:  #2a2a2a;
+        --muted:  #888;
+    }
+
+    /* ── HEADER ── */
+    .taller-header {
+        position: relative; background: var(--carbon);
+        border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
+        overflow: hidden; display: flex; align-items: center; justify-content: space-between;
+    }
+    .taller-header::before {
+        content: ''; position: absolute; top: 0; right: 0; width: 260px; height: 100%;
+        background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
+    }
+    .taller-header::after {
+        content: ''; position: absolute; left: 0; top: 0;
+        width: 5px; height: 100%; background: var(--rojo); border-radius: 16px 0 0 16px;
+    }
+    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
+    .header-icon-wrap {
+        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; color: white; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
+    }
+    .header-titulo {
+        font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800;
+        color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
+    }
+    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
+
+    /* ── TARJETA ── */
+    .form-card { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
+    .form-card-header {
+        background: var(--carbon); padding: 16px 28px;
+        display: flex; align-items: center; gap: 12px;
+    }
+    .form-card-header i { color: var(--rojo); font-size: 1rem; }
+    .form-card-header span {
+        font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700;
+        color: white; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .form-card-body { padding: 32px 28px; }
+
+    /* ── CAMPOS ── */
+    .campo-label {
+        font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px;
+    }
+    .input-group .input-icon {
+        width: 44px; background: var(--gris); border: 1.5px solid var(--borde);
+        border-right: none; border-radius: 10px 0 0 10px;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--muted); font-size: .9rem; flex-shrink: 0;
+    }
+    .input-group .input-icon.error { border-color: var(--rojo); color: var(--rojo); background: #fff8f8; }
+    .input-group .form-control,
+    .input-group .form-select {
+        border: 1.5px solid var(--borde) !important; border-radius: 0 10px 10px 0 !important;
+        font-family: 'DM Sans', sans-serif; font-size: .88rem; color: var(--texto);
+        padding: 10px 14px; background: white; box-shadow: none !important; transition: border-color .2s;
+    }
+    .input-group .form-control:focus,
+    .input-group .form-select:focus {
+        border-color: var(--rojo) !important;
+        box-shadow: 0 0 0 3px rgba(211,47,47,.08) !important;
+    }
+
+    /* Campo indicativo + número */
+    .indicativo-select {
+        border-radius: 0 !important; border-right: none !important;
+        max-width: 190px; flex: 0 0 190px;
+    }
+    .numero-tel { border-radius: 0 10px 10px 0 !important; }
+
+    /* Ojito contraseña */
+    .toggle-password {
+        cursor: pointer; background: var(--gris);
+        border: 1.5px solid var(--borde); border-left: none;
+        border-radius: 0 10px 10px 0 !important;
+        padding: 0 14px; color: var(--muted); display: flex; align-items: center;
+        transition: color .2s;
+    }
+    .toggle-password:hover { color: var(--carbon); }
+    .password-field { border-radius: 0 !important; }
+
+    /* Switch activo */
+    .switch-wrap {
+        display: flex; align-items: center; gap: 12px;
+        background: var(--gris); border-radius: 12px;
+        padding: 14px 18px; border: 1.5px solid var(--borde);
+    }
     .custom-switch .custom-control-label::before { height: 1.5rem; width: 2.75rem; border-radius: 2rem; }
     .custom-switch .custom-control-label::after { width: calc(1.5rem - 4px); height: calc(1.5rem - 4px); border-radius: 2rem; }
-    .custom-control-input:checked ~ .custom-control-label::before { background-color: #454d55 !important; border-color: #454d55 !important; }
-
-    .header-premium {
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        border-radius: 20px; padding: 25px; margin-bottom: 30px;
-        border-left: 10px solid #454d55; box-shadow: 0 15px 35px rgba(0,0,0,0.04);
-        display: flex; align-items: center; justify-content: space-between;
+    .custom-control-input:checked ~ .custom-control-label::before { background-color: var(--rojo) !important; border-color: var(--rojo) !important; }
+    .switch-label {
+        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .5px; color: var(--texto);
     }
 
-    .card-form-premium { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07) !important; background: #fff; }
-    .card-header-dark { background: #454d55; color: white; padding: 15px 25px; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; }
-    .form-control { border-radius: 0 12px 12px 0 !important; border: 1px solid #d1d3e2; padding: 12px 15px; }
-
-    .error-feedback {
-        color: #e74a3b; font-size: 0.75rem; font-weight: 700;
-        margin-top: 5px; display: block; text-transform: uppercase;
-    }
-    .is-invalid-custom { border: 1px solid #e74a3b !important; border-left: none !important; }
-
-    .btn-acerautos-save {
-        background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
-        color: white !important; padding: 12px 35px; border-radius: 12px;
-        font-weight: 700; text-transform: uppercase; border: none;
+    /* ── ERROR ── */
+    .caja-error {
+        font-family: 'DM Sans', sans-serif; font-size: .76rem; font-weight: 600;
+        background: #fff8f8; border: 1px solid #fdd; border-left: 4px solid var(--rojo);
+        border-radius: 8px; padding: 8px 12px; margin-top: 6px; color: var(--rojo);
+        display: flex; align-items: center; gap: 6px;
     }
 
-    /* ── Ojito ── */
-    .toggle-password {
-        cursor: pointer;
-        border-radius: 0 12px 12px 0 !important;
-        border: 1px solid #d1d3e2;
-        border-left: none;
-        background: #f8f9fa;
-        padding: 0 14px;
-        color: #454d55;
+    /* ── FOOTER ── */
+    .form-card-footer {
+        background: var(--gris); border-top: 1px solid var(--borde);
+        padding: 20px 28px; display: flex; justify-content: flex-end; gap: 10px;
     }
-    .toggle-password:hover { color: #000; }
-    /* Quitar border-radius derecho al input cuando tiene ojito */
-    .password-field { border-radius: 0 !important; }
+    .btn-cancelar {
+        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .5px; padding: 11px 24px;
+        border-radius: 10px; border: 1.5px solid var(--borde);
+        background: white; color: var(--muted); cursor: pointer; transition: .2s;
+        text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-cancelar:hover { color: var(--carbon); border-color: var(--carbon); }
+    .btn-guardar {
+        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .5px; padding: 11px 28px;
+        border-radius: 10px; border: none; background: var(--rojo); color: white;
+        box-shadow: 0 4px 14px rgba(211,47,47,.35); cursor: pointer; transition: .2s;
+        display: flex; align-items: center; gap: 8px;
+    }
+    .btn-guardar:hover { background: var(--rojo2); transform: translateY(-1px); }
 </style>
 {% endblock %}
 
 {% block contenido %}
-<div class="container animate__animated animate__fadeIn">
+<div class="container py-2 animate__animated animate__fadeIn">
 
-    <div class="header-premium">
-        <div class="d-flex align-items-center">
-            <div style="background: #454d55; color: white; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                <i class="fas fa-user-shield"></i>
-            </div>
+    <div class="taller-header">
+        <div class="header-left">
+            <div class="header-icon-wrap"><i class="fas fa-user-shield"></i></div>
             <div>
-                <h1 class="h3 mb-0 font-weight-bold text-dark text-uppercase">
-                    {% if form.instance.pk %}Editar Personal{% else %}Registro de Personal{% endif %}
-                </h1>
+                <h1 class="header-titulo">{% if form.instance.pk %}Editar Personal{% else %}Registro de Personal{% endif %}</h1>
+                <div class="header-sub">Gestión de usuarios del taller</div>
             </div>
         </div>
     </div>
 
     <form method="post" action="." id="formUsuario" novalidate>
         {% csrf_token %}
-        <div class="card card-form-premium overflow-hidden">
-            <div class="card-header-dark">
-                <i class="fas fa-id-card mr-2"></i> Perfil de Usuario
+        {{ form.telefono.as_hidden }}
+
+        <div class="form-card">
+
+            <div class="form-card-header">
+                <i class="fas fa-id-card"></i>
+                <span>Perfil de Usuario</span>
             </div>
 
-            <div class="card-body p-4 p-md-5">
-                <div class="row">
-                    {% for field in form.visible_fields %}
-                        {% if field.name == 'is_active' or field.name == 'activo' %}
-                            <div class="col-md-12 mb-4">
-                                <div class="custom-control custom-switch">
-                                    {{ field|add_class:'custom-control-input' }}
-                                    <label class="custom-control-label font-weight-bold text-dark ml-2" for="{{ field.id_for_label }}">
-                                        ¿USUARIO ACTIVO EN EL SISTEMA?
-                                    </label>
-                                </div>
-                            </div>
+            <div class="form-card-body">
+                <div class="row g-4">
 
-                        {% elif 'password' in field.name %}
-                            {# ── Campo contraseña con ojito ── #}
-                            <div class="col-md-6 mb-4">
-                                <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ field.label }}</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text {% if field.errors %}border-danger text-danger{% endif %}">
-                                            <i class="fas fa-lock"></i>
-                                        </span>
-                                    </div>
-                                    {% if field.errors %}
-                                        {{ field|add_class:'form-control password-field is-invalid-custom shadow-none'|attr:'type:password' }}
-                                    {% else %}
-                                        {{ field|add_class:'form-control password-field border-left-0 shadow-none'|attr:'type:password' }}
-                                    {% endif %}
-                                    <div class="input-group-append">
-                                        <span class="toggle-password input-group-text" data-target="{{ field.id_for_label }}">
-                                            <i class="fas fa-eye"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                {% if field.errors %}
-                                    {% for error in field.errors %}
-                                        <span class="error-feedback">
-                                            <i class="fas fa-times-circle mr-1"></i> {{ error }}
-                                        </span>
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
+                    {# ── Nombres ── #}
+                    <div class="col-md-6">
+                        <div class="campo-label">{{ form.nombres.label }}</div>
+                        <div class="input-group">
+                            <div class="input-icon {% if form.nombres.errors %}error{% endif %}"><i class="fas fa-user"></i></div>
+                            {{ form.nombres|add_class:'form-control shadow-none'|attr:'autocomplete:off' }}
+                        </div>
+                        {% for error in form.nombres.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                    </div>
 
-                        {% else %}
-                            <div class="col-md-6 mb-4">
-                                <label class="font-weight-bold text-dark small mb-1 text-uppercase">{{ field.label }}</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text {% if field.errors %}border-danger text-danger{% endif %}">
-                                            {% if 'nombres' in field.name %}<i class="fas fa-user"></i>
-                                            {% elif 'apellidos' in field.name %}<i class="fas fa-user-tag"></i>
-                                            {% elif 'cedula' in field.name %}<i class="fas fa-fingerprint"></i>
-                                            {% elif 'telefono' in field.name %}<i class="fas fa-phone"></i>
-                                            {% elif 'correo' in field.name %}<i class="fas fa-envelope"></i>
-                                            {% else %}<i class="fas fa-edit"></i>{% endif %}
-                                        </span>
-                                    </div>
-                                    {% if field.errors %}
-                                        {{ field|add_class:'form-control is-invalid-custom shadow-none' }}
-                                    {% else %}
-                                        {{ field|add_class:'form-control border-left-0 shadow-none' }}
-                                    {% endif %}
-                                </div>
-                                {% if field.errors %}
-                                    {% for error in field.errors %}
-                                        <span class="error-feedback">
-                                            <i class="fas fa-times-circle mr-1"></i> {{ error }}
-                                        </span>
-                                    {% endfor %}
-                                {% endif %}
+                    {# ── Apellidos ── #}
+                    <div class="col-md-6">
+                        <div class="campo-label">{{ form.apellidos.label }}</div>
+                        <div class="input-group">
+                            <div class="input-icon {% if form.apellidos.errors %}error{% endif %}"><i class="fas fa-user-tag"></i></div>
+                            {{ form.apellidos|add_class:'form-control shadow-none'|attr:'autocomplete:off' }}
+                        </div>
+                        {% for error in form.apellidos.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                    </div>
+
+                    {# ── Tipo documento ── #}
+                    <div class="col-md-6">
+                        <div class="campo-label">{{ form.tipo_documento.label }}</div>
+                        <div class="input-group">
+                            <div class="input-icon {% if form.tipo_documento.errors %}error{% endif %}"><i class="fas fa-id-card"></i></div>
+                            {{ form.tipo_documento|add_class:'form-control shadow-none' }}
+                        </div>
+                        {% for error in form.tipo_documento.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                    </div>
+
+                    {# ── Cédula ── #}
+                    <div class="col-md-6">
+                        <div class="campo-label">{{ form.cedula.label }}</div>
+                        <div class="input-group">
+                            <div class="input-icon {% if form.cedula.errors %}error{% endif %}"><i class="fas fa-fingerprint"></i></div>
+                            {{ form.cedula|add_class:'form-control shadow-none'|attr:'autocomplete:off' }}
+                        </div>
+                        {% for error in form.cedula.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                    </div>
+
+                    {# ── Teléfono ── #}
+                    <div class="col-md-6">
+                        <div class="campo-label"><i class="fas fa-phone me-1"></i> Teléfono</div>
+                        <div class="input-group">
+                            <div class="input-icon {% if form.indicativo_telefono.errors or form.numero_telefono.errors %}error{% endif %}"><i class="fas fa-globe"></i></div>
+                            {{ form.indicativo_telefono|add_class:'form-control indicativo-select shadow-none' }}
+                            {{ form.numero_telefono|add_class:'form-control numero-tel shadow-none'|attr:'autocomplete:off'|attr:'placeholder:Ej: 3107928076' }}
+                        </div>
+                        {% for error in form.indicativo_telefono.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                        {% for error in form.numero_telefono.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                        {% for error in form.telefono.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                    </div>
+
+                    {# ── Correo ── #}
+                    <div class="col-md-6">
+                        <div class="campo-label">{{ form.correo.label }}</div>
+                        <div class="input-group">
+                            <div class="input-icon {% if form.correo.errors %}error{% endif %}"><i class="fas fa-envelope"></i></div>
+                            {{ form.correo|add_class:'form-control shadow-none'|attr:'autocomplete:off' }}
+                        </div>
+                        {% for error in form.correo.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                    </div>
+
+                    {# ── Cargo ── #}
+                    <div class="col-md-6">
+                        <div class="campo-label">{{ form.cargo.label }}</div>
+                        <div class="input-group">
+                            <div class="input-icon {% if form.cargo.errors %}error{% endif %}"><i class="fas fa-briefcase"></i></div>
+                            {{ form.cargo|add_class:'form-control shadow-none' }}
+                        </div>
+                        {% for error in form.cargo.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                    </div>
+
+                    {# ── Contraseña ── #}
+                    <div class="col-md-6">
+                        <div class="campo-label">{{ form.password.label }}</div>
+                        <div class="input-group">
+                            <div class="input-icon {% if form.password.errors %}error{% endif %}"><i class="fas fa-lock"></i></div>
+                            {{ form.password|add_class:'form-control password-field shadow-none'|attr:'type:password' }}
+                            <span class="toggle-password" data-target="{{ form.password.id_for_label }}">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                        {% for error in form.password.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                    </div>
+
+                    {# ── Confirmar contraseña ── #}
+                    <div class="col-md-6">
+                        <div class="campo-label">{{ form.password_confirmacion.label }}</div>
+                        <div class="input-group">
+                            <div class="input-icon {% if form.password_confirmacion.errors %}error{% endif %}"><i class="fas fa-lock"></i></div>
+                            {{ form.password_confirmacion|add_class:'form-control password-field shadow-none'|attr:'type:password' }}
+                            <span class="toggle-password" data-target="{{ form.password_confirmacion.id_for_label }}">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                        {% for error in form.password_confirmacion.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                    </div>
+
+                    {# ── Activo ── #}
+                    <div class="col-md-12">
+                        <div class="switch-wrap">
+                            <div class="custom-control custom-switch">
+                                {{ form.activo|add_class:'custom-control-input' }}
+                                <label class="custom-control-label" for="{{ form.activo.id_for_label }}"></label>
                             </div>
-                        {% endif %}
-                    {% endfor %}
+                            <span class="switch-label">¿Usuario activo en el sistema?</span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <div class="card-footer bg-light d-flex justify-content-end py-4">
-                <a href="{% url 'app:listar_usuario' %}" class="btn btn-light border px-4 mx-2 text-secondary font-weight-bold" style="border-radius: 12px;">
-                    x Cancelar
+            <div class="form-card-footer">
+                <a href="{% url 'app:listar_usuario' %}" class="btn-cancelar">
+                    <i class="fas fa-times"></i> Cancelar
                 </a>
-                <button type="submit" class="btn btn-acerautos-save shadow-sm">
-                    GUARDAR PERSONAL
+                <button type="submit" class="btn-guardar">
+                    <i class="fas fa-save"></i>
+                    {% if form.instance.pk %}Actualizar Personal{% else %}Guardar Personal{% endif %}
                 </button>
             </div>
+
         </div>
     </form>
 </div>
@@ -161,7 +299,7 @@
 
 {% block js %}
 <script>
-    // ── Ojito: mostrar/ocultar contraseña ──
+    // Ojito: mostrar/ocultar contraseña
     $('.toggle-password').on('click', function () {
         var targetId = $(this).data('target');
         var input = $('#' + targetId);
@@ -175,27 +313,24 @@
         }
     });
 
-    // ── SweetAlert submit ──
     $(function () {
         $('#formUsuario').on('submit', function (e) {
-            var hasErrors = $('.error-feedback').length > 0;
-            if (hasErrors) return;
+            if ($('.caja-error').length > 0) return;
             if (!this.checkValidity()) return;
-
             e.preventDefault();
             var formulario = this;
-
             Swal.fire({
                 title: '¿Confirmar registro?',
                 text: "Se validarán los datos en el sistema.",
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, Guardar',
+                confirmButtonColor: '#d32f2f',
+                cancelButtonColor: '#1a1a1a',
+                confirmButtonText: 'Sí, guardar',
                 cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#454d55',
-                cancelButtonColor: '#d33',
+                reverseButtons: true
             }).then((result) => {
-                if (result.isConfirmed) formulario.submit();
+                if (result.isConfirmed) { $(formulario).off('submit').submit(); }
             });
         });
     });

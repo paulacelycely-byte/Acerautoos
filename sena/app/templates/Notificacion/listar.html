@@ -2,156 +2,225 @@
 {% load static %}
 
 {% block css %}
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-.header-premium {
-    background: linear-gradient(145deg, #ffffff, #f8f9fa);
-    border-radius: 20px; padding: 25px; margin-bottom: 30px;
-    border-left: 10px solid #d32f2f;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.04);
-    display: flex; align-items: center; justify-content: space-between;
-}
-.title-icon {
-    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-    color: white; width: 55px; height: 55px; border-radius: 15px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.5rem; box-shadow: 0 8px 20px rgba(211,47,47,0.2); margin-right: 20px;
-}
-.title-container h1 {
-    font-size: 1.9rem; font-weight: 700; margin-bottom: 0;
-    color: #2d3436; text-transform: uppercase; letter-spacing: 1.5px;
-}
-.btn-nueva-premium {
-    background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
-    color: white !important; border: none; padding: 12px 25px;
-    border-radius: 12px; font-weight: 700; text-transform: uppercase;
-    font-size: 0.8rem; letter-spacing: 1px; display: flex; align-items: center; gap: 10px;
-    transition: 0.3s; box-shadow: 0 8px 15px rgba(211,47,47,0.2);
-}
-.btn-nueva-premium:hover { transform: translateY(-2px); filter: brightness(1.1); }
-.card-custom { border: none; border-radius: 20px; box-shadow: 0 20px 45px rgba(0,0,0,0.07); background: #fff; }
-.avatar-box {
-    width: 40px; height: 40px;
-    background: linear-gradient(135deg, #454d55 0%, #2f353a 100%);
-    color: white; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: bold; margin-right: 12px; flex-shrink: 0;
-}
-.btn-circle {
-    width: 35px; height: 35px; border-radius: 10px;
-    display: inline-flex; align-items: center; justify-content: center;
-    transition: 0.3s; border: none; color: white !important;
-}
-.btn-circle:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    :root {
+        --rojo:   #d32f2f;
+        --rojo2:  #b71c1c;
+        --carbon: #1a1a1a;
+        --gris:   #f2f2f0;
+        --borde:  #e0ddd8;
+        --texto:  #2a2a2a;
+        --muted:  #888;
+    }
 
-/* Badges tipo */
-.badge-tipo {
-    padding: 5px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700;
-}
-.tipo-Mantenimiento { background: #e3f2fd; color: #1565c0; }
-.tipo-Alerta        { background: #ffebee; color: #c62828; }
-.tipo-Recordatorio  { background: #f3e5f5; color: #6a1b9a; }
-.tipo-Urgente       { background: #fff3e0; color: #e65100; }
-.tipo-Informacion   { background: #e8f5e9; color: #2e7d32; }
+    /* ── HEADER ── */
+    .taller-header {
+        position: relative; background: var(--carbon);
+        border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
+        overflow: hidden; display: flex; align-items: center; justify-content: space-between;
+    }
+    .taller-header::before {
+        content: ''; position: absolute; top: 0; right: 0; width: 260px; height: 100%;
+        background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
+    }
+    .taller-header::after {
+        content: ''; position: absolute; left: 0; top: 0;
+        width: 5px; height: 100%; background: var(--rojo); border-radius: 16px 0 0 16px;
+    }
+    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
+    .header-icon-wrap {
+        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; color: white; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
+    }
+    .header-titulo {
+        font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800;
+        color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
+    }
+    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
+    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
+    .btn-accion {
+        font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px; padding: 10px 18px; border-radius: 10px;
+        display: flex; align-items: center; gap: 8px; border: none; cursor: pointer;
+        text-decoration: none; transition: transform .2s, box-shadow .2s;
+    }
+    .btn-accion:hover { transform: translateY(-2px); }
+    .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
+    .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
 
-/* Letras negras */
-#tabla_notificaciones tbody td { color: #2d3436 !important; }
+    /* ── TABLA ── */
+    .tabla-wrap { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
+    #tabla_notificaciones {
+        font-family: 'DM Sans', sans-serif; font-size: .875rem;
+        border-collapse: collapse; width: 100%;
+    }
+    #tabla_notificaciones thead tr { background: var(--gris); border-bottom: 2px solid var(--borde); }
+    #tabla_notificaciones thead th {
+        font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 14px 16px; border: none;
+    }
+    #tabla_notificaciones tbody tr { border-bottom: 1px solid var(--borde); transition: background .15s; }
+    #tabla_notificaciones tbody tr:hover { background: #fafaf8; }
+    #tabla_notificaciones tbody tr:last-child { border-bottom: none; }
+    #tabla_notificaciones tbody td { padding: 13px 16px; color: var(--texto) !important; vertical-align: middle; border: none; }
+
+    /* Avatar mensaje */
+    .noti-avatar {
+        width: 38px; height: 38px; background: var(--carbon); color: white;
+        border-radius: 10px; display: flex; align-items: center; justify-content: center;
+        font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 800; flex-shrink: 0;
+    }
+    .noti-mensaje { font-weight: 600; color: var(--carbon); font-size: .9rem; }
+
+    /* Badges tipo */
+    .badge-tipo {
+        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
+        padding: 4px 10px; border-radius: 7px; letter-spacing: .3px; display: inline-block;
+    }
+    .tipo-Mantenimiento { background: #e3f2fd; color: #1565c0; }
+    .tipo-Alerta        { background: #ffebee; color: #c62828; }
+    .tipo-Recordatorio  { background: #f3e5f5; color: #6a1b9a; }
+    .tipo-Urgente       { background: #fff3e0; color: #e65100; }
+    .tipo-Informacion   { background: #e8f5e9; color: #2e7d32; }
+
+    /* Badge leído */
+    .badge-leido {
+        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
+        padding: 4px 10px; border-radius: 7px; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .leido-si  { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+    .leido-no  { background: var(--gris); color: var(--muted); border: 1px solid var(--borde); }
+
+    /* Botones fila */
+    .btn-fila {
+        width: 32px; height: 32px; border-radius: 8px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border: none; cursor: pointer; transition: .2s; font-size: .8rem; text-decoration: none;
+    }
+    .btn-fila:hover { transform: translateY(-2px); }
+    .btn-edit { background: #f39c12; color: white; }
+    .btn-del  { background: var(--rojo); color: white; }
+
+    /* DataTables overrides */
+    .dataTables_wrapper { padding: 16px 20px; }
+    .dataTables_filter input {
+        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
+        padding: 6px 12px !important; font-family: 'DM Sans', sans-serif !important;
+        font-size: .85rem !important; outline: none !important; transition: border-color .2s;
+    }
+    .dataTables_filter input:focus { border-color: var(--rojo) !important; }
+    .dataTables_filter label, .dataTables_length label,
+    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
+    .dataTables_length select {
+        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
+        padding: 4px 8px !important; appearance: none !important;
+        background-image: none !important; background: white !important;
+    }
+    .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
+    .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
+    .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
+    .paginate_button.disabled { display: inline-block !important; opacity: .4; }
+    .dataTables_paginate { display: block !important; }
 </style>
 {% endblock %}
 
 {% block contenido %}
-<div class="container-fluid animate__animated animate__fadeIn">
+<div class="container-fluid py-2">
 
-    <div class="header-premium">
-        <div class="d-flex align-items-center">
-            <div class="title-icon"><i class="fas fa-bell"></i></div>
-            <div class="title-container">
-                <h1>{{ titulo|default:"GESTIÓN DE NOTIFICACIONES" }}</h1>
+    <div class="taller-header">
+        <div class="header-left">
+            <div class="header-icon-wrap"><i class="fas fa-bell"></i></div>
+            <div>
+                <h1 class="header-titulo">{{ titulo|default:"Notificaciones" }}</h1>
+                <div class="header-sub">Alertas y recordatorios del taller</div>
             </div>
         </div>
-        <a href="{{ crear_url }}" class="btn btn-nueva-premium">
-            <i class="fas fa-plus-circle"></i>
-            <span>Nueva Notificación</span>
-        </a>
+        <div class="header-actions">
+            <a href="{{ crear_url }}" class="btn-accion btn-nuevo">
+                <i class="fas fa-plus"></i> Nueva Notificación
+            </a>
+        </div>
     </div>
 
-    <div class="card card-custom">
-        <div class="card-body p-4">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle" id="tabla_notificaciones" style="width:100%">
-                    <thead>
-                        <tr class="text-uppercase small font-weight-bold text-muted">
-                            <th class="text-center">#</th>
-                            <th>Mensaje</th>
-                            <th class="text-center">Tipo</th>
-                            <th>Vehículo</th>
-                            <th class="text-center">Fecha</th>
-                            <th class="text-center">Leído</th>
-                            <th class="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for n in object_list %}
-                        <tr>
-                            <td class="text-center font-weight-bold">{{ forloop.counter }}</td>
-
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-box">{{ n.mensaje|first|upper }}</div>
-                                    <span class="font-weight-bold">{{ n.mensaje }}</span>
-                                </div>
-                            </td>
-
-                            <td class="text-center">
-                                <span class="badge-tipo tipo-{{ n.tipo }}">{{ n.tipo }}</span>
-                            </td>
-
-                            <td>{{ n.vehiculo }}</td>
-
-                            {# ── fecha: nombre correcto del modelo ── #}
-                            <td class="text-center">{{ n.fecha|date:"d M Y H:i" }}</td>
-
-                            <td class="text-center">
-                                {% if n.leido %}
-                                    <span class="badge badge-success px-2 py-1" style="border-radius:8px;">📬 Leído</span>
-                                {% else %}
-                                    <span class="badge badge-secondary px-2 py-1" style="border-radius:8px;">📭 No leído</span>
-                                {% endif %}
-                            </td>
-
-                            <td class="text-center">
-                                <a href="{% url 'app:editar_notificacion' n.id %}"
-                                   class="btn btn-warning btn-circle shadow-sm" title="Editar">
+    <div class="tabla-wrap">
+        <div class="table-responsive">
+            <table id="tabla_notificaciones" style="width:100%">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th>Mensaje</th>
+                        <th class="text-center">Tipo</th>
+                        <th>Vehículo</th>
+                        <th class="text-center">Fecha</th>
+                        <th class="text-center">Leído</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for n in object_list %}
+                    <tr>
+                        <td class="text-center" style="font-weight:700; color:var(--muted); font-size:.8rem;">{{ forloop.counter }}</td>
+                        <td>
+                            <div class="d-flex align-items-center" style="gap:10px;">
+                                <div class="noti-avatar">{{ n.mensaje|first|upper }}</div>
+                                <span class="noti-mensaje">{{ n.mensaje }}</span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge-tipo tipo-{{ n.tipo }}">{{ n.tipo }}</span>
+                        </td>
+                        <td style="color:var(--muted); font-size:.85rem;">{{ n.vehiculo }}</td>
+                        <td class="text-center" style="color:var(--muted); font-size:.82rem;">{{ n.fecha|date:"d/m/Y H:i" }}</td>
+                        <td class="text-center">
+                            {% if n.leido %}
+                                <span class="badge-leido leido-si"><i class="fas fa-check-circle"></i> Leído</span>
+                            {% else %}
+                                <span class="badge-leido leido-no"><i class="fas fa-circle"></i> No leído</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center" style="gap:6px;">
+                                <a href="{% url 'app:editar_notificacion' n.id %}" class="btn-fila btn-edit" title="Editar">
                                     <i class="fas fa-pen"></i>
                                 </a>
-                                <a href="{% url 'app:eliminar_notificacion' n.id %}"
-                                   class="btn btn-danger btn-circle shadow-sm ml-1"
-                                   style="background-color:#d32f2f !important;" title="Eliminar">
+                                <a href="{% url 'app:eliminar_notificacion' n.id %}" class="btn-fila btn-del" title="Eliminar">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
+
 </div>
 {% endblock %}
 
 {% block js %}
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 <script>
 $(document).ready(function () {
     $('#tabla_notificaciones').DataTable({
-        responsive: true, autoWidth: false, pageLength: 10,
+        responsive: true,
+        autoWidth: false,
+        pageLength: 10,
+        order: [[4, 'desc']],
+        pagingType: "full_numbers",
+        columnDefs: [{ orderable: false, targets: [0, 6] }],
         language: {
-            sSearch: "Buscar:", sLengthMenu: "Mostrar _MENU_",
-            sInfo: "Mostrando _START_ a _END_ de _TOTAL_",
-            oPaginate: { sNext: "Siguiente", sPrevious: "Anterior" },
-            sEmptyTable: "No hay notificaciones", sZeroRecords: "No se encontraron resultados"
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "No hay notificaciones registradas",
+            "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando 0 a 0 de 0 registros",
+            "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
+            "sSearch":         "Buscar:",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": { "sFirst": "«", "sLast": "»", "sNext": "›", "sPrevious": "‹" }
         }
     });
 

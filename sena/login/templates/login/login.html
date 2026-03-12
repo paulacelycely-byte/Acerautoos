@@ -1,468 +1,374 @@
 {% load static %}
 {% load widget_tweaks %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Acerautos — Iniciar Sesión</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acerautos — Iniciar Sesión</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --rojo:   #c0392b;
+    --rojo2:  #e74c3c;
+    --negro:  #0a0a0a;
+    --blanco: #f5f5f5;
+  }
+  body { min-height: 100vh; font-family: 'Exo 2', sans-serif; overflow: hidden; background: var(--negro); }
 
-        :root {
-            --navy:   #0f172a;
-            --navy2:  #1e293b;
-            --indigo: #6366f1;
-            --indigo2:#4338ca;
-            --slate:  #94a3b8;
-            --light:  #f1f5f9;
-        }
+  .bg {
+    position: fixed; inset: 0; z-index: 0;
+    /* ─── CAMBIO: fondo real del proyecto ─── */
+    background-image: url("{% static 'imagenes/imagen_fondo_login.jpeg' %}");
+    background-size: cover; background-position: center 40%;
+    filter: brightness(0.52) saturate(0.7) contrast(1.1);
+    transform: scale(1.04); transition: transform 8s ease;
+  }
+  body:hover .bg { transform: scale(1.0); }
 
-        body {
-            min-height: 100vh;
-            display: flex;
-            font-family: 'DM Sans', sans-serif;
-            background: var(--navy);
-            overflow: hidden;
-        }
+  .overlay {
+    position: fixed; inset: 0; z-index: 1;
+    background:
+      linear-gradient(135deg, rgba(10,10,10,0.93) 0%, rgba(10,10,10,0.55) 50%, rgba(192,57,43,0.18) 100%),
+      linear-gradient(to right, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0.3) 55%, transparent 100%);
+  }
 
-        /* ── Panel izquierdo decorativo ── */
-        .login-left {
-            flex: 1;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 60px;
-            overflow: hidden;
-        }
+  .diagonal { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+  .diagonal::after {
+    content: ''; position: absolute; top: -10%; left: 55%;
+    width: 3px; height: 130%;
+    background: linear-gradient(to bottom, transparent, var(--rojo), transparent);
+    transform: rotate(-8deg); opacity: 0.4;
+  }
 
-        /* Fondo animado con gradiente */
-        .login-left::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse 80% 60% at 20% 50%, rgba(99,102,241,.25) 0%, transparent 70%),
-                radial-gradient(ellipse 60% 80% at 80% 20%, rgba(20,184,166,.15) 0%, transparent 60%),
-                linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            z-index: 0;
-        }
+  .watermark {
+    position: fixed; bottom: 28px; right: 28px; z-index: 3;
+    opacity: 0.05; font-family: 'Bebas Neue', sans-serif;
+    font-size: 7rem; color: white; letter-spacing: 8px; pointer-events: none;
+  }
 
-        /* Grid de puntos */
-        .login-left::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px);
-            background-size: 32px 32px;
-            z-index: 0;
-        }
+  .particles { position: fixed; inset: 0; z-index: 3; pointer-events: none; }
+  .particle { position: absolute; background: var(--rojo2); border-radius: 50%; animation: rise linear infinite; opacity: 0; }
+  @keyframes rise {
+    0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+    10%  { opacity: 0.6; } 90% { opacity: 0.3; }
+    100% { transform: translateY(-20px) scale(1.5); opacity: 0; }
+  }
 
-        .left-content {
-            position: relative;
-            z-index: 1;
-        }
+  .layout {
+    position: relative; z-index: 10;
+    display: grid; grid-template-columns: 1fr 460px; min-height: 100vh;
+  }
 
-        .brand-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(99,102,241,.15);
-            border: 1px solid rgba(99,102,241,.3);
-            border-radius: 50px;
-            padding: 8px 18px;
-            margin-bottom: 40px;
-        }
+  /* ── IZQUIERDA ── */
+  .left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 60px 70px;
+    animation: fadeInLeft 0.9s cubic-bezier(.16,1,.3,1) both;
+  }
 
-        .brand-badge-icon {
-            width: 28px; height: 28px;
-            background: linear-gradient(135deg, var(--indigo), var(--indigo2));
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: .75rem; color: white;
-        }
+  /* ─── CAMBIO: logo real del proyecto ─── */
+  .brand-logo {
+    width: 120px; height: 120px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-bottom: 44px;
+    filter: drop-shadow(0 0 20px rgba(192,57,43,0.5));
+    animation: float 4s ease-in-out infinite;
+    box-shadow: 0 0 0 3px rgba(211,47,47,.4), 0 0 20px rgba(211,47,47,.2);
+  }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
-        .brand-badge span {
-            font-family: 'Syne', sans-serif;
-            font-size: .8rem; font-weight: 700;
-            color: var(--light); letter-spacing: .5px;
-        }
+  .brand-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 7vw, 6rem); line-height: 0.9;
+    color: var(--blanco); letter-spacing: 4px;
+    text-shadow: 0 0 60px rgba(192,57,43,0.3); margin-bottom: 8px;
+  }
+  .brand-name em { font-style: normal; color: var(--rojo2); }
+  .brand-sub {
+    font-family: 'Rajdhani', sans-serif; font-size: 1.05rem;
+    font-weight: 600; letter-spacing: 6px; text-transform: uppercase;
+    color: var(--rojo2); margin-bottom: 36px;
+  }
+  .brand-tagline {
+    font-size: 0.95rem; color: rgba(245,245,245,0.5); font-weight: 300;
+    line-height: 1.75; max-width: 380px;
+    border-left: 2px solid var(--rojo); padding-left: 18px; margin-bottom: 52px;
+  }
 
-        .left-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 3.2rem;
-            font-weight: 800;
-            color: white;
-            line-height: 1.1;
-            margin-bottom: 20px;
-        }
+  .chips { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 52px; }
+  .chip {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 8px; padding: 10px 16px;
+    color: rgba(245,245,245,0.55); font-family: 'Rajdhani', sans-serif;
+    font-size: 0.82rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+    transition: all 0.25s;
+  }
+  .chip:hover { background: rgba(192,57,43,0.1); border-color: rgba(192,57,43,0.3); color: var(--rojo2); }
+  .chip i { font-size: 0.85rem; color: var(--rojo2); }
 
-        .left-title span {
-            background: linear-gradient(90deg, var(--indigo), #14b8a6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+  .toyota-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(192,57,43,0.12); border: 1px solid rgba(192,57,43,0.28);
+    border-radius: 4px; padding: 10px 18px; width: fit-content;
+  }
+  .toyota-badge span {
+    font-family: 'Rajdhani', sans-serif; font-size: 0.82rem;
+    font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--rojo2);
+  }
+  .toyota-dot {
+    width: 6px; height: 6px; background: var(--rojo2); border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.6); } }
 
-        .left-desc {
-            font-size: .95rem;
-            color: var(--slate);
-            line-height: 1.7;
-            max-width: 380px;
-            margin-bottom: 50px;
-        }
+  /* ── DERECHA ── */
+  .right {
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px 48px;
+    background: rgba(10,10,10,0.88); border-left: 1px solid rgba(192,57,43,0.18);
+    backdrop-filter: blur(22px);
+    animation: fadeInRight 0.9s cubic-bezier(.16,1,.3,1) 0.2s both;
+  }
+  .form-card { width: 100%; max-width: 350px; }
 
-        /* Tarjetas de stats decorativas */
-        .stat-chips {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+  .form-eyebrow {
+    font-family: 'Rajdhani', sans-serif; font-size: 0.72rem;
+    font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--rojo2); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .form-eyebrow::before { content: ''; display: block; width: 22px; height: 2px; background: var(--rojo2); }
 
-        .stat-chip {
-            background: rgba(255,255,255,.05);
-            border: 1px solid rgba(255,255,255,.08);
-            border-radius: 12px;
-            padding: 12px 18px;
-            display: flex; align-items: center; gap: 10px;
-        }
+  .form-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem;
+    letter-spacing: 3px; color: var(--blanco); margin-bottom: 4px; line-height: 1;
+  }
+  .form-desc { font-size: 0.83rem; color: rgba(245,245,245,0.32); margin-bottom: 36px; font-weight: 300; }
 
-        .stat-chip i { color: var(--indigo); font-size: .9rem; }
-        .stat-chip-text { font-size: .75rem; color: var(--slate); }
-        .stat-chip-val  { font-size: .9rem; font-weight: 700; color: white; }
+  .field { margin-bottom: 20px; }
+  .field label {
+    display: block; font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase;
+    color: rgba(245,245,245,0.45); margin-bottom: 8px;
+  }
+  .input-wrap { position: relative; display: flex; align-items: center; }
+  .input-wrap .ico {
+    position: absolute; left: 16px; color: rgba(245,245,245,0.25);
+    font-size: 0.85rem; pointer-events: none; transition: color 0.2s; z-index: 1;
+  }
+  .input-wrap input {
+    width: 100%; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;
+    padding: 14px 16px 14px 44px; color: var(--blanco);
+    font-family: 'Exo 2', sans-serif; font-size: 0.95rem; outline: none; transition: all 0.25s;
+  }
+  .input-wrap input::placeholder { color: rgba(245,245,245,0.2); }
+  .input-wrap input:focus {
+    background: rgba(192,57,43,0.07); border-color: var(--rojo2);
+    box-shadow: 0 0 0 3px rgba(192,57,43,0.12), 0 0 20px rgba(192,57,43,0.08);
+  }
+  .input-wrap input:focus ~ .ico { color: var(--rojo2); }
 
-        /* Carro animado flotando */
-        .floating-car {
-            position: absolute;
-            bottom: 60px; right: -40px;
-            font-size: 14rem;
-            color: rgba(99,102,241,.06);
-            transform: rotate(-15deg);
-            animation: float 6s ease-in-out infinite;
-            z-index: 0;
-        }
+  .eye-btn {
+    position: absolute; right: 14px; background: none; border: none; cursor: pointer;
+    color: rgba(245,245,245,0.25); font-size: 0.85rem; transition: color 0.2s; padding: 4px;
+  }
+  .eye-btn:hover { color: var(--rojo2); }
 
-        @keyframes float {
-            0%, 100% { transform: rotate(-15deg) translateY(0); }
-            50%       { transform: rotate(-15deg) translateY(-20px); }
-        }
+  .remember-row { display: flex; align-items: center; margin-bottom: 28px; }
+  .remember-row label {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.82rem; color: rgba(245,245,245,0.4); cursor: pointer;
+  }
+  .remember-row input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--rojo2); }
 
-        /* ── Panel derecho — formulario ── */
-        .login-right {
-            width: 460px;
-            min-height: 100vh;
-            background: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 60px 50px;
-            position: relative;
-            animation: slideIn .5s ease;
-        }
+  .btn-login {
+    width: 100%;
+    background: linear-gradient(135deg, var(--rojo) 0%, var(--rojo2) 100%);
+    border: none; border-radius: 6px; padding: 15px;
+    color: var(--blanco); font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+    cursor: pointer; position: relative; overflow: hidden; transition: all 0.3s;
+    box-shadow: 0 4px 24px rgba(192,57,43,0.35);
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(192,57,43,0.5); }
+  .btn-login:active { transform: translateY(0); }
+  .btn-login::after {
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transition: left 0.5s;
+  }
+  .btn-login:hover::after { left: 150%; }
 
-        @keyframes slideIn {
-            from { transform: translateX(40px); opacity: 0; }
-            to   { transform: translateX(0);    opacity: 1; }
-        }
+  .form-footer {
+    margin-top: 30px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,0.06);
+    text-align: center; font-size: 0.72rem; color: rgba(245,245,245,0.2);
+    font-family: 'Rajdhani', sans-serif; letter-spacing: 1px;
+  }
 
-        .form-header { margin-bottom: 40px; }
+  @keyframes fadeInLeft  { from { opacity:0; transform:translateX(-40px); } to { opacity:1; transform:translateX(0); } }
+  @keyframes fadeInRight { from { opacity:0; transform:translateX(40px);  } to { opacity:1; transform:translateX(0); } }
 
-        .form-header h2 {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.9rem; font-weight: 800;
-            color: var(--navy);
-            margin-bottom: 6px;
-        }
-
-        .form-header p { font-size: .9rem; color: #64748b; }
-
-        /* Campos */
-        .field-wrap {
-            margin-bottom: 20px;
-        }
-
-        .field-wrap label {
-            display: block;
-            font-size: .78rem;
-            font-weight: 600;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: .8px;
-            margin-bottom: 8px;
-        }
-
-        .field-inner {
-            position: relative;
-        }
-
-        .field-inner i {
-            position: absolute;
-            left: 16px; top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
-            font-size: .85rem;
-            transition: color .2s;
-        }
-
-        .field-inner input {
-            width: 100%;
-            padding: 13px 16px 13px 44px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: .9rem;
-            color: var(--navy);
-            background: #f8fafc;
-            transition: border-color .2s, background .2s, box-shadow .2s;
-            outline: none;
-        }
-
-        .field-inner input:focus {
-            border-color: var(--indigo);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(99,102,241,.1);
-        }
-
-        .field-inner input:focus + i,
-        .field-inner:focus-within i { color: var(--indigo); }
-
-        /* Toggle password */
-        .toggle-pw {
-            position: absolute;
-            right: 14px; top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #94a3b8;
-            font-size: .85rem;
-            background: none; border: none; padding: 4px;
-        }
-        .toggle-pw:hover { color: var(--indigo); }
-
-        /* Recordar / olvidé */
-        .form-extras {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 28px;
-        }
-
-        .remember {
-            display: flex; align-items: center; gap: 8px;
-            font-size: .84rem; color: #64748b; cursor: pointer;
-        }
-
-        .remember input[type="checkbox"] {
-            width: 16px; height: 16px;
-            accent-color: var(--indigo);
-            cursor: pointer;
-        }
-
-        /* Botón submit */
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--indigo), var(--indigo2));
-            color: white;
-            font-family: 'DM Sans', sans-serif;
-            font-size: .95rem;
-            font-weight: 700;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: transform .2s, box-shadow .2s;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99,102,241,.4);
-        }
-
-        .btn-login:active { transform: translateY(0); }
-
-        /* Footer del form */
-        .form-footer {
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid #f1f5f9;
-            text-align: center;
-            font-size: .8rem;
-            color: #94a3b8;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .login-left  { display: none; }
-            .login-right { width: 100%; padding: 40px 28px; }
-        }
-    </style>
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .left { display: none; }
+    .right { padding: 40px 28px; }
+  }
+</style>
 </head>
 <body>
 
-    <!-- Panel izquierdo -->
-    <div class="login-left">
-        <i class="fas fa-car-side floating-car"></i>
-        <div class="left-content">
+<div class="bg"></div>
+<div class="overlay"></div>
+<div class="diagonal"></div>
+<div class="watermark">ACERAUTOS</div>
+<div class="particles" id="particles"></div>
 
-            <div class="brand-badge">
-                <div class="brand-badge-icon"><i class="fas fa-oil-can"></i></div>
-                <span>Acerautos</span>
-            </div>
+<div class="layout">
 
-            <h1 class="left-title">
-                Cambiadero<br>de Aceite<br><span>Acerautos</span>
-            </h1>
+  <!-- IZQUIERDA -->
+  <div class="left">
 
-            <p class="left-desc">
-                Sistema de gestión para controlar servicios, clientes,
-                inventario y finanzas de tu cambiadero en un solo lugar.
-            </p>
+    <!-- ─── CAMBIO: logo real desde static ─── -->
+    <img class="brand-logo"
+         src="{% static 'imagenes/logo empresa.jpeg' %}"
+         alt="Acerautos logo">
 
-            <div class="stat-chips">
-                <div class="stat-chip">
-                    <i class="fas fa-car"></i>
-                    <div>
-                        <div class="stat-chip-text">Vehículos</div>
-                        <div class="stat-chip-val">Control total</div>
-                    </div>
-                </div>
-                <div class="stat-chip">
-                    <i class="fas fa-boxes"></i>
-                    <div>
-                        <div class="stat-chip-text">Inventario</div>
-                        <div class="stat-chip-val">Tiempo real</div>
-                    </div>
-                </div>
-                <div class="stat-chip">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                    <div>
-                        <div class="stat-chip-text">Facturación</div>
-                        <div class="stat-chip-val">Automática</div>
-                    </div>
-                </div>
-            </div>
+    <div class="brand-name">Acer<em>autos</em></div>
+    <div class="brand-sub">Centro Integral Automotriz</div>
 
-        </div>
-    </div>
 
-    <!-- Panel derecho — formulario -->
-    <div class="login-right">
+  </div>
 
-        <div class="form-header">
-            <h2>Bienvenido</h2>
-            <p>Ingresa tus credenciales para continuar</p>
+  <!-- DERECHA: FORMULARIO DJANGO -->
+  <div class="right">
+    <div class="form-card">
+
+      <div class="form-eyebrow">Acceso al sistema</div>
+      <h1 class="form-title">Bienvenido</h1>
+      <p class="form-desc">Ingresa tus credenciales para continuar</p>
+
+      <form method="post" autocomplete="off">
+        {% csrf_token %}
+
+        <!-- Usuario -->
+        <div class="field">
+          <label for="id_username">Usuario</label>
+          <div class="input-wrap">
+            {{ form.username|add_class:"form-field"|attr:"placeholder:Tu nombre de usuario"|attr:"id:id_username" }}
+            <i class="fas fa-user ico"></i>
+          </div>
         </div>
 
-        <form method="post" autocomplete="off">
-            {% csrf_token %}
-
-            <!-- Usuario -->
-            <div class="field-wrap">
-                <label for="id_username">Usuario</label>
-                <div class="field-inner">
-                    {{ form.username|add_class:"form-field"|attr:"placeholder:Tu nombre de usuario"|attr:"id:id_username" }}
-                    <i class="fas fa-user"></i>
-                </div>
-            </div>
-
-            <!-- Contraseña -->
-            <div class="field-wrap">
-                <label for="id_password">Contraseña</label>
-                <div class="field-inner">
-                    {{ form.password|add_class:"form-field"|attr:"placeholder:Tu contraseña"|attr:"id:id_password" }}
-                    <i class="fas fa-lock"></i>
-                    <button type="button" class="toggle-pw" onclick="togglePassword()" id="toggleBtn">
-                        <i class="fas fa-eye" id="eyeIcon"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Extras -->
-            <div class="form-extras">
-                <label class="remember">
-                    <input type="checkbox" name="remember"> Recordarme
-                </label>
-            </div>
-
-            <button type="submit" class="btn-login">
-                <i class="fas fa-arrow-right-to-bracket"></i>
-                Iniciar sesión
+        <!-- Contraseña -->
+        <div class="field">
+          <label for="id_password">Contraseña</label>
+          <div class="input-wrap">
+            {{ form.password|add_class:"form-field"|attr:"placeholder:••••••••••••"|attr:"id:id_password" }}
+            <i class="fas fa-lock ico"></i>
+            <button type="button" class="eye-btn" onclick="togglePassword()" id="toggleBtn">
+              <i class="fas fa-eye" id="eyeIcon"></i>
             </button>
-        </form>
-
-        <div class="form-footer">
-            Sistema de Gestión &copy; Acerautos 2026
+          </div>
         </div>
 
+        <div class="remember-row">
+          <label>
+            <input type="checkbox" name="remember"> Recordarme
+          </label>
+        </div>
+
+        <button type="submit" class="btn-login">
+          <i class="fas fa-arrow-right-to-bracket"></i>
+          Iniciar sesión
+        </button>
+      </form>
+
+      <div class="form-footer">
+        Sistema de Gestión &copy; Acerautos 2026
+      </div>
+
     </div>
+  </div>
 
-    <script>
-        /* Mostrar/ocultar contraseña */
-        function togglePassword() {
-            const input = document.getElementById('id_password');
-            const icon  = document.getElementById('eyeIcon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
-            }
-        }
+</div>
 
-        /* Corregir estilos del widget_tweaks sobre los inputs */
-        document.querySelectorAll('.form-field').forEach(el => {
-            el.style.width          = '100%';
-            el.style.padding        = '13px 44px 13px 44px';
-            el.style.border         = '2px solid #e2e8f0';
-            el.style.borderRadius   = '12px';
-            el.style.fontFamily     = "'DM Sans', sans-serif";
-            el.style.fontSize       = '.9rem';
-            el.style.color          = '#0f172a';
-            el.style.background     = '#f8fafc';
-            el.style.outline        = 'none';
-            el.style.transition     = 'border-color .2s, box-shadow .2s';
-            el.addEventListener('focus', () => {
-                el.style.borderColor = '#6366f1';
-                el.style.background  = 'white';
-                el.style.boxShadow   = '0 0 0 4px rgba(99,102,241,.1)';
-            });
-            el.addEventListener('blur', () => {
-                el.style.borderColor = '#e2e8f0';
-                el.style.background  = '#f8fafc';
-                el.style.boxShadow   = 'none';
-            });
-        });
+<script>
+  // Toggle contraseña
+  function togglePassword() {
+    const input = document.getElementById('id_password');
+    const icon  = document.getElementById('eyeIcon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.replace('fa-eye','fa-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.replace('fa-eye-slash','fa-eye');
+    }
+  }
 
-        /* Errores del formulario */
-        {% if form.errors %}
-        document.addEventListener('DOMContentLoaded', function() {
-            let errors = '';
-            {% for field in form %}
-                {% for error in field.errors %}
-                    errors += '{{ error|escapejs }}\n';
-                {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-                errors += '{{ error|escapejs }}\n';
-            {% endfor %}
-            if (errors) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Credenciales incorrectas',
-                    text: errors,
-                    confirmButtonColor: '#6366f1',
-                    confirmButtonText: 'Intentar de nuevo'
-                });
-            }
-        });
-        {% endif %}
-    </script>
+  // Aplicar estilos a los inputs de widget_tweaks
+  document.querySelectorAll('.form-field').forEach(el => {
+    el.style.cssText = 'width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:14px 16px 14px 44px; color:#f5f5f5; font-family:"Exo 2",sans-serif; font-size:0.95rem; outline:none; transition:all 0.25s;';
+    el.addEventListener('focus', () => {
+      el.style.background   = 'rgba(192,57,43,0.07)';
+      el.style.borderColor  = '#e74c3c';
+      el.style.boxShadow    = '0 0 0 3px rgba(192,57,43,0.12)';
+    });
+    el.addEventListener('blur', () => {
+      el.style.background   = 'rgba(255,255,255,0.04)';
+      el.style.borderColor  = 'rgba(255,255,255,0.1)';
+      el.style.boxShadow    = 'none';
+    });
+  });
+
+  // Partículas flotantes
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (6 + Math.random() * 10) + 's';
+    p.style.animationDelay    = (Math.random() * 8) + 's';
+    const size = (1 + Math.random() * 3) + 'px';
+    p.style.width = p.style.height = size;
+    container.appendChild(p);
+  }
+
+  // Errores del formulario con SweetAlert2
+  {% if form.errors %}
+  document.addEventListener('DOMContentLoaded', function() {
+    let errors = '';
+    {% for field in form %}
+      {% for error in field.errors %}
+        errors += '{{ error|escapejs }}\n';
+      {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+      errors += '{{ error|escapejs }}\n';
+    {% endfor %}
+    if (errors) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Credenciales incorrectas',
+        text: errors,
+        background: '#1a1a1a',
+        color: '#f5f5f5',
+        confirmButtonColor: '#c0392b',
+        confirmButtonText: 'Intentar de nuevo'
+      });
+    }
+  });
+  {% endif %}
+</script>
 
 </body>
 </html>

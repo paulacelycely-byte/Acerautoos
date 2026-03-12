@@ -4,7 +4,9 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect, get_object_or_404, render
 from django.views import View
-from django.db.models import ProtectedError  # ← AGREGADO
+from django.db.models import ProtectedError
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 from app.models import Marca
 from app.forms import MarcaForm
@@ -108,3 +110,27 @@ class MarcaDeleteView(View):
                 return redirect('app:listar_marca')
 
         return redirect('app:listar_marca')
+
+
+# ================================
+# CREAR MARCA AJAX (modal desde vehículos)
+# ================================
+@require_POST
+def crear_marca_ajax(request):
+    nombre = request.POST.get('nombre', '').strip()
+    pais   = request.POST.get('pais_origen', '').strip()
+    desc   = request.POST.get('descripcion', '').strip()
+
+    if not nombre:
+        return JsonResponse({'success': False, 'error': 'El nombre es obligatorio.'})
+    if len(nombre) < 2:
+        return JsonResponse({'success': False, 'error': 'El nombre debe tener al menos 2 caracteres.'})
+    if Marca.objects.filter(nombre__iexact=nombre).exists():
+        return JsonResponse({'success': False, 'error': f'La marca "{nombre}" ya existe en el sistema.'})
+
+    marca = Marca.objects.create(
+        nombre=nombre,
+        pais_origen=pais or None,
+        descripcion=desc or None
+    )
+    return JsonResponse({'success': True, 'id': marca.pk, 'nombre': marca.nombre})

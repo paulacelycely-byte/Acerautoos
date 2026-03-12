@@ -14,6 +14,8 @@ from .views.tipo_servicio import views as vistas_tipo_serv
 from .views.Orden_servicio import views as vistas_orden
 from .views.DetalleOrdenProducto import views as vistas_detalles
 from .views.CompatibilidadProducto import views as vistas_comp
+from .views.factura import views as vistas_factura
+from app import reportes as vistas_rep
 
 app_name = 'app'
 
@@ -49,8 +51,9 @@ urlpatterns = [
     path('marca/crear/', vistas_marca.MarcaCreateView.as_view(), name='crear_marca'),
     path('marca/editar/<int:pk>/', vistas_marca.MarcaUpdateView.as_view(), name='editar_marca'),
     path('marca/eliminar/<int:pk>/', vistas_marca.MarcaDeleteView.as_view(), name='eliminar_marca'),
+    path('marca/crear-ajax/', vistas_marca.crear_marca_ajax, name='crear_marca_ajax'),
 
-    # --- COMPATIBILIDAD (NUEVO) ---
+    # --- COMPATIBILIDAD ---
     path('compatibilidad/listar/', vistas_comp.CompatibilidadListView.as_view(), name='listar_compatibilidad'),
     path('compatibilidad/crear/', vistas_comp.CompatibilidadCreateView.as_view(), name='crear_compatibilidad'),
     path('compatibilidad/editar/<int:pk>/', vistas_comp.CompatibilidadUpdateView.as_view(), name='editar_compatibilidad'),
@@ -69,10 +72,10 @@ urlpatterns = [
     path('producto/eliminar/<int:pk>/', vistas_prod.ProductoDeleteView.as_view(), name='eliminar_producto'),
 
     # --- VENTAS ---
-    path('ventas/listar/', vistas_ventas.VentasFacturaListView.as_view(), name='listar_factura'),
-    path('ventas/crear/', vistas_ventas.VentasFacturaCreateView.as_view(), name='crear_factura'),
-    path('ventas/editar/<int:pk>/', vistas_ventas.VentasFacturaUpdateView.as_view(), name='editar_factura'),
-    path('ventas/eliminar/<int:pk>/', vistas_ventas.VentasFacturaDeleteView.as_view(), name='eliminar_factura'),
+    path('ventas/listar/', vistas_ventas.VentasFacturaListView.as_view(), name='listar_ventas'),
+    path('ventas/crear/', vistas_ventas.VentasFacturaCreateView.as_view(), name='crear_venta'),
+    path('ventas/editar/<int:pk>/', vistas_ventas.VentasFacturaUpdateView.as_view(), name='editar_venta'),
+    path('ventas/eliminar/<int:pk>/', vistas_ventas.VentasFacturaDeleteView.as_view(), name='eliminar_venta'),
 
     # --- NOTIFICACIONES ---
     path('notificaciones/listar/', vistas_notif.NotificacionListView.as_view(), name='listar_notificacion'),
@@ -103,4 +106,31 @@ urlpatterns = [
     path('detalles/add/', vistas_detalles.DetalleOrdenCreateView.as_view(), name='detalle_orden_add'),
     path('detalles/edit/<int:pk>/', vistas_detalles.DetalleOrdenUpdateView.as_view(), name='detalle_orden_edit'),
     path('detalles/delete/<int:pk>/', vistas_detalles.DetalleOrdenDeleteView.as_view(), name='detalle_orden_delete'),
+
+    # --- FACTURAS ---
+    path('factura/listar/', vistas_factura.FacturaListView.as_view(), name='listar_factura'),
+    path('factura/crear/', vistas_factura.FacturaCreateView.as_view(), name='crear_factura'),
+    path('factura/detalle/<int:pk>/', vistas_factura.FacturaDetailView.as_view(), name='detalle_factura'),
+    path('factura/eliminar/<int:pk>/', vistas_factura.FacturaDeleteView.as_view(), name='eliminar_factura'),
+    path('factura/pagar/<int:pk>/', vistas_factura.PagarFacturaView.as_view(), name='pagar_factura'),
+
+    # --- REPORTES PDF ---
+    path('reportes/clientes/pdf/',    vistas_rep.ExportarClientesPDF.as_view(),    name='reporte_clientes_pdf'),
+    path('reportes/vehiculos/pdf/',   vistas_rep.ExportarVehiculosPDF.as_view(),   name='reporte_vehiculos_pdf'),
+    path('reportes/productos/pdf/',   vistas_rep.ExportarProductosPDF.as_view(),   name='reporte_productos_pdf'),
+    path('reportes/proveedores/pdf/', vistas_rep.ExportarProveedoresPDF.as_view(), name='reporte_proveedores_pdf'),
+    path('reportes/compras/pdf/',     vistas_rep.ExportarComprasPDF.as_view(),     name='reporte_compras_pdf'),
+    path('reportes/caja/pdf/',        vistas_rep.ExportarCajaPDF.as_view(),        name='reporte_caja_pdf'),
+    path('reportes/ordenes/pdf/',     vistas_rep.ExportarOrdenesPDF.as_view(),     name='reporte_ordenes_pdf'),
+    path('reportes/facturas/pdf/',    vistas_rep.ExportarFacturasPDF.as_view(),    name='reporte_facturas_pdf'),
+
+    # --- REPORTES EXCEL ---
+    path('reportes/clientes/excel/',    vistas_rep.ExportarClientesExcel.as_view(),    name='reporte_clientes_excel'),
+    path('reportes/vehiculos/excel/',   vistas_rep.ExportarVehiculosExcel.as_view(),   name='reporte_vehiculos_excel'),
+    path('reportes/productos/excel/',   vistas_rep.ExportarProductosExcel.as_view(),   name='reporte_productos_excel'),
+    path('reportes/proveedores/excel/', vistas_rep.ExportarProveedoresExcel.as_view(), name='reporte_proveedores_excel'),
+    path('reportes/compras/excel/',     vistas_rep.ExportarComprasExcel.as_view(),     name='reporte_compras_excel'),
+    path('reportes/caja/excel/',        vistas_rep.ExportarCajaExcel.as_view(),        name='reporte_caja_excel'),
+    path('reportes/ordenes/excel/',     vistas_rep.ExportarOrdenesExcel.as_view(),     name='reporte_ordenes_excel'),
+    path('reportes/facturas/excel/',    vistas_rep.ExportarFacturasExcel.as_view(),    name='reporte_facturas_excel'),
 ]
