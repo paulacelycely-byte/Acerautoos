@@ -3,7 +3,7 @@ from .views.dashboard import views as vistas_dash
 from .views.Cliente import views as vistas_cli
 from .views.Vehiculo import views as vistas_veh
 from .views.Usuario import views as vistas_usr
-from .views.Compra import views as vistas_compra
+from .views.compra import views as vistas_compra
 from .views.Proveedor import views as vistas_prov
 from .views.Marca import views as vistas_marca
 from .views.Producto import views as vistas_prod
