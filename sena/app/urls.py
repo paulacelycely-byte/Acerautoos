@@ -98,6 +98,7 @@ urlpatterns = [
     # --- ORDEN SERVICIO ---
     path('orden_servicio/listar/', vistas_orden.OrdenServicioListView.as_view(), name='orden_servicio_list'),
     path('orden_servicio/crear/', vistas_orden.OrdenServicioCreateView.as_view(), name='orden_servicio_create'),
+    path('orden_servicio/detalle/<int:pk>/', vistas_orden.OrdenServicioDetailView.as_view(), name='orden_servicio_detail'),  # ← NUEVO
     path('orden_servicio/editar/<int:pk>/', vistas_orden.OrdenServicioUpdateView.as_view(), name='orden_servicio_edit'),
     path('orden_servicio/eliminar/<int:pk>/', vistas_orden.OrdenServicioDeleteView.as_view(), name='orden_servicio_delete'),
 

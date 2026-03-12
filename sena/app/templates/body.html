@@ -71,6 +71,34 @@
 
     /* ── Caja de error roja ── */
     .caja-error-roja { background:rgba(211,47,47,.12); border:1px solid rgba(211,47,47,.4); border-radius:6px; padding:6px 10px; font-size:.8rem; color:#ff7070; }
+
+    /* ══════════════════════════════════════════
+       ASTERISCO CAMPOS OBLIGATORIOS — GLOBAL
+       Aplica automáticamente a todos los módulos
+    ══════════════════════════════════════════ */
+    .field-label.required::after {
+        content: ' *';
+        color: #d32f2f;
+        font-weight: 800;
+        font-size: .85rem;
+        vertical-align: super;
+        line-height: 1;
+    }
+    /* Leyenda opcional que puede usarse en cualquier form */
+    .leyenda-obligatorio {
+        font-size: .74rem;
+        color: #888;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .leyenda-obligatorio::before {
+        content: '* ';
+        color: #d32f2f;
+        font-weight: 800;
+        font-size: .85rem;
+    }
   </style>
 
   <div class="app-wrapper">
@@ -188,6 +216,45 @@
   });
   </script>
 
+  <!-- ══════════════════════════════════════════════════════
+       ASTERISCO CAMPOS OBLIGATORIOS — se ejecuta en TODOS
+       los módulos automáticamente al cargar la página.
+       Detecta inputs/selects con required y agrega la clase
+       'required' al label más cercano con clase field-label.
+  ══════════════════════════════════════════════════════ -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('input, select, textarea').forEach(function(campo) {
+      // Solo campos visibles y obligatorios
+      if (!campo.required) return;
+      if (campo.type === 'hidden' || campo.type === 'submit') return;
+
+      var label = null;
+
+      // 1. Buscar por atributo for="id_del_campo"
+      if (campo.id) {
+        label = document.querySelector('label[for="' + campo.id + '"]');
+      }
+
+      // 2. Si no encontró, buscar el .field-label dentro del mismo .field-group
+      if (!label) {
+        var grupo = campo.closest('.field-group');
+        if (grupo) label = grupo.querySelector('.field-label');
+      }
+
+      // 3. Fallback: .field-label en el contenedor col-md-*
+      if (!label) {
+        var col = campo.closest('[class*="col-"]');
+        if (col) label = col.querySelector('.field-label');
+      }
+
+      if (label) label.classList.add('required');
+    });
+
+  });
+  </script>
+
   <!-- Validador en tiempo real — solo blur/input/change, NUNCA bloquea submit -->
   <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -234,13 +301,11 @@
         return;
       }
 
-      /* Fechas: sin restricción de futuro */
       if (tipo === 'date' || tipo === 'datetime-local') {
         if (!esVacio(val)) mostrarOk(input);
         return;
       }
 
-      /* Campo oculto telefono (indicativo+numero concatenado): saltar */
       if (name === 'telefono' && tipo === 'hidden') return;
 
       var opcionales = ['email','correo','direccion','observacion','descripcion','logo','comprobante','indicativo','numero_telefono'];

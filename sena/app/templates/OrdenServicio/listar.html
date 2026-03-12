@@ -114,7 +114,6 @@
         vertical-align: middle; border: none;
     }
 
-    /* Placa */
     .placa-box {
         font-family: 'Barlow Condensed', sans-serif;
         font-size: .95rem; font-weight: 800;
@@ -125,7 +124,6 @@
         display: inline-block;
     }
 
-    /* Badges de estado */
     .badge-estado {
         font-family: 'DM Sans', sans-serif;
         font-size: .7rem; font-weight: 700;
@@ -137,7 +135,6 @@
     .estado-proceso    { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
     .estado-terminado  { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
 
-    /* Badge servicio */
     .badge-servicio {
         font-family: 'DM Sans', sans-serif;
         font-size: .7rem; font-weight: 600;
@@ -147,16 +144,35 @@
         text-transform: uppercase; letter-spacing: .4px;
     }
 
+    /* ── Botones de fila ── */
     .btn-fila {
         width: 32px; height: 32px; border-radius: 8px;
         display: inline-flex; align-items: center; justify-content: center;
         border: none; cursor: pointer; transition: .2s; font-size: .8rem;
+        text-decoration: none;
     }
     .btn-fila:hover { transform: translateY(-2px); }
-    .btn-edit { background: #f39c12; color: white; }
-    .btn-del  { background: var(--rojo); color: white; }
+    .btn-edit    { background: #f39c12; color: white; }
+    .btn-del     { background: var(--rojo); color: white; }
+    /* ── NUEVO: botón detalle ── */
+    .btn-detalle {
+        width: auto !important;
+        padding: 0 14px;
+        gap: 6px;
+        background: var(--carbon);
+        color: white;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        text-decoration: none;
+    }
+    .btn-detalle:hover {
+        background: #333;
+        color: white;
+    }
 
-    /* DataTables override */
     .dataTables_wrapper { padding: 16px 20px; }
     .dataTables_filter input {
         border: 1.5px solid var(--borde) !important;
@@ -237,10 +253,20 @@
                         </td>
                         <td style="color:var(--muted); font-size:.82rem;">{{ o.fecha|date:"d/m/Y H:i" }}</td>
                         <td class="text-center">
-                            <a href="{% url 'app:orden_servicio_edit' o.id %}" class="btn-fila btn-edit" title="Editar">
+                            <!-- ← NUEVO botón Detalle -->
+                            <a href="{% url 'app:orden_servicio_detail' o.id %}"
+                               class="btn-fila btn-detalle"
+                               title="Ver detalle de orden">
+                                <i class="fas fa-clipboard-list"></i> Detalle
+                            </a>
+                            <a href="{% url 'app:orden_servicio_edit' o.id %}"
+                               class="btn-fila btn-edit ms-1"
+                               title="Editar">
                                 <i class="fas fa-pen"></i>
                             </a>
-                            <a href="{% url 'app:orden_servicio_delete' o.id %}" class="btn-fila btn-del ms-1" title="Eliminar">
+                            <a href="{% url 'app:orden_servicio_delete' o.id %}"
+                               class="btn-fila btn-del ms-1"
+                               title="Eliminar">
                                 <i class="fas fa-trash-alt"></i>
                             </a>
                         </td>

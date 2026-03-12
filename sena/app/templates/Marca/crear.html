@@ -64,38 +64,14 @@
     .field-inner select:focus { border-color: var(--rojo); background: white; box-shadow: 0 0 0 3px rgba(211,47,47,.1); }
     .field-inner:focus-within .field-icon { color: var(--rojo); }
 
-    /* Campo archivo */
-    .field-inner input[type="file"] {
-        padding: 8px 14px 8px 40px;
-        cursor: pointer;
-    }
+    .field-inner input[type="file"] { padding: 8px 14px 8px 40px; cursor: pointer; }
 
-    /* Preview logo */
     .logo-preview-wrap { margin-top: 10px; display: none; }
     .logo-preview-wrap img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 2px solid var(--borde); }
     .logo-current-wrap { margin-top: 8px; }
     .logo-current-wrap img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 2px solid var(--borde); }
     .logo-current-wrap small { font-family: 'DM Sans', sans-serif; font-size: .72rem; color: var(--muted); display: block; margin-bottom: 4px; }
 
-    /* Autocompletado países */
-    .pais-wrapper { position: relative; }
-    .pais-dropdown {
-        position: absolute; top: 100%; left: 0; right: 0;
-        background: white; border: 1.5px solid var(--borde); border-top: none;
-        border-radius: 0 0 10px 10px; max-height: 200px; overflow-y: auto;
-        z-index: 999; display: none; box-shadow: 0 8px 20px rgba(0,0,0,.1);
-        padding: 0; margin: 0; list-style: none;
-    }
-    .pais-dropdown li {
-        padding: 9px 14px; cursor: pointer; font-family: 'DM Sans', sans-serif;
-        font-size: .88rem; color: var(--texto); border-bottom: 1px solid var(--gris); transition: background .15s;
-    }
-    .pais-dropdown li:hover { background: var(--gris); font-weight: 600; color: var(--carbon); }
-    .pais-dropdown li:last-child { border-bottom: none; }
-    .pais-dropdown::-webkit-scrollbar { width: 4px; }
-    .pais-dropdown::-webkit-scrollbar-thumb { background: var(--borde); border-radius: 4px; }
-
-    /* Switch estado */
     .switch-wrap {
         display: flex; align-items: center; gap: 12px; padding: 12px 16px;
         background: var(--gris); border: 1.5px solid var(--borde); border-radius: 10px; cursor: pointer; transition: border-color .2s;
@@ -166,10 +142,10 @@
                                 </div>
 
                             {% elif field.name == 'pais_origen' %}
-                                <div class="field-inner pais-wrapper">
+                                <!-- ── SELECT con bandera y nombre ── -->
+                                <div class="field-inner">
                                     <i class="fas fa-globe field-icon"></i>
-                                    {{ field|add_class:'form-field'|attr:'autocomplete:off'|attr:'id:id_pais_origen'|attr:'placeholder:Escriba para buscar un país...' }}
-                                    <ul class="pais-dropdown" id="paisDropdown"></ul>
+                                    {{ field|add_class:'form-field' }}
                                 </div>
 
                             {% elif field.name == 'nombre' %}
@@ -229,58 +205,6 @@
 
 {% block js %}
 <script>
-/* ── Lista de países ── */
-var PAISES = [
-    "Afganistán","Albania","Alemania","Andorra","Angola","Arabia Saudita","Argelia","Argentina",
-    "Armenia","Australia","Austria","Azerbaiyán","Bahamas","Bangladés","Bélgica","Belice","Benín",
-    "Bielorrusia","Bolivia","Bosnia y Herzegovina","Botsuana","Brasil","Bulgaria","Burkina Faso",
-    "Burundi","Bután","Cabo Verde","Camboya","Camerún","Canadá","Chad","Chile","China","Chipre",
-    "Colombia","Comoras","Corea del Norte","Corea del Sur","Costa Rica","Costa de Marfil","Croacia",
-    "Cuba","Dinamarca","Ecuador","Egipto","El Salvador","Emiratos Árabes Unidos","Eritrea","Eslovaquia",
-    "Eslovenia","España","Estados Unidos","Estonia","Etiopía","Filipinas","Finlandia","Francia",
-    "Gabón","Ghana","Grecia","Guatemala","Guinea","Haití","Honduras","Hungría","India","Indonesia",
-    "Irak","Irán","Irlanda","Islandia","Israel","Italia","Jamaica","Japón","Jordania","Kazajistán",
-    "Kenia","Kuwait","Laos","Lesoto","Letonia","Líbano","Libia","Liechtenstein","Lituania",
-    "Luxemburgo","Macedonia del Norte","Madagascar","Malasia","Malaui","Mali","Malta","Marruecos",
-    "Mauricio","México","Moldavia","Mónaco","Mongolia","Montenegro","Mozambique","Myanmar","Namibia",
-    "Nepal","Nicaragua","Níger","Nigeria","Noruega","Nueva Zelanda","Omán","Países Bajos","Pakistán",
-    "Panamá","Paraguay","Perú","Polonia","Portugal","Puerto Rico","Qatar","Reino Unido","República Checa",
-    "República Dominicana","Ruanda","Rumania","Rusia","San Marino","Senegal","Serbia","Singapur",
-    "Siria","Somalia","Sri Lanka","Sudáfrica","Sudán","Suecia","Suiza","Tailandia","Tanzania",
-    "Timor Oriental","Togo","Trinidad y Tobago","Túnez","Turkmenistán","Turquía","Ucrania","Uganda",
-    "Uruguay","Uzbekistán","Venezuela","Vietnam","Yemen","Zambia","Zimbabue"
-];
-
-/* ── Autocompletado países ── */
-var inputPais = document.getElementById('id_pais_origen');
-var dropdown  = document.getElementById('paisDropdown');
-
-if (inputPais) {
-    inputPais.addEventListener('input', function () {
-        var q = this.value.trim().toLowerCase();
-        dropdown.innerHTML = '';
-        if (!q) { dropdown.style.display = 'none'; return; }
-        var filtrados = PAISES.filter(function(p){ return p.toLowerCase().startsWith(q); });
-        if (!filtrados.length) { dropdown.style.display = 'none'; return; }
-        filtrados.forEach(function(pais) {
-            var li = document.createElement('li');
-            li.textContent = pais;
-            li.addEventListener('click', function () {
-                inputPais.value = pais;
-                dropdown.style.display = 'none';
-                dropdown.innerHTML = '';
-            });
-            dropdown.appendChild(li);
-        });
-        dropdown.style.display = 'block';
-    });
-    document.addEventListener('click', function(e) {
-        if (!inputPais.contains(e.target) && !dropdown.contains(e.target)) {
-            dropdown.style.display = 'none';
-        }
-    });
-}
-
 /* ── Preview de imagen ── */
 var fileInput = document.querySelector('input[type="file"]');
 if (fileInput) {
