@@ -94,7 +94,7 @@ urlpatterns = [
 
     # --- TIPO SERVICIO ---
     path('tipo_servicio/listar/',            vistas_tipo_serv.TipoServicioListView.as_view(),   name='tipo_servicio_list'),
-    path('tipo_servicio/crear/',             vistas_tipo_serv.TipoServicioCreateView.as_view(), name='tipo_servicio_create'),
+    path('tipo_servicio/crear/',             vistas_tipo_serv.TipoServicioCreateView.as_view(), name='create_servico'),
     path('tipo_servicio/editar/<int:pk>/',   vistas_tipo_serv.TipoServicioUpdateView.as_view(), name='tipo_servicio_update'),
     path('tipo_servicio/eliminar/<int:pk>/', vistas_tipo_serv.TipoServicioDeleteView.as_view(), name='tipo_servicio_delete'),
 

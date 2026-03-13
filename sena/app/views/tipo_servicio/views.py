@@ -14,7 +14,7 @@ class TipoServicioListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Listado de Tipos de Servicio'
-        context['crear_url'] = reverse_lazy('app:tipo_servicio_create') 
+        context['crear_url'] = reverse_lazy('app:create_servico') 
         return context
 
 class TipoServicioCreateView(CreateView):

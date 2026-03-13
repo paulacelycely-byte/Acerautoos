@@ -15,7 +15,6 @@
         --muted:  #888;
     }
 
-    /* ── Encabezado tipo taller ── */
     .taller-header {
         position: relative;
         background: var(--carbon);
@@ -74,7 +73,6 @@
         position: relative;
     }
 
-    /* ── Tarjeta del formulario ── */
     .form-card {
         background: white;
         border-radius: 16px;
@@ -95,7 +93,6 @@
     .form-card-header i { color: var(--rojo); font-size: .9rem; }
     .form-card-body { padding: 32px; }
 
-    /* ── Campos ── */
     .field-group { margin-bottom: 22px; }
     .field-label {
         font-family: 'DM Sans', sans-serif;
@@ -153,14 +150,12 @@
     }
     .btn-add-inline:hover { background: var(--rojo2); color: white; }
 
-    /* Error */
     .field-error {
         font-family: 'DM Sans', sans-serif;
         font-size: .78rem; color: var(--rojo);
         margin-top: 5px; display: flex; align-items: center; gap: 5px;
     }
 
-    /* ── Footer botones ── */
     .form-card-footer {
         background: var(--gris);
         border-top: 1px solid var(--borde);
@@ -195,7 +190,6 @@
 {% block contenido %}
 <div class="container animate__animated animate__fadeIn" style="max-width:860px;">
 
-    <!-- Encabezado -->
     <div class="taller-header">
         <div class="header-left">
             <div class="header-icon-wrap"><i class="fas fa-car-side"></i></div>
@@ -233,7 +227,7 @@
                         </div>
                     </div>
 
-                    <!-- Marca con botón "+" -->
+                    <!-- Marca con botón "+" — pasa ?next=vehiculos para que crear_marca sepa de dónde viene -->
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.marca.label }}</label>
@@ -242,8 +236,10 @@
                                     <i class="fas fa-copyright field-icon"></i>
                                     {{ form.marca|add_class:'form-field' }}
                                 </div>
-                                <a href="{% url 'app:crear_marca' %}" target="_blank"
-                                   class="btn-add-inline" title="Agregar nueva marca">
+                                <a href="{% url 'app:crear_marca' %}?next=vehiculos"
+                                   target="_blank"
+                                   class="btn-add-inline"
+                                   title="Agregar nueva marca">
                                     <i class="fas fa-plus"></i>
                                 </a>
                             </div>
@@ -281,7 +277,7 @@
                         </div>
                     </div>
 
-                    <!-- Resto de campos del form (por si hay más) -->
+                    <!-- Resto de campos -->
                     {% for field in form.visible_fields %}
                         {% if field.name != 'placa' and field.name != 'marca' and field.name != 'modelo' and field.name != 'cliente' %}
                         <div class="col-md-6">
@@ -317,7 +313,6 @@
 
 {% block js %}
 <script>
-/* ── Estilos dinámicos a campos form-field ── */
 document.querySelectorAll('.form-field').forEach(el => {
     el.style.width           = '100%';
     el.style.padding         = '12px 14px 12px 40px';
@@ -331,7 +326,6 @@ document.querySelectorAll('.form-field').forEach(el => {
     el.style.transition      = 'border-color .2s, box-shadow .2s';
     el.style.webkitAppearance = 'none';
     el.style.appearance      = 'none';
-
     el.addEventListener('focus', () => {
         el.style.borderColor = '#d32f2f';
         el.style.background  = 'white';
@@ -344,7 +338,6 @@ document.querySelectorAll('.form-field').forEach(el => {
     });
 });
 
-/* ── SweetAlert confirmación ── */
 $(function () {
     $('#formVehiculo').on('submit', function (e) {
         e.preventDefault();
@@ -359,9 +352,7 @@ $(function () {
             confirmButtonColor: '#d32f2f',
             cancelButtonColor: '#888',
         }).then((result) => {
-            if (result.isConfirmed) {
-                $(formulario).off('submit').submit();
-            }
+            if (result.isConfirmed) { $(formulario).off('submit').submit(); }
         });
     });
 });

@@ -21,6 +21,11 @@ class SelectConEmoji(forms.Select):
         option['label'] = mark_safe(label)
         return option
 
+    class Media:
+        css = {
+            'all': ('https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css',)
+        }
+
 
 # ══════════════════════════════════════════════════════════
 #  DICCIONARIO DE INDICATIVOS DE PAÍSES
@@ -65,6 +70,54 @@ INDICATIVOS_PAISES = [
     ('+212', '🇲🇦 +212 Marruecos'),
     ('+971', '🇦🇪 +971 Emiratos Árabes'),
     ('+966', '🇸🇦 +966 Arabia Saudita'),
+]
+
+
+# ══════════════════════════════════════════════════════════
+#  DICCIONARIO DE PAÍSES CON BANDERAS
+# ══════════════════════════════════════════════════════════
+
+PAISES = [
+    ('',               '-- Seleccione un país --'),
+    ('Alemania',       '<span class="fi fi-de"></span> Alemania'),
+    ('Arabia Saudita', '<span class="fi fi-sa"></span> Arabia Saudita'),
+    ('Argentina',      '<span class="fi fi-ar"></span> Argentina'),
+    ('Australia',      '<span class="fi fi-au"></span> Australia'),
+    ('Bolivia',        '<span class="fi fi-bo"></span> Bolivia'),
+    ('Brasil',         '<span class="fi fi-br"></span> Brasil'),
+    ('Canada',         '<span class="fi fi-ca"></span> Canadá'),
+    ('Chile',          '<span class="fi fi-cl"></span> Chile'),
+    ('China',          '<span class="fi fi-cn"></span> China'),
+    ('Colombia',       '<span class="fi fi-co"></span> Colombia'),
+    ('Corea del Sur',  '<span class="fi fi-kr"></span> Corea del Sur'),
+    ('Costa Rica',     '<span class="fi fi-cr"></span> Costa Rica'),
+    ('Cuba',           '<span class="fi fi-cu"></span> Cuba'),
+    ('Ecuador',        '<span class="fi fi-ec"></span> Ecuador'),
+    ('Egipto',         '<span class="fi fi-eg"></span> Egipto'),
+    ('El Salvador',    '<span class="fi fi-sv"></span> El Salvador'),
+    ('Emiratos Arabes','<span class="fi fi-ae"></span> Emiratos Árabes'),
+    ('Espana',         '<span class="fi fi-es"></span> España'),
+    ('Estados Unidos', '<span class="fi fi-us"></span> Estados Unidos'),
+    ('Francia',        '<span class="fi fi-fr"></span> Francia'),
+    ('Guatemala',      '<span class="fi fi-gt"></span> Guatemala'),
+    ('Honduras',       '<span class="fi fi-hn"></span> Honduras'),
+    ('India',          '<span class="fi fi-in"></span> India'),
+    ('Italia',         '<span class="fi fi-it"></span> Italia'),
+    ('Japon',          '<span class="fi fi-jp"></span> Japón'),
+    ('Marruecos',      '<span class="fi fi-ma"></span> Marruecos'),
+    ('Mexico',         '<span class="fi fi-mx"></span> México'),
+    ('Nicaragua',      '<span class="fi fi-ni"></span> Nicaragua'),
+    ('Panama',         '<span class="fi fi-pa"></span> Panamá'),
+    ('Paraguay',       '<span class="fi fi-py"></span> Paraguay'),
+    ('Peru',           '<span class="fi fi-pe"></span> Perú'),
+    ('Portugal',       '<span class="fi fi-pt"></span> Portugal'),
+    ('Reino Unido',    '<span class="fi fi-gb"></span> Reino Unido'),
+    ('Rep. Dominicana','<span class="fi fi-do"></span> Rep. Dominicana'),
+    ('Rusia',          '<span class="fi fi-ru"></span> Rusia'),
+    ('Sudafrica',      '<span class="fi fi-za"></span> Sudáfrica'),
+    ('Uruguay',        '<span class="fi fi-uy"></span> Uruguay'),
+    ('Venezuela',      '<span class="fi fi-ve"></span> Venezuela'),
+    ('Otro',           '🌍 Otro'),
 ]
 
 
@@ -167,10 +220,6 @@ def val_documento_colombiano(valor, campo, tipo_doc=None):
 # ══════════════════════════════════════════════════════════
 
 class UsuarioSistemaForm(forms.ModelForm):
-    """
-    Form para crear/editar admins desde el panel propio.
-    No reemplaza al createsuperuser — es para el módulo de usuarios del sistema.
-    """
     password1 = forms.CharField(
         label="Contraseña",
         required=False,
@@ -196,7 +245,6 @@ class UsuarioSistemaForm(forms.ModelForm):
         self.fields['first_name'].required = True
         self.fields['last_name'].required  = True
         self.fields['email'].required      = True
-        # En edición la contraseña es opcional
         if self.instance.pk:
             self.fields['password1'].help_text = "Dejar vacío para no cambiar la contraseña."
 
@@ -236,7 +284,6 @@ class UsuarioSistemaForm(forms.ModelForm):
 
     def clean_password1(self):
         password = self.cleaned_data.get('password1', '')
-        # En edición: si deja vacío no cambia la contraseña
         if not password and self.instance.pk:
             return password
         if password:
@@ -266,7 +313,6 @@ class UsuarioSistemaForm(forms.ModelForm):
         if password:
             user.set_password(password)
         elif not self.instance.pk:
-            # Si es nuevo y no puso contraseña, setear una inutilizable
             user.set_unusable_password()
         if commit:
             user.save()
@@ -374,11 +420,13 @@ class EmpleadoForm(forms.ModelForm):
 
 class ProveedorForm(forms.ModelForm):
 
+    # ── CAMBIO: HiddenInput para que el dropdown JS con banderas
+    #    tome el control visual. Django sigue procesando el valor.
     indicativo_telefono = forms.ChoiceField(
         choices=INDICATIVOS_PAISES,
         required=True,
         label="Indicativo",
-        widget=SelectConEmoji(attrs={'class': 'form-control'}),
+        widget=forms.HiddenInput(),
     )
     numero_telefono = forms.CharField(
         max_length=15,
@@ -463,6 +511,14 @@ class ProveedorForm(forms.ModelForm):
 # ══════════════════════════════════════════════════════════
 
 class MarcaForm(forms.ModelForm):
+
+    pais_origen = forms.ChoiceField(
+        choices=PAISES,
+        required=False,
+        label="País de origen",
+        widget=SelectConEmoji(attrs={'class': 'form-control'}),
+    )
+
     class Meta:
         model  = Marca
         fields = '__all__'
@@ -484,13 +540,7 @@ class MarcaForm(forms.ModelForm):
 
     def clean_pais_origen(self):
         pais = self.cleaned_data.get('pais_origen', '')
-        if pais:
-            pais = pais.strip()
-            if not re.match(r'^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$', pais):
-                raise forms.ValidationError("El país solo permite letras y espacios, sin números ni símbolos.")
-            if len(pais) < 3:
-                raise forms.ValidationError("El nombre del país debe tener al menos 3 caracteres.")
-        return pais
+        return pais or ''
 
     def clean_descripcion(self):
         desc = self.cleaned_data.get('descripcion', '').strip()
@@ -525,7 +575,6 @@ class ProductoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # FIX: solo marcas activas de tipo REPUESTO
         self.fields['marca'].queryset = Marca.objects.filter(categoria='REPUESTO', estado=True)
 
     def clean_codigo(self):
@@ -583,7 +632,6 @@ class CompraForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # FIX: solo productos activos
         self.fields['producto'].queryset = Producto.objects.filter(estado=True)
 
     def clean_cantidad(self):
@@ -630,11 +678,13 @@ class CompraForm(forms.ModelForm):
 
 class ClienteForm(forms.ModelForm):
 
+    # ── CAMBIO: HiddenInput para que el dropdown JS con banderas
+    #    tome el control visual. Django sigue procesando el valor.
     indicativo_telefono = forms.ChoiceField(
         choices=INDICATIVOS_PAISES,
         required=True,
         label="Indicativo",
-        widget=SelectConEmoji(attrs={'class': 'form-control'}),
+        widget=forms.HiddenInput(),
     )
     numero_telefono = forms.CharField(
         max_length=15,
@@ -722,12 +772,10 @@ class ClienteForm(forms.ModelForm):
 class VehiculoForm(forms.ModelForm):
     class Meta:
         model  = Vehiculo
-        # km_ultimo_servicio lo maneja el sistema automáticamente
         fields = ['placa', 'modelo', 'marca', 'cliente', 'km_proximo_mantenimiento']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # FIX: solo marcas activas de tipo AUTO
         self.fields['marca'].queryset = Marca.objects.filter(categoria='AUTO', estado=True)
         self.fields['km_proximo_mantenimiento'].required  = False
         self.fields['km_proximo_mantenimiento'].help_text = (
@@ -792,7 +840,6 @@ class TipoServicioForm(forms.ModelForm):
         return precio
 
     def clean_intervalo_km(self):
-        # NUEVO: validación del campo intervalo_km
         km = self.cleaned_data.get('intervalo_km', 0)
         if km < 0:
             raise forms.ValidationError("El intervalo de km no puede ser negativo.")
@@ -812,7 +859,6 @@ class OrdenServicioForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # FIX: usa Empleado activo en lugar del antiguo Usuario
         self.fields['empleado'].queryset    = Empleado.objects.filter(activo=True)
         self.fields['empleado'].required    = False
         self.fields['empleado'].empty_label = "-- Sin asignar --"
@@ -829,7 +875,6 @@ class OrdenServicioForm(forms.ModelForm):
             raise forms.ValidationError("El kilometraje debe ser mayor que 0. Ingrese el km actual del vehículo.")
         if km > 1000000:
             raise forms.ValidationError("El kilometraje ingresado es demasiado alto (máx. 1.000.000 km).")
-        # NUEVO: no puede ser menor al último km registrado del vehículo
         vehiculo = self.cleaned_data.get('vehiculo') or (
             self.instance.vehiculo if self.instance and self.instance.pk else None
         )
@@ -895,7 +940,6 @@ class DetalleOrdenProductoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # FIX: solo productos activos con stock disponible
         self.fields['producto'].queryset = Producto.objects.filter(stock__gt=0, estado=True)
 
     def clean_cantidad(self):
@@ -928,7 +972,6 @@ class CompatibilidadProductoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # FIX: solo productos activos y marcas activas de tipo AUTO
         self.fields['producto'].queryset       = Producto.objects.filter(estado=True)
         self.fields['marca_vehiculo'].queryset = Marca.objects.filter(categoria='AUTO', estado=True)
         self.fields['tipo_servicio'].required  = False
@@ -940,7 +983,6 @@ class CompatibilidadProductoForm(forms.ModelForm):
         marca_vehiculo = cleaned.get('marca_vehiculo')
         tipo_servicio  = cleaned.get('tipo_servicio')
         if producto and marca_vehiculo:
-            # FIX: ahora valida los tres campos del unique_together
             qs = CompatibilidadProducto.objects.filter(
                 producto=producto,
                 marca_vehiculo=marca_vehiculo,
@@ -1024,7 +1066,6 @@ class NotificacionForm(forms.ModelForm):
 
     class Meta:
         model  = Notificacion
-        # origen y fecha los asigna la vista automáticamente
         fields = ['tipo', 'titulo', 'vehiculo', 'mensaje', 'leido']
 
     def __init__(self, *args, **kwargs):
@@ -1098,7 +1139,6 @@ class FacturaForm(forms.ModelForm):
         ).select_related('vehiculo', 'servicio')
         self.fields['orden_servicio'].empty_label = "-- Seleccione una Orden --"
         self.fields['orden_servicio'].required    = False
-        # FIX: solo productos activos con stock
         self.fields['producto'].queryset   = Producto.objects.filter(estado=True, stock__gt=0)
         self.fields['producto'].empty_label = "-- Seleccione un Producto --"
         self.fields['producto'].required   = False
@@ -1147,10 +1187,6 @@ class FacturaForm(forms.ModelForm):
 # ══════════════════════════════════════════════════════════
 
 class PagarFacturaForm(forms.ModelForm):
-    """
-    Formulario minimalista para la vista pagar_factura.
-    Solo pide el método de pago — el sistema marca estado_pago=Pagada.
-    """
     class Meta:
         model  = Factura
         fields = ['metodo_pago']

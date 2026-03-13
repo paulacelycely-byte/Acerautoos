@@ -122,6 +122,28 @@
     }
     .field-inner:focus-within .field-icon { color: var(--rojo); }
 
+    /* Campo con botón adjunto (marca) */
+    .field-with-btn { display: flex; gap: 0; }
+    .field-with-btn .field-inner { flex: 1; }
+    .field-with-btn .field-inner input,
+    .field-with-btn .field-inner select {
+        border-radius: 10px 0 0 10px;
+    }
+    .btn-add-inline {
+        background: var(--rojo);
+        color: white;
+        border: none;
+        border-radius: 0 10px 10px 0;
+        padding: 0 16px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background .2s;
+        display: flex; align-items: center;
+        text-decoration: none;
+        flex-shrink: 0;
+    }
+    .btn-add-inline:hover { background: var(--rojo2); color: white; }
+
     /* Switch estado */
     .switch-wrap {
         display: flex; align-items: center; gap: 12px;
@@ -240,12 +262,25 @@
                                     {{ field|add_class:'form-field'|attr:'style:height:100px;resize:vertical;'|attr:'minlength:10'|attr:'maxlength:500' }}
                                 </div>
 
+                            {% elif field.name == 'marca' %}
+                                <!-- Marca con botón + que lleva a crear_marca con ?next=producto -->
+                                <div class="field-with-btn">
+                                    <div class="field-inner">
+                                        <i class="fas fa-copyright field-icon"></i>
+                                        {{ field|add_class:'form-field' }}
+                                    </div>
+                                    <a href="{% url 'app:crear_marca' %}?next=producto"
+                                       target="_blank"
+                                       class="btn-add-inline"
+                                       title="Agregar nueva marca de repuesto">
+                                        <i class="fas fa-plus"></i>
+                                    </a>
+                                </div>
+
                             {% else %}
                                 <div class="field-inner">
                                     {% if 'nombre' in field.name %}
                                         <i class="fas fa-tag field-icon"></i>
-                                    {% elif 'marca' in field.name %}
-                                        <i class="fas fa-copyright field-icon"></i>
                                     {% elif 'proveedor' in field.name %}
                                         <i class="fas fa-truck field-icon"></i>
                                     {% elif 'precio' in field.name %}

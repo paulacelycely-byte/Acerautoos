@@ -24,19 +24,33 @@ LOGO_PATH_EXCEL = os.path.join(
     settings.BASE_DIR, 'app', 'static', 'imagenes', 'logo empresa.jpeg'
 )
 
-
 # ══════════════════════════════════════════════════════════
-#  COLORES CORPORATIVOS — Acerautos
-#  El ROJO es dominante, igual que en el PDF
+#  COLORES — igual que el PDF
 # ══════════════════════════════════════════════════════════
+C_NEGRO       = '1A1A1A'   # Header lateral y encabezado tabla
+C_ROJO        = 'D32F2F'   # Header central y acento
+C_ROJO_OSCURO = 'B71C1C'   # Borde inferior header / separador
+C_BLANCO      = 'FFFFFF'
+C_GRIS_CLARO  = 'F2F2F0'   # Filas impares / barra resumen
+C_GRIS_BORDE  = 'E0DDD8'   # Bordes tabla
+C_TEXTO       = '2A2A2A'   # Texto datos
 
-COLOR_ROJO        = 'C0392B'   # Rojo Acerautos   — header + encabezados tabla
-COLOR_ROJO_TITULO = 'A93226'   # Rojo más oscuro  — banner título
-COLOR_AZUL        = '1A2F5A'   # Azul oscuro      — acento en pie
-COLOR_ACENTO      = 'FDECEA'   # Rosa muy pálido  — filas alternas
-COLOR_BLANCO      = 'FFFFFF'
-COLOR_TEXTO       = '2C2C2C'   # Casi negro       — texto de datos
-COLOR_TEXTO_META  = '922B21'   # Rojo oscuro      — textos secundarios
+
+def _side(color, style='thin'):
+    return Side(style=style, color=color)
+
+def _border(color='E0DDD8', style='thin'):
+    s = _side(color, style)
+    return Border(left=s, right=s, top=s, bottom=s)
+
+def _fill(color):
+    return PatternFill(start_color=color, end_color=color, fill_type='solid')
+
+def _font(size=10, bold=False, color='2A2A2A', name='Arial'):
+    return Font(name=name, size=size, bold=bold, color=color)
+
+def _align(h='left', v='center', wrap=False):
+    return Alignment(horizontal=h, vertical=v, wrap_text=wrap)
 
 
 # ══════════════════════════════════════════════════════════
@@ -59,214 +73,239 @@ def exportar_pdf(titulo, columnas, datos, nombre_archivo):
 
 
 # ══════════════════════════════════════════════════════════
-#  EXPORTAR EXCEL  — con logo, colores Acerautos, generado por
+#  EXPORTAR EXCEL  — diseño igual al PDF nuevo
 # ══════════════════════════════════════════════════════════
 
 def exportar_excel(titulo, columnas, datos, nombre_archivo, generado_por=None):
-    workbook  = Workbook()
-    worksheet = workbook.active
-    worksheet.title = "Reporte"
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Reporte"
 
     num_cols   = len(columnas)
     ultima_col = get_column_letter(num_cols)
+    fecha_txt  = datetime.now().strftime('%d/%m/%Y')
+    hora_txt   = datetime.now().strftime('%H:%M')
+    gen_txt    = str(generado_por) if generado_por else 'Sistema'
 
-    fecha_texto     = datetime.now().strftime('%d/%m/%Y  %H:%M')
-    generador_texto = str(generado_por) if generado_por else 'Sistema'
+    # ── Ocultar líneas de cuadrícula ──────────────────────
+    ws.sheet_view.showGridLines = False
 
-    # ── Fills ──────────────────────────────────────────────
-    fill_rojo        = PatternFill(start_color=COLOR_ROJO,        end_color=COLOR_ROJO,        fill_type='solid')
-    fill_rojo_titulo = PatternFill(start_color=COLOR_ROJO_TITULO, end_color=COLOR_ROJO_TITULO, fill_type='solid')
-    fill_acento      = PatternFill(start_color=COLOR_ACENTO,      end_color=COLOR_ACENTO,      fill_type='solid')
-    fill_blanco      = PatternFill(start_color=COLOR_BLANCO,      end_color=COLOR_BLANCO,      fill_type='solid')
-    fill_pie         = PatternFill(start_color='F4F4F4',          end_color='F4F4F4',          fill_type='solid')
+    # ══════════════════════════════════════════════════════
+    #  FILA 1-3 — HEADER en 3 bloques: NEGRO | ROJO | NEGRO
+    #  (igual que el PDF: logo | ACERAUTOS | fecha/hora)
+    # ══════════════════════════════════════════════════════
+    HEADER_ROWS = 3
+    for r in range(1, HEADER_ROWS + 1):
+        ws.row_dimensions[r].height = 22
 
-    # ── Bordes ─────────────────────────────────────────────
-    sin_borde  = Border()
-    borde_fino = Border(
-        left=Side(style='thin',   color='E0E0E0'),
-        right=Side(style='thin',  color='E0E0E0'),
-        top=Side(style='thin',    color='E0E0E0'),
-        bottom=Side(style='thin', color='E0E0E0'),
+    # Ancho proporcional de columnas del header
+    col_logo_fin  = max(1, num_cols // 5)            # ~20% para logo
+    col_rojo_ini  = col_logo_fin + 1
+    col_rojo_fin  = num_cols - max(1, num_cols // 5) # ~60% para nombre empresa
+    col_fecha_ini = col_rojo_fin + 1                 # ~20% para fecha
+
+    # Bloque NEGRO izquierdo (logo)
+    if col_logo_fin >= 1:
+        ws.merge_cells(start_row=1, start_column=1,
+                       end_row=HEADER_ROWS, end_column=col_logo_fin)
+        c = ws.cell(row=1, column=1)
+        c.fill      = _fill(C_NEGRO)
+        c.alignment = _align('center', 'center')
+
+        if os.path.exists(LOGO_PATH_EXCEL):
+            try:
+                img        = XLImage(LOGO_PATH_EXCEL)
+                img.height = 58
+                img.width  = 100
+                img.anchor = 'A1'
+                ws.add_image(img)
+            except Exception:
+                c.value = 'ACERAUTOS'
+                c.font  = _font(11, True, C_BLANCO)
+
+    # Bloque ROJO central (nombre empresa)
+    if col_rojo_fin >= col_rojo_ini:
+        ws.merge_cells(start_row=1, start_column=col_rojo_ini,
+                       end_row=HEADER_ROWS, end_column=col_rojo_fin)
+        c             = ws.cell(row=1, column=col_rojo_ini)
+        c.value       = 'ACERAUTOS'
+        c.font        = Font(name='Arial', size=22, bold=True, color=C_BLANCO)
+        c.fill        = _fill(C_ROJO)
+        c.alignment   = _align('center', 'center')
+
+    # Bloque NEGRO derecho (fecha / hora)
+    if col_fecha_ini <= num_cols:
+        ws.merge_cells(start_row=1, start_column=col_fecha_ini,
+                       end_row=HEADER_ROWS, end_column=num_cols)
+        c             = ws.cell(row=1, column=col_fecha_ini)
+        c.value       = f'Fecha:\n{fecha_txt}\n\nHora:\n{hora_txt}'
+        c.font        = Font(name='Arial', size=9, color=C_BLANCO)
+        c.fill        = _fill(C_NEGRO)
+        c.alignment   = Alignment(horizontal='right', vertical='center',
+                                  wrap_text=True)
+
+    # ── Línea separadora roja debajo del header ───────────
+    FILA_SEP = HEADER_ROWS + 1
+    ws.row_dimensions[FILA_SEP].height = 4
+    ws.merge_cells(start_row=FILA_SEP, start_column=1,
+                   end_row=FILA_SEP, end_column=num_cols)
+    ws.cell(row=FILA_SEP, column=1).fill = _fill(C_ROJO_OSCURO)
+
+    # ══════════════════════════════════════════════════════
+    #  FILA TÍTULO DEL REPORTE
+    # ══════════════════════════════════════════════════════
+    FILA_TITULO = FILA_SEP + 1
+    ws.row_dimensions[FILA_TITULO].height = 26
+    ws.merge_cells(start_row=FILA_TITULO, start_column=1,
+                   end_row=FILA_TITULO, end_column=num_cols)
+    c           = ws.cell(row=FILA_TITULO, column=1)
+    c.value     = titulo.upper()
+    c.font      = Font(name='Arial', size=13, bold=True, color=C_BLANCO)
+    c.fill      = _fill(C_ROJO)
+    c.alignment = _align('center', 'center')
+
+    # ── Franja gris con "Generado por" ────────────────────
+    FILA_META = FILA_TITULO + 1
+    ws.row_dimensions[FILA_META].height = 15
+    ws.merge_cells(start_row=FILA_META, start_column=1,
+                   end_row=FILA_META, end_column=num_cols)
+    c           = ws.cell(row=FILA_META, column=1)
+    c.value     = f'Generado por: {gen_txt}'
+    c.font      = Font(name='Arial', size=8, italic=True, color='888888')
+    c.fill      = _fill(C_GRIS_CLARO)
+    c.alignment = _align('right', 'center')
+
+    # ══════════════════════════════════════════════════════
+    #  ENCABEZADOS DE TABLA — fondo NEGRO texto blanco
+    # ══════════════════════════════════════════════════════
+    FILA_ENC = FILA_META + 1
+    ws.row_dimensions[FILA_ENC].height = 20
+
+    borde_enc_bot = Border(
+        bottom=Side(style='medium', color=C_ROJO),
+        left=_side(C_GRIS_BORDE),
+        right=_side(C_GRIS_BORDE),
+        top=_side(C_NEGRO),
     )
-    borde_header = Border(
-        left=Side(style='thin',   color='E8908A'),
-        right=Side(style='thin',  color='E8908A'),
-        top=Side(style='thin',    color='E8908A'),
-        bottom=Side(style='thin', color='E8908A'),
+
+    for col_i, col_name in enumerate(columnas, 1):
+        c           = ws.cell(row=FILA_ENC, column=col_i)
+        c.value     = str(col_name).upper()
+        c.font      = Font(name='Arial', size=9, bold=True, color=C_BLANCO)
+        c.fill      = _fill(C_NEGRO)
+        c.alignment = _align('center', 'center')
+        c.border    = borde_enc_bot
+        # Acento rojo en primera columna (como el PDF)
+        if col_i == 1:
+            c.border = Border(
+                left=Side(style='thick', color=C_ROJO),
+                right=_side(C_GRIS_BORDE),
+                top=_side(C_NEGRO),
+                bottom=Side(style='medium', color=C_ROJO),
+            )
+
+    # ══════════════════════════════════════════════════════
+    #  FILAS DE DATOS — alternas gris claro / blanco
+    # ══════════════════════════════════════════════════════
+    FILA_DATOS_INI = FILA_ENC + 1
+
+    for idx, fila in enumerate(datos):
+        row_num = FILA_DATOS_INI + idx
+        ws.row_dimensions[row_num].height = 16
+        color_fila = C_GRIS_CLARO if idx % 2 == 0 else C_BLANCO
+        valores = list(fila) if not isinstance(fila, dict) else \
+                  [fila.get(col.lower().replace(' ', '_'), '') for col in columnas]
+
+        for col_i, valor in enumerate(valores, 1):
+            c           = ws.cell(row=row_num, column=col_i)
+            c.value     = valor
+            c.font      = _font(10, False, C_TEXTO)
+            c.fill      = _fill(color_fila)
+            c.alignment = _align('left', 'center')
+            c.border    = Border(
+                bottom=_side(C_GRIS_BORDE),
+                left=_side(C_GRIS_BORDE),
+                right=_side(C_GRIS_BORDE),
+            )
+            # Acento rojo en primera columna
+            if col_i == 1:
+                c.border = Border(
+                    left=Side(style='thick', color=C_ROJO),
+                    right=_side(C_GRIS_BORDE),
+                    bottom=_side(C_GRIS_BORDE),
+                )
+
+    # ══════════════════════════════════════════════════════
+    #  BARRA DE RESUMEN — igual que el PDF
+    # ══════════════════════════════════════════════════════
+    FILA_RES = FILA_DATOS_INI + len(datos) + 1
+    ws.row_dimensions[FILA_RES].height = 20
+
+    borde_res = Border(
+        top=Side(style='medium', color=C_ROJO),
+        bottom=_side(C_GRIS_BORDE),
+        left=_side(C_GRIS_BORDE),
+        right=_side(C_GRIS_BORDE),
     )
-    borde_pie = Border(top=Side(style='medium', color=COLOR_ROJO))
-
-    # ══════════════════════════════════════════════════════
-    #  FILA 1 — Header rojo: [Logo] · ACERAUTOS · Fecha/Hora
-    # ══════════════════════════════════════════════════════
-    worksheet.row_dimensions[1].height = 58
-
-    for col in range(1, num_cols + 1):
-        c = worksheet.cell(row=1, column=col)
-        c.fill   = fill_rojo
-        c.border = sin_borde
-
-    if os.path.exists(LOGO_PATH_EXCEL):
-        try:
-            logo_img        = XLImage(LOGO_PATH_EXCEL)
-            logo_img.height = 52
-            logo_img.width  = 115
-            logo_img.anchor = 'A1'
-            worksheet.add_image(logo_img)
-        except Exception:
-            pass
-
-    col_emp_fin = max(num_cols - 1, 2)
-    if col_emp_fin > 2:
-        worksheet.merge_cells(f'B1:{get_column_letter(col_emp_fin)}1')
-    cel_emp           = worksheet.cell(row=1, column=2)
-    cel_emp.value     = 'ACERAUTOS'
-    cel_emp.font      = Font(name='Calibri', size=18, bold=True, color=COLOR_BLANCO)
-    cel_emp.fill      = fill_rojo
-    cel_emp.alignment = Alignment(horizontal='center', vertical='center')
-    cel_emp.border    = sin_borde
-
-    fecha_parts     = fecha_texto.split('  ')
-    cel_fecha       = worksheet.cell(row=1, column=num_cols)
-    cel_fecha.value = f'Fecha: {fecha_parts[0]}\nHora:  {fecha_parts[1] if len(fecha_parts) > 1 else ""}'
-    cel_fecha.font  = Font(name='Calibri', size=9, color=COLOR_BLANCO)
-    cel_fecha.fill  = fill_rojo
-    cel_fecha.alignment = Alignment(horizontal='right', vertical='center', wrap_text=True)
-    cel_fecha.border    = sin_borde
-
-    # ══════════════════════════════════════════════════════
-    #  FILA 2 — Banner título (rojo más oscuro)
-    # ══════════════════════════════════════════════════════
-    worksheet.row_dimensions[2].height = 28
-    worksheet.merge_cells(f'A2:{ultima_col}2')
-    cel_titulo           = worksheet['A2']
-    cel_titulo.value     = titulo.upper()
-    cel_titulo.font      = Font(name='Calibri', size=14, bold=True, color=COLOR_BLANCO)
-    cel_titulo.fill      = fill_rojo_titulo
-    cel_titulo.alignment = Alignment(horizontal='center', vertical='center')
-    cel_titulo.border    = sin_borde
-
-    # ══════════════════════════════════════════════════════
-    #  FILA 3 — Metadatos: Generado por
-    # ══════════════════════════════════════════════════════
-    worksheet.row_dimensions[3].height = 17
-
-    mitad = max(num_cols // 2, 1)
-    worksheet.merge_cells(f'A3:{get_column_letter(mitad)}3')
-    cel_izq        = worksheet['A3']
-    cel_izq.fill   = fill_blanco
-    cel_izq.border = sin_borde
-
-    col_gen = mitad + 1
-    if col_gen <= num_cols:
-        worksheet.merge_cells(f'{get_column_letter(col_gen)}3:{ultima_col}3')
-    cel_gen           = worksheet.cell(row=3, column=min(col_gen, num_cols))
-    cel_gen.value     = f'Generado por: {generador_texto}'
-    cel_gen.font      = Font(name='Calibri', size=9, italic=True, color=COLOR_TEXTO_META)
-    cel_gen.fill      = fill_blanco
-    cel_gen.alignment = Alignment(horizontal='right', vertical='center')
-    cel_gen.border    = sin_borde
-
-    # ══════════════════════════════════════════════════════
-    #  FILA 4 — Encabezados (ROJO + texto blanco)
-    # ══════════════════════════════════════════════════════
-    worksheet.row_dimensions[4].height = 22
-
-    for col_num, columna in enumerate(columnas, 1):
-        cell           = worksheet.cell(row=4, column=col_num)
-        cell.value     = str(columna).upper()
-        cell.font      = Font(name='Calibri', size=10, bold=True, color=COLOR_BLANCO)
-        cell.fill      = fill_rojo
-        cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
-        cell.border    = borde_header
-
-    # ══════════════════════════════════════════════════════
-    #  FILAS 5+ — Datos con filas alternas blanco / rosa pálido
-    # ══════════════════════════════════════════════════════
-    for row_num, fila in enumerate(datos, 5):
-        worksheet.row_dimensions[row_num].height = 17
-
-        if isinstance(fila, dict):
-            valores = [fila.get(col.lower().replace(' ', '_'), '') for col in columnas]
-        else:
-            valores = list(fila)
-
-        fill_fila = fill_blanco if (row_num - 5) % 2 == 0 else fill_acento
-
-        for col_num, valor in enumerate(valores, 1):
-            cell           = worksheet.cell(row=row_num, column=col_num)
-            cell.value     = valor
-            cell.font      = Font(name='Calibri', size=10, bold=False, color='2C2C2C')
-            cell.alignment = Alignment(horizontal='left', vertical='center')
-            cell.border    = borde_fino
-            cell.fill      = fill_fila
-
-    # ══════════════════════════════════════════════════════
-    #  PIE DE PÁGINA — separador rojo + fondo gris
-    # ══════════════════════════════════════════════════════
-    fila_pie        = worksheet.max_row + 2
-    total_registros = len(datos)
-    worksheet.row_dimensions[fila_pie].height = 18
 
     t1 = max(num_cols // 3, 1)
     t2 = t1 + 1
     t3 = max((num_cols * 2) // 3, t2)
-    t4 = t3 + 1
+    t4 = min(t3 + 1, num_cols)
 
-    worksheet.merge_cells(f'A{fila_pie}:{get_column_letter(t1)}{fila_pie}')
-    c1           = worksheet[f'A{fila_pie}']
-    c1.value     = f'Total de registros: {total_registros}'
-    c1.font      = Font(name='Calibri', size=9, color=COLOR_TEXTO_META)
-    c1.fill      = fill_pie
-    c1.alignment = Alignment(horizontal='left', vertical='center')
-    c1.border    = borde_pie
+    # Total registros
+    ws.merge_cells(start_row=FILA_RES, start_column=1,
+                   end_row=FILA_RES, end_column=t1)
+    c           = ws.cell(row=FILA_RES, column=1)
+    c.value     = f'Total de registros: {len(datos)}'
+    c.font      = Font(name='Arial', size=9, bold=True, color=C_ROJO)
+    c.fill      = _fill(C_GRIS_CLARO)
+    c.alignment = _align('left', 'center')
+    c.border    = Border(top=Side(style='medium', color=C_ROJO),
+                         left=Side(style='thick', color=C_ROJO))
 
+    # Nombre empresa
     if t3 >= t2:
-        worksheet.merge_cells(f'{get_column_letter(t2)}{fila_pie}:{get_column_letter(t3)}{fila_pie}')
-    c2           = worksheet.cell(row=fila_pie, column=t2)
-    c2.value     = 'Acerautos — Centro Integral Automotriz'
-    c2.font      = Font(name='Calibri', size=9, bold=True, color=COLOR_TEXTO_META)
-    c2.fill      = fill_pie
-    c2.alignment = Alignment(horizontal='center', vertical='center')
-    c2.border    = borde_pie
+        ws.merge_cells(start_row=FILA_RES, start_column=t2,
+                       end_row=FILA_RES, end_column=t3)
+    c           = ws.cell(row=FILA_RES, column=t2)
+    c.value     = 'Acerautos — Centro Integral Automotriz'
+    c.font      = Font(name='Arial', size=9, bold=True, color=C_TEXTO)
+    c.fill      = _fill(C_GRIS_CLARO)
+    c.alignment = _align('center', 'center')
+    c.border    = borde_res
 
+    # Fecha generación
     if t4 <= num_cols:
-        worksheet.merge_cells(f'{get_column_letter(t4)}{fila_pie}:{ultima_col}{fila_pie}')
-    c3           = worksheet.cell(row=fila_pie, column=min(t4, num_cols))
-    c3.value     = f'Generado el: {fecha_texto}'
-    c3.font      = Font(name='Calibri', size=9, color=COLOR_TEXTO_META)
-    c3.fill      = fill_pie
-    c3.alignment = Alignment(horizontal='right', vertical='center')
-    c3.border    = borde_pie
+        ws.merge_cells(start_row=FILA_RES, start_column=t4,
+                       end_row=FILA_RES, end_column=num_cols)
+    c           = ws.cell(row=FILA_RES, column=t4)
+    c.value     = f'Generado el: {fecha_txt}  {hora_txt}'
+    c.font      = Font(name='Arial', size=9, color='555555')
+    c.fill      = _fill(C_GRIS_CLARO)
+    c.alignment = _align('right', 'center')
+    c.border    = borde_res
 
     # ══════════════════════════════════════════════════════
-    #  Ajuste automático de ancho de columnas
+    #  AJUSTE AUTOMÁTICO DE ANCHOS
     # ══════════════════════════════════════════════════════
-    for col_num, columna in enumerate(columnas, 1):
-        col_letra  = get_column_letter(col_num)
-        max_length = len(str(columna))
-        for row in worksheet.iter_rows(
-            min_row=4, max_row=worksheet.max_row,
-            min_col=col_num, max_col=col_num
-        ):
+    for col_i, col_name in enumerate(columnas, 1):
+        col_letra  = get_column_letter(col_i)
+        max_length = len(str(col_name))
+        for row in ws.iter_rows(min_row=FILA_ENC, max_row=FILA_DATOS_INI + len(datos),
+                                min_col=col_i, max_col=col_i):
             for cell in row:
                 try:
                     if cell.value:
                         max_length = max(max_length, len(str(cell.value)))
                 except Exception:
                     pass
-        worksheet.column_dimensions[col_letra].width = min(max_length + 4, 50)
+        ws.column_dimensions[col_letra].width = min(max_length + 4, 45)
 
-    worksheet.column_dimensions['A'].width = max(
-        worksheet.column_dimensions['A'].width, 18
-    )
-
-    # ══════════════════════════════════════════════════════
-    #  Respuesta HTTP
-    # ══════════════════════════════════════════════════════
+    # ── Respuesta HTTP ────────────────────────────────────
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
     response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}.xlsx"'
-    workbook.save(response)
+    wb.save(response)
     return response

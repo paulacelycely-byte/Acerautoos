@@ -5,7 +5,6 @@
 {% block css %}
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-    /* ── TUS ESTILOS ORIGINALES (MANTENIDOS) ── */
     :root {
         --rojo:   #d32f2f;
         --rojo2:  #b71c1c;
@@ -15,7 +14,6 @@
         --texto:  #2a2a2a;
         --muted:  #888;
     }
-
     .taller-header {
         position: relative; background: var(--carbon);
         border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
@@ -50,30 +48,69 @@
 
     .field-group { margin-bottom: 22px; }
     .field-label { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .9px; color: var(--muted); display: block; margin-bottom: 7px; }
-
     .field-inner { position: relative; }
     .field-inner .field-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #bbb; font-size: .85rem; pointer-events: none; transition: color .2s; z-index: 5; }
-
-    /* ── CORRECCIÓN DE LA FILA DE TELÉFONO ── */
-    .phone-row { display: flex; align-items: stretch; width: 100%; }
-    .indicativo-wrap { position: relative; flex: 0 0 170px; } /* Ancho fijo para el select */
-    .numero-wrap { position: relative; flex: 1; }
-
-    /* Ajustes específicos para que encajen */
-    #id_ind { border-radius: 10px 0 0 10px !important; border-right: none !important; }
-    #id_num { border-radius: 0 10px 10px 0 !important; padding-left: 14px !important; }
-
     .field-error { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: var(--rojo); margin-top: 5px; display: flex; align-items: center; gap: 5px; }
 
     .form-card-footer { background: var(--gris); border-top: 1px solid var(--borde); padding: 20px 32px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
     .btn-cancelar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; padding: 10px 22px; border-radius: 10px; border: 1.5px solid var(--borde); background: white; color: var(--muted); text-decoration: none; transition: .2s; cursor: pointer; }
+    .btn-cancelar:hover { background: var(--borde); color: var(--texto); }
     .btn-guardar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 11px 28px; border-radius: 10px; border: none; background: var(--rojo); color: white; cursor: pointer; box-shadow: 0 4px 14px rgba(211,47,47,.35); transition: .2s; display: flex; align-items: center; gap: 8px; }
     .btn-guardar:hover { background: var(--rojo2); transform: translateY(-1px); }
+
+    #id_indicativo_proveedor { display: none !important; }
+
+    /* ══════════ DROPDOWN DE BANDERAS ══════════ */
+    .phone-wrap { display: flex; gap: 8px; align-items: flex-start; width: 100%; }
+
+    .pais-dropdown { position: relative; width: 155px; flex-shrink: 0; font-family: 'DM Sans', sans-serif; }
+    .pais-selected {
+        display: flex; align-items: center; gap: 6px; padding: 11px 10px;
+        border: 1.5px solid var(--borde); border-radius: 10px; background: var(--gris);
+        cursor: pointer; user-select: none;
+        transition: border-color .2s, background .2s, box-shadow .2s; min-height: 46px;
+    }
+    .pais-selected:hover, .pais-dropdown.open .pais-selected {
+        border-color: var(--rojo); background: white; box-shadow: 0 0 0 3px rgba(211,47,47,.1);
+    }
+    .pais-selected img { width: 20px; height: 14px; object-fit: cover; border-radius: 2px; flex-shrink: 0; }
+    .pais-selected .pais-placeholder { font-size: .78rem; color: var(--muted); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pais-selected .pais-label { font-size: .78rem; color: var(--texto); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pais-selected .pais-chevron { color: var(--muted); font-size: .65rem; margin-left: auto; transition: transform .2s; flex-shrink: 0; }
+    .pais-dropdown.open .pais-chevron { transform: rotate(180deg); }
+
+    .pais-menu {
+        display: none; position: absolute; top: calc(100% + 4px); left: 0; width: 260px;
+        background: white; border: 1.5px solid var(--borde); border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0,0,0,.12); z-index: 9999; overflow: hidden;
+    }
+    .pais-dropdown.open .pais-menu { display: block; }
+
+    .pais-search { padding: 10px 12px; border-bottom: 1px solid var(--borde); }
+    .pais-search input {
+        width: 100%; padding: 7px 10px; border: 1.5px solid var(--borde); border-radius: 8px;
+        font-family: 'DM Sans', sans-serif; font-size: .82rem; outline: none; background: var(--gris);
+    }
+    .pais-search input:focus { border-color: var(--rojo); background: white; }
+
+    .pais-list { max-height: 220px; overflow-y: auto; }
+    .pais-list::-webkit-scrollbar { width: 4px; }
+    .pais-list::-webkit-scrollbar-thumb { background: var(--borde); border-radius: 4px; }
+
+    .pais-option {
+        display: flex; align-items: center; gap: 10px; padding: 9px 14px;
+        cursor: pointer; transition: background .15s; font-size: .84rem; color: var(--texto);
+    }
+    .pais-option:hover { background: var(--gris); }
+    .pais-option.selected { background: rgba(211,47,47,.07); }
+    .pais-option img { width: 22px; height: 15px; object-fit: cover; border-radius: 2px; flex-shrink: 0; }
+    .pais-option .pais-codigo { font-weight: 600; color: var(--rojo); min-width: 44px; font-size: .8rem; }
+    .pais-option .pais-nombre { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 </style>
 {% endblock %}
 
 {% block contenido %}
-<div class="container animate__animated animate__fadeIn" style="max-width:860px;">
+<div class="container animate__animated animate__fadeIn" style="max-width:1000px;">
 
     <div class="taller-header">
         <div class="header-left">
@@ -93,6 +130,7 @@
     <form method="post" action="." id="formProveedor">
         {% csrf_token %}
         {{ form.telefono.as_hidden }}
+        {{ form.indicativo_telefono|attr:"id:id_indicativo_proveedor" }}
 
         <div class="form-card">
             <div class="form-card-header">
@@ -101,57 +139,78 @@
             </div>
 
             <div class="form-card-body">
-                <div class="row">
+                <div class="row g-3">
+
+                    <!-- NOMBRE -->
                     <div class="col-md-6">
                         <div class="field-group">
-                            <label class="field-label">{{ form.nombre.label }}</label>
+                            <label class="field-label">{{ form.nombre.label }} <span style="color:var(--rojo)">*</span></label>
                             <div class="field-inner">
                                 <i class="fas fa-user field-icon"></i>
-                                {{ form.nombre|add_class:'form-field'|attr:'autocomplete:off' }}
+                                {{ form.nombre|add_class:"form-field"|attr:"autocomplete:off" }}
                             </div>
                             {% for error in form.nombre.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                         </div>
                     </div>
 
+                    <!-- NIT -->
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.nit.label }}</label>
                             <div class="field-inner">
                                 <i class="fas fa-tag field-icon"></i>
-                                {{ form.nit|add_class:'form-field'|attr:'autocomplete:off' }}
+                                {{ form.nit|add_class:"form-field"|attr:"autocomplete:off" }}
                             </div>
                             {% for error in form.nit.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                         </div>
                     </div>
 
+                    <!-- TELÉFONO -->
                     <div class="col-md-6">
-                        <div class="field-group">
-                            <label class="field-label"><i class="fas fa-phone me-1"></i> Teléfono</label>
-                            <div class="phone-row">
-                                <div class="indicativo-wrap">
-                                    <i class="fas fa-globe field-icon"></i>
-                                    {{ form.indicativo_telefono|add_class:'form-field'|attr:'id:id_ind' }}
+                        <div class="field-group" style="margin-bottom:0;">
+                            <label class="field-label"><i class="fas fa-phone me-1"></i> Teléfono <span style="color:var(--rojo)">*</span></label>
+                            <div class="phone-wrap">
+
+                                <div class="pais-dropdown" id="paisDropdown">
+                                    <div class="pais-selected" id="paisSelected">
+                                        <span class="pais-placeholder">-- Ind. --</span>
+                                        <i class="fas fa-chevron-down pais-chevron"></i>
+                                    </div>
+                                    <div class="pais-menu" id="paisMenu">
+                                        <div class="pais-search">
+                                            <input type="text" id="paisBuscar" placeholder="Buscar país...">
+                                        </div>
+                                        <div class="pais-list" id="paisList"></div>
+                                    </div>
                                 </div>
-                                <div class="numero-wrap">
-                                    {{ form.numero_telefono|add_class:'form-field'|attr:'id:id_num'|attr:'autocomplete:off'|attr:'placeholder:Ej: 3107928076' }}
+
+                                <div class="field-inner" style="flex:1; min-width:0;">
+                                    <i class="fas fa-mobile-alt field-icon"></i>
+                                    {{ form.numero_telefono|add_class:"form-field"|attr:"autocomplete:off"|attr:"placeholder:Ej: 3107928076" }}
                                 </div>
+
                             </div>
-                            {% if form.telefono.errors %}
-                                {% for error in form.telefono.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
-                            {% endif %}
+                            {% for error in form.indicativo_telefono.errors %}
+                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+                            {% endfor %}
+                            {% for error in form.telefono.errors %}
+                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
+                            {% endfor %}
                         </div>
                     </div>
 
+                    <!-- DIRECCIÓN -->
                     <div class="col-md-6">
-                        <div class="field-group">
+                        <div class="field-group" style="margin-bottom:0;">
                             <label class="field-label">{{ form.direccion.label }}</label>
                             <div class="field-inner">
                                 <i class="fas fa-map-marked-alt field-icon"></i>
-                                {{ form.direccion|add_class:'form-field'|attr:'autocomplete:off' }}
+                                {{ form.direccion|add_class:"form-field"|attr:"autocomplete:off" }}
                             </div>
                             {% for error in form.direccion.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -171,7 +230,108 @@
 
 {% block js %}
 <script>
-/* ── Estilos dinámicos form-field (Mantenidos y optimizados) ── */
+const PAISES = [
+    { code: '+57',   iso: 'co', nombre: 'Colombia' },
+    { code: '+1',    iso: 'us', nombre: 'Estados Unidos / Canadá' },
+    { code: '+52',   iso: 'mx', nombre: 'México' },
+    { code: '+54',   iso: 'ar', nombre: 'Argentina' },
+    { code: '+55',   iso: 'br', nombre: 'Brasil' },
+    { code: '+56',   iso: 'cl', nombre: 'Chile' },
+    { code: '+51',   iso: 'pe', nombre: 'Perú' },
+    { code: '+58',   iso: 've', nombre: 'Venezuela' },
+    { code: '+593',  iso: 'ec', nombre: 'Ecuador' },
+    { code: '+591',  iso: 'bo', nombre: 'Bolivia' },
+    { code: '+595',  iso: 'py', nombre: 'Paraguay' },
+    { code: '+598',  iso: 'uy', nombre: 'Uruguay' },
+    { code: '+507',  iso: 'pa', nombre: 'Panamá' },
+    { code: '+506',  iso: 'cr', nombre: 'Costa Rica' },
+    { code: '+503',  iso: 'sv', nombre: 'El Salvador' },
+    { code: '+502',  iso: 'gt', nombre: 'Guatemala' },
+    { code: '+504',  iso: 'hn', nombre: 'Honduras' },
+    { code: '+505',  iso: 'ni', nombre: 'Nicaragua' },
+    { code: '+53',   iso: 'cu', nombre: 'Cuba' },
+    { code: '+1809', iso: 'do', nombre: 'República Dominicana' },
+    { code: '+34',   iso: 'es', nombre: 'España' },
+    { code: '+44',   iso: 'gb', nombre: 'Reino Unido' },
+    { code: '+33',   iso: 'fr', nombre: 'Francia' },
+    { code: '+49',   iso: 'de', nombre: 'Alemania' },
+    { code: '+39',   iso: 'it', nombre: 'Italia' },
+    { code: '+351',  iso: 'pt', nombre: 'Portugal' },
+    { code: '+7',    iso: 'ru', nombre: 'Rusia' },
+    { code: '+86',   iso: 'cn', nombre: 'China' },
+    { code: '+81',   iso: 'jp', nombre: 'Japón' },
+    { code: '+82',   iso: 'kr', nombre: 'Corea del Sur' },
+    { code: '+91',   iso: 'in', nombre: 'India' },
+    { code: '+61',   iso: 'au', nombre: 'Australia' },
+    { code: '+27',   iso: 'za', nombre: 'Sudáfrica' },
+    { code: '+20',   iso: 'eg', nombre: 'Egipto' },
+    { code: '+212',  iso: 'ma', nombre: 'Marruecos' },
+    { code: '+971',  iso: 'ae', nombre: 'Emiratos Árabes' },
+    { code: '+966',  iso: 'sa', nombre: 'Arabia Saudita' },
+];
+
+function flagUrl(iso) { return `https://flagcdn.com/w40/${iso}.png`; }
+
+const paisList     = document.getElementById('paisList');
+const paisSelected = document.getElementById('paisSelected');
+const paisDropdown = document.getElementById('paisDropdown');
+const paisBuscar   = document.getElementById('paisBuscar');
+const hiddenInput  = document.getElementById('id_indicativo_proveedor');
+
+function renderLista(filtro) {
+    paisList.innerHTML = '';
+    const f = (filtro || '').toLowerCase();
+    PAISES.forEach(p => {
+        if (f && !p.nombre.toLowerCase().includes(f) && !p.code.includes(f)) return;
+        const div = document.createElement('div');
+        div.className = 'pais-option';
+        div.dataset.code = p.code;
+        div.innerHTML = `
+            <img src="${flagUrl(p.iso)}" alt="${p.nombre}" loading="lazy">
+            <span class="pais-codigo">${p.code}</span>
+            <span class="pais-nombre">${p.nombre}</span>
+        `;
+        div.addEventListener('click', () => seleccionar(p));
+        paisList.appendChild(div);
+    });
+}
+
+function seleccionar(p) {
+    paisSelected.innerHTML = `
+        <img src="${flagUrl(p.iso)}" alt="${p.nombre}" style="width:20px;height:14px;object-fit:cover;border-radius:2px;flex-shrink:0;">
+        <span class="pais-label">${p.code}</span>
+        <i class="fas fa-chevron-down pais-chevron"></i>
+    `;
+    hiddenInput.value = p.code;
+    document.querySelectorAll('.pais-option').forEach(el =>
+        el.classList.toggle('selected', el.dataset.code === p.code)
+    );
+    paisDropdown.classList.remove('open');
+    paisBuscar.value = '';
+    renderLista('');
+    actualizarTelefono();
+}
+
+paisSelected.addEventListener('click', () => {
+    paisDropdown.classList.toggle('open');
+    if (paisDropdown.classList.contains('open')) setTimeout(() => paisBuscar.focus(), 50);
+});
+paisBuscar.addEventListener('input', () => renderLista(paisBuscar.value));
+document.addEventListener('click', e => {
+    if (!paisDropdown.contains(e.target)) {
+        paisDropdown.classList.remove('open');
+        paisBuscar.value = '';
+        renderLista('');
+    }
+});
+
+renderLista('');
+
+(function() {
+    const v = hiddenInput ? hiddenInput.value : '';
+    if (v) { const p = PAISES.find(x => x.code === v); if (p) seleccionar(p); }
+})();
+
 document.querySelectorAll('.form-field').forEach(el => {
     if (el.type === 'hidden') return;
     el.style.width = '100%';
@@ -184,41 +344,34 @@ document.querySelectorAll('.form-field').forEach(el => {
     el.style.background = '#f2f2f0';
     el.style.outline = 'none';
     el.style.transition = 'all .2s';
+    el.style.boxSizing = 'border-box';
     el.style.webkitAppearance = 'none';
     el.style.appearance = 'none';
-    el.addEventListener('focus', () => { el.style.borderColor = '#d32f2f'; el.style.background = 'white'; el.style.boxShadow = '0 0 0 3px rgba(211,47,47,.1)'; });
-    el.addEventListener('blur',  () => { el.style.borderColor = '#e0ddd8'; el.style.background = '#f2f2f0'; el.style.boxShadow = 'none'; });
+    el.addEventListener('focus', () => { el.style.borderColor='#d32f2f'; el.style.background='white'; el.style.boxShadow='0 0 0 3px rgba(211,47,47,.1)'; });
+    el.addEventListener('blur',  () => { el.style.borderColor='#e0ddd8'; el.style.background='#f2f2f0'; el.style.boxShadow='none'; });
 });
 
-/* ── SweetAlert y Validación Final ── */
+function actualizarTelefono() {
+    var ind = (hiddenInput ? hiddenInput.value : '').trim();
+    var num = ($('[name="numero_telefono"]').val() || '').trim();
+    $('[name="telefono"]').val(ind && num ? ind + num : '');
+}
+
 $(function () {
-    const $form = $('#formProveedor');
-    const $ind = $('#id_ind');
-    const $num = $('#id_num');
-    const $hidden = $('input[name="telefono"]');
+    $('[name="numero_telefono"]').on('input change', actualizarTelefono);
+    actualizarTelefono();
 
-    $form.on('submit', function (e) {
+    $('#formProveedor').on('submit', function (e) {
         e.preventDefault();
-        
-        // Sincronizar el campo oculto antes de validar
-        const fullPhone = ($ind.val() || "") + " " + ($num.val() || "");
-        $hidden.val(fullPhone.trim());
-
+        actualizarTelefono();
+        var f = this;
         Swal.fire({
             title: '¿Confirmar registro?',
             text: 'La información del proveedor será almacenada.',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Sí, guardar',
-            cancelButtonText: 'Revisar',
-            confirmButtonColor: '#d32f2f',
-            cancelButtonColor: '#888',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Quitamos el evento preventDefault para enviar de verdad
-                $form.off('submit').submit();
-            }
-        });
+            icon: 'question', showCancelButton: true,
+            confirmButtonText: 'Sí, guardar', cancelButtonText: 'Revisar',
+            confirmButtonColor: '#d32f2f', cancelButtonColor: '#888',
+        }).then(r => { if (r.isConfirmed) { $(f).off('submit').submit(); } });
     });
 });
 
@@ -228,7 +381,7 @@ function confirmarCancelacion(url) {
         icon: 'warning', showCancelButton: true,
         confirmButtonText: 'Sí, salir', cancelButtonText: 'Seguir aquí',
         confirmButtonColor: '#d32f2f', cancelButtonColor: '#888',
-    }).then((result) => { if (result.isConfirmed) window.location.href = url; });
+    }).then(r => { if (r.isConfirmed) window.location.href = url; });
 }
 </script>
 {% endblock %}

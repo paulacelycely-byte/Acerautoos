@@ -3,6 +3,7 @@
 
 {% block css %}
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
 <style>
     :root {
         --rojo:   #d32f2f;
@@ -77,6 +78,10 @@
         font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 800;
     }
     .marca-nombre { font-weight: 600; color: var(--carbon); font-size: .9rem; }
+
+    /* Bandera en la tabla */
+    .pais-cell { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+    .pais-cell .fi { font-size: 1.1rem; border-radius: 2px; flex-shrink: 0; }
 
     .badge-cat {
         font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700;
@@ -176,7 +181,18 @@
                                 <span class="badge-cat cat-repuesto"><i class="fas fa-cogs"></i> Repuesto</span>
                             {% endif %}
                         </td>
-                        <td style="color:var(--muted);">{{ m.pais_origen|default:"—" }}</td>
+
+                        {# ── Celda país con bandera ── #}
+                        <td>
+                            {% if m.pais_origen %}
+                                <span class="pais-cell" data-pais="{{ m.pais_origen }}">
+                                    {{ m.pais_origen }}
+                                </span>
+                            {% else %}
+                                <span style="color:var(--muted);">—</span>
+                            {% endif %}
+                        </td>
+
                         <td style="color:var(--muted); font-size:.82rem;">{{ m.descripcion|truncatechars:35|default:"—" }}</td>
                         <td>
                             {% if m.estado %}
@@ -210,7 +226,63 @@
 
 {% block js %}
 <script>
+/* ── Mapa país → código flag-icon ── */
+var PAISES_BANDERAS = {
+    'Alemania':        'de',
+    'Arabia Saudita':  'sa',
+    'Argentina':       'ar',
+    'Australia':       'au',
+    'Bolivia':         'bo',
+    'Brasil':          'br',
+    'Canada':          'ca',
+    'Chile':           'cl',
+    'China':           'cn',
+    'Colombia':        'co',
+    'Corea del Sur':   'kr',
+    'Costa Rica':      'cr',
+    'Cuba':            'cu',
+    'Ecuador':         'ec',
+    'Egipto':          'eg',
+    'El Salvador':     'sv',
+    'Emiratos Arabes': 'ae',
+    'Espana':          'es',
+    'Estados Unidos':  'us',
+    'Francia':         'fr',
+    'Guatemala':       'gt',
+    'Honduras':        'hn',
+    'India':           'in',
+    'Italia':          'it',
+    'Japon':           'jp',
+    'Marruecos':       'ma',
+    'Mexico':          'mx',
+    'Nicaragua':       'ni',
+    'Panama':          'pa',
+    'Paraguay':        'py',
+    'Peru':            'pe',
+    'Portugal':        'pt',
+    'Reino Unido':     'gb',
+    'Rep. Dominicana': 'do',
+    'Rusia':           'ru',
+    'Sudafrica':       'za',
+    'Uruguay':         'uy',
+    'Venezuela':       've',
+};
+
+/* ── Inyectar bandera en cada celda de país ── */
+document.querySelectorAll('.pais-cell').forEach(function(el) {
+    var pais   = el.getAttribute('data-pais');
+    var codigo = PAISES_BANDERAS[pais];
+    if (codigo) {
+        el.innerHTML = '<span class="fi fi-' + codigo + '"></span> ' + pais;
+    }
+});
+
+/* ── Modal detalle con bandera ── */
 function verDetalle(nombre, cat, pais, desc, imgUrl) {
+    var banderaHtml = '';
+    if (pais && PAISES_BANDERAS[pais]) {
+        banderaHtml = '<span class="fi fi-' + PAISES_BANDERAS[pais] + '" style="font-size:1.2rem;margin-right:6px;"></span>';
+    }
     Swal.fire({
         title: nombre,
         html: `
@@ -221,7 +293,7 @@ function verDetalle(nombre, cat, pais, desc, imgUrl) {
                 }
                 <div style="text-align:left;font-family:DM Sans,sans-serif;font-size:.88rem;">
                     <p><strong>Categoría:</strong> ${cat}</p>
-                    <p><strong>País de origen:</strong> ${pais || '—'}</p>
+                    <p><strong>País de origen:</strong> ${banderaHtml}${pais || '—'}</p>
                     <p><strong>Descripción:</strong> ${desc || 'Sin descripción'}</p>
                 </div>
             </div>
