@@ -15,7 +15,6 @@
         --muted:  #888;
     }
 
-    /* ── HEADER ── */
     .taller-header {
         position: relative; background: var(--carbon);
         border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
@@ -41,7 +40,6 @@
     }
     .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
 
-    /* ── TARJETA ── */
     .form-card { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
     .form-card-header {
         background: var(--carbon); padding: 16px 28px;
@@ -54,7 +52,6 @@
     }
     .form-card-body { padding: 32px 28px; }
 
-    /* ── CAMPOS ── */
     .campo-label {
         font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700;
         text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px;
@@ -78,14 +75,6 @@
         box-shadow: 0 0 0 3px rgba(211,47,47,.08) !important;
     }
 
-    /* Campo indicativo + número */
-    .indicativo-select {
-        border-radius: 0 !important; border-right: none !important;
-        max-width: 190px; flex: 0 0 190px;
-    }
-    .numero-tel { border-radius: 0 10px 10px 0 !important; }
-
-    /* Ojito contraseña */
     .toggle-password {
         cursor: pointer; background: var(--gris);
         border: 1.5px solid var(--borde); border-left: none;
@@ -96,21 +85,23 @@
     .toggle-password:hover { color: var(--carbon); }
     .password-field { border-radius: 0 !important; }
 
-    /* Switch activo */
+    .password-hint {
+        font-family: 'DM Sans', sans-serif; font-size: .74rem;
+        color: var(--muted); margin-top: 5px;
+        display: flex; align-items: center; gap: 5px;
+    }
+
     .switch-wrap {
         display: flex; align-items: center; gap: 12px;
         background: var(--gris); border-radius: 12px;
         padding: 14px 18px; border: 1.5px solid var(--borde);
     }
-    .custom-switch .custom-control-label::before { height: 1.5rem; width: 2.75rem; border-radius: 2rem; }
-    .custom-switch .custom-control-label::after { width: calc(1.5rem - 4px); height: calc(1.5rem - 4px); border-radius: 2rem; }
     .custom-control-input:checked ~ .custom-control-label::before { background-color: var(--rojo) !important; border-color: var(--rojo) !important; }
     .switch-label {
         font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700;
         text-transform: uppercase; letter-spacing: .5px; color: var(--texto);
     }
 
-    /* ── ERROR ── */
     .caja-error {
         font-family: 'DM Sans', sans-serif; font-size: .76rem; font-weight: 600;
         background: #fff8f8; border: 1px solid #fdd; border-left: 4px solid var(--rojo);
@@ -118,7 +109,6 @@
         display: flex; align-items: center; gap: 6px;
     }
 
-    /* ── FOOTER ── */
     .form-card-footer {
         background: var(--gris); border-top: 1px solid var(--borde);
         padding: 20px 28px; display: flex; justify-content: flex-end; gap: 10px;
@@ -149,47 +139,49 @@
         <div class="header-left">
             <div class="header-icon-wrap"><i class="fas fa-user-shield"></i></div>
             <div>
-                <h1 class="header-titulo">{% if form.instance.pk %}Editar Personal{% else %}Registro de Personal{% endif %}</h1>
-                <div class="header-sub">Gestión de usuarios del taller</div>
+                <h1 class="header-titulo">{{ titulo }}</h1>
+                <div class="header-sub">
+                    {% if object %}Actualiza los datos del usuario del sistema{% else %}Registra un nuevo usuario con acceso al sistema{% endif %}
+                </div>
             </div>
         </div>
     </div>
 
     <form method="post" action="." id="formUsuario" novalidate>
         {% csrf_token %}
-        {{ form.telefono.as_hidden }}
 
         <div class="form-card">
 
+            <!-- Sección: Datos personales -->
             <div class="form-card-header">
                 <i class="fas fa-id-card"></i>
-                <span>Perfil de Usuario</span>
+                <span>Datos Personales</span>
             </div>
 
             <div class="form-card-body">
                 <div class="row g-4">
 
-                    {# ── Nombres ── #}
+                    <!-- Nombre (first_name) -->
                     <div class="col-md-6">
-                        <div class="campo-label">{{ form.nombres.label }}</div>
+                        <div class="campo-label">{{ form.first_name.label }}</div>
                         <div class="input-group">
-                            <div class="input-icon {% if form.nombres.errors %}error{% endif %}"><i class="fas fa-user"></i></div>
-                            {{ form.nombres|add_class:'form-control shadow-none'|attr:'autocomplete:off' }}
+                            <div class="input-icon {% if form.first_name.errors %}error{% endif %}"><i class="fas fa-user"></i></div>
+                            {{ form.first_name|add_class:'form-control shadow-none'|attr:'autocomplete:off' }}
                         </div>
-                        {% for error in form.nombres.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                        {% for error in form.first_name.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                     </div>
 
-                    {# ── Apellidos ── #}
+                    <!-- Apellido (last_name) -->
                     <div class="col-md-6">
-                        <div class="campo-label">{{ form.apellidos.label }}</div>
+                        <div class="campo-label">{{ form.last_name.label }}</div>
                         <div class="input-group">
-                            <div class="input-icon {% if form.apellidos.errors %}error{% endif %}"><i class="fas fa-user-tag"></i></div>
-                            {{ form.apellidos|add_class:'form-control shadow-none'|attr:'autocomplete:off' }}
+                            <div class="input-icon {% if form.last_name.errors %}error{% endif %}"><i class="fas fa-user-tag"></i></div>
+                            {{ form.last_name|add_class:'form-control shadow-none'|attr:'autocomplete:off' }}
                         </div>
-                        {% for error in form.apellidos.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                        {% for error in form.last_name.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                     </div>
 
-                    {# ── Tipo documento ── #}
+                    <!-- Tipo documento -->
                     <div class="col-md-6">
                         <div class="campo-label">{{ form.tipo_documento.label }}</div>
                         <div class="input-group">
@@ -199,7 +191,7 @@
                         {% for error in form.tipo_documento.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                     </div>
 
-                    {# ── Cédula ── #}
+                    <!-- Cédula -->
                     <div class="col-md-6">
                         <div class="campo-label">{{ form.cedula.label }}</div>
                         <div class="input-group">
@@ -209,30 +201,17 @@
                         {% for error in form.cedula.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                     </div>
 
-                    {# ── Teléfono ── #}
+                    <!-- Teléfono -->
                     <div class="col-md-6">
-                        <div class="campo-label"><i class="fas fa-phone me-1"></i> Teléfono</div>
+                        <div class="campo-label">{{ form.telefono.label }}</div>
                         <div class="input-group">
-                            <div class="input-icon {% if form.indicativo_telefono.errors or form.numero_telefono.errors %}error{% endif %}"><i class="fas fa-globe"></i></div>
-                            {{ form.indicativo_telefono|add_class:'form-control indicativo-select shadow-none' }}
-                            {{ form.numero_telefono|add_class:'form-control numero-tel shadow-none'|attr:'autocomplete:off'|attr:'placeholder:Ej: 3107928076' }}
+                            <div class="input-icon {% if form.telefono.errors %}error{% endif %}"><i class="fas fa-phone"></i></div>
+                            {{ form.telefono|add_class:'form-control shadow-none'|attr:'autocomplete:off' }}
                         </div>
-                        {% for error in form.indicativo_telefono.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
-                        {% for error in form.numero_telefono.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                         {% for error in form.telefono.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                     </div>
 
-                    {# ── Correo ── #}
-                    <div class="col-md-6">
-                        <div class="campo-label">{{ form.correo.label }}</div>
-                        <div class="input-group">
-                            <div class="input-icon {% if form.correo.errors %}error{% endif %}"><i class="fas fa-envelope"></i></div>
-                            {{ form.correo|add_class:'form-control shadow-none'|attr:'autocomplete:off' }}
-                        </div>
-                        {% for error in form.correo.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
-                    </div>
-
-                    {# ── Cargo ── #}
+                    <!-- Cargo -->
                     <div class="col-md-6">
                         <div class="campo-label">{{ form.cargo.label }}</div>
                         <div class="input-group">
@@ -242,53 +221,89 @@
                         {% for error in form.cargo.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                     </div>
 
-                    {# ── Contraseña ── #}
+                </div>
+            </div>
+
+            <!-- Sección: Acceso al sistema -->
+            <div class="form-card-header" style="border-top: 1px solid #2a2a2a;">
+                <i class="fas fa-key"></i>
+                <span>Acceso al Sistema</span>
+            </div>
+
+            <div class="form-card-body">
+                <div class="row g-4">
+
+                    <!-- Username -->
                     <div class="col-md-6">
-                        <div class="campo-label">{{ form.password.label }}</div>
+                        <div class="campo-label">{{ form.username.label }}</div>
                         <div class="input-group">
-                            <div class="input-icon {% if form.password.errors %}error{% endif %}"><i class="fas fa-lock"></i></div>
-                            {{ form.password|add_class:'form-control password-field shadow-none'|attr:'type:password' }}
-                            <span class="toggle-password" data-target="{{ form.password.id_for_label }}">
+                            <div class="input-icon {% if form.username.errors %}error{% endif %}"><i class="fas fa-at"></i></div>
+                            {{ form.username|add_class:'form-control shadow-none'|attr:'autocomplete:off' }}
+                        </div>
+                        {% for error in form.username.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <div class="campo-label">{{ form.email.label }}</div>
+                        <div class="input-group">
+                            <div class="input-icon {% if form.email.errors %}error{% endif %}"><i class="fas fa-envelope"></i></div>
+                            {{ form.email|add_class:'form-control shadow-none'|attr:'autocomplete:off' }}
+                        </div>
+                        {% for error in form.email.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                    </div>
+
+                    <!-- Contraseña (password1) -->
+                    <div class="col-md-6">
+                        <div class="campo-label">{{ form.password1.label }}</div>
+                        <div class="input-group">
+                            <div class="input-icon {% if form.password1.errors %}error{% endif %}"><i class="fas fa-lock"></i></div>
+                            {{ form.password1|add_class:'form-control password-field shadow-none'|attr:'autocomplete:new-password' }}
+                            <span class="toggle-password" data-target="{{ form.password1.id_for_label }}">
                                 <i class="fas fa-eye"></i>
                             </span>
                         </div>
-                        {% for error in form.password.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                        {% if object %}
+                            <div class="password-hint"><i class="fas fa-info-circle"></i> Deja en blanco para no cambiar la contraseña.</div>
+                        {% endif %}
+                        {% for error in form.password1.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                     </div>
 
-                    {# ── Confirmar contraseña ── #}
+                    <!-- Confirmar contraseña (password2) -->
                     <div class="col-md-6">
-                        <div class="campo-label">{{ form.password_confirmacion.label }}</div>
+                        <div class="campo-label">{{ form.password2.label }}</div>
                         <div class="input-group">
-                            <div class="input-icon {% if form.password_confirmacion.errors %}error{% endif %}"><i class="fas fa-lock"></i></div>
-                            {{ form.password_confirmacion|add_class:'form-control password-field shadow-none'|attr:'type:password' }}
-                            <span class="toggle-password" data-target="{{ form.password_confirmacion.id_for_label }}">
+                            <div class="input-icon {% if form.password2.errors %}error{% endif %}"><i class="fas fa-lock"></i></div>
+                            {{ form.password2|add_class:'form-control password-field shadow-none'|attr:'autocomplete:new-password' }}
+                            <span class="toggle-password" data-target="{{ form.password2.id_for_label }}">
                                 <i class="fas fa-eye"></i>
                             </span>
                         </div>
-                        {% for error in form.password_confirmacion.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                        {% for error in form.password2.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                     </div>
 
-                    {# ── Activo ── #}
+                    <!-- Switch is_active -->
                     <div class="col-md-12">
                         <div class="switch-wrap">
                             <div class="custom-control custom-switch">
-                                {{ form.activo|add_class:'custom-control-input' }}
-                                <label class="custom-control-label" for="{{ form.activo.id_for_label }}"></label>
+                                {{ form.is_active|add_class:'custom-control-input' }}
+                                <label class="custom-control-label" for="{{ form.is_active.id_for_label }}"></label>
                             </div>
                             <span class="switch-label">¿Usuario activo en el sistema?</span>
                         </div>
+                        {% for error in form.is_active.errors %}<div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                     </div>
 
                 </div>
             </div>
 
             <div class="form-card-footer">
-                <a href="{% url 'app:listar_usuario' %}" class="btn-cancelar">
+                <a href="{{ listar_url }}" class="btn-cancelar" id="btnCancelar">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
                 <button type="submit" class="btn-guardar">
                     <i class="fas fa-save"></i>
-                    {% if form.instance.pk %}Actualizar Personal{% else %}Guardar Personal{% endif %}
+                    {% if object %}Actualizar Usuario{% else %}Guardar Usuario{% endif %}
                 </button>
             </div>
 
@@ -299,11 +314,12 @@
 
 {% block js %}
 <script>
-    // Ojito: mostrar/ocultar contraseña
+$(document).ready(function () {
+
     $('.toggle-password').on('click', function () {
         var targetId = $(this).data('target');
-        var input = $('#' + targetId);
-        var icon = $(this).find('i');
+        var input    = $('#' + targetId);
+        var icon     = $(this).find('i');
         if (input.attr('type') === 'password') {
             input.attr('type', 'text');
             icon.removeClass('fa-eye').addClass('fa-eye-slash');
@@ -313,26 +329,44 @@
         }
     });
 
-    $(function () {
-        $('#formUsuario').on('submit', function (e) {
-            if ($('.caja-error').length > 0) return;
-            if (!this.checkValidity()) return;
-            e.preventDefault();
-            var formulario = this;
-            Swal.fire({
-                title: '¿Confirmar registro?',
-                text: "Se validarán los datos en el sistema.",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#d32f2f',
-                cancelButtonColor: '#1a1a1a',
-                confirmButtonText: 'Sí, guardar',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) { $(formulario).off('submit').submit(); }
-            });
+    $('#btnCancelar').on('click', function (e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        Swal.fire({
+            title: '¿Cancelar?',
+            text: 'Los cambios no guardados se perderán.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'Seguir editando',
+            confirmButtonColor: '#d32f2f',
+            cancelButtonColor: '#1a1a1a',
+        }).then((result) => {
+            if (result.isConfirmed) window.location.href = url;
         });
     });
+
+    $('#formUsuario').on('submit', function (e) {
+        e.preventDefault();
+        var formulario = this;
+        var esEdicion  = {% if object %}true{% else %}false{% endif %};
+        Swal.fire({
+            title: esEdicion ? '¿Actualizar usuario?' : '¿Registrar usuario?',
+            text: esEdicion
+                ? 'Se actualizarán los datos y acceso del usuario.'
+                : 'Se creará un nuevo usuario con acceso al sistema.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#d32f2f',
+            cancelButtonColor: '#1a1a1a',
+            confirmButtonText: esEdicion ? 'Sí, actualizar' : 'Sí, guardar',
+            cancelButtonText: 'Revisar',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) { $(formulario).off('submit').submit(); }
+        });
+    });
+
+});
 </script>
 {% endblock %}

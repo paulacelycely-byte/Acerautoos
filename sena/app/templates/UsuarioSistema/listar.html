@@ -94,6 +94,12 @@
         background: #fff3f3; color: var(--rojo); border: 1px solid #ffd0d0;
         display: inline-flex; align-items: center; gap: 5px;
     }
+    .badge-superuser {
+        font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700;
+        padding: 3px 8px; border-radius: 6px; letter-spacing: .3px; text-transform: uppercase;
+        background: rgba(211,47,47,.1); color: var(--rojo); border: 1px solid rgba(211,47,47,.2);
+        display: inline-flex; align-items: center; gap: 4px;
+    }
 
     /* Botones fila */
     .btn-fila {
@@ -134,10 +140,10 @@
 
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap"><i class="fas fa-user-tie"></i></div>
+            <div class="header-icon-wrap"><i class="fas fa-user-shield"></i></div>
             <div>
-                <h1 class="header-titulo">Gestión de Personal</h1>
-                <div class="header-sub">Usuarios y colaboradores del taller</div>
+                <h1 class="header-titulo">{{ titulo|default:"Usuarios del Sistema" }}</h1>
+                <div class="header-sub">Administradores con acceso al software</div>
             </div>
         </div>
         <div class="header-actions">
@@ -153,11 +159,10 @@
                 <thead>
                     <tr>
                         <th class="text-center">#</th>
-                        <th>Nombre / Documento</th>
-                        <th>Teléfono</th>
-                        <th>Cargo</th>
-                        <th>Email</th>
-                        <th>Registro</th>
+                        <th>Nombre / Usuario</th>
+                        <th>Contacto</th>
+                        <th class="text-center">Cargo</th>
+                        <th>Último acceso</th>
                         <th class="text-center">Estado</th>
                         <th class="text-center">Acciones</th>
                     </tr>
@@ -166,36 +171,68 @@
                     {% for u in usuarios %}
                     <tr>
                         <td class="text-center" style="font-weight:700; color:var(--muted); font-size:.8rem;">{{ forloop.counter }}</td>
+
+                        <!-- Nombre + username -->
                         <td>
                             <div class="d-flex align-items-center" style="gap:10px;">
                                 <div class="usuario-avatar">{{ u.nombres|first|upper }}</div>
                                 <div>
-                                    <div class="usuario-nombre">{{ u.nombres }} {{ u.apellidos }}</div>
+                                    <div class="usuario-nombre">
+                                        {{ u.nombres }} {{ u.apellidos }}
+                                        {% if u.is_superuser %}
+                                            <span class="badge-superuser ml-1"><i class="fas fa-star"></i> Super</span>
+                                        {% endif %}
+                                    </div>
                                     <div class="usuario-sub">
-                                        <i class="fas fa-id-card me-1"></i>{{ u.get_tipo_documento_display }}: {{ u.cedula }}
+                                        <i class="fas fa-at mr-1"></i>{{ u.username }}
+                                        {% if u.cedula %} · <i class="fas fa-id-card mr-1"></i>{{ u.cedula }}{% endif %}
                                     </div>
                                 </div>
                             </div>
                         </td>
-                        <td style="font-weight:600; color:var(--carbon);">{{ u.telefono }}</td>
-                        <td><span class="cargo-badge">{{ u.get_cargo_display }}</span></td>
-                        <td style="color:var(--muted); font-size:.82rem;">{{ u.correo }}</td>
-                        <td style="color:var(--muted); font-size:.82rem;">{{ u.fecha_registro|date:"d/m/Y" }}</td>
+
+                        <!-- Contacto -->
+                        <td>
+                            <div style="font-size:.85rem; color:var(--carbon);">
+                                {% if u.email %}<div><i class="fas fa-envelope mr-1" style="color:var(--muted);"></i>{{ u.email }}</div>{% endif %}
+                                {% if u.telefono %}<div style="color:var(--muted); font-size:.8rem;"><i class="fas fa-phone mr-1"></i>{{ u.telefono }}</div>{% endif %}
+                            </div>
+                        </td>
+
+                        <!-- Cargo -->
                         <td class="text-center">
-                            {% if u.activo %}
+                            <span class="cargo-badge">{{ u.get_cargo_display }}</span>
+                        </td>
+
+                        <!-- Último acceso -->
+                        <td style="color:var(--muted); font-size:.82rem;">
+                            {% if u.last_login %}
+                                <i class="fas fa-clock mr-1"></i>{{ u.last_login|date:"d/m/Y H:i" }}
+                            {% else %}
+                                <span style="color:var(--borde);">Sin accesos</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Estado -->
+                        <td class="text-center">
+                            {% if u.is_active %}
                                 <span class="badge-activo"><i class="fas fa-check-circle"></i> Activo</span>
                             {% else %}
                                 <span class="badge-inactivo"><i class="fas fa-times-circle"></i> Inactivo</span>
                             {% endif %}
                         </td>
+
+                        <!-- Acciones -->
                         <td class="text-center">
                             <div class="d-flex justify-content-center" style="gap:6px;">
                                 <a href="{% url 'app:editar_usuario' u.id %}" class="btn-fila btn-edit" title="Editar">
                                     <i class="fas fa-pen"></i>
                                 </a>
+                                {% if not u.is_superuser %}
                                 <a href="{% url 'app:eliminar_usuario' u.id %}" class="btn-fila btn-del" title="Eliminar">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>
@@ -217,7 +254,7 @@ $(document).ready(function () {
         pageLength: 10,
         order: [[1, 'asc']],
         pagingType: "full_numbers",
-        columnDefs: [{ orderable: false, targets: [0, 6, 7] }],
+        columnDefs: [{ orderable: false, targets: [0, 5, 6] }],
         language: {
             "sProcessing":     "Procesando...",
             "sLengthMenu":     "Mostrar _MENU_ registros",

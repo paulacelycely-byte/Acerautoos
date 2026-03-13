@@ -52,11 +52,8 @@
     .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
     .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
 
-    /* ── RESUMEN (ARRIBA) ── */
-    .resumen-wrap {
-        display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
-        margin-bottom: 20px;
-    }
+    /* ── RESUMEN ── */
+    .resumen-wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
     .resumen-card {
         background: white; border-radius: 14px; border: 1px solid var(--borde);
         padding: 20px 22px; display: flex; align-items: center; justify-content: space-between;
@@ -80,17 +77,13 @@
     .resumen-egreso  .resumen-valor { color: var(--rojo); }
     .resumen-saldo   .resumen-valor { color: var(--carbon); }
     .resumen-saldo   .resumen-valor.negativo { color: var(--rojo); }
-    .resumen-sub {
-        font-family: 'DM Sans', sans-serif; font-size: .72rem; color: var(--muted); margin-top: 3px;
-    }
-    .resumen-icon {
-        font-size: 2rem; opacity: .1;
-    }
+    .resumen-sub { font-family: 'DM Sans', sans-serif; font-size: .72rem; color: var(--muted); margin-top: 3px; }
+    .resumen-icon { font-size: 2rem; opacity: .1; }
     .resumen-ingreso .resumen-icon { color: #27ae60; }
     .resumen-egreso  .resumen-icon { color: var(--rojo); }
     .resumen-saldo   .resumen-icon { color: var(--carbon); }
 
-    /* ── FILTRO FECHAS ── */
+    /* ── FILTRO ── */
     .filtro-wrap {
         background: white; border-radius: 14px; border: 1px solid var(--borde);
         padding: 18px 22px; margin-bottom: 20px;
@@ -122,9 +115,7 @@
         padding: 5px 12px; border-radius: 7px; border: 1.5px solid var(--borde);
         background: white; color: var(--muted); cursor: pointer; transition: .2s;
     }
-    .btn-rango:hover, .btn-rango.active {
-        background: var(--carbon); color: white; border-color: var(--carbon);
-    }
+    .btn-rango:hover, .btn-rango.active { background: var(--carbon); color: white; border-color: var(--carbon); }
 
     /* ── TABLA ── */
     .tabla-wrap { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
@@ -151,7 +142,6 @@
     .tipo-egreso  { background: var(--rojo); }
     .tipo-texto-ingreso { font-weight: 700; color: #27ae60; }
     .tipo-texto-egreso  { font-weight: 700; color: var(--rojo); }
-
     .monto-ingreso { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 800; color: #27ae60; }
     .monto-egreso  { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--rojo); }
 
@@ -201,7 +191,7 @@
         </div>
     </div>
 
-    <!-- RESUMEN (VISIBLE DE INMEDIATO) -->
+    <!-- RESUMEN -->
     <div class="resumen-wrap">
         <div class="resumen-card resumen-ingreso">
             <div>
@@ -289,7 +279,12 @@
                             </span>
                             <div style="font-size:.74rem; color:var(--muted); margin-top:3px;"><i class="fas fa-wallet me-1"></i>{{ c.metodo_pago }}</div>
                         </td>
-                        <td style="color:var(--muted); font-size:.82rem;">{{ c.fecha|date:"d/m/Y H:i" }}</td>
+                        <td style="color:var(--muted); font-size:.82rem;">
+                            <!-- Fecha visible -->
+                            {{ c.fecha|date:"d/m/Y H:i" }}
+                            <!-- Fecha oculta para ordenar correctamente -->
+                            <span style="display:none;">{{ c.fecha|date:"Y-m-d H:i" }}</span>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -306,10 +301,16 @@ var totalIngresosOriginal = {{ total_ingresos }};
 var totalEgresosOriginal  = {{ total_egresos }};
 var saldoOriginal         = {{ saldo_caja }};
 
+// ── DataTable — columna 3 (fecha) descendente ──
 var tabla = $('#tabla_caja').DataTable({
-    responsive: true, autoWidth: false, pageLength: 10, order: [[6, 'desc']],
+    responsive: true,
+    autoWidth: false,
+    pageLength: 10,
+    order: [[3, 'desc']],   // ← CORREGIDO: columna 3 = Fecha
     pagingType: "full_numbers",
-    columnDefs: [{ orderable: false, targets: [0, 3] }],
+    columnDefs: [
+        { orderable: false, targets: [0] }
+    ],
     language: {
         "sProcessing":   "Procesando...",
         "sLengthMenu":   "Mostrar _MENU_ registros",
@@ -323,38 +324,58 @@ var tabla = $('#tabla_caja').DataTable({
     }
 });
 
+// ── Filtro por fechas ──
 function aplicarFiltro() {
-    var desde = $('#fechaDesde').val(), hasta = $('#fechaHasta').val();
+    var desde = $('#fechaDesde').val();
+    var hasta = $('#fechaHasta').val();
+
     if (!desde || !hasta) {
-        Swal.fire({ icon: 'warning', title: 'Fechas incompletas', text: 'Selecciona ambas fechas para filtrar.', confirmButtonColor: '#d32f2f' });
+        Swal.fire({
+            icon: 'warning', title: 'Fechas incompletas',
+            text: 'Selecciona ambas fechas para filtrar.',
+            confirmButtonColor: '#d32f2f'
+        });
         return;
     }
+
+    // Limpiar filtros anteriores y aplicar nuevo
     $.fn.dataTable.ext.search = [];
-    $.fn.dataTable.ext.search.push(function(s, d, i) {
-        var f = $(tabla.row(i).node()).data('fecha');
-        return f >= desde && f <= hasta;
+    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+        var fecha = $(tabla.row(dataIndex).node()).data('fecha');
+        return fecha >= desde && fecha <= hasta;
     });
+
     tabla.draw();
     recalcularResumen(desde, hasta);
     $('#saldo-rango-label').text(formatFecha(desde) + ' — ' + formatFecha(hasta));
 }
 
 function limpiarFiltro() {
-    $('#fechaDesde').val(''); $('#fechaHasta').val('');
-    $.fn.dataTable.ext.search = []; tabla.draw();
+    $('#fechaDesde').val('');
+    $('#fechaHasta').val('');
+    $.fn.dataTable.ext.search = [];
+    tabla.draw();
     $('.btn-rango').removeClass('active');
     $('#total-ingresos').text('$' + formatNum(totalIngresosOriginal));
     $('#total-egresos').text('$' + formatNum(totalEgresosOriginal));
-    $('#saldo-caja').text('$' + formatNum(saldoOriginal));
-    $('#saldo-caja').toggleClass('negativo', saldoOriginal < 0);
+    var saldo = totalIngresosOriginal - totalEgresosOriginal;
+    $('#saldo-caja').text('$' + formatNum(saldo));
+    $('#saldo-caja').toggleClass('negativo', saldo < 0);
     $('#saldo-rango-label').text('Todo el historial');
 }
 
 function recalcularResumen(desde, hasta) {
     var ingresos = 0, egresos = 0;
-    $('#tabla_caja tbody tr').each(function() {
-        var f = $(this).data('fecha'), t = String($(this).data('tipo')), m = parseFloat($(this).data('monto'));
-        if (f >= desde && f <= hasta) { if (t === 'INGRESO') ingresos += m; else egresos += m; }
+    // Recorre TODAS las filas (no solo las visibles)
+    tabla.rows().every(function() {
+        var nodo  = $(this.node());
+        var fecha = nodo.data('fecha');
+        var tipo  = String(nodo.data('tipo'));
+        var monto = parseFloat(nodo.data('monto')) || 0;
+        if (fecha >= desde && fecha <= hasta) {
+            if (tipo === 'INGRESO') ingresos += monto;
+            else                    egresos  += monto;
+        }
     });
     var saldo = ingresos - egresos;
     $('#total-ingresos').text('$' + formatNum(ingresos));
@@ -363,26 +384,42 @@ function recalcularResumen(desde, hasta) {
     $('#saldo-caja').toggleClass('negativo', saldo < 0);
 }
 
+// ── Rangos rápidos ──
 function setRango(dias, btn) {
-    var hoy = new Date(), desde = new Date(); desde.setDate(hoy.getDate() - (dias - 1));
-    $('#fechaDesde').val(toISO(desde)); $('#fechaHasta').val(toISO(hoy));
-    $('.btn-rango').removeClass('active'); $(btn).addClass('active'); aplicarFiltro();
+    var hoy = new Date(), desde = new Date();
+    desde.setDate(hoy.getDate() - (dias - 1));
+    $('#fechaDesde').val(toISO(desde));
+    $('#fechaHasta').val(toISO(hoy));
+    $('.btn-rango').removeClass('active');
+    $(btn).addClass('active');
+    aplicarFiltro();
 }
 function setRangoMes(btn) {
     var hoy = new Date(), desde = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-    $('#fechaDesde').val(toISO(desde)); $('#fechaHasta').val(toISO(hoy));
-    $('.btn-rango').removeClass('active'); $(btn).addClass('active'); aplicarFiltro();
+    $('#fechaDesde').val(toISO(desde));
+    $('#fechaHasta').val(toISO(hoy));
+    $('.btn-rango').removeClass('active');
+    $(btn).addClass('active');
+    aplicarFiltro();
 }
 function setRangoMesAnterior(btn) {
-    var hoy = new Date(), desde = new Date(hoy.getFullYear(), hoy.getMonth()-1, 1), hasta = new Date(hoy.getFullYear(), hoy.getMonth(), 0);
-    $('#fechaDesde').val(toISO(desde)); $('#fechaHasta').val(toISO(hasta));
-    $('.btn-rango').removeClass('active'); $(btn).addClass('active'); aplicarFiltro();
+    var hoy   = new Date();
+    var desde = new Date(hoy.getFullYear(), hoy.getMonth() - 1, 1);
+    var hasta = new Date(hoy.getFullYear(), hoy.getMonth(), 0);
+    $('#fechaDesde').val(toISO(desde));
+    $('#fechaHasta').val(toISO(hasta));
+    $('.btn-rango').removeClass('active');
+    $(btn).addClass('active');
+    aplicarFiltro();
 }
-function toISO(d) { return d.toISOString().split('T')[0]; }
-function formatFecha(iso) { var p = iso.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
-function formatNum(n) { return parseFloat(n).toLocaleString('es-CO', {minimumFractionDigits:0, maximumFractionDigits:0}); }
 
-$(document).ready(function () {
+// ── Helpers ──
+function toISO(d)        { return d.toISOString().split('T')[0]; }
+function formatFecha(iso){ var p = iso.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+function formatNum(n)    { return parseFloat(n).toLocaleString('es-CO', {minimumFractionDigits:0, maximumFractionDigits:0}); }
+
+// Al cargar, mostrar últimos 15 días por defecto
+$(document).ready(function() {
     setRango(15, $('.btn-rango').first()[0]);
 });
 </script>

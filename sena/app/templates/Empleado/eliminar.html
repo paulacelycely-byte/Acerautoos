@@ -17,6 +17,7 @@
         align-items: center;
         justify-content: center;
     }
+
     .delete-card {
         background: white;
         border-radius: 20px;
@@ -25,6 +26,8 @@
         width: 100%;
         max-width: 500px;
     }
+
+    /* Franja superior oscura con patrón */
     .delete-card-top {
         background: var(--carbon);
         position: relative;
@@ -48,6 +51,8 @@
         width: 5px; height: 100%;
         background: var(--rojo);
     }
+
+    /* Icono animado */
     .delete-icon {
         position: relative;
         width: 72px; height: 72px;
@@ -59,6 +64,7 @@
         box-shadow: 0 0 0 6px rgba(211,47,47,.2);
         animation: swing 2s infinite ease-in-out;
     }
+
     @keyframes swing {
         0%, 100% { transform: rotate(0deg); }
         20%       { transform: rotate(10deg); }
@@ -66,6 +72,7 @@
         60%       { transform: rotate(5deg); }
         80%       { transform: rotate(-5deg); }
     }
+
     .delete-card-top h2 {
         font-family: 'Barlow Condensed', sans-serif;
         font-size: 1.6rem; font-weight: 800;
@@ -77,30 +84,32 @@
         font-size: .82rem; color: rgba(255,255,255,.45);
         margin: 6px 0 0; position: relative;
     }
+
+    /* Cuerpo */
     .delete-card-body { padding: 28px; }
 
-    .servicio-info {
+    .empleado-info {
         background: var(--gris);
         border-radius: 12px;
         border-left: 4px solid var(--rojo);
         padding: 18px 20px;
         margin-bottom: 20px;
     }
-    .servicio-info-label {
+    .empleado-info-label {
         font-family: 'DM Sans', sans-serif;
         font-size: .7rem; font-weight: 700;
         text-transform: uppercase; letter-spacing: 1px;
         color: var(--muted); margin-bottom: 6px;
     }
-    .servicio-nombre {
+    .empleado-info-nombre {
         font-family: 'Barlow Condensed', sans-serif;
         font-size: 1.5rem; font-weight: 800;
         color: var(--carbon); line-height: 1;
     }
-    .servicio-info-sub {
+    .empleado-info-sub {
         font-family: 'DM Sans', sans-serif;
         font-size: .85rem; color: var(--muted);
-        margin-top: 4px;
+        margin-top: 6px; display: flex; flex-wrap: wrap; gap: 12px;
     }
 
     .alerta-info {
@@ -115,6 +124,7 @@
     }
     .alerta-info i { color: var(--rojo); margin-top: 1px; flex-shrink: 0; }
 
+    /* Botones */
     .delete-actions { display: flex; gap: 10px; }
     .btn-cancelar {
         flex: 1;
@@ -148,6 +158,7 @@
 <div class="delete-wrap animate__animated animate__fadeIn">
     <div class="delete-card">
 
+        <!-- Top oscuro -->
         <div class="delete-card-top">
             <div class="delete-icon">
                 <i class="fas fa-trash-alt"></i>
@@ -156,33 +167,32 @@
             <p>Esta acción no se puede deshacer</p>
         </div>
 
+        <!-- Cuerpo -->
         <div class="delete-card-body">
 
-            <div class="servicio-info">
-                <div class="servicio-info-label">Usuario a eliminar</div>
-                <div class="servicio-nombre">{{ object.nombres }} {{ object.apellidos }}</div>
-                {% if object.get_cargo_display %}
-                <div class="servicio-info-sub">
-                    <i class="fas fa-briefcase me-1"></i> {{ object.get_cargo_display }}
+            <div class="empleado-info">
+                <div class="empleado-info-label">Empleado a eliminar</div>
+                <div class="empleado-info-nombre">{{ object.nombres }} {{ object.apellidos }}</div>
+                <div class="empleado-info-sub">
+                    {% if object.cargo %}
+                        <span><i class="fas fa-briefcase mr-1"></i>{{ object.get_cargo_display }}</span>
+                    {% endif %}
+                    {% if object.cedula %}
+                        <span><i class="fas fa-id-card mr-1"></i>{{ object.cedula }}</span>
+                    {% endif %}
                 </div>
-                {% endif %}
-                {% if object.correo %}
-                <div class="servicio-info-sub">
-                    <i class="fas fa-envelope me-1"></i> {{ object.correo }}
-                </div>
-                {% endif %}
             </div>
 
             <div class="alerta-info">
                 <i class="fas fa-exclamation-circle"></i>
-                <span>Eliminar este usuario revocará su acceso al sistema de forma permanente.</span>
+                <span>Si este empleado tiene órdenes de servicio asociadas, quedará sin asignación en esos registros.</span>
             </div>
 
             <form method="post" id="formEliminar">
                 {% csrf_token %}
                 <div class="delete-actions">
                     <a href="{{ listar_url }}" class="btn-cancelar">
-                        <i class="fas fa-times me-1"></i> Cancelar
+                        <i class="fas fa-times mr-1"></i> Cancelar
                     </a>
                     <button type="button" id="btnConfirmar" class="btn-eliminar">
                         <i class="fas fa-trash-alt"></i> Eliminar
@@ -200,7 +210,7 @@
     $('#btnConfirmar').on('click', function () {
         Swal.fire({
             title: '¿Proceder?',
-            text: "Se eliminará '{{ object.nombres }} {{ object.apellidos }}' permanentemente.",
+            text: "Se eliminará a {{ object.nombres }} {{ object.apellidos }} permanentemente.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d32f2f',

@@ -1,0 +1,328 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block css %}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --rojo:    #d32f2f;
+        --rojo2:   #b71c1c;
+        --carbon:  #1a1a1a;
+        --gris:    #f2f2f0;
+        --borde:   #e0ddd8;
+        --texto:   #2a2a2a;
+        --muted:   #888;
+    }
+
+    .taller-header {
+        position: relative;
+        background: var(--carbon);
+        border-radius: 16px;
+        padding: 28px 32px;
+        margin-bottom: 28px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .taller-header::before {
+        content: '';
+        position: absolute;
+        top: 0; right: 0;
+        width: 260px; height: 100%;
+        background: repeating-linear-gradient(
+            -55deg,
+            transparent,
+            transparent 14px,
+            rgba(255,255,255,.03) 14px,
+            rgba(255,255,255,.03) 28px
+        );
+    }
+    .taller-header::after {
+        content: '';
+        position: absolute;
+        left: 0; top: 0;
+        width: 5px; height: 100%;
+        background: var(--rojo);
+        border-radius: 16px 0 0 16px;
+    }
+    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
+    .header-icon-wrap {
+        width: 56px; height: 56px;
+        background: var(--rojo);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; color: white;
+        box-shadow: 0 0 0 4px rgba(211,47,47,.25);
+        flex-shrink: 0;
+    }
+    .header-titulo {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 2rem; font-weight: 800;
+        color: white; letter-spacing: 1px;
+        text-transform: uppercase; line-height: 1;
+        margin: 0;
+    }
+    .header-sub {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem; color: rgba(255,255,255,.45);
+        margin-top: 4px; letter-spacing: .5px;
+    }
+    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
+    .btn-accion {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px;
+        padding: 10px 18px; border-radius: 10px;
+        display: flex; align-items: center; gap: 8px;
+        border: none; cursor: pointer; text-decoration: none;
+        transition: transform .2s, box-shadow .2s;
+    }
+    .btn-accion:hover { transform: translateY(-2px); }
+    .btn-nuevo {
+        background: var(--rojo);
+        color: white !important;
+        box-shadow: 0 4px 16px rgba(211,47,47,.4);
+    }
+    .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
+
+    .tabla-wrap {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid var(--borde);
+        overflow: hidden;
+    }
+    #tabla_empleados {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .875rem;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    #tabla_empleados thead tr {
+        background: var(--gris);
+        border-bottom: 2px solid var(--borde);
+    }
+    #tabla_empleados thead th {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: .78rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1.2px;
+        color: var(--muted); padding: 14px 16px;
+        border: none;
+    }
+    #tabla_empleados tbody tr {
+        border-bottom: 1px solid var(--borde);
+        transition: background .15s;
+    }
+    #tabla_empleados tbody tr:hover { background: #fafaf8; }
+    #tabla_empleados tbody tr:last-child { border-bottom: none; }
+    #tabla_empleados tbody td {
+        padding: 13px 16px; color: var(--texto);
+        vertical-align: middle; border: none;
+    }
+
+    .empleado-avatar {
+        width: 38px; height: 38px;
+        background: var(--carbon);
+        color: white;
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 1rem; font-weight: 800;
+        flex-shrink: 0;
+    }
+    .empleado-nombre { font-weight: 600; color: var(--carbon); font-size: .9rem; }
+    .empleado-sub { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+
+    .cargo-badge {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .7rem; font-weight: 600;
+        background: var(--gris); color: var(--texto);
+        border: 1px solid var(--borde);
+        border-radius: 6px; padding: 3px 9px;
+        text-transform: uppercase; letter-spacing: .4px;
+    }
+    .badge-activo {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .7rem; font-weight: 600;
+        background: #e8f5e9; color: #2e7d32;
+        border: 1px solid #c8e6c9;
+        border-radius: 6px; padding: 3px 9px;
+        text-transform: uppercase; letter-spacing: .4px;
+    }
+    .badge-inactivo {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .7rem; font-weight: 600;
+        background: #ffebee; color: #c62828;
+        border: 1px solid #ffcdd2;
+        border-radius: 6px; padding: 3px 9px;
+        text-transform: uppercase; letter-spacing: .4px;
+    }
+
+    .btn-fila {
+        width: 32px; height: 32px; border-radius: 8px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border: none; cursor: pointer; transition: .2s;
+        font-size: .8rem;
+    }
+    .btn-fila:hover { transform: translateY(-2px); }
+    .btn-edit { background: #f39c12; color: white; }
+    .btn-del  { background: var(--rojo); color: white; }
+
+    .dataTables_wrapper { padding: 16px 20px; }
+    .dataTables_filter input {
+        border: 1.5px solid var(--borde) !important;
+        border-radius: 8px !important;
+        padding: 6px 12px !important;
+        font-family: 'DM Sans', sans-serif !important;
+        font-size: .85rem !important;
+        outline: none !important;
+        transition: border-color .2s;
+    }
+    .dataTables_filter input:focus { border-color: var(--rojo) !important; }
+    .dataTables_filter label,
+    .dataTables_length label,
+    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
+    .dataTables_length select {
+        border: 1.5px solid var(--borde) !important;
+        border-radius: 8px !important;
+        padding: 4px 8px !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        background-image: none !important;
+        background: white !important;
+    }
+    .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
+    .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
+    .paginate_button.current a, .paginate_button.current a:hover { color: white !important; }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid py-2">
+
+    <!-- Encabezado -->
+    <div class="taller-header">
+        <div class="header-left">
+            <div class="header-icon-wrap"><i class="fas fa-hard-hat"></i></div>
+            <div>
+                <h1 class="header-titulo">{{ titulo|default:"Empleados" }}</h1>
+                <div class="header-sub">Directorio del personal del taller</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'app:crear_empleado' %}" class="btn-accion btn-nuevo">
+                <i class="fas fa-plus"></i> Nuevo Empleado
+            </a>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="tabla-wrap">
+        <div class="table-responsive">
+            <table id="tabla_empleados" style="width:100%">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th>Empleado</th>
+                        <th>Documento</th>
+                        <th>Contacto</th>
+                        <th class="text-center">Cargo</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in object_list %}
+                    <tr>
+                        <td class="text-center" style="font-weight:700; color:var(--muted); font-size:.8rem;">{{ forloop.counter }}</td>
+                        <td>
+                            <div class="d-flex align-items-center" style="gap:10px;">
+                                <div class="empleado-avatar">{{ e.nombres|first|upper }}</div>
+                                <div>
+                                    <div class="empleado-nombre">{{ e.nombres }} {{ e.apellidos }}</div>
+                                    <div class="empleado-sub">{{ e.correo|default:"Sin correo" }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-weight:600; letter-spacing:.5px;">{{ e.cedula }}</div>
+                            <div class="empleado-sub">{{ e.get_tipo_documento_display }}</div>
+                        </td>
+                        <td>
+                            <div style="color:var(--muted);">
+                                {% if e.telefono %}<i class="fas fa-phone fa-xs mr-1"></i>{{ e.telefono }}{% else %}—{% endif %}
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <span class="cargo-badge">{{ e.get_cargo_display }}</span>
+                        </td>
+                        <td class="text-center">
+                            {% if e.activo %}
+                                <span class="badge-activo"><i class="fas fa-check mr-1"></i>Activo</span>
+                            {% else %}
+                                <span class="badge-inactivo"><i class="fas fa-times mr-1"></i>Inactivo</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="{% url 'app:editar_empleado' e.id %}" class="btn-fila btn-edit" title="Editar">
+                                <i class="fas fa-pen"></i>
+                            </a>
+                            <a href="{% url 'app:eliminar_empleado' e.id %}" class="btn-fila btn-del ml-1" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<style>
+    .dataTables_length select {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        padding-right: 10px !important;
+    }
+    .paginate_button {
+        border-radius: 7px !important;
+        font-family: 'DM Sans', sans-serif !important;
+        font-size: .82rem !important;
+        font-weight: 600 !important;
+    }
+    .paginate_button.disabled { display: inline-block !important; opacity: .4; }
+    .dataTables_paginate { display: block !important; }
+</style>
+<script>
+    $(document).ready(function () {
+        $('#tabla_empleados').DataTable({
+            responsive: true,
+            autoWidth: false,
+            order: [[0, "asc"]],
+            pagingType: "full_numbers",
+            language: {
+                "sProcessing":     "Procesando...",
+                "sLengthMenu":     "Mostrar _MENU_ registros",
+                "sZeroRecords":    "No se encontraron resultados",
+                "sEmptyTable":     "Ningún dato disponible",
+                "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "sInfoEmpty":      "Mostrando 0 a 0 de 0 registros",
+                "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
+                "sSearch":         "Buscar:",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst":    "«",
+                    "sLast":     "»",
+                    "sNext":     "›",
+                    "sPrevious": "‹"
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

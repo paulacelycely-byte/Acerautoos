@@ -5,6 +5,7 @@
 {% block css %}
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+    /* ── TUS ESTILOS ORIGINALES (MANTENIDOS) ── */
     :root {
         --rojo:   #d32f2f;
         --rojo2:  #b71c1c;
@@ -50,52 +51,22 @@
     .field-group { margin-bottom: 22px; }
     .field-label { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .9px; color: var(--muted); display: block; margin-bottom: 7px; }
 
-    /* Campo simple con ícono */
     .field-inner { position: relative; }
-    .field-inner .field-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #bbb; font-size: .85rem; pointer-events: none; transition: color .2s; }
-    .field-inner input,
-    .field-inner select {
-        width: 100%; padding: 12px 14px 12px 40px;
-        border: 1.5px solid var(--borde); border-radius: 10px;
-        font-family: 'DM Sans', sans-serif; font-size: .9rem; color: var(--texto);
-        background: var(--gris); outline: none;
-        transition: border-color .2s, background .2s, box-shadow .2s;
-        -webkit-appearance: none; appearance: none;
-    }
-    .field-inner input:focus,
-    .field-inner select:focus { border-color: var(--rojo); background: white; box-shadow: 0 0 0 3px rgba(211,47,47,.1); }
-    .field-inner:focus-within .field-icon { color: var(--rojo); }
+    .field-inner .field-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #bbb; font-size: .85rem; pointer-events: none; transition: color .2s; z-index: 5; }
 
-    /* Campo teléfono: indicativo + número */
-    .phone-row { display: flex; gap: 0; }
-    .phone-row .indicativo-wrap { position: relative; flex: 0 0 190px; }
-    .phone-row .indicativo-wrap .field-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #bbb; font-size: .85rem; pointer-events: none; }
-    .phone-row .indicativo-wrap select {
-        width: 100%; padding: 12px 14px 12px 40px;
-        border: 1.5px solid var(--borde); border-right: none;
-        border-radius: 10px 0 0 10px;
-        font-family: 'DM Sans', sans-serif; font-size: .85rem; color: var(--texto);
-        background: var(--gris); outline: none;
-        transition: border-color .2s, background .2s;
-        -webkit-appearance: none; appearance: none;
-    }
-    .phone-row .numero-wrap { position: relative; flex: 1; }
-    .phone-row .numero-wrap input {
-        width: 100%; padding: 12px 14px;
-        border: 1.5px solid var(--borde);
-        border-radius: 0 10px 10px 0;
-        font-family: 'DM Sans', sans-serif; font-size: .9rem; color: var(--texto);
-        background: var(--gris); outline: none;
-        transition: border-color .2s, background .2s, box-shadow .2s;
-    }
-    .phone-row .indicativo-wrap select:focus { border-color: var(--rojo); background: white; }
-    .phone-row .numero-wrap input:focus { border-color: var(--rojo); background: white; box-shadow: 0 0 0 3px rgba(211,47,47,.1); }
+    /* ── CORRECCIÓN DE LA FILA DE TELÉFONO ── */
+    .phone-row { display: flex; align-items: stretch; width: 100%; }
+    .indicativo-wrap { position: relative; flex: 0 0 170px; } /* Ancho fijo para el select */
+    .numero-wrap { position: relative; flex: 1; }
+
+    /* Ajustes específicos para que encajen */
+    #id_ind { border-radius: 10px 0 0 10px !important; border-right: none !important; }
+    #id_num { border-radius: 0 10px 10px 0 !important; padding-left: 14px !important; }
 
     .field-error { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: var(--rojo); margin-top: 5px; display: flex; align-items: center; gap: 5px; }
 
     .form-card-footer { background: var(--gris); border-top: 1px solid var(--borde); padding: 20px 32px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
     .btn-cancelar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; padding: 10px 22px; border-radius: 10px; border: 1.5px solid var(--borde); background: white; color: var(--muted); text-decoration: none; transition: .2s; cursor: pointer; }
-    .btn-cancelar:hover { background: var(--borde); color: var(--texto); }
     .btn-guardar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 11px 28px; border-radius: 10px; border: none; background: var(--rojo); color: white; cursor: pointer; box-shadow: 0 4px 14px rgba(211,47,47,.35); transition: .2s; display: flex; align-items: center; gap: 8px; }
     .btn-guardar:hover { background: var(--rojo2); transform: translateY(-1px); }
 </style>
@@ -131,8 +102,6 @@
 
             <div class="form-card-body">
                 <div class="row">
-
-                    <!-- Nombre -->
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.nombre.label }}</label>
@@ -140,13 +109,10 @@
                                 <i class="fas fa-user field-icon"></i>
                                 {{ form.nombre|add_class:'form-field'|attr:'autocomplete:off' }}
                             </div>
-                            {% for error in form.nombre.errors %}
-                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-                            {% endfor %}
+                            {% for error in form.nombre.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                         </div>
                     </div>
 
-                    <!-- NIT -->
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.nit.label }}</label>
@@ -154,38 +120,28 @@
                                 <i class="fas fa-tag field-icon"></i>
                                 {{ form.nit|add_class:'form-field'|attr:'autocomplete:off' }}
                             </div>
-                            {% for error in form.nit.errors %}
-                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-                            {% endfor %}
+                            {% for error in form.nit.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                         </div>
                     </div>
 
-                    <!-- Teléfono: indicativo + número -->
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label"><i class="fas fa-phone me-1"></i> Teléfono</label>
                             <div class="phone-row">
                                 <div class="indicativo-wrap">
                                     <i class="fas fa-globe field-icon"></i>
-                                    {{ form.indicativo_telefono|add_class:'form-field' }}
+                                    {{ form.indicativo_telefono|add_class:'form-field'|attr:'id:id_ind' }}
                                 </div>
                                 <div class="numero-wrap">
-                                    {{ form.numero_telefono|add_class:'form-field'|attr:'autocomplete:off'|attr:'placeholder:Ej: 3107928076' }}
+                                    {{ form.numero_telefono|add_class:'form-field'|attr:'id:id_num'|attr:'autocomplete:off'|attr:'placeholder:Ej: 3107928076' }}
                                 </div>
                             </div>
-                            {% for error in form.indicativo_telefono.errors %}
-                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-                            {% endfor %}
-                            {% for error in form.numero_telefono.errors %}
-                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-                            {% endfor %}
-                            {% for error in form.telefono.errors %}
-                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-                            {% endfor %}
+                            {% if form.telefono.errors %}
+                                {% for error in form.telefono.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
+                            {% endif %}
                         </div>
                     </div>
 
-                    <!-- Dirección -->
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.direccion.label }}</label>
@@ -193,12 +149,9 @@
                                 <i class="fas fa-map-marked-alt field-icon"></i>
                                 {{ form.direccion|add_class:'form-field'|attr:'autocomplete:off' }}
                             </div>
-                            {% for error in form.direccion.errors %}
-                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-                            {% endfor %}
+                            {% for error in form.direccion.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>{% endfor %}
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -218,34 +171,39 @@
 
 {% block js %}
 <script>
-/* ── Estilos dinámicos form-field ── */
+/* ── Estilos dinámicos form-field (Mantenidos y optimizados) ── */
 document.querySelectorAll('.form-field').forEach(el => {
     if (el.type === 'hidden') return;
-    el.style.width            = '100%';
-    el.style.padding          = '12px 14px 12px 40px';
-    el.style.border           = '1.5px solid #e0ddd8';
-    el.style.borderRadius     = '10px';
-    el.style.fontFamily       = "'DM Sans', sans-serif";
-    el.style.fontSize         = '.9rem';
-    el.style.color            = '#2a2a2a';
-    el.style.background       = '#f2f2f0';
-    el.style.outline          = 'none';
-    el.style.transition       = 'border-color .2s, box-shadow .2s';
+    el.style.width = '100%';
+    el.style.padding = '12px 14px 12px 40px';
+    el.style.border = '1.5px solid #e0ddd8';
+    el.style.borderRadius = '10px';
+    el.style.fontFamily = "'DM Sans', sans-serif";
+    el.style.fontSize = '.9rem';
+    el.style.color = '#2a2a2a';
+    el.style.background = '#f2f2f0';
+    el.style.outline = 'none';
+    el.style.transition = 'all .2s';
     el.style.webkitAppearance = 'none';
-    el.style.appearance       = 'none';
+    el.style.appearance = 'none';
     el.addEventListener('focus', () => { el.style.borderColor = '#d32f2f'; el.style.background = 'white'; el.style.boxShadow = '0 0 0 3px rgba(211,47,47,.1)'; });
     el.addEventListener('blur',  () => { el.style.borderColor = '#e0ddd8'; el.style.background = '#f2f2f0'; el.style.boxShadow = 'none'; });
 });
 
-/* Campo número de teléfono — sin padding izquierdo extra */
-var numTel = document.querySelector('[name="numero_telefono"]');
-if (numTel) { numTel.style.padding = '12px 14px'; numTel.style.borderRadius = '0 10px 10px 0'; }
-
-/* ── SweetAlert ── */
+/* ── SweetAlert y Validación Final ── */
 $(function () {
-    $('#formProveedor').on('submit', function (e) {
+    const $form = $('#formProveedor');
+    const $ind = $('#id_ind');
+    const $num = $('#id_num');
+    const $hidden = $('input[name="telefono"]');
+
+    $form.on('submit', function (e) {
         e.preventDefault();
-        var formulario = this;
+        
+        // Sincronizar el campo oculto antes de validar
+        const fullPhone = ($ind.val() || "") + " " + ($num.val() || "");
+        $hidden.val(fullPhone.trim());
+
         Swal.fire({
             title: '¿Confirmar registro?',
             text: 'La información del proveedor será almacenada.',
@@ -256,7 +214,10 @@ $(function () {
             confirmButtonColor: '#d32f2f',
             cancelButtonColor: '#888',
         }).then((result) => {
-            if (result.isConfirmed) { $(formulario).off('submit').submit(); }
+            if (result.isConfirmed) {
+                // Quitamos el evento preventDefault para enviar de verdad
+                $form.off('submit').submit();
+            }
         });
     });
 });

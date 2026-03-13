@@ -1,0 +1,338 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block css %}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --rojo:   #d32f2f;
+        --rojo2:  #b71c1c;
+        --carbon: #1a1a1a;
+        --gris:   #f2f2f0;
+        --borde:  #e0ddd8;
+        --texto:  #2a2a2a;
+        --muted:  #888;
+    }
+
+    /* ── HEADER ── */
+    .taller-header {
+        position: relative; background: var(--carbon);
+        border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
+        overflow: hidden; display: flex; align-items: center; justify-content: space-between;
+    }
+    .taller-header::before {
+        content: ''; position: absolute; top: 0; right: 0; width: 260px; height: 100%;
+        background: repeating-linear-gradient(-55deg, transparent, transparent 14px,
+            rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
+    }
+    .taller-header::after {
+        content: ''; position: absolute; left: 0; top: 0;
+        width: 5px; height: 100%; background: var(--rojo); border-radius: 16px 0 0 16px;
+    }
+    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
+    .header-icon-wrap {
+        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; color: white; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
+    }
+    .header-titulo {
+        font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800;
+        color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
+    }
+    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
+
+    /* ── ESTADO CONEXIÓN ── */
+    .estado-card {
+        background: white; border-radius: 14px; border: 1px solid var(--borde);
+        padding: 20px 24px; margin-bottom: 28px;
+        display: flex; align-items: center; gap: 16px;
+    }
+    .estado-icon {
+        width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+    }
+    .estado-icon.ok  { background: #f0fdf4; color: #16a34a; }
+    .estado-icon.err { background: #fff5f5; color: var(--rojo); }
+    .estado-titulo {
+        font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: .5px;
+    }
+    .estado-titulo.ok  { color: #16a34a; }
+    .estado-titulo.err { color: var(--rojo); }
+    .estado-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── CARDS ACCIÓN ── */
+    .acciones-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+    @media (max-width: 700px) { .acciones-grid { grid-template-columns: 1fr; } }
+
+    .accion-card {
+        background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden;
+    }
+    .accion-card-header {
+        background: var(--carbon); padding: 16px 22px;
+        display: flex; align-items: center; gap: 12px;
+    }
+    .accion-card-header i { font-size: 1rem; }
+    .accion-card-header i.blue  { color: #60a5fa; }
+    .accion-card-header i.green { color: #4ade80; }
+    .accion-card-header span {
+        font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700;
+        color: white; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .accion-card-body { padding: 24px 22px; text-align: center; }
+    .accion-desc {
+        font-family: 'DM Sans', sans-serif; font-size: .85rem; color: var(--muted); margin-bottom: 6px;
+    }
+    .accion-detalle {
+        font-family: 'DM Sans', sans-serif; font-size: .78rem; color: var(--muted); margin-bottom: 20px;
+    }
+    .accion-detalle strong { color: var(--rojo); }
+
+    .btn-accion {
+        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px; padding: 12px 24px;
+        border-radius: 10px; border: none; cursor: pointer; transition: .2s;
+        display: inline-flex; align-items: center; gap: 8px; width: 100%; justify-content: center;
+    }
+    .btn-accion.blue  { background: #2563eb; color: white; box-shadow: 0 4px 14px rgba(37,99,235,.3); }
+    .btn-accion.blue:hover  { background: #1d4ed8; transform: translateY(-1px); }
+    .btn-accion.green { background: #16a34a; color: white; box-shadow: 0 4px 14px rgba(22,163,74,.3); }
+    .btn-accion.green:hover { background: #15803d; transform: translateY(-1px); }
+    .btn-accion.disabled { background: var(--gris); color: var(--muted); cursor: not-allowed; box-shadow: none; }
+
+    /* Zona drag & drop */
+    .zona-carga {
+        border: 2px dashed var(--borde); border-radius: 12px;
+        padding: 28px 16px; cursor: pointer; transition: all .2s;
+        background: var(--gris); margin-bottom: 16px;
+    }
+    .zona-carga:hover { border-color: #16a34a; background: #f0fdf4; }
+    .zona-carga i { font-size: 2.5rem; color: var(--borde); display: block; margin-bottom: 10px; }
+    .zona-carga:hover i { color: #16a34a; }
+    .zona-carga p { font-family: 'DM Sans', sans-serif; font-size: .85rem; color: var(--muted); margin: 0; }
+    .zona-carga p strong { color: var(--texto); }
+
+    /* ── INFO ── */
+    .info-card {
+        background: white; border-radius: 14px; border: 1px solid var(--borde); overflow: hidden;
+    }
+    .info-card-header {
+        background: var(--carbon); padding: 14px 22px;
+        display: flex; align-items: center; gap: 10px;
+    }
+    .info-card-header i   { color: var(--rojo); }
+    .info-card-header span {
+        font-family: 'Barlow Condensed', sans-serif; font-size: .95rem; font-weight: 700;
+        color: white; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .info-card-body { padding: 22px; }
+    .info-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 600px) { .info-cols { grid-template-columns: 1fr; } }
+    .info-cols h6 {
+        font-family: 'Barlow Condensed', sans-serif; font-size: .9rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: .5px; color: var(--carbon); margin-bottom: 10px;
+    }
+    .info-cols ul { padding-left: 18px; margin: 0; }
+    .info-cols li {
+        font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); margin-bottom: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid py-2">
+
+    <!-- Header -->
+    <div class="taller-header">
+        <div class="header-left">
+            <div class="header-icon-wrap"><i class="fas fa-database"></i></div>
+            <div>
+                <h1 class="header-titulo">{{ titulo }}</h1>
+                <div class="header-sub">Respaldo y restauración de la base de datos MySQL</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estado conexión -->
+    <div class="estado-card">
+        <div class="estado-icon {% if db_conectada %}ok{% else %}err{% endif %}">
+            <i class="fas fa-{% if db_conectada %}check-circle{% else %}times-circle{% endif %}"></i>
+        </div>
+        <div>
+            <div class="estado-titulo {% if db_conectada %}ok{% else %}err{% endif %}">
+                {% if db_conectada %}Base de datos conectada correctamente{% else %}No se puede conectar a la base de datos{% endif %}
+            </div>
+            <div class="estado-sub">
+                {% if db_conectada %}MySQL lista — puedes crear y restaurar respaldos{% else %}Verifica que el archivo db.sql exista y tenga permisos de lectura{% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="acciones-grid">
+
+        <!-- Descargar backup -->
+        <div class="accion-card">
+            <div class="accion-card-header">
+                <i class="fas fa-download blue"></i>
+                <span>Descargar Respaldo</span>
+            </div>
+            <div class="accion-card-body">
+                <p class="accion-desc">Descarga un respaldo completo de la base de datos.</p>
+                <p class="accion-detalle">Incluye todas las tablas y datos actuales del sistema.</p>
+                {% if db_conectada %}
+                    <form method="post" action="{% url 'app:backup' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="accion" value="backup_completo">
+                        <button type="submit" class="btn-accion blue">
+                            <i class="fas fa-download"></i> Descargar .sql
+                        </button>
+                    </form>
+                {% else %}
+                    <button class="btn-accion disabled" disabled>
+                        <i class="fas fa-times-circle"></i> BD No Disponible
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Restaurar -->
+        <div class="accion-card">
+            <div class="accion-card-header">
+                <i class="fas fa-upload green"></i>
+                <span>Restaurar Base de Datos</span>
+            </div>
+            <div class="accion-card-body">
+                <p class="accion-desc">Restaura la BD desde un archivo de respaldo.</p>
+                <p class="accion-detalle"><strong>⚠ Cuidado:</strong> Esto reemplaza todos los datos actuales.</p>
+                {% if db_conectada %}
+                    <div class="zona-carga" id="zona-carga">
+                        <input type="file" id="archivo-respaldo" accept=".sql" style="display:none;">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p><strong>Arrastra un archivo .sql aquí</strong></p>
+                        <p>o haz clic para seleccionar</p>
+                    </div>
+                {% else %}
+                    <div class="zona-carga" style="cursor:not-allowed; opacity:.5;">
+                        <i class="fas fa-times-circle"></i>
+                        <p><strong>BD No Disponible</strong></p>
+                        <p>Conecta la BD para restaurar</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Info -->
+    <div class="info-card">
+        <div class="info-card-header">
+            <i class="fas fa-info-circle"></i>
+            <span>Información</span>
+        </div>
+        <div class="info-card-body">
+            <div class="info-cols">
+                <div>
+                    <h6>Requisitos</h6>
+                    <ul>
+                        <li>Proyecto Django con MySQL 8.0</li>
+                        <li>Archivo db.sql accesible</li>
+                        <li>Carpeta <code>backups/</code> en la raíz del proyecto</li>
+                        <li>Permisos de lectura y escritura en el directorio</li>
+                    </ul>
+                </div>
+                <div>
+                    <h6>Archivos generados</h6>
+                    <ul>
+                        <li>backup_completo_YYYYMMDD_HHMMSS.sql</li>
+                        <li>Contiene toda la estructura y datos</li>
+                        <li>Al restaurar se crea un backup de seguridad automático</li>
+                        <li>Reutilizable para restaurar en otro equipo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% if db_conectada %}
+<script>
+    const zonaC       = document.getElementById('zona-carga');
+    const archivoInput = document.getElementById('archivo-respaldo');
+
+    zonaC.addEventListener('click', () => archivoInput.click());
+
+    zonaC.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        zonaC.style.borderColor  = '#16a34a';
+        zonaC.style.background   = '#f0fdf4';
+    });
+    zonaC.addEventListener('dragleave', () => {
+        zonaC.style.borderColor = '';
+        zonaC.style.background  = '';
+    });
+    zonaC.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zonaC.style.borderColor = '';
+        zonaC.style.background  = '';
+        if (e.dataTransfer.files.length > 0) subirArchivo(e.dataTransfer.files[0]);
+    });
+    archivoInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) subirArchivo(e.target.files[0]);
+    });
+
+    function subirArchivo(archivo) {
+        if (!archivo.name.endsWith('.sql')) {
+            Swal.fire({ icon: 'warning', title: 'Archivo inválido', text: 'Selecciona un archivo .sql', confirmButtonColor: '#d32f2f' });
+            return;
+        }
+
+        if (archivo.size === 0) {
+            Swal.fire({ icon: 'warning', title: 'Archivo vacío', text: 'El archivo .sql está vacío, selecciona un respaldo válido.', confirmButtonColor: '#d32f2f' });
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Restaurar base de datos?',
+            text: 'Esto reemplazará TODOS los datos actuales. Se creará un backup de seguridad automático antes de restaurar.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, restaurar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#d32f2f',
+            cancelButtonColor: '#1a1a1a',
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+
+            // Mostrar cargando
+            const textoOriginal = zonaC.innerHTML;
+            zonaC.innerHTML = '<i class="fas fa-spinner fa-spin" style="color:#2563eb;"></i><p><strong>Restaurando...</strong></p><p>Por favor espera</p>';
+
+            const formData = new FormData();
+            formData.append('archivo', archivo);
+
+            fetch('{% url "app:restaurar_datos" %}', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+            })
+            .then(r => r.json())
+            .then(data => {
+                zonaC.innerHTML = textoOriginal;
+                if (data.exito) {
+                    Swal.fire({ icon: 'success', title: '¡Restaurado!', text: data.mensaje, confirmButtonColor: '#16a34a' })
+                        .then(() => location.reload());
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Error', text: data.error, confirmButtonColor: '#d32f2f' });
+                }
+            })
+            .catch(err => {
+                zonaC.innerHTML = textoOriginal;
+                Swal.fire({ icon: 'error', title: 'Error de conexión', text: String(err), confirmButtonColor: '#d32f2f' });
+            });
+        });
+    }
+</script>
+{% endif %}
+{% endblock %}

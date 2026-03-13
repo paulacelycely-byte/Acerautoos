@@ -79,25 +79,25 @@
     }
     .delete-card-body { padding: 28px; }
 
-    .item-info {
+    .usuario-info {
         background: var(--gris);
         border-radius: 12px;
         border-left: 4px solid var(--rojo);
         padding: 18px 20px;
         margin-bottom: 20px;
     }
-    .item-info-label {
+    .usuario-info-label {
         font-family: 'DM Sans', sans-serif;
         font-size: .7rem; font-weight: 700;
         text-transform: uppercase; letter-spacing: 1px;
         color: var(--muted); margin-bottom: 6px;
     }
-    .item-nombre {
+    .usuario-nombre {
         font-family: 'Barlow Condensed', sans-serif;
         font-size: 1.5rem; font-weight: 800;
         color: var(--carbon); line-height: 1;
     }
-    .item-info-sub {
+    .usuario-info-sub {
         font-family: 'DM Sans', sans-serif;
         font-size: .85rem; color: var(--muted);
         margin-top: 6px; display: flex; flex-wrap: wrap; gap: 12px;
@@ -158,26 +158,25 @@
 
         <div class="delete-card-body">
 
-            <div class="item-info">
-                <div class="item-info-label">Notificación a eliminar</div>
-                <div class="item-nombre">{{ object.titulo|default:"Sin título" }}</div>
-                <div class="item-info-sub">
-                    {% if object.tipo %}
-                        <span><i class="fas fa-tag mr-1"></i>{{ object.get_tipo_display }}</span>
+            <div class="usuario-info">
+                <div class="usuario-info-label">Usuario a eliminar</div>
+                <div class="usuario-nombre">{{ object.nombres }} {{ object.apellidos }}</div>
+                <div class="usuario-info-sub">
+                    {% if object.username %}
+                        <span><i class="fas fa-at mr-1"></i>{{ object.username }}</span>
                     {% endif %}
-                    {% if object.vehiculo %}
-                        <span><i class="fas fa-car mr-1"></i>{{ object.vehiculo }}</span>
+                    {% if object.cargo %}
+                        <span><i class="fas fa-briefcase mr-1"></i>{{ object.get_cargo_display }}</span>
                     {% endif %}
-                    <span>
-                        <i class="fas fa-circle mr-1" style="color:{% if object.leido %}#2e7d32{% else %}#f57f17{% endif %};"></i>
-                        {% if object.leido %}Leída{% else %}No leída{% endif %}
-                    </span>
+                    {% if object.email %}
+                        <span><i class="fas fa-envelope mr-1"></i>{{ object.email }}</span>
+                    {% endif %}
                 </div>
             </div>
 
             <div class="alerta-info">
                 <i class="fas fa-exclamation-circle"></i>
-                <span>Eliminar esta notificación la removerá permanentemente del sistema. Esta acción no se puede deshacer.</span>
+                <span>Eliminar este usuario revocará su acceso al sistema de forma permanente. Esta acción no se puede deshacer.</span>
             </div>
 
             <form method="post" id="formEliminar">
@@ -202,7 +201,7 @@
     $('#btnConfirmar').on('click', function () {
         Swal.fire({
             title: '¿Proceder?',
-            text: "Se eliminará la notificación '{{ object.titulo|default:'Sin título' }}' permanentemente.",
+            text: "Se eliminará a '{{ object.nombres }} {{ object.apellidos }}' permanentemente.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d32f2f',

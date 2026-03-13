@@ -275,10 +275,10 @@
                                         {{ field|add_class:'form-field' }}
                                     </div>
 
-                                {% elif 'usuario' in field.name|lower %}
+                                {% elif 'empleado' in field.name|lower %}
                                     <label class="field-label">{{ field.label }}</label>
                                     <div class="field-inner">
-                                        <i class="fas fa-user field-icon"></i>
+                                        <i class="fas fa-hard-hat field-icon"></i>
                                         {{ field|add_class:'form-field' }}
                                     </div>
 
@@ -402,4 +402,4 @@ $(function () {
     });
 });
 </script>
-{% endblock %}*
+{% endblock %}

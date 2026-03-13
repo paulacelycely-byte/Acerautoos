@@ -1,6 +1,6 @@
 from django.views import View
 from app.models import (Cliente, Vehiculo, Producto, Proveedor,
-                        Compra, Caja, VentasFactura, OrdenServicio, Factura)
+                        Compra, Caja, OrdenServicio, Factura)
 from app.utils import exportar_pdf, exportar_excel
 from datetime import datetime
 

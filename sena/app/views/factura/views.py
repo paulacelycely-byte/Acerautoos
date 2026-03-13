@@ -6,7 +6,7 @@ from django.views import View
 from django.shortcuts import get_object_or_404, redirect
 from decimal import Decimal
 
-from app.models import Factura, OrdenServicio, Producto
+from app.models import Factura, OrdenServicio, Producto, Caja
 from app.forms import FacturaForm
 
 
@@ -77,18 +77,49 @@ class FacturaDeleteView(DeleteView):
 class PagarFacturaView(View):
     def post(self, request, pk):
         factura = get_object_or_404(Factura, pk=pk)
-        metodo = request.POST.get('metodo_pago', '').strip()
+        metodo  = request.POST.get('metodo_pago', '').strip()
 
         metodos_validos = [m[0] for m in Factura.METODOS_PAGO]
+
         if not metodo or metodo not in metodos_validos:
             messages.error(request, "Seleccione un método de pago válido.")
-        elif factura.estado_pago == 'Pagada':
-            messages.warning(request, "Esta factura ya fue pagada.")
-        else:
-            factura.metodo_pago = metodo
-            factura.estado_pago = 'Pagada'
-            factura.fecha_pago = timezone.now()
-            factura.save()
-            messages.success(request, f"Pago registrado con {factura.get_metodo_pago_display()}.")
+            return redirect('app:listar_factura')
 
+        if factura.estado_pago == 'Pagada':
+            messages.warning(request, "Esta factura ya fue pagada.")
+            return redirect('app:listar_factura')
+
+        # 1. Actualizar factura
+        factura.metodo_pago = metodo
+        factura.estado_pago = 'Pagada'
+        factura.fecha_pago  = timezone.now()
+        factura.save()
+
+        # 2. Crear ingreso en Caja (solo si no existe ya)
+        ya_existe = Caja.objects.filter(
+            descripcion__icontains=factura.numero_factura,
+            tipo='INGRESO'
+        ).exists()
+
+        if not ya_existe:
+            Caja.objects.create(
+                descripcion = f"Factura {factura.numero_factura} — {factura.get_tipo_display()}",
+                monto       = factura.total,
+                tipo        = 'INGRESO',
+                categoria   = 'Ventas' if factura.tipo == 'PRODUCTO' else 'Servicios',
+                metodo_pago = metodo,
+            )
+
+        # 3. Si es de servicio, marcar la orden como Terminada
+        if factura.tipo == 'SERVICIO' and factura.orden_servicio:
+            orden = factura.orden_servicio
+            if orden.estado != 'Terminado':
+                orden.estado = 'Terminado'
+                orden.save()
+
+        messages.success(
+            request,
+            f"Pago de {factura.get_metodo_pago_display()} registrado. "
+            f"Ingreso de ${factura.total:,.0f} guardado en Caja."
+        )
         return redirect('app:listar_factura')

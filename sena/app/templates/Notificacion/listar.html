@@ -47,8 +47,18 @@
         text-decoration: none; transition: transform .2s, box-shadow .2s;
     }
     .btn-accion:hover { transform: translateY(-2px); }
-    .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
-    .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
+    .btn-nuevo  { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
+    .btn-nuevo:hover  { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
+    .btn-todas  { background: rgba(255,255,255,.1); color: white !important; border: 1px solid rgba(255,255,255,.2) !important; }
+    .btn-todas:hover  { background: rgba(255,255,255,.18); color: white !important; }
+
+    /* Badge contador no leídas en el título */
+    .badge-no-leidas {
+        background: var(--rojo); color: white;
+        font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700;
+        padding: 3px 8px; border-radius: 20px; margin-left: 8px;
+        vertical-align: middle;
+    }
 
     /* ── TABLA ── */
     .tabla-wrap { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
@@ -66,6 +76,10 @@
     #tabla_notificaciones tbody tr:last-child { border-bottom: none; }
     #tabla_notificaciones tbody td { padding: 13px 16px; color: var(--texto) !important; vertical-align: middle; border: none; }
 
+    /* Fila no leída: fondo levemente amarillo */
+    #tabla_notificaciones tbody tr.no-leida { background: #fffbf0; }
+    #tabla_notificaciones tbody tr.no-leida:hover { background: #fff8e1; }
+
     /* Avatar mensaje */
     .noti-avatar {
         width: 38px; height: 38px; background: var(--carbon); color: white;
@@ -73,6 +87,7 @@
         font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 800; flex-shrink: 0;
     }
     .noti-mensaje { font-weight: 600; color: var(--carbon); font-size: .9rem; }
+    .noti-titulo  { font-size: .75rem; color: var(--muted); margin-top: 2px; }
 
     /* Badges tipo */
     .badge-tipo {
@@ -84,6 +99,14 @@
     .tipo-Recordatorio  { background: #f3e5f5; color: #6a1b9a; }
     .tipo-Urgente       { background: #fff3e0; color: #e65100; }
     .tipo-Informacion   { background: #e8f5e9; color: #2e7d32; }
+
+    /* Badge origen */
+    .badge-origen {
+        font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700;
+        padding: 3px 8px; border-radius: 6px; display: inline-block;
+    }
+    .origen-SISTEMA { background: #e3f2fd; color: #1565c0; }
+    .origen-ADMIN   { background: #f3e5f5; color: #6a1b9a; }
 
     /* Badge leído */
     .badge-leido {
@@ -100,8 +123,9 @@
         border: none; cursor: pointer; transition: .2s; font-size: .8rem; text-decoration: none;
     }
     .btn-fila:hover { transform: translateY(-2px); }
-    .btn-edit { background: #f39c12; color: white; }
-    .btn-del  { background: var(--rojo); color: white; }
+    .btn-edit   { background: #f39c12; color: white; }
+    .btn-del    { background: var(--rojo); color: white; }
+    .btn-leida  { background: #27ae60; color: white; }
 
     /* DataTables overrides */
     .dataTables_wrapper { padding: 16px 20px; }
@@ -133,11 +157,21 @@
         <div class="header-left">
             <div class="header-icon-wrap"><i class="fas fa-bell"></i></div>
             <div>
-                <h1 class="header-titulo">{{ titulo|default:"Notificaciones" }}</h1>
+                <h1 class="header-titulo">
+                    {{ titulo|default:"Notificaciones" }}
+                    {% if no_leidas > 0 %}
+                        <span class="badge-no-leidas">{{ no_leidas }}</span>
+                    {% endif %}
+                </h1>
                 <div class="header-sub">Alertas y recordatorios del taller</div>
             </div>
         </div>
         <div class="header-actions">
+            {% if no_leidas > 0 %}
+            <button class="btn-accion btn-todas" id="btn-marcar-todas">
+                <i class="fas fa-check-double"></i> Marcar todas leídas
+            </button>
+            {% endif %}
             <a href="{{ crear_url }}" class="btn-accion btn-nuevo">
                 <i class="fas fa-plus"></i> Nueva Notificación
             </a>
@@ -152,6 +186,7 @@
                         <th class="text-center">#</th>
                         <th>Mensaje</th>
                         <th class="text-center">Tipo</th>
+                        <th class="text-center">Origen</th>
                         <th>Vehículo</th>
                         <th class="text-center">Fecha</th>
                         <th class="text-center">Leído</th>
@@ -160,20 +195,32 @@
                 </thead>
                 <tbody>
                     {% for n in object_list %}
-                    <tr>
+                    <tr class="{% if not n.leido %}no-leida{% endif %}" id="fila-{{ n.id }}">
                         <td class="text-center" style="font-weight:700; color:var(--muted); font-size:.8rem;">{{ forloop.counter }}</td>
                         <td>
                             <div class="d-flex align-items-center" style="gap:10px;">
-                                <div class="noti-avatar">{{ n.mensaje|first|upper }}</div>
-                                <span class="noti-mensaje">{{ n.mensaje }}</span>
+                                <div class="noti-avatar">{{ n.tipo|first|upper }}</div>
+                                <div>
+                                    {% if n.titulo %}
+                                        <div class="noti-mensaje">{{ n.titulo }}</div>
+                                        <div class="noti-titulo">{{ n.mensaje|truncatechars:60 }}</div>
+                                    {% else %}
+                                        <div class="noti-mensaje">{{ n.mensaje|truncatechars:80 }}</div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </td>
                         <td class="text-center">
                             <span class="badge-tipo tipo-{{ n.tipo }}">{{ n.tipo }}</span>
                         </td>
-                        <td style="color:var(--muted); font-size:.85rem;">{{ n.vehiculo }}</td>
-                        <td class="text-center" style="color:var(--muted); font-size:.82rem;">{{ n.fecha|date:"d/m/Y H:i" }}</td>
                         <td class="text-center">
+                            <span class="badge-origen origen-{{ n.origen }}">{{ n.get_origen_display }}</span>
+                        </td>
+                        <td style="color:var(--muted); font-size:.85rem;">
+                            {% if n.vehiculo %}{{ n.vehiculo }}{% else %}<span style="color:#ccc;">—</span>{% endif %}
+                        </td>
+                        <td class="text-center" style="color:var(--muted); font-size:.82rem;">{{ n.fecha|date:"d/m/Y H:i" }}</td>
+                        <td class="text-center" id="badge-leido-{{ n.id }}">
                             {% if n.leido %}
                                 <span class="badge-leido leido-si"><i class="fas fa-check-circle"></i> Leído</span>
                             {% else %}
@@ -182,6 +229,14 @@
                         </td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center" style="gap:6px;">
+                                {% if not n.leido %}
+                                <button class="btn-fila btn-leida btn-marcar-leida"
+                                        data-id="{{ n.id }}"
+                                        data-url="{% url 'app:marcar_notificacion_leida' n.id %}"
+                                        title="Marcar como leída">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                {% endif %}
                                 <a href="{% url 'app:editar_notificacion' n.id %}" class="btn-fila btn-edit" title="Editar">
                                     <i class="fas fa-pen"></i>
                                 </a>
@@ -203,13 +258,14 @@
 {% block js %}
 <script>
 $(document).ready(function () {
-    $('#tabla_notificaciones').DataTable({
+
+    var tabla = $('#tabla_notificaciones').DataTable({
         responsive: true,
         autoWidth: false,
         pageLength: 10,
-        order: [[4, 'desc']],
+        order: [[5, 'desc']],
         pagingType: "full_numbers",
-        columnDefs: [{ orderable: false, targets: [0, 6] }],
+        columnDefs: [{ orderable: false, targets: [0, 7] }],
         language: {
             "sProcessing":     "Procesando...",
             "sLengthMenu":     "Mostrar _MENU_ registros",
@@ -224,11 +280,71 @@ $(document).ready(function () {
         }
     });
 
+    // ── Marcar UNA como leída ──────────────────────────
+    $(document).on('click', '.btn-marcar-leida', function () {
+        var btn = $(this);
+        var id  = btn.data('id');
+        var url = btn.data('url');
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+            success: function (res) {
+                if (res.ok) {
+                    $('#badge-leido-' + id).html(
+                        '<span class="badge-leido leido-si"><i class="fas fa-check-circle"></i> Leído</span>'
+                    );
+                    $('#fila-' + id).removeClass('no-leida');
+                    btn.remove();
+                    Swal.fire({ icon: 'success', title: 'Marcada como leída', showConfirmButton: false, timer: 1200 });
+                }
+            },
+            error: function () {
+                Swal.fire({ icon: 'error', title: 'Error al procesar', showConfirmButton: false, timer: 1500 });
+            }
+        });
+    });
+
+    // ── Marcar TODAS como leídas ──────────────────────
+    $('#btn-marcar-todas').on('click', function () {
+        Swal.fire({
+            title: '¿Marcar todas como leídas?',
+            text: 'Todas las notificaciones pendientes quedarán marcadas.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, marcar todas',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#27ae60',
+            cancelButtonColor: '#6c757d',
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{% url "app:marcar_todas_leidas" %}',
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    success: function (res) {
+                        if (res.ok) {
+                            Swal.fire({
+                                icon: 'success', title: res.mensaje,
+                                showConfirmButton: false, timer: 1500
+                            }).then(function () { location.reload(); });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({ icon: 'error', title: 'Error al procesar', showConfirmButton: false, timer: 1500 });
+                    }
+                });
+            }
+        });
+    });
+
     {% if messages %}
         {% for message in messages %}
         Swal.fire({ icon: "{{ message.tags }}", title: "{{ message|escapejs }}", showConfirmButton: false, timer: 2000 });
         {% endfor %}
     {% endif %}
+
 });
 </script>
 {% endblock %}

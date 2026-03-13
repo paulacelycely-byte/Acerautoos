@@ -33,6 +33,37 @@
     .btn-toggle-menu:hover { background:rgba(255,255,255,.18); border-color:rgba(255,255,255,.5); }
     .btn-toggle-menu i     { color:#fff; }
 
+    /* ── Botón Backup ── */
+    .btn-backup {
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.18);
+        width: 38px; height: 38px; border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: background .2s, border-color .2s, box-shadow .2s;
+        color: #fff; text-decoration: none; position: relative;
+    }
+    .btn-backup:hover {
+        background: rgba(211,47,47,.2);
+        border-color: rgba(211,47,47,.5);
+        box-shadow: 0 0 12px rgba(211,47,47,.3);
+        color: #fff;
+    }
+    .btn-backup i { color: #fff; font-size: .9rem; }
+    /* Tooltip */
+    .btn-backup::after {
+        content: 'Backup BD';
+        position: absolute; top: calc(100% + 8px); left: 50%;
+        transform: translateX(-50%);
+        background: #1a1a1a; color: #f1f5f9;
+        font-size: .7rem; font-weight: 600;
+        padding: 4px 10px; border-radius: 6px;
+        white-space: nowrap; pointer-events: none;
+        opacity: 0; transition: opacity .15s;
+        border: 1px solid rgba(211,47,47,.3);
+        z-index: 9999;
+    }
+    .btn-backup:hover::after { opacity: 1; }
+
     /* ── Pill usuario ── */
     .user-pill             { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18) !important; border-radius:50px !important; padding:5px 14px 5px 6px; display:flex; align-items:center; gap:10px; transition:background .2s,border-color .2s; cursor:pointer; }
     .user-pill:hover,
@@ -74,7 +105,6 @@
 
     /* ══════════════════════════════════════════
        ASTERISCO CAMPOS OBLIGATORIOS — GLOBAL
-       Aplica automáticamente a todos los módulos
     ══════════════════════════════════════════ */
     .field-label.required::after {
         content: ' *';
@@ -84,7 +114,6 @@
         vertical-align: super;
         line-height: 1;
     }
-    /* Leyenda opcional que puede usarse en cualquier form */
     .leyenda-obligatorio {
         font-size: .74rem;
         color: #888;
@@ -117,35 +146,52 @@
           </div>
         </div>
 
-        <div class="d-flex align-items-center">
+        <!-- Derecha del navbar -->
+        <div class="d-flex align-items-center gap-2">
+
+          <!-- ✅ Botón Backup BD -->
+          <a href="{% url 'app:backup' %}" class="btn-backup" title="Backup BD">
+            <i class="fas fa-database"></i>
+          </a>
+
           <div class="dropdown">
+            <!-- Pill del usuario -->
             <button class="user-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false">
               <div class="d-flex align-items-center justify-content-center bg-danger text-white"
                    style="width:30px;height:30px;border-radius:50%;font-size:.8rem;font-weight:700;flex-shrink:0;">
-                {{ user.username|slice:':1'|upper }}
+                {% if user.nombres %}{{ user.nombres|slice:':1'|upper }}{% else %}{{ user.username|slice:':1'|upper }}{% endif %}
               </div>
-              <span class="small fw-bold">{{ user.username|upper }}</span>
+              <span class="small fw-bold">
+                {% if user.nombres %}{{ user.nombres|upper }}{% else %}{{ user.username|upper }}{% endif %}
+              </span>
               <i class="fas fa-chevron-down pill-arrow"></i>
             </button>
 
+            <!-- Dropdown -->
             <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu">
               <li>
                 <div class="dd-header">
-                  <div class="dd-avatar">{{ user.username|slice:':1'|upper }}</div>
+                  <div class="dd-avatar">
+                    {% if user.nombres %}{{ user.nombres|slice:':1'|upper }}{% else %}{{ user.username|slice:':1'|upper }}{% endif %}
+                  </div>
                   <div>
-                    <div class="dd-username">{{ user.username|capfirst }}</div>
-                    <div class="dd-email">{{ user.email|default:"Administrador del sistema" }}</div>
+                    <div class="dd-username">
+                      {% if user.nombres %}{{ user.nombres }} {{ user.apellidos }}{% else %}{{ user.username|capfirst }}{% endif %}
+                    </div>
+                    <div class="dd-email">
+                      {% if user.cargo %}{{ user.get_cargo_display }}{% else %}{{ user.email|default:"Administrador del sistema" }}{% endif %}
+                    </div>
                   </div>
                 </div>
               </li>
               <li>
-                <a class="dropdown-item" href="{% url 'app:listar_usuario' %}">
+                <a class="dropdown-item" href="{% url 'app:editar_usuario' user.pk %}">
                   <i class="fas fa-user"></i> Mi Perfil
                 </a>
               </li>
               <li>
                 <a class="dropdown-item" href="{% url 'app:listar_usuario' %}">
-                  <i class="fas fa-user-cog"></i> Administrar Usuario
+                  <i class="fas fa-user-cog"></i> Administrar Usuarios
                 </a>
               </li>
               <li><hr class="dropdown-divider"></li>
@@ -159,6 +205,7 @@
               </li>
             </ul>
           </div>
+
         </div>
       </nav>
 
@@ -216,34 +263,23 @@
   });
   </script>
 
-  <!-- ══════════════════════════════════════════════════════
-       ASTERISCO CAMPOS OBLIGATORIOS — se ejecuta en TODOS
-       los módulos automáticamente al cargar la página.
-       Detecta inputs/selects con required y agrega la clase
-       'required' al label más cercano con clase field-label.
-  ══════════════════════════════════════════════════════ -->
+  <!-- Asterisco campos obligatorios — global -->
   <script>
   document.addEventListener('DOMContentLoaded', function () {
 
     document.querySelectorAll('input, select, textarea').forEach(function(campo) {
-      // Solo campos visibles y obligatorios
       if (!campo.required) return;
       if (campo.type === 'hidden' || campo.type === 'submit') return;
 
       var label = null;
 
-      // 1. Buscar por atributo for="id_del_campo"
       if (campo.id) {
         label = document.querySelector('label[for="' + campo.id + '"]');
       }
-
-      // 2. Si no encontró, buscar el .field-label dentro del mismo .field-group
       if (!label) {
         var grupo = campo.closest('.field-group');
         if (grupo) label = grupo.querySelector('.field-label');
       }
-
-      // 3. Fallback: .field-label en el contenedor col-md-*
       if (!label) {
         var col = campo.closest('[class*="col-"]');
         if (col) label = col.querySelector('.field-label');

@@ -4,8 +4,9 @@ from datetime import date
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from .models import (
+    UsuarioSistema, Empleado,
     Proveedor, Producto, Compra, Cliente, Marca, Vehiculo, Factura,
-    TipoServicio, OrdenServicio, VentasFactura, Usuario,
+    TipoServicio, OrdenServicio,
     Notificacion, Caja, DetalleOrdenProducto, CompatibilidadProducto
 )
 
@@ -66,6 +67,11 @@ INDICATIVOS_PAISES = [
     ('+966', '🇸🇦 +966 Arabia Saudita'),
 ]
 
+
+# ══════════════════════════════════════════════════════════
+#  UTILIDADES COMPARTIDAS
+# ══════════════════════════════════════════════════════════
+
 def val_telefono_internacional(indicativo, numero, campo):
     if not indicativo:
         raise forms.ValidationError(f"'{campo}': seleccione el indicativo del país.")
@@ -75,11 +81,6 @@ def val_telefono_internacional(indicativo, numero, campo):
     if not (6 <= len(numero_limpio) <= 15):
         raise forms.ValidationError(f"'{campo}' debe tener entre 6 y 15 dígitos.")
     return f"{indicativo}{numero_limpio}"
-
-
-# ══════════════════════════════════════════════════════════
-#  UTILIDADES COMPARTIDAS
-# ══════════════════════════════════════════════════════════
 
 def val_solo_letras(valor, campo):
     if not re.match(r'^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$', str(valor).strip()):
@@ -127,14 +128,14 @@ def val_telefono_colombiano(valor, campo):
             return limpio
         else:
             raise forms.ValidationError(
-                f"'{campo}': celular debe empezar por 3  "
-                f"o fijo con indicativo por 60/61 ."
+                f"'{campo}': celular debe empezar por 3 "
+                f"o fijo con indicativo por 60/61."
             )
     elif len(limpio) == 7:
         return limpio
     else:
         raise forms.ValidationError(
-            f"'{campo}' inválido. Use 10 dígitos para celular  "
+            f"'{campo}' inválido. Use 10 dígitos para celular "
             f"o 7 dígitos para fijo local (ej: 2345678). "
             f"Recibido: {len(limpio)} dígitos."
         )
@@ -162,10 +163,121 @@ def val_documento_colombiano(valor, campo, tipo_doc=None):
 
 
 # ══════════════════════════════════════════════════════════
-#  USUARIO
+#  USUARIO SISTEMA  (admin que inicia sesión)
 # ══════════════════════════════════════════════════════════
 
-class UsuarioForm(forms.ModelForm):
+class UsuarioSistemaForm(forms.ModelForm):
+    """
+    Form para crear/editar admins desde el panel propio.
+    No reemplaza al createsuperuser — es para el módulo de usuarios del sistema.
+    """
+    password1 = forms.CharField(
+        label="Contraseña",
+        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        help_text="Mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial."
+    )
+    password2 = forms.CharField(
+        label="Confirmar contraseña",
+        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+    )
+
+    class Meta:
+        model  = UsuarioSistema
+        fields = [
+            'username', 'first_name', 'last_name', 'email',
+            'tipo_documento', 'cedula', 'telefono', 'cargo',
+            'is_active',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required  = True
+        self.fields['email'].required      = True
+        # En edición la contraseña es opcional
+        if self.instance.pk:
+            self.fields['password1'].help_text = "Dejar vacío para no cambiar la contraseña."
+
+    def clean_first_name(self):
+        nombre = val_solo_letras(self.cleaned_data['first_name'], "Nombre")
+        if len(nombre) < 2:
+            raise forms.ValidationError("El nombre debe tener al menos 2 caracteres.")
+        return nombre
+
+    def clean_last_name(self):
+        apellido = val_solo_letras(self.cleaned_data['last_name'], "Apellido")
+        if len(apellido) < 2:
+            raise forms.ValidationError("El apellido debe tener al menos 2 caracteres.")
+        return apellido
+
+    def clean_email(self):
+        email = val_email(self.cleaned_data['email'], "Email")
+        qs = UsuarioSistema.objects.filter(email=email)
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise forms.ValidationError("Ya existe un usuario con este email.")
+        return email
+
+    def clean_cedula(self):
+        cedula = self.cleaned_data.get('cedula')
+        if cedula:
+            cedula = val_solo_numeros(cedula, "Cédula")
+            if not (8 <= len(cedula) <= 14):
+                raise forms.ValidationError("La cédula debe tener entre 8 y 14 dígitos.")
+            qs = UsuarioSistema.objects.filter(cedula=cedula)
+            if self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise forms.ValidationError("Ya existe un usuario con esta cédula.")
+        return cedula
+
+    def clean_password1(self):
+        password = self.cleaned_data.get('password1', '')
+        # En edición: si deja vacío no cambia la contraseña
+        if not password and self.instance.pk:
+            return password
+        if password:
+            if len(password) < 8:
+                raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres.")
+            if not re.search(r'[A-Z]', password):
+                raise forms.ValidationError("Debe tener al menos una letra mayúscula.")
+            if not re.search(r'[a-z]', password):
+                raise forms.ValidationError("Debe tener al menos una letra minúscula.")
+            if not re.search(r'[0-9]', password):
+                raise forms.ValidationError("Debe tener al menos un número.")
+            if not re.search(r'[!@#$%^&*()_+\-=\[\]{};\'\\:"|,.<>\/?]', password):
+                raise forms.ValidationError("Debe tener al menos un carácter especial. Ej: !@#$%&*")
+        return password
+
+    def clean(self):
+        cleaned = super().clean()
+        p1 = cleaned.get('password1', '')
+        p2 = cleaned.get('password2', '')
+        if p1 and p1 != p2:
+            self.add_error('password2', "Las contraseñas no coinciden.")
+        return cleaned
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        password = self.cleaned_data.get('password1')
+        if password:
+            user.set_password(password)
+        elif not self.instance.pk:
+            # Si es nuevo y no puso contraseña, setear una inutilizable
+            user.set_unusable_password()
+        if commit:
+            user.save()
+        return user
+
+
+# ══════════════════════════════════════════════════════════
+#  EMPLEADO  (directorio del personal)
+# ══════════════════════════════════════════════════════════
+
+class EmpleadoForm(forms.ModelForm):
 
     indicativo_telefono = forms.ChoiceField(
         choices=INDICATIVOS_PAISES,
@@ -181,7 +293,7 @@ class UsuarioForm(forms.ModelForm):
     )
 
     class Meta:
-        model = Usuario
+        model   = Empleado
         exclude = ['fecha_registro']
 
     def __init__(self, *args, **kwargs):
@@ -213,11 +325,11 @@ class UsuarioForm(forms.ModelForm):
         cedula = val_solo_numeros(self.cleaned_data['cedula'], "Cédula")
         if not (8 <= len(cedula) <= 14):
             raise forms.ValidationError("La cédula debe tener entre 8 y 14 dígitos.")
-        qs = Usuario.objects.filter(cedula=cedula)
+        qs = Empleado.objects.filter(cedula=cedula)
         if self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
         if qs.exists():
-            raise forms.ValidationError("Ya existe un usuario registrado con esta cédula.")
+            raise forms.ValidationError("Ya existe un empleado registrado con esta cédula.")
         return cedula
 
     def clean_telefono(self):
@@ -225,38 +337,25 @@ class UsuarioForm(forms.ModelForm):
 
     def clean_correo(self):
         correo = val_email(self.cleaned_data['correo'], "Correo")
-        qs = Usuario.objects.filter(correo=correo)
+        qs = Empleado.objects.filter(correo=correo)
         if self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
         if qs.exists():
-            raise forms.ValidationError("Ya existe un usuario registrado con este correo.")
+            raise forms.ValidationError("Ya existe un empleado registrado con este correo.")
         return correo
 
-    def clean_password(self):
-        password = self.cleaned_data.get('password', '')
-        if len(password) < 8:
-            raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres.")
-        if not re.search(r'[A-Z]', password):
-            raise forms.ValidationError("La contraseña debe tener al menos una letra mayúscula.")
-        if not re.search(r'[a-z]', password):
-            raise forms.ValidationError("La contraseña debe tener al menos una letra minúscula.")
-        if not re.search(r'[0-9]', password):
-            raise forms.ValidationError("La contraseña debe tener al menos un número.")
-        if not re.search(r'[!@#$%^&*()_+\-=\[\]{};\'\\:"|,.<>\/?]', password):
-            raise forms.ValidationError("La contraseña debe tener al menos un carácter especial. Ej: !@#$%&*")
-        return password
-
     def clean(self):
-        cleaned = super().clean()
+        cleaned    = super().clean()
         indicativo = cleaned.get('indicativo_telefono', '')
-        numero = cleaned.get('numero_telefono', '')
+        numero     = cleaned.get('numero_telefono', '')
         if indicativo or numero:
             telefono_completo = val_telefono_internacional(indicativo, numero, "Teléfono")
             cleaned['telefono'] = telefono_completo
-        password = cleaned.get('password')
-        confirmacion = cleaned.get('password_confirmacion')
-        if password and confirmacion and password != confirmacion:
-            self.add_error('password_confirmacion', "Las contraseñas no coinciden.")
+            qs = Empleado.objects.filter(telefono=telefono_completo)
+            if self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                self.add_error('numero_telefono', "Ya existe un empleado registrado con este teléfono.")
         return cleaned
 
     def save(self, commit=True):
@@ -289,7 +388,7 @@ class ProveedorForm(forms.ModelForm):
     )
 
     class Meta:
-        model = Proveedor
+        model  = Proveedor
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
@@ -336,9 +435,9 @@ class ProveedorForm(forms.ModelForm):
         return direccion
 
     def clean(self):
-        cleaned = super().clean()
+        cleaned    = super().clean()
         indicativo = cleaned.get('indicativo_telefono', '')
-        numero = cleaned.get('numero_telefono', '')
+        numero     = cleaned.get('numero_telefono', '')
         if indicativo or numero:
             telefono_completo = val_telefono_internacional(indicativo, numero, "Teléfono")
             cleaned['telefono'] = telefono_completo
@@ -365,7 +464,7 @@ class ProveedorForm(forms.ModelForm):
 
 class MarcaForm(forms.ModelForm):
     class Meta:
-        model = Marca
+        model  = Marca
         fields = '__all__'
 
     def clean_nombre(self):
@@ -421,8 +520,13 @@ class MarcaForm(forms.ModelForm):
 
 class ProductoForm(forms.ModelForm):
     class Meta:
-        model = Producto
+        model  = Producto
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # FIX: solo marcas activas de tipo REPUESTO
+        self.fields['marca'].queryset = Marca.objects.filter(categoria='REPUESTO', estado=True)
 
     def clean_codigo(self):
         codigo = val_solo_numeros(self.cleaned_data['codigo'], "Código")
@@ -459,8 +563,8 @@ class ProductoForm(forms.ModelForm):
         return val_no_negativo(self.cleaned_data['stock_minimo'], "Stock mínimo")
 
     def clean(self):
-        cleaned = super().clean()
-        stock = cleaned.get('stock')
+        cleaned   = super().clean()
+        stock     = cleaned.get('stock')
         stock_min = cleaned.get('stock_minimo')
         if stock is not None and stock_min is not None:
             if stock_min > stock:
@@ -474,8 +578,13 @@ class ProductoForm(forms.ModelForm):
 
 class CompraForm(forms.ModelForm):
     class Meta:
-        model = Compra
+        model  = Compra
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # FIX: solo productos activos
+        self.fields['producto'].queryset = Producto.objects.filter(estado=True)
 
     def clean_cantidad(self):
         cantidad = val_positivo(self.cleaned_data['cantidad'], "Cantidad")
@@ -505,7 +614,7 @@ class CompraForm(forms.ModelForm):
     def clean_fecha(self):
         fecha = self.cleaned_data.get('fecha')
         if fecha:
-            hoy = timezone.now().date()
+            hoy        = timezone.now().date()
             fecha_date = fecha.date() if hasattr(fecha, 'date') else fecha
             if fecha_date != hoy:
                 raise forms.ValidationError(
@@ -535,7 +644,7 @@ class ClienteForm(forms.ModelForm):
     )
 
     class Meta:
-        model = Cliente
+        model  = Cliente
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
@@ -559,8 +668,8 @@ class ClienteForm(forms.ModelForm):
 
     def clean_numero_documento(self):
         tipo_doc = self.cleaned_data.get('tipo_documento', 'CC')
-        doc = self.cleaned_data['numero_documento'].strip()
-        doc = val_documento_colombiano(doc, "Número de documento", tipo_doc)
+        doc      = self.cleaned_data['numero_documento'].strip()
+        doc      = val_documento_colombiano(doc, "Número de documento", tipo_doc)
         qs = Cliente.objects.filter(numero_documento=doc)
         if self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
@@ -583,9 +692,9 @@ class ClienteForm(forms.ModelForm):
         return email
 
     def clean(self):
-        cleaned = super().clean()
+        cleaned    = super().clean()
         indicativo = cleaned.get('indicativo_telefono', '')
-        numero = cleaned.get('numero_telefono', '')
+        numero     = cleaned.get('numero_telefono', '')
         if indicativo or numero:
             telefono_completo = val_telefono_internacional(indicativo, numero, "Teléfono")
             cleaned['telefono'] = telefono_completo
@@ -612,8 +721,18 @@ class ClienteForm(forms.ModelForm):
 
 class VehiculoForm(forms.ModelForm):
     class Meta:
-        model = Vehiculo
-        fields = '__all__'
+        model  = Vehiculo
+        # km_ultimo_servicio lo maneja el sistema automáticamente
+        fields = ['placa', 'modelo', 'marca', 'cliente', 'km_proximo_mantenimiento']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # FIX: solo marcas activas de tipo AUTO
+        self.fields['marca'].queryset = Marca.objects.filter(categoria='AUTO', estado=True)
+        self.fields['km_proximo_mantenimiento'].required  = False
+        self.fields['km_proximo_mantenimiento'].help_text = (
+            "Opcional. Se calculará automáticamente al registrar la primera orden de servicio."
+        )
 
     def clean_placa(self):
         placa = val_placa_colombiana(self.cleaned_data['placa'])
@@ -625,14 +744,23 @@ class VehiculoForm(forms.ModelForm):
         return placa
 
     def clean_modelo(self):
-        modelo = self.cleaned_data['modelo'].strip()
+        modelo      = self.cleaned_data['modelo'].strip()
         if not re.match(r'^\d{4}$', modelo):
             raise forms.ValidationError("El año debe tener exactamente 4 dígitos. Ej: 2019")
-        anio = int(modelo)
+        anio        = int(modelo)
         anio_actual = date.today().year
         if anio < 1900 or anio > anio_actual:
             raise forms.ValidationError(f"El año debe estar entre 1900 y {anio_actual}.")
         return modelo
+
+    def clean_km_proximo_mantenimiento(self):
+        km = self.cleaned_data.get('km_proximo_mantenimiento')
+        if km is not None:
+            if km <= 0:
+                raise forms.ValidationError("El km debe ser mayor que 0.")
+            if km > 1000000:
+                raise forms.ValidationError("El km no puede superar 1.000.000.")
+        return km
 
 
 # ══════════════════════════════════════════════════════════
@@ -641,7 +769,7 @@ class VehiculoForm(forms.ModelForm):
 
 class TipoServicioForm(forms.ModelForm):
     class Meta:
-        model = TipoServicio
+        model  = TipoServicio
         fields = '__all__'
 
     def clean_nombre(self):
@@ -663,6 +791,15 @@ class TipoServicioForm(forms.ModelForm):
             raise forms.ValidationError("El precio de mano de obra es demasiado alto.")
         return precio
 
+    def clean_intervalo_km(self):
+        # NUEVO: validación del campo intervalo_km
+        km = self.cleaned_data.get('intervalo_km', 0)
+        if km < 0:
+            raise forms.ValidationError("El intervalo de km no puede ser negativo.")
+        if km > 100000:
+            raise forms.ValidationError("El intervalo de km es demasiado alto (máx. 100.000 km).")
+        return km
+
 
 # ══════════════════════════════════════════════════════════
 #  ORDEN DE SERVICIO
@@ -670,12 +807,18 @@ class TipoServicioForm(forms.ModelForm):
 
 class OrdenServicioForm(forms.ModelForm):
     class Meta:
-        model = OrdenServicio
+        model  = OrdenServicio
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # FIX: usa Empleado activo en lugar del antiguo Usuario
+        self.fields['empleado'].queryset    = Empleado.objects.filter(activo=True)
+        self.fields['empleado'].required    = False
+        self.fields['empleado'].empty_label = "-- Sin asignar --"
 
     def clean_km_actual(self):
         km = self.cleaned_data.get('km_actual')
-
         if km is None:
             raise forms.ValidationError("El kilometraje es obligatorio.")
         if not isinstance(km, int):
@@ -686,29 +829,34 @@ class OrdenServicioForm(forms.ModelForm):
             raise forms.ValidationError("El kilometraje debe ser mayor que 0. Ingrese el km actual del vehículo.")
         if km > 1000000:
             raise forms.ValidationError("El kilometraje ingresado es demasiado alto (máx. 1.000.000 km).")
-
+        # NUEVO: no puede ser menor al último km registrado del vehículo
+        vehiculo = self.cleaned_data.get('vehiculo') or (
+            self.instance.vehiculo if self.instance and self.instance.pk else None
+        )
+        if vehiculo and km < vehiculo.km_ultimo_servicio:
+            raise forms.ValidationError(
+                f"El km ingresado ({km:,}) es menor al último registrado "
+                f"para este vehículo ({vehiculo.km_ultimo_servicio:,} km). "
+                "Verifique el odómetro."
+            )
         return km
 
     def clean_fecha(self):
         fecha = self.cleaned_data.get('fecha')
-
         if not fecha:
             return timezone.now()
-
         if fecha > timezone.now():
             raise forms.ValidationError("La fecha de la orden no puede ser una fecha futura.")
-
         limite = timezone.now() - timezone.timedelta(days=30)
         if fecha < limite:
             raise forms.ValidationError(
                 "La fecha de la orden no puede ser anterior a 30 días. "
                 "Si necesita registrar una orden antigua, contacte al administrador."
             )
-
         return fecha
 
     def clean_estado(self):
-        estado = self.cleaned_data.get('estado')
+        estado         = self.cleaned_data.get('estado')
         estados_validos = [e[0] for e in OrdenServicio.ESTADOS]
         if estado not in estados_validos:
             raise forms.ValidationError(
@@ -717,15 +865,13 @@ class OrdenServicioForm(forms.ModelForm):
         return estado
 
     def clean(self):
-        cleaned = super().clean()
+        cleaned  = super().clean()
         vehiculo = cleaned.get('vehiculo')
         estado   = cleaned.get('estado')
-
         if not self.instance.pk and estado == 'Terminado':
             self.add_error('estado',
                 "No puede crear una orden con estado 'Terminado'. "
                 "Inicie con 'Pendiente' o 'En Proceso'.")
-
         if vehiculo and not self.instance.pk:
             orden_activa = OrdenServicio.objects.filter(
                 vehiculo=vehiculo,
@@ -735,7 +881,6 @@ class OrdenServicioForm(forms.ModelForm):
                 self.add_error('vehiculo',
                     f"El vehículo con placa '{vehiculo.placa}' ya tiene una orden activa "
                     "(Pendiente o En Proceso). Finalícela antes de crear una nueva.")
-
         return cleaned
 
 
@@ -745,11 +890,12 @@ class OrdenServicioForm(forms.ModelForm):
 
 class DetalleOrdenProductoForm(forms.ModelForm):
     class Meta:
-        model = DetalleOrdenProducto
+        model  = DetalleOrdenProducto
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # FIX: solo productos activos con stock disponible
         self.fields['producto'].queryset = Producto.objects.filter(stock__gt=0, estado=True)
 
     def clean_cantidad(self):
@@ -759,7 +905,7 @@ class DetalleOrdenProductoForm(forms.ModelForm):
         return cantidad
 
     def clean(self):
-        cleaned = super().clean()
+        cleaned  = super().clean()
         producto = cleaned.get('producto')
         cantidad = cleaned.get('cantidad')
         if producto and cantidad:
@@ -772,32 +918,42 @@ class DetalleOrdenProductoForm(forms.ModelForm):
 
 
 # ══════════════════════════════════════════════════════════
-#  VENTAS / FACTURA
+#  COMPATIBILIDAD PRODUCTO
 # ══════════════════════════════════════════════════════════
 
-class VentasFacturaForm(forms.ModelForm):
+class CompatibilidadProductoForm(forms.ModelForm):
     class Meta:
-        model = VentasFactura
+        model  = CompatibilidadProducto
         fields = '__all__'
 
-    def clean_numero_factura(self):
-        nf = self.cleaned_data['numero_factura'].strip()
-        if not nf:
-            raise forms.ValidationError("El número de factura es obligatorio.")
-        if len(nf) < 3:
-            raise forms.ValidationError("El número de factura debe tener al menos 3 caracteres.")
-        qs = VentasFactura.objects.filter(numero_factura=nf)
-        if self.instance.pk:
-            qs = qs.exclude(pk=self.instance.pk)
-        if qs.exists():
-            raise forms.ValidationError("Ya existe una factura de venta con este número.")
-        return nf
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # FIX: solo productos activos y marcas activas de tipo AUTO
+        self.fields['producto'].queryset       = Producto.objects.filter(estado=True)
+        self.fields['marca_vehiculo'].queryset = Marca.objects.filter(categoria='AUTO', estado=True)
+        self.fields['tipo_servicio'].required  = False
+        self.fields['tipo_servicio'].empty_label = "-- Aplica para cualquier servicio --"
 
-    def clean_total(self):
-        total = val_no_negativo(self.cleaned_data['total'], "Total de factura")
-        if total > 999999999:
-            raise forms.ValidationError("El total de la factura es demasiado alto. Verifique el valor.")
-        return total
+    def clean(self):
+        cleaned        = super().clean()
+        producto       = cleaned.get('producto')
+        marca_vehiculo = cleaned.get('marca_vehiculo')
+        tipo_servicio  = cleaned.get('tipo_servicio')
+        if producto and marca_vehiculo:
+            # FIX: ahora valida los tres campos del unique_together
+            qs = CompatibilidadProducto.objects.filter(
+                producto=producto,
+                marca_vehiculo=marca_vehiculo,
+                tipo_servicio=tipo_servicio,
+            )
+            if self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise forms.ValidationError(
+                    f"Ya existe la compatibilidad entre '{producto.nombre}', "
+                    f"'{marca_vehiculo.nombre}' y el servicio seleccionado."
+                )
+        return cleaned
 
 
 # ══════════════════════════════════════════════════════════
@@ -806,7 +962,7 @@ class VentasFacturaForm(forms.ModelForm):
 
 class CajaForm(forms.ModelForm):
     class Meta:
-        model = Caja
+        model  = Caja
         fields = '__all__'
 
     def clean_monto(self):
@@ -847,17 +1003,17 @@ class CajaForm(forms.ModelForm):
 
 
 # ══════════════════════════════════════════════════════════
-#  NOTIFICACIÓN
+#  NOTIFICACIÓN  (solo para las manuales — origen ADMIN)
 # ══════════════════════════════════════════════════════════
 
 class NotificacionForm(forms.ModelForm):
     TIPOS_NOTIFICACION = [
-        ('',              '-- Seleccione un tipo --'),
-        ('Alerta',        'Alerta'),
-        ('Recordatorio',  'Recordatorio'),
-        ('Mantenimiento', 'Mantenimiento'),
-        ('Urgente',       'Urgente'),
-        ('Informacion',   'Información'),
+        ('',             '-- Seleccione un tipo --'),
+        ('Alerta',       'Alerta'),
+        ('Recordatorio', 'Recordatorio'),
+        ('Mantenimiento','Mantenimiento'),
+        ('Urgente',      'Urgente'),
+        ('Informacion',  'Información'),
     ]
 
     tipo = forms.ChoiceField(
@@ -867,8 +1023,17 @@ class NotificacionForm(forms.ModelForm):
     )
 
     class Meta:
-        model = Notificacion
-        fields = '__all__'
+        model  = Notificacion
+        # origen y fecha los asigna la vista automáticamente
+        fields = ['tipo', 'titulo', 'vehiculo', 'mensaje', 'leido']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['vehiculo'].required    = False
+        self.fields['vehiculo'].empty_label = "-- Sin vehículo asociado --"
+        self.fields['titulo'].required      = False
+        self.fields['titulo'].help_text     = "Opcional. Resumen corto de la notificación."
+        self.fields['leido'].initial        = False
 
     def clean_tipo(self):
         tipo = self.cleaned_data.get('tipo')
@@ -878,6 +1043,12 @@ class NotificacionForm(forms.ModelForm):
         if tipo not in tipos_validos:
             raise forms.ValidationError("Tipo de notificación no válido.")
         return tipo
+
+    def clean_titulo(self):
+        titulo = self.cleaned_data.get('titulo', '').strip()
+        if titulo and len(titulo) > 150:
+            raise forms.ValidationError("El título no puede superar 150 caracteres.")
+        return titulo
 
     def clean_mensaje(self):
         msg = self.cleaned_data['mensaje'].strip()
@@ -889,44 +1060,13 @@ class NotificacionForm(forms.ModelForm):
 
 
 # ══════════════════════════════════════════════════════════
-#  COMPATIBILIDAD PRODUCTO
-# ══════════════════════════════════════════════════════════
-
-class CompatibilidadProductoForm(forms.ModelForm):
-    class Meta:
-        model = CompatibilidadProducto
-        fields = '__all__'
-
-    def clean(self):
-        cleaned = super().clean()
-        producto = cleaned.get('producto')
-        marca_vehiculo = cleaned.get('marca_vehiculo')
-        if producto and marca_vehiculo:
-            qs = CompatibilidadProducto.objects.filter(
-                producto=producto,
-                marca_vehiculo=marca_vehiculo
-            )
-            if self.instance.pk:
-                qs = qs.exclude(pk=self.instance.pk)
-            if qs.exists():
-                raise forms.ValidationError(
-                    f"Ya existe la compatibilidad entre '{producto.nombre}' "
-                    f"y la marca '{marca_vehiculo.nombre}'."
-                )
-        return cleaned
-
-
-# ══════════════════════════════════════════════════════════
 #  FACTURA
 # ══════════════════════════════════════════════════════════
 
 class FacturaForm(forms.ModelForm):
     class Meta:
-        model = Factura
-        fields = [
-            'tipo', 'numero_factura',
-            'orden_servicio', 'producto', 'cantidad',
-        ]
+        model  = Factura
+        fields = ['tipo', 'numero_factura', 'orden_servicio', 'producto', 'cantidad']
         widgets = {
             'tipo': forms.Select(attrs={
                 'class': 'form-control',
@@ -957,24 +1097,28 @@ class FacturaForm(forms.ModelForm):
             estado__in=['En Proceso', 'Terminado']
         ).select_related('vehiculo', 'servicio')
         self.fields['orden_servicio'].empty_label = "-- Seleccione una Orden --"
-        self.fields['orden_servicio'].required = False
-
-        self.fields['producto'].queryset = Producto.objects.filter(estado=True, stock__gt=0)
+        self.fields['orden_servicio'].required    = False
+        # FIX: solo productos activos con stock
+        self.fields['producto'].queryset   = Producto.objects.filter(estado=True, stock__gt=0)
         self.fields['producto'].empty_label = "-- Seleccione un Producto --"
-        self.fields['producto'].required = False
-
-        self.fields['cantidad'].required = False
+        self.fields['producto'].required   = False
+        self.fields['cantidad'].required   = False
 
     def clean(self):
-        cleaned = super().clean()
-        tipo = cleaned.get('tipo')
-        orden = cleaned.get('orden_servicio')
+        cleaned  = super().clean()
+        tipo     = cleaned.get('tipo')
+        orden    = cleaned.get('orden_servicio')
         producto = cleaned.get('producto')
         cantidad = cleaned.get('cantidad')
 
         if tipo == 'SERVICIO':
             if not orden:
                 self.add_error('orden_servicio', "Seleccione una Orden de Servicio.")
+            elif Factura.objects.filter(
+                orden_servicio=orden, estado_pago='Pagada'
+            ).exclude(pk=self.instance.pk if self.instance.pk else None).exists():
+                self.add_error('orden_servicio',
+                    "Esta orden ya tiene una factura pagada asociada.")
         elif tipo == 'PRODUCTO':
             if not producto:
                 self.add_error('producto', "Seleccione un Producto.")
@@ -982,8 +1126,7 @@ class FacturaForm(forms.ModelForm):
                 self.add_error('cantidad', "Ingrese una cantidad válida (mínimo 1).")
             elif producto and cantidad > producto.stock:
                 self.add_error('cantidad',
-                    f"Stock insuficiente. Disponible: {producto.stock}, solicitado: {cantidad}."
-                )
+                    f"Stock insuficiente. Disponible: {producto.stock}, solicitado: {cantidad}.")
 
         nf = cleaned.get('numero_factura', '').strip()
         if not nf:
@@ -996,5 +1139,27 @@ class FacturaForm(forms.ModelForm):
                 qs = qs.exclude(pk=self.instance.pk)
             if qs.exists():
                 self.add_error('numero_factura', "Ya existe una factura con este número.")
-
         return cleaned
+
+
+# ══════════════════════════════════════════════════════════
+#  FACTURA — PAGAR  (solo método de pago)
+# ══════════════════════════════════════════════════════════
+
+class PagarFacturaForm(forms.ModelForm):
+    """
+    Formulario minimalista para la vista pagar_factura.
+    Solo pide el método de pago — el sistema marca estado_pago=Pagada.
+    """
+    class Meta:
+        model  = Factura
+        fields = ['metodo_pago']
+        widgets = {
+            'metodo_pago': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+    def clean_metodo_pago(self):
+        metodo = self.cleaned_data.get('metodo_pago')
+        if not metodo:
+            raise forms.ValidationError("Seleccione un método de pago.")
+        return metodo
