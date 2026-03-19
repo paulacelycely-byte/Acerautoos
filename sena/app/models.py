@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 
 
 # ══════════════════════════════════════════════════════════
-#  USUARIO SISTEMA  
+#  USUARIO SISTEMA
 # ══════════════════════════════════════════════════════════
 class UsuarioSistema(AbstractUser):
     CARGOS = [
@@ -20,14 +20,10 @@ class UsuarioSistema(AbstractUser):
         ('NIT', 'NIT'),
         ('PAS', 'Pasaporte'),
     ]
-
     tipo_documento = models.CharField(max_length=3, choices=TIPOS_DOC, default='CC')
     cedula         = models.CharField(max_length=20, unique=True, null=True, blank=True)
     telefono       = models.CharField(max_length=20, null=True, blank=True)
     cargo          = models.CharField(max_length=20, choices=CARGOS, default='ADMIN')
-
-    # auth.User ya trae: username, first_name, last_name, email,
-    #                    password, is_active, last_login, date_joined
 
     @property
     def nombre_completo(self):
@@ -46,7 +42,7 @@ class UsuarioSistema(AbstractUser):
 
 
 # ══════════════════════════════════════════════════════════
-#  EMPLEADO  (directorio del personal)
+#  EMPLEADO
 # ══════════════════════════════════════════════════════════
 class Empleado(models.Model):
     CARGOS = [
@@ -61,7 +57,6 @@ class Empleado(models.Model):
         ('NIT', 'NIT'),
         ('PAS', 'Pasaporte'),
     ]
-
     nombres        = models.CharField(max_length=150)
     apellidos      = models.CharField(max_length=150)
     tipo_documento = models.CharField(max_length=3, choices=TIPOS_DOC, default='CC')
@@ -96,7 +91,7 @@ class Marca(models.Model):
         ('AUTO',     'Marca de Vehículo'),
         ('REPUESTO', 'Marca de Repuesto/Aceite'),
     ]
-    nombre         = models.CharField(max_length=50, unique=True)
+    nombre         = models.CharField(max_length=50)
     categoria      = models.CharField(max_length=10, choices=CATEGORIAS, default='AUTO')
     pais_origen    = models.CharField(max_length=50, blank=True, null=True)
     logo           = models.ImageField(upload_to='marcas_logos/', blank=True, null=True)
@@ -160,6 +155,7 @@ class Proveedor(models.Model):
     nit       = models.CharField(max_length=20, unique=True)
     telefono  = models.CharField(max_length=20)
     direccion = models.CharField(max_length=150, blank=True)
+    activo    = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nombre
@@ -172,22 +168,34 @@ class Proveedor(models.Model):
 #  PRODUCTO
 # ══════════════════════════════════════════════════════════
 class Producto(models.Model):
-    nombre       = models.CharField(max_length=100, unique=True)
-    marca        = models.ForeignKey(
+    UNIDADES = [
+        ('UND', 'Unidad'),
+        ('LT',  'Litro'),
+        ('ML',  'Mililitro'),
+        ('KG',  'Kilogramo'),
+        ('GR',  'Gramo'),
+        ('MT',  'Metro'),
+        ('CM',  'Centímetro'),
+        ('GL',  'Galón'),
+        ('PAR', 'Par'),
+        ('KIT', 'Kit'),
+        ('CJA', 'Caja'),
+        ('RLL', 'Rollo'),
+        ('JGO', 'Juego'),
+    ]
+    nombre        = models.CharField(max_length=100, unique=True)
+    marca         = models.ForeignKey(
         Marca, on_delete=models.PROTECT,
-        # FIX: solo marcas activas de tipo REPUESTO
         limit_choices_to={'categoria': 'REPUESTO', 'estado': True}
     )
-    proveedor    = models.ForeignKey(
-        Proveedor, on_delete=models.SET_NULL,
-        null=True, blank=True
-    )
-    descripcion  = models.TextField(blank=True, null=True)
-    precio       = models.DecimalField(max_digits=10, decimal_places=2)
-    stock        = models.PositiveIntegerField(default=0)
-    stock_minimo = models.PositiveIntegerField(default=0)
-    codigo       = models.CharField(max_length=20, unique=True)
-    estado       = models.BooleanField(default=True)
+    proveedor     = models.ForeignKey(Proveedor, on_delete=models.SET_NULL, null=True, blank=True)
+    descripcion   = models.TextField(blank=True, null=True)
+    precio        = models.DecimalField(max_digits=10, decimal_places=2)
+    stock         = models.PositiveIntegerField(default=0)
+    stock_minimo  = models.PositiveIntegerField(default=0)
+    codigo        = models.CharField(max_length=20, unique=True)
+    unidad_medida = models.CharField(max_length=5, choices=UNIDADES, default='UND', verbose_name='Unidad de medida')
+    estado        = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.nombre} | Stock: {self.stock}"
@@ -218,21 +226,10 @@ class TipoServicio(models.Model):
 #  COMPATIBILIDAD PRODUCTO
 # ══════════════════════════════════════════════════════════
 class CompatibilidadProducto(models.Model):
-    producto = models.ForeignKey(
-        Producto, on_delete=models.CASCADE,
-        # FIX: solo productos activos
-        limit_choices_to={'estado': True}
-    )
-    marca_vehiculo = models.ForeignKey(
-        Marca, on_delete=models.CASCADE,
-        # FIX: solo marcas activas de tipo AUTO
-        limit_choices_to={'categoria': 'AUTO', 'estado': True}
-    )
-    tipo_servicio = models.ForeignKey(
-        TipoServicio, on_delete=models.CASCADE,
-        null=True, blank=True,
-        help_text="Servicio donde se usa este producto. Dejar vacío si aplica para cualquiera."
-    )
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, limit_choices_to={'estado': True})
+    marca_vehiculo = models.ForeignKey(Marca, on_delete=models.CASCADE, limit_choices_to={'categoria': 'AUTO', 'estado': True})
+    tipo_servicio = models.ForeignKey(TipoServicio, on_delete=models.CASCADE, null=True, blank=True,
+        help_text="Servicio donde se usa este producto. Dejar vacío si aplica para cualquiera.")
 
     def __str__(self):
         srv = f" — {self.tipo_servicio.nombre}" if self.tipo_servicio else ""
@@ -272,27 +269,87 @@ class Cliente(models.Model):
 class Vehiculo(models.Model):
     placa   = models.CharField(max_length=10, unique=True)
     modelo  = models.CharField(max_length=50, help_text="Año del vehículo. Ej: 2019")
-    marca   = models.ForeignKey(
-        Marca, on_delete=models.PROTECT,
-        # FIX: solo marcas activas de tipo AUTO
-        limit_choices_to={'categoria': 'AUTO', 'estado': True}
-    )
+    marca   = models.ForeignKey(Marca, on_delete=models.PROTECT, limit_choices_to={'categoria': 'AUTO', 'estado': True})
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
 
-    km_ultimo_servicio       = models.IntegerField(
-        default=0,
-        help_text="Se actualiza automáticamente al registrar una orden de servicio."
+    km_ultimo_servicio       = models.IntegerField(default=0,
+        help_text="Se actualiza automáticamente al registrar una orden de servicio.")
+    km_proximo_mantenimiento = models.IntegerField(null=True, blank=True,
+        help_text="Se calcula automáticamente. Puede sobreescribirse manualmente.")
+
+    km_diarios_promedio = models.PositiveIntegerField(
+        default=50,
+        verbose_name="Km diarios promedio",
+        help_text="Promedio de km que recorre este vehículo por día. Configurable por vehículo."
     )
-    km_proximo_mantenimiento = models.IntegerField(
+    km_alerta_anticipacion = models.PositiveIntegerField(
+        default=1000,
+        verbose_name="Km de anticipación para alerta",
+        help_text="Con cuántos km de anticipación generar la alerta de mantenimiento."
+    )
+    fecha_ultimo_servicio = models.DateField(
         null=True, blank=True,
-        help_text="Se calcula automáticamente. Puede sobreescribirse manualmente."
+        help_text="Se actualiza automáticamente al registrar una orden."
     )
+
+    def km_estimados_hoy(self):
+        if not self.fecha_ultimo_servicio:
+            return self.km_ultimo_servicio
+        dias = (timezone.now().date() - self.fecha_ultimo_servicio).days
+        return self.km_ultimo_servicio + (dias * self.km_diarios_promedio)
+
+    def km_restantes_estimados(self):
+        if not self.km_proximo_mantenimiento:
+            return None
+        return self.km_proximo_mantenimiento - self.km_estimados_hoy()
+
+    def estado_mantenimiento(self):
+        if not self.km_proximo_mantenimiento:
+            return 'sin_datos'
+        restantes = self.km_restantes_estimados()
+        if restantes <= 0:
+            return 'vencido'
+        elif restantes <= self.km_alerta_anticipacion:
+            return 'alerta'
+        return 'ok'
 
     def __str__(self):
         return f"{self.placa} - {self.modelo} ({self.marca.nombre})"
 
     class Meta:
         db_table = 'vehiculo'
+
+
+# ══════════════════════════════════════════════════════════
+#  NOTIFICACION
+# ══════════════════════════════════════════════════════════
+class Notificacion(models.Model):
+    TIPOS = [
+        ('Alerta',        'Alerta'),
+        ('Recordatorio',  'Recordatorio'),
+        ('Mantenimiento', 'Mantenimiento'),
+        ('Urgente',       'Urgente'),
+        ('Informacion',   'Información'),
+    ]
+    ORIGENES = [
+        ('SISTEMA', 'Automática del sistema'),
+        ('ADMIN',   'Creada por administrador'),
+    ]
+    tipo     = models.CharField(max_length=50, choices=TIPOS)
+    origen   = models.CharField(max_length=10, choices=ORIGENES, default='ADMIN')
+    titulo   = models.CharField(max_length=150, blank=True)
+    vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE, null=True, blank=True,
+        help_text="Solo si la notificación está relacionada con un vehículo.")
+    mensaje  = models.TextField()
+    leido    = models.BooleanField(default=False)
+    fecha    = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"[{self.get_origen_display()}] {self.tipo} — {self.titulo or self.mensaje[:40]}"
+
+    class Meta:
+        db_table = 'notificacion'
+        ordering = ['-fecha']
 
 
 # ══════════════════════════════════════════════════════════
@@ -304,12 +361,7 @@ class OrdenServicio(models.Model):
         ('En Proceso', 'En Proceso'),
         ('Terminado',  'Terminado'),
     ]
-    # FIX: usa Empleado en lugar del antiguo Usuario
-    empleado = models.ForeignKey(
-        Empleado, on_delete=models.SET_NULL,
-        null=True, blank=True,
-        limit_choices_to={'activo': True}
-    )
+    empleado  = models.ForeignKey(Empleado, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'activo': True})
     vehiculo  = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
     servicio  = models.ForeignKey(TipoServicio, on_delete=models.PROTECT)
     fecha     = models.DateTimeField(default=timezone.now)
@@ -321,45 +373,48 @@ class OrdenServicio(models.Model):
         self._actualizar_km_vehiculo()
 
     def _actualizar_km_vehiculo(self):
-        """
-        Actualiza km del vehículo y genera notificación
-        de mantenimiento si está cerca del próximo servicio.
-        """
         vehiculo = self.vehiculo
         servicio = self.servicio
 
-        if self.km_actual > vehiculo.km_ultimo_servicio:
-            vehiculo.km_ultimo_servicio = self.km_actual
+        # ── Actualizar km y fecha si el km de esta orden es el mayor registrado ──
+        if self.km_actual >= vehiculo.km_ultimo_servicio:
+            vehiculo.km_ultimo_servicio    = self.km_actual
+            vehiculo.fecha_ultimo_servicio = self.fecha.date() if hasattr(self.fecha, 'date') else timezone.now().date()
 
-            if servicio.intervalo_km > 0:
-                nuevo_proximo = self.km_actual + servicio.intervalo_km
-                if (
-                    vehiculo.km_proximo_mantenimiento is None or
-                    nuevo_proximo < vehiculo.km_proximo_mantenimiento
-                ):
-                    vehiculo.km_proximo_mantenimiento = nuevo_proximo
+        # ── Recalcular próximo mantenimiento SIEMPRE que el servicio tenga intervalo ──
+        # Esto permite que al editar el tipo de servicio y guardar la orden,
+        # el km_proximo_mantenimiento se actualice con el nuevo intervalo.
+        if servicio.intervalo_km > 0:
+            nuevo_proximo = vehiculo.km_ultimo_servicio + servicio.intervalo_km
+            # Solo actualiza si no hay uno definido, o si el nuevo es menor (más urgente)
+            if vehiculo.km_proximo_mantenimiento is None or nuevo_proximo != vehiculo.km_proximo_mantenimiento:
+                vehiculo.km_proximo_mantenimiento = nuevo_proximo
 
-            vehiculo.save(update_fields=['km_ultimo_servicio', 'km_proximo_mantenimiento'])
+        vehiculo.save(update_fields=[
+            'km_ultimo_servicio',
+            'km_proximo_mantenimiento',
+            'fecha_ultimo_servicio',
+        ])
 
-            # Notificación si faltan 1000 km o menos para el próximo mantenimiento
-            if vehiculo.km_proximo_mantenimiento:
-                km_restante = vehiculo.km_proximo_mantenimiento - self.km_actual
-                if km_restante <= 1000:
-                    Notificacion.objects.get_or_create(
-                        tipo     = 'Mantenimiento',
-                        origen   = 'SISTEMA',
-                        leido    = False,
-                        vehiculo = vehiculo,
-                        defaults = {
-                            'titulo': f"Mantenimiento próximo — {vehiculo.placa}",
-                            'mensaje': (
-                                f"El vehículo {vehiculo.placa} ({vehiculo.marca.nombre} {vehiculo.modelo}) "
-                                f"tiene {self.km_actual} km actuales. "
-                                f"Próximo mantenimiento a los {vehiculo.km_proximo_mantenimiento} km "
-                                f"(faltan aprox. {max(km_restante, 0)} km)."
-                            ),
-                        }
-                    )
+        # ── Notificación si ya está en zona de alerta ──
+        if vehiculo.km_proximo_mantenimiento:
+            km_restante = vehiculo.km_proximo_mantenimiento - self.km_actual
+            if km_restante <= vehiculo.km_alerta_anticipacion:
+                Notificacion.objects.get_or_create(
+                    tipo     = 'Mantenimiento',
+                    origen   = 'SISTEMA',
+                    leido    = False,
+                    vehiculo = vehiculo,
+                    defaults = {
+                        'titulo': f"Mantenimiento próximo — {vehiculo.placa}",
+                        'mensaje': (
+                            f"El vehículo {vehiculo.placa} ({vehiculo.marca.nombre} {vehiculo.modelo}) "
+                            f"tiene {self.km_actual:,} km actuales. "
+                            f"Próximo mantenimiento a los {vehiculo.km_proximo_mantenimiento:,} km "
+                            f"(faltan aprox. {max(km_restante, 0):,} km)."
+                        ),
+                    }
+                )
 
     def __str__(self):
         return f"Orden #{self.id} — {self.vehiculo.placa}"
@@ -378,11 +433,7 @@ class Compra(models.Model):
         ('Credito',       'Crédito'),
     ]
     proveedor             = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
-    producto              = models.ForeignKey(
-        Producto, on_delete=models.CASCADE,
-        # FIX: solo productos activos
-        limit_choices_to={'estado': True}
-    )
+    producto              = models.ForeignKey(Producto, on_delete=models.CASCADE, limit_choices_to={'estado': True})
     cantidad              = models.IntegerField()
     fecha                 = models.DateTimeField(default=timezone.now)
     num_factura_proveedor = models.CharField(max_length=50, unique=True)
@@ -393,7 +444,6 @@ class Compra(models.Model):
         if not self.pk:
             self.producto.stock += self.cantidad
             self.producto.save()
-
             if self.metodo_pago != 'Credito':
                 Caja.objects.create(
                     descripcion = f"Compra Factura {self.num_factura_proveedor}",
@@ -402,21 +452,12 @@ class Compra(models.Model):
                     categoria   = 'Proveedores',
                     metodo_pago = self.metodo_pago,
                 )
-
-            # Notificación si sigue bajo el mínimo incluso tras la compra
             prod = Producto.objects.get(pk=self.producto.pk)
             if prod.stock <= prod.stock_minimo:
                 Notificacion.objects.get_or_create(
-                    tipo   = 'Alerta',
-                    origen = 'SISTEMA',
-                    leido  = False,
+                    tipo   = 'Alerta', origen = 'SISTEMA', leido = False,
                     titulo = f"Stock bajo — {prod.nombre}",
-                    defaults={
-                        'mensaje': (
-                            f"'{prod.nombre}' tiene {prod.stock} unidades, "
-                            f"igual o por debajo del mínimo ({prod.stock_minimo})."
-                        ),
-                    }
+                    defaults={'mensaje': f"'{prod.nombre}' tiene {prod.stock} unidades, igual o por debajo del mínimo ({prod.stock_minimo})."}
                 )
         super().save(*args, **kwargs)
 
@@ -431,42 +472,22 @@ class Compra(models.Model):
 #  DETALLE ORDEN
 # ══════════════════════════════════════════════════════════
 class DetalleOrdenProducto(models.Model):
-    orden    = models.ForeignKey(
-        OrdenServicio, on_delete=models.CASCADE,
-        related_name='productos_usados'
-    )
-    producto = models.ForeignKey(
-        Producto, on_delete=models.PROTECT,
-        # FIX: solo productos activos
-        limit_choices_to={'estado': True}
-    )
+    orden    = models.ForeignKey(OrdenServicio, on_delete=models.CASCADE, related_name='productos_usados')
+    producto = models.ForeignKey(Producto, on_delete=models.PROTECT, limit_choices_to={'estado': True})
     cantidad = models.PositiveIntegerField(default=1)
 
     def save(self, *args, **kwargs):
         if not self.pk:
             if self.producto.stock < self.cantidad:
-                raise ValidationError(
-                    f"Stock insuficiente para '{self.producto.nombre}'. "
-                    f"Disponible: {self.producto.stock}."
-                )
+                raise ValidationError(f"Stock insuficiente para '{self.producto.nombre}'. Disponible: {self.producto.stock}.")
             self.producto.stock -= self.cantidad
             self.producto.save()
-
-            # Notificación si baja del mínimo
             prod = Producto.objects.get(pk=self.producto.pk)
             if prod.stock <= prod.stock_minimo:
                 Notificacion.objects.get_or_create(
-                    tipo   = 'Alerta',
-                    origen = 'SISTEMA',
-                    leido  = False,
+                    tipo   = 'Alerta', origen = 'SISTEMA', leido = False,
                     titulo = f"Stock bajo — {prod.nombre}",
-                    defaults={
-                        'mensaje': (
-                            f"'{prod.nombre}' bajó a {prod.stock} unidades "
-                            f"tras usarse en la Orden #{self.orden.id}. "
-                            f"Mínimo permitido: {prod.stock_minimo}."
-                        ),
-                    }
+                    defaults={'mensaje': f"'{prod.nombre}' bajó a {prod.stock} unidades tras usarse en la Orden #{self.orden.id}. Mínimo permitido: {prod.stock_minimo}."}
                 )
         super().save(*args, **kwargs)
 
@@ -483,48 +504,29 @@ class DetalleOrdenProducto(models.Model):
 
 
 # ══════════════════════════════════════════════════════════
-#  FACTURA  (modelo unificado — reemplaza VentasFactura)
+#  FACTURA
 # ══════════════════════════════════════════════════════════
 class Factura(models.Model):
-    TIPO_FACTURA = [
-        ('SERVICIO', 'Orden de Servicio'),
-        ('PRODUCTO', 'Venta de Producto'),
-    ]
+    TIPO_FACTURA = [('SERVICIO', 'Orden de Servicio'), ('PRODUCTO', 'Venta de Producto')]
     METODOS_PAGO = [
-        ('Efectivo',       'Efectivo'),
-        ('Transferencia',  'Transferencia Bancaria'),
-        ('TarjetaDebito',  'Tarjeta Débito'),
-        ('TarjetaCredito', 'Tarjeta Crédito'),
-        ('Nequi',          'Nequi'),
-        ('Daviplata',      'Daviplata'),
+        ('Efectivo', 'Efectivo'), ('Transferencia', 'Transferencia Bancaria'),
+        ('TarjetaDebito', 'Tarjeta Débito'), ('TarjetaCredito', 'Tarjeta Crédito'),
+        ('Nequi', 'Nequi'), ('Daviplata', 'Daviplata'),
     ]
-    ESTADOS_PAGO = [
-        ('Pendiente', 'Pendiente'),
-        ('Pagada',    'Pagada'),
-    ]
+    ESTADOS_PAGO = [('Pendiente', 'Pendiente'), ('Pagada', 'Pagada')]
 
     tipo           = models.CharField(max_length=10, choices=TIPO_FACTURA, default='SERVICIO')
     numero_factura = models.CharField(max_length=20, unique=True)
     fecha_emision  = models.DateTimeField(auto_now_add=True)
-
-    orden_servicio = models.ForeignKey(
-        'OrdenServicio', on_delete=models.SET_NULL,
-        null=True, blank=True, related_name='facturas'
-    )
-    producto = models.ForeignKey(
-        'Producto', on_delete=models.SET_NULL,
-        null=True, blank=True, related_name='facturas',
-        # FIX: solo productos activos
-        limit_choices_to={'estado': True}
-    )
-    cantidad  = models.PositiveIntegerField(default=1, null=True, blank=True)
-    subtotal  = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    iva       = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    total     = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-
-    estado_pago = models.CharField(max_length=10, choices=ESTADOS_PAGO, default='Pendiente')
-    metodo_pago = models.CharField(max_length=20, choices=METODOS_PAGO, null=True, blank=True)
-    fecha_pago  = models.DateTimeField(null=True, blank=True)
+    orden_servicio = models.ForeignKey('OrdenServicio', on_delete=models.SET_NULL, null=True, blank=True, related_name='facturas')
+    producto       = models.ForeignKey('Producto', on_delete=models.SET_NULL, null=True, blank=True, related_name='facturas', limit_choices_to={'estado': True})
+    cantidad       = models.PositiveIntegerField(default=1, null=True, blank=True)
+    subtotal       = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    iva            = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total          = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    estado_pago    = models.CharField(max_length=10, choices=ESTADOS_PAGO, default='Pendiente')
+    metodo_pago    = models.CharField(max_length=20, choices=METODOS_PAGO, null=True, blank=True)
+    fecha_pago     = models.DateTimeField(null=True, blank=True)
 
     def clean(self):
         if self.tipo == 'SERVICIO' and not self.orden_servicio:
@@ -535,15 +537,12 @@ class Factura(models.Model):
     def save(self, *args, **kwargs):
         if self.estado_pago == 'Pagada' and not self.fecha_pago:
             self.fecha_pago = timezone.now()
-
         super().save(*args, **kwargs)
-
         if self.estado_pago == 'Pagada':
             if not Caja.objects.filter(descripcion__icontains=self.numero_factura).exists():
                 Caja.objects.create(
                     descripcion = f"Factura {self.numero_factura} — {self.get_tipo_display()}",
-                    monto       = self.total,
-                    tipo        = 'INGRESO',
+                    monto       = self.total, tipo = 'INGRESO',
                     categoria   = 'Ventas' if self.tipo == 'PRODUCTO' else 'Servicios',
                     metodo_pago = self.metodo_pago or 'Efectivo',
                 )
@@ -557,40 +556,3 @@ class Factura(models.Model):
     class Meta:
         db_table = 'factura'
         ordering = ['-fecha_emision']
-
-
-# ══════════════════════════════════════════════════════════
-#  NOTIFICACION
-# ══════════════════════════════════════════════════════════
-class Notificacion(models.Model):
-    TIPOS = [
-        ('Alerta',        'Alerta'),
-        ('Recordatorio',  'Recordatorio'),
-        ('Mantenimiento', 'Mantenimiento'),
-        ('Urgente',       'Urgente'),
-        ('Informacion',   'Información'),
-    ]
-    ORIGENES = [
-        ('SISTEMA', 'Automática del sistema'),
-        ('ADMIN',   'Creada por administrador'),
-    ]
-
-    tipo     = models.CharField(max_length=50, choices=TIPOS)
-    origen   = models.CharField(max_length=10, choices=ORIGENES, default='ADMIN')
-    titulo   = models.CharField(max_length=150, blank=True)
-    # FIX: vehiculo opcional — notif. de stock no tienen vehículo
-    vehiculo = models.ForeignKey(
-        Vehiculo, on_delete=models.CASCADE,
-        null=True, blank=True,
-        help_text="Solo si la notificación está relacionada con un vehículo."
-    )
-    mensaje  = models.TextField()
-    leido    = models.BooleanField(default=False)
-    fecha    = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"[{self.get_origen_display()}] {self.tipo} — {self.titulo or self.mensaje[:40]}"
-
-    class Meta:
-        db_table = 'notificacion'
-        ordering = ['-fecha']

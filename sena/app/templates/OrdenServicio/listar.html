@@ -14,186 +14,70 @@
         --muted:  #888;
     }
 
-    .taller-header {
-        position: relative;
-        background: var(--carbon);
-        border-radius: 16px;
-        padding: 28px 32px;
-        margin-bottom: 28px;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-    .taller-header::before {
-        content: '';
-        position: absolute;
-        top: 0; right: 0;
-        width: 260px; height: 100%;
-        background: repeating-linear-gradient(
-            -55deg, transparent, transparent 14px,
-            rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px
-        );
-    }
-    .taller-header::after {
-        content: '';
-        position: absolute;
-        left: 0; top: 0;
-        width: 5px; height: 100%;
-        background: var(--rojo);
-        border-radius: 16px 0 0 16px;
-    }
-    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
-    .header-icon-wrap {
-        width: 56px; height: 56px;
-        background: var(--rojo);
-        border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.4rem; color: white;
-        box-shadow: 0 0 0 4px rgba(211,47,47,.25);
-        flex-shrink: 0;
-    }
-    .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: 2rem; font-weight: 800;
-        color: white; letter-spacing: 1px;
-        text-transform: uppercase; line-height: 1; margin: 0;
-    }
-    .header-sub {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .78rem; color: rgba(255,255,255,.45);
-        margin-top: 4px; letter-spacing: .5px;
-    }
-    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
-    .btn-accion {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .75rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px;
-        padding: 10px 18px; border-radius: 10px;
-        display: flex; align-items: center; gap: 8px;
-        border: none; cursor: pointer; text-decoration: none;
-        transition: transform .2s, box-shadow .2s;
-    }
-    .btn-accion:hover { transform: translateY(-2px); }
-    .btn-pdf   { background: #c0392b; color: white !important; }
-    .btn-excel { background: #1e7e45; color: white !important; }
-    .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
-    .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
+    .taller-header { position:relative; background:var(--carbon); border-radius:16px; padding:28px 32px; margin-bottom:28px; overflow:hidden; display:flex; align-items:center; justify-content:space-between; }
+    .taller-header::before { content:''; position:absolute; top:0; right:0; width:260px; height:100%; background:repeating-linear-gradient(-55deg,transparent,transparent 14px,rgba(255,255,255,.03) 14px,rgba(255,255,255,.03) 28px); }
+    .header-left { display:flex; align-items:center; gap:18px; position:relative; }
+    .header-icon-wrap { width:56px; height:56px; background:var(--rojo); border-radius:12px; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 4px rgba(211,47,47,.25); flex-shrink:0; }
+    .header-icon-wrap svg { width:28px; height:28px; stroke:white; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+    .header-titulo { font-family:'Barlow Condensed',sans-serif; font-size:2rem; font-weight:800; color:white; letter-spacing:1px; text-transform:uppercase; line-height:1; margin:0; }
+    .header-sub { font-family:'DM Sans',sans-serif; font-size:.78rem; color:rgba(255,255,255,.45); margin-top:4px; }
+    .header-actions { display:flex; align-items:center; gap:10px; position:relative; }
+    .btn-accion { font-family:'DM Sans',sans-serif; font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; padding:10px 18px; border-radius:10px; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; text-decoration:none; transition:transform .2s, box-shadow .2s; }
+    .btn-accion svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .btn-accion:hover { transform:translateY(-2px); }
+    .btn-pdf   { background:#c0392b; color:white !important; }
+    .btn-excel { background:#1e7e45; color:white !important; }
+    .btn-nuevo { background:var(--rojo); color:white !important; box-shadow:0 4px 16px rgba(211,47,47,.4); }
+    .btn-nuevo:hover { box-shadow:0 6px 20px rgba(211,47,47,.5); color:white !important; }
 
-    .tabla-wrap {
-        background: white;
-        border-radius: 16px;
-        border: 1px solid var(--borde);
-        overflow: hidden;
-    }
+    .tabla-wrap { background:white; border-radius:16px; border:1px solid var(--borde); overflow:hidden; }
+    #tabla_ordenes { font-family:'DM Sans',sans-serif; font-size:.875rem; border-collapse:collapse; width:100%; }
+    #tabla_ordenes thead tr { background:var(--gris); border-bottom:2px solid var(--borde); }
+    #tabla_ordenes thead th { font-family:'Barlow Condensed',sans-serif; font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); padding:14px 16px; border:none; }
+    #tabla_ordenes tbody tr { border-bottom:1px solid var(--borde); transition:background .15s; }
+    #tabla_ordenes tbody tr:hover { background:#fafaf8; }
+    #tabla_ordenes tbody tr:last-child { border-bottom:none; }
+    #tabla_ordenes tbody td { padding:13px 16px; color:var(--texto); vertical-align:middle; border:none; }
 
-    #tabla_ordenes {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .875rem;
-        border-collapse: collapse;
-        width: 100%;
-    }
-    #tabla_ordenes thead tr {
-        background: var(--gris);
-        border-bottom: 2px solid var(--borde);
-    }
-    #tabla_ordenes thead th {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .78rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1.2px;
-        color: var(--muted); padding: 14px 16px; border: none;
-    }
-    #tabla_ordenes tbody tr {
-        border-bottom: 1px solid var(--borde);
-        transition: background .15s;
-    }
-    #tabla_ordenes tbody tr:hover { background: #fafaf8; }
-    #tabla_ordenes tbody tr:last-child { border-bottom: none; }
-    #tabla_ordenes tbody td {
-        padding: 13px 16px; color: var(--texto);
-        vertical-align: middle; border: none;
-    }
+    .placa-box { font-family:'Barlow Condensed',sans-serif; font-size:.95rem; font-weight:800; color:var(--rojo); background:#fff5f5; border:1px solid rgba(211,47,47,.2); border-radius:8px; padding:4px 12px; text-transform:uppercase; letter-spacing:1px; display:inline-block; }
 
-    .placa-box {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .95rem; font-weight: 800;
-        color: var(--rojo); background: #fff5f5;
-        border: 1px solid rgba(211,47,47,.2);
-        border-radius: 8px; padding: 4px 12px;
-        text-transform: uppercase; letter-spacing: 1px;
-        display: inline-block;
-    }
+    .badge-estado { font-family:'DM Sans',sans-serif; font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.6px; border-radius:6px; padding:4px 10px; display:inline-block; }
+    .estado-pendiente { background:#fff8e1; color:#f59e0b; border:1px solid #fde68a; }
+    .estado-proceso   { background:#e0f2fe; color:#0284c7; border:1px solid #bae6fd; }
+    .estado-terminado { background:#dcfce7; color:#16a34a; border:1px solid #bbf7d0; }
 
-    .badge-estado {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .7rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .6px;
-        border-radius: 6px; padding: 4px 10px;
-        display: inline-block;
-    }
-    .estado-pendiente  { background: #fff8e1; color: #f59e0b; border: 1px solid #fde68a; }
-    .estado-proceso    { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
-    .estado-terminado  { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+    .badge-servicio { font-family:'DM Sans',sans-serif; font-size:.7rem; font-weight:600; background:var(--gris); color:var(--texto); border:1px solid var(--borde); border-radius:6px; padding:3px 9px; text-transform:uppercase; letter-spacing:.4px; }
 
-    .badge-servicio {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .7rem; font-weight: 600;
-        background: var(--gris); color: var(--texto);
-        border: 1px solid var(--borde);
-        border-radius: 6px; padding: 3px 9px;
-        text-transform: uppercase; letter-spacing: .4px;
+    /* ── Indicador de productos en el listado ── */
+    .prod-indicator {
+        display: inline-flex; align-items: center; gap: 5px;
+        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
+        padding: 3px 9px; border-radius: 20px;
     }
+    .prod-indicator svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+    .prod-con-warn  { background: #fef9c3; color: #a16207; }
+    .prod-con-ok    { background: #dcfce7; color: #15803d; }
+    .prod-sin       { background: var(--gris); color: var(--muted); font-style: italic; font-weight: 400; }
 
-    /* ── Botones de fila ── */
-    .btn-fila {
-        width: 32px; height: 32px; border-radius: 8px;
-        display: inline-flex; align-items: center; justify-content: center;
-        border: none; cursor: pointer; transition: .2s; font-size: .8rem;
-        text-decoration: none;
-    }
-    .btn-fila:hover { transform: translateY(-2px); }
-    .btn-edit    { background: #f39c12; color: white; }
-    .btn-del     { background: var(--rojo); color: white; }
-    /* ── NUEVO: botón detalle ── */
-    .btn-detalle {
-        width: auto !important;
-        padding: 0 14px;
-        gap: 6px;
-        background: var(--carbon);
-        color: white;
-        font-family: 'DM Sans', sans-serif;
-        font-size: .72rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .5px;
-        text-decoration: none;
-    }
-    .btn-detalle:hover {
-        background: #333;
-        color: white;
-    }
+    .btn-fila { width:32px; height:32px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; border:none; cursor:pointer; transition:transform .2s, box-shadow .2s; text-decoration:none; }
+    .btn-fila svg { width:14px; height:14px; stroke:white; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; pointer-events:none; }
+    .btn-fila:hover { transform:translateY(-2px); box-shadow:0 4px 10px rgba(0,0,0,.2); }
+    .btn-detalle { width:auto !important; padding:0 12px; gap:6px; background:var(--carbon); color:white !important; font-family:'DM Sans',sans-serif; font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
+    .btn-detalle:hover { background:#333; color:white !important; }
+    .btn-detalle svg { width:13px; height:13px; }
+    .btn-edit { background:#1565c0; margin:0 4px; }
+    .btn-del  { background:var(--rojo); }
 
-    .dataTables_wrapper { padding: 16px 20px; }
-    .dataTables_filter input {
-        border: 1.5px solid var(--borde) !important;
-        border-radius: 8px !important; padding: 6px 12px !important;
-        font-family: 'DM Sans', sans-serif !important; font-size: .85rem !important;
-        outline: none !important; transition: border-color .2s;
-    }
-    .dataTables_filter input:focus { border-color: var(--rojo) !important; }
-    .dataTables_filter label,
-    .dataTables_length label,
-    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
-    .dataTables_length select {
-        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
-        padding: 4px 8px !important; appearance: none !important;
-        background-image: none !important; background: white !important;
-    }
-    .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
-    .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
-    .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
-    .paginate_button.disabled { display: inline-block !important; opacity: .4; }
-    .dataTables_paginate { display: block !important; }
+    .dataTables_wrapper { padding:16px 20px; }
+    .dataTables_filter input { border:1.5px solid var(--borde) !important; border-radius:8px !important; padding:6px 12px !important; font-family:'DM Sans',sans-serif !important; font-size:.85rem !important; outline:none !important; transition:border-color .2s; }
+    .dataTables_filter input:focus { border-color:var(--rojo) !important; }
+    .dataTables_filter label, .dataTables_length label, .dataTables_info { font-family:'DM Sans',sans-serif; font-size:.8rem; color:var(--muted); }
+    .dataTables_length select { border:1.5px solid var(--borde) !important; border-radius:8px !important; padding:4px 8px !important; appearance:none !important; background:white !important; }
+    .page-item.active .page-link { background:var(--rojo) !important; border-color:var(--rojo) !important; color:white !important; font-weight:700 !important; }
+    .page-link { color:var(--rojo) !important; font-family:'DM Sans',sans-serif; font-size:.85rem; font-weight:600; }
+    .paginate_button { border-radius:7px !important; font-family:'DM Sans',sans-serif !important; font-size:.82rem !important; font-weight:600 !important; }
+    .paginate_button.disabled { display:inline-block !important; opacity:.4; }
+    .dataTables_paginate { display:block !important; }
 </style>
 {% endblock %}
 
@@ -202,7 +86,9 @@
 
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap"><i class="fas fa-tools"></i></div>
+            <div class="header-icon-wrap">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+            </div>
             <div>
                 <h1 class="header-titulo">Órdenes de Servicio</h1>
                 <div class="header-sub">Registro de órdenes del taller</div>
@@ -210,13 +96,13 @@
         </div>
         <div class="header-actions">
             <a href="{% url 'app:reporte_ordenes_pdf' %}" class="btn-accion btn-pdf">
-                <i class="fas fa-file-pdf"></i> PDF
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> PDF
             </a>
             <a href="{% url 'app:reporte_ordenes_excel' %}" class="btn-accion btn-excel">
-                <i class="fas fa-file-excel"></i> Excel
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg> Excel
             </a>
             <a href="{% url 'app:orden_servicio_create' %}" class="btn-accion btn-nuevo">
-                <i class="fas fa-plus"></i> Nueva Orden
+                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nueva Orden
             </a>
         </div>
     </div>
@@ -231,6 +117,7 @@
                         <th>Servicio</th>
                         <th>KM</th>
                         <th>Estado</th>
+                        <th>Productos</th>
                         <th>Fecha</th>
                         <th class="text-center">Acciones</th>
                     </tr>
@@ -238,10 +125,10 @@
                 <tbody>
                     {% for o in ordenes %}
                     <tr>
-                        <td class="text-center" style="font-weight:700; color:var(--muted); font-size:.8rem;">{{ o.id }}</td>
+                        <td class="text-center" style="font-weight:700;color:var(--muted);font-size:.8rem;">{{ o.id }}</td>
                         <td><span class="placa-box">{{ o.vehiculo }}</span></td>
                         <td><span class="badge-servicio">{{ o.servicio }}</span></td>
-                        <td style="font-weight:600; color:var(--carbon);">{{ o.km_actual }} km</td>
+                        <td style="font-weight:600;color:var(--carbon);">{{ o.km_actual }} km</td>
                         <td>
                             {% if o.estado == 'Pendiente' %}
                                 <span class="badge-estado estado-pendiente">Pendiente</span>
@@ -251,23 +138,36 @@
                                 <span class="badge-estado estado-terminado">Terminado</span>
                             {% endif %}
                         </td>
-                        <td style="color:var(--muted); font-size:.82rem;">{{ o.fecha|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            {% with count=o.productos_usados.count %}
+                            {% if count == 0 %}
+                                <span class="prod-indicator prod-sin">
+                                    Sin productos
+                                </span>
+                            {% elif o.tiene_incompatibles %}
+                                <span class="prod-indicator prod-con-warn" title="Hay productos sin compatibilidad verificada">
+                                    <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                    {{ count }} · Revisar
+                                </span>
+                            {% else %}
+                                <span class="prod-indicator prod-con-ok">
+                                    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                    {{ count }} producto{{ count|pluralize }}
+                                </span>
+                            {% endif %}
+                            {% endwith %}
+                        </td>
+                        <td style="color:var(--muted);font-size:.82rem;">{{ o.fecha|date:"d/m/Y H:i" }}</td>
                         <td class="text-center">
-                            <!-- ← NUEVO botón Detalle -->
-                            <a href="{% url 'app:orden_servicio_detail' o.id %}"
-                               class="btn-fila btn-detalle"
-                               title="Ver detalle de orden">
-                                <i class="fas fa-clipboard-list"></i> Detalle
+                            <a href="{% url 'app:orden_servicio_detail' o.id %}" class="btn-fila btn-detalle" title="Ver detalle">
+                                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                Detalle
                             </a>
-                            <a href="{% url 'app:orden_servicio_edit' o.id %}"
-                               class="btn-fila btn-edit ms-1"
-                               title="Editar">
-                                <i class="fas fa-pen"></i>
+                            <a href="{% url 'app:orden_servicio_edit' o.id %}" class="btn-fila btn-edit" title="Editar">
+                                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                             </a>
-                            <a href="{% url 'app:orden_servicio_delete' o.id %}"
-                               class="btn-fila btn-del ms-1"
-                               title="Eliminar">
-                                <i class="fas fa-trash-alt"></i>
+                            <a href="{% url 'app:orden_servicio_delete' o.id %}" class="btn-fila btn-del" title="Eliminar">
+                                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
                             </a>
                         </td>
                     </tr>
@@ -281,30 +181,20 @@
 
 {% block js %}
 <script>
-    $(document).ready(function () {
-        $('#tabla_ordenes').DataTable({
-            responsive: true,
-            autoWidth: false,
-            order: [[0, "desc"]],
-            pagingType: "full_numbers",
-            language: {
-                "sProcessing":     "Procesando...",
-                "sLengthMenu":     "Mostrar _MENU_ registros",
-                "sZeroRecords":    "No se encontraron resultados",
-                "sEmptyTable":     "Ningún dato disponible",
-                "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                "sInfoEmpty":      "Mostrando 0 a 0 de 0 registros",
-                "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
-                "sSearch":         "Buscar:",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst":    "«",
-                    "sLast":     "»",
-                    "sNext":     "›",
-                    "sPrevious": "‹"
-                }
-            }
-        });
+$(document).ready(function () {
+    $('#tabla_ordenes').DataTable({
+        responsive: true, autoWidth: false,
+        order: [[0, "desc"]], pagingType: "full_numbers",
+        language: {
+            "sProcessing":"Procesando...", "sLengthMenu":"Mostrar _MENU_ registros",
+            "sZeroRecords":"No se encontraron resultados", "sEmptyTable":"Ningún dato disponible",
+            "sInfo":"Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "sInfoEmpty":"Mostrando 0 a 0 de 0 registros",
+            "sInfoFiltered":"(filtrado de _MAX_ registros totales)",
+            "sSearch":"Buscar:", "sLoadingRecords":"Cargando...",
+            "oPaginate":{"sFirst":"«","sLast":"»","sNext":"›","sPrevious":"‹"}
+        }
     });
+});
 </script>
 {% endblock %}

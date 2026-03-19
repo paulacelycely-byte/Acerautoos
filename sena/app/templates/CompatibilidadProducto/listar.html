@@ -15,109 +15,82 @@
     }
 
     .taller-header {
-        position: relative;
-        background: var(--carbon);
-        border-radius: 16px;
-        padding: 28px 32px;
-        margin-bottom: 28px;
-        overflow: hidden;
-        display: flex; align-items: center; justify-content: space-between;
+        position: relative; background: var(--carbon);
+        border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
+        overflow: hidden; display: flex; align-items: center; justify-content: space-between;
     }
     .taller-header::before {
-        content: '';
-        position: absolute; top: 0; right: 0;
+        content: ''; position: absolute; top: 0; right: 0;
         width: 260px; height: 100%;
-        background: repeating-linear-gradient(
-            -55deg, transparent, transparent 14px,
-            rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px
-        );
+        background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
     }
     .taller-header::after {
-        content: '';
-        position: absolute; left: 0; top: 0;
-        width: 5px; height: 100%;
-        background: var(--rojo);
+        content: ''; position: absolute; left: 0; top: 0;
+        width: 5px; height: 100%; background: var(--rojo);
         border-radius: 16px 0 0 16px;
     }
     .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
     .header-icon-wrap {
-        width: 56px; height: 56px;
-        background: var(--rojo); border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.4rem; color: white;
-        box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
+        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
+        display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+        color: white; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
     }
     .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: 2rem; font-weight: 800;
-        color: white; letter-spacing: 1px;
-        text-transform: uppercase; line-height: 1; margin: 0;
+        font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800;
+        color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
     }
-    .header-sub {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .78rem; color: rgba(255,255,255,.45);
-        margin-top: 4px; letter-spacing: .5px;
-    }
+    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
     .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
     .btn-accion {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .75rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px;
-        padding: 10px 18px; border-radius: 10px;
-        display: flex; align-items: center; gap: 8px;
-        border: none; cursor: pointer; text-decoration: none;
-        transition: transform .2s, box-shadow .2s;
+        font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px; padding: 10px 18px;
+        border-radius: 10px; display: flex; align-items: center; gap: 8px;
+        border: none; cursor: pointer; text-decoration: none; transition: transform .2s, box-shadow .2s;
     }
     .btn-accion:hover { transform: translateY(-2px); }
     .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
     .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
 
-    .tabla-wrap {
-        background: white;
-        border-radius: 16px;
-        border: 1px solid var(--borde);
-        overflow: hidden;
-    }
+    .tabla-wrap { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
 
     #tabla_compatibilidad {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .875rem;
-        border-collapse: collapse;
-        width: 100%;
+        font-family: 'DM Sans', sans-serif; font-size: .875rem;
+        border-collapse: collapse; width: 100%;
     }
-    #tabla_compatibilidad thead tr {
-        background: var(--gris);
-        border-bottom: 2px solid var(--borde);
-    }
+    #tabla_compatibilidad thead tr { background: var(--gris); border-bottom: 2px solid var(--borde); }
     #tabla_compatibilidad thead th {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .78rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1.2px;
-        color: var(--muted); padding: 14px 16px; border: none;
+        font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 14px 16px; border: none;
     }
-    #tabla_compatibilidad tbody tr {
-        border-bottom: 1px solid var(--borde);
-        transition: background .15s;
-    }
+    #tabla_compatibilidad tbody tr { border-bottom: 1px solid var(--borde); transition: background .15s; }
     #tabla_compatibilidad tbody tr:hover { background: #fafaf8; }
     #tabla_compatibilidad tbody tr:last-child { border-bottom: none; }
-    #tabla_compatibilidad tbody td {
-        padding: 13px 16px; color: var(--texto);
-        vertical-align: middle; border: none;
+    #tabla_compatibilidad tbody td { padding: 13px 16px; color: var(--texto); vertical-align: middle; border: none; }
+
+    .id-badge { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; color: var(--muted); }
+    .producto-nombre { font-weight: 600; color: var(--carbon); font-size: .9rem; }
+    .producto-sub { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+
+    .badge-marca {
+        background: var(--carbon); color: white; padding: 4px 12px;
+        border-radius: 8px; font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .badge-servicio {
+        background: #e0f2fe; color: #0369a1; padding: 4px 10px;
+        border-radius: 8px; font-size: .72rem; font-weight: 700;
+        display: inline-flex; align-items: center; gap: 5px; margin-top: 4px;
+    }
+    .badge-servicio-vacio {
+        background: var(--gris); color: var(--muted); padding: 4px 10px;
+        border-radius: 8px; font-size: .72rem; font-style: italic;
+        display: inline-flex; align-items: center; gap: 5px; margin-top: 4px;
     }
 
-    .id-badge {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: 1rem; font-weight: 700; color: var(--muted);
-    }
-    .producto-nombre { font-weight: 600; color: var(--carbon); font-size: .9rem; }
-    .badge-marca {
-        background: var(--carbon); color: white;
-        padding: 4px 12px; border-radius: 8px;
-        font-family: 'DM Sans', sans-serif;
-        font-size: .75rem; font-weight: 700;
-        display: inline-flex; align-items: center; gap: 6px;
-    }
+    /* Stock badges */
+    .stock-ok   { background: #dcfce7; color: #16a34a; padding: 4px 10px; border-radius: 8px; font-size: .75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+    .stock-bajo { background: #fef9c3; color: #a16207; padding: 4px 10px; border-radius: 8px; font-size: .75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+    .stock-sin  { background: #fee2e2; color: #dc2626; padding: 4px 10px; border-radius: 8px; font-size: .75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
 
     .btn-fila {
         width: 32px; height: 32px; border-radius: 8px;
@@ -131,20 +104,13 @@
     /* DataTables override */
     .dataTables_wrapper { padding: 16px 20px; }
     .dataTables_filter input {
-        border: 1.5px solid var(--borde) !important;
-        border-radius: 8px !important; padding: 6px 12px !important;
-        font-family: 'DM Sans', sans-serif !important; font-size: .85rem !important;
-        outline: none !important; transition: border-color .2s;
+        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
+        padding: 6px 12px !important; font-family: 'DM Sans', sans-serif !important;
+        font-size: .85rem !important; outline: none !important; transition: border-color .2s;
     }
     .dataTables_filter input:focus { border-color: var(--rojo) !important; }
-    .dataTables_filter label,
-    .dataTables_length label,
-    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
-    .dataTables_length select {
-        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
-        padding: 4px 8px !important; appearance: none !important;
-        background-image: none !important; background: white !important;
-    }
+    .dataTables_filter label, .dataTables_length label, .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
+    .dataTables_length select { border: 1.5px solid var(--borde) !important; border-radius: 8px !important; padding: 4px 8px !important; appearance: none !important; background: white !important; }
     .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
     .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
     .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
@@ -161,7 +127,7 @@
             <div class="header-icon-wrap"><i class="fas fa-cogs"></i></div>
             <div>
                 <h1 class="header-titulo">Compatibilidad de Productos</h1>
-                <div class="header-sub">Relaciones producto — marca de vehículo</div>
+                <div class="header-sub">Relaciones producto — marca — tipo de servicio</div>
             </div>
         </div>
         <div class="header-actions">
@@ -178,7 +144,9 @@
                     <tr>
                         <th class="text-center">ID</th>
                         <th>Producto</th>
-                        <th>Aplica para Marca</th>
+                        <th>Marca Vehículo</th>
+                        <th>Tipo de Servicio</th>
+                        <th class="text-center">Stock</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -186,11 +154,34 @@
                     {% for comp in compatibilidades %}
                     <tr>
                         <td class="text-center"><span class="id-badge">#{{ comp.id }}</span></td>
-                        <td><span class="producto-nombre">{{ comp.producto.nombre }}</span></td>
+                        <td>
+                            <div class="producto-nombre">{{ comp.producto.nombre }}</div>
+                            <div class="producto-sub">{{ comp.producto.marca.nombre }} · {{ comp.producto.get_unidad_medida_display }}</div>
+                        </td>
                         <td>
                             <span class="badge-marca">
                                 <i class="fas fa-car"></i> {{ comp.marca_vehiculo.nombre }}
                             </span>
+                        </td>
+                        <td>
+                            {% if comp.tipo_servicio %}
+                                <span class="badge-servicio">
+                                    <i class="fas fa-wrench"></i> {{ comp.tipo_servicio.nombre }}
+                                </span>
+                            {% else %}
+                                <span class="badge-servicio-vacio">
+                                    <i class="fas fa-infinity"></i> Cualquier servicio
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if comp.producto.stock == 0 %}
+                                <span class="stock-sin"><i class="fas fa-times-circle"></i> Sin stock</span>
+                            {% elif comp.producto.stock <= comp.producto.stock_minimo %}
+                                <span class="stock-bajo"><i class="fas fa-exclamation-triangle"></i> {{ comp.producto.stock }} uds</span>
+                            {% else %}
+                                <span class="stock-ok"><i class="fas fa-check-circle"></i> {{ comp.producto.stock }} uds</span>
+                            {% endif %}
                         </td>
                         <td class="text-center">
                             <a href="{% url 'app:editar_compatibilidad' comp.id %}" class="btn-fila btn-edit" title="Editar">
@@ -217,23 +208,17 @@
             autoWidth: false,
             order: [[0, "desc"]],
             pagingType: "full_numbers",
-            columnDefs: [{ orderable: false, targets: [3] }],
+            columnDefs: [{ orderable: false, targets: [5] }],
             language: {
-                "sProcessing":     "Procesando...",
-                "sLengthMenu":     "Mostrar _MENU_ registros",
-                "sZeroRecords":    "No se encontraron resultados",
-                "sEmptyTable":     "Ningún dato disponible",
-                "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                "sInfoEmpty":      "Mostrando 0 a 0 de 0 registros",
-                "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
-                "sSearch":         "Buscar:",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst":    "«",
-                    "sLast":     "»",
-                    "sNext":     "›",
-                    "sPrevious": "‹"
-                }
+                "sProcessing":   "Procesando...",
+                "sLengthMenu":   "Mostrar _MENU_ registros",
+                "sZeroRecords":  "No se encontraron resultados",
+                "sEmptyTable":   "Ningún dato disponible",
+                "sInfo":         "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "sInfoEmpty":    "Mostrando 0 a 0 de 0 registros",
+                "sInfoFiltered": "(filtrado de _MAX_ registros totales)",
+                "sSearch":       "Buscar:",
+                "oPaginate": { "sFirst": "«", "sLast": "»", "sNext": "›", "sPrevious": "‹" }
             }
         });
     });

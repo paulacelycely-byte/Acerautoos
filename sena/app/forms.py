@@ -180,18 +180,11 @@ def val_telefono_colombiano(valor, campo):
         elif limpio.startswith('60') or limpio.startswith('61'):
             return limpio
         else:
-            raise forms.ValidationError(
-                f"'{campo}': celular debe empezar por 3 "
-                f"o fijo con indicativo por 60/61."
-            )
+            raise forms.ValidationError(f"'{campo}': celular debe empezar por 3 o fijo con indicativo por 60/61.")
     elif len(limpio) == 7:
         return limpio
     else:
-        raise forms.ValidationError(
-            f"'{campo}' inválido. Use 10 dígitos para celular "
-            f"o 7 dígitos para fijo local (ej: 2345678). "
-            f"Recibido: {len(limpio)} dígitos."
-        )
+        raise forms.ValidationError(f"'{campo}' inválido. Use 10 dígitos para celular o 7 para fijo. Recibido: {len(limpio)} dígitos.")
 
 def val_documento_colombiano(valor, campo, tipo_doc=None):
     limpio = str(valor).strip()
@@ -216,29 +209,16 @@ def val_documento_colombiano(valor, campo, tipo_doc=None):
 
 
 # ══════════════════════════════════════════════════════════
-#  USUARIO SISTEMA  (admin que inicia sesión)
+#  USUARIO SISTEMA
 # ══════════════════════════════════════════════════════════
 
 class UsuarioSistemaForm(forms.ModelForm):
-    password1 = forms.CharField(
-        label="Contraseña",
-        required=False,
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
-        help_text="Mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial."
-    )
-    password2 = forms.CharField(
-        label="Confirmar contraseña",
-        required=False,
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
-    )
+    password1 = forms.CharField(label="Contraseña", required=False, widget=forms.PasswordInput(attrs={'class': 'form-control'}), help_text="Mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.")
+    password2 = forms.CharField(label="Confirmar contraseña", required=False, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model  = UsuarioSistema
-        fields = [
-            'username', 'first_name', 'last_name', 'email',
-            'tipo_documento', 'cedula', 'telefono', 'cargo',
-            'is_active',
-        ]
+        fields = ['username', 'first_name', 'last_name', 'email', 'tipo_documento', 'cedula', 'telefono', 'cargo', 'is_active']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -320,23 +300,12 @@ class UsuarioSistemaForm(forms.ModelForm):
 
 
 # ══════════════════════════════════════════════════════════
-#  EMPLEADO  (directorio del personal)
+#  EMPLEADO
 # ══════════════════════════════════════════════════════════
 
 class EmpleadoForm(forms.ModelForm):
-
-    indicativo_telefono = forms.ChoiceField(
-        choices=INDICATIVOS_PAISES,
-        required=False,
-        label="Indicativo",
-        widget=SelectConEmoji(attrs={'class': 'form-control'}),
-    )
-    numero_telefono = forms.CharField(
-        max_length=15,
-        required=False,
-        label="Teléfono",
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
-    )
+    indicativo_telefono = forms.ChoiceField(choices=INDICATIVOS_PAISES, required=False, label="Indicativo", widget=SelectConEmoji(attrs={'class': 'form-control'}))
+    numero_telefono     = forms.CharField(max_length=15, required=False, label="Teléfono", widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model   = Empleado
@@ -419,21 +388,8 @@ class EmpleadoForm(forms.ModelForm):
 # ══════════════════════════════════════════════════════════
 
 class ProveedorForm(forms.ModelForm):
-
-    # ── CAMBIO: HiddenInput para que el dropdown JS con banderas
-    #    tome el control visual. Django sigue procesando el valor.
-    indicativo_telefono = forms.ChoiceField(
-        choices=INDICATIVOS_PAISES,
-        required=True,
-        label="Indicativo",
-        widget=forms.HiddenInput(),
-    )
-    numero_telefono = forms.CharField(
-        max_length=15,
-        required=True,
-        label="Teléfono",
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
-    )
+    indicativo_telefono = forms.ChoiceField(choices=INDICATIVOS_PAISES, required=True, label="Indicativo", widget=forms.HiddenInput())
+    numero_telefono     = forms.CharField(max_length=15, required=True, label="Teléfono", widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model  = Proveedor
@@ -465,7 +421,7 @@ class ProveedorForm(forms.ModelForm):
         if int(nit) <= 0:
             raise forms.ValidationError("El NIT debe ser mayor que 0.")
         if len(set(nit)) == 1:
-            raise forms.ValidationError("El NIT no puede tener todos los dígitos iguales. Ej: 111111111 no es válido.")
+            raise forms.ValidationError("El NIT no puede tener todos los dígitos iguales.")
         qs = Proveedor.objects.filter(nit=nit)
         if self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
@@ -511,13 +467,7 @@ class ProveedorForm(forms.ModelForm):
 # ══════════════════════════════════════════════════════════
 
 class MarcaForm(forms.ModelForm):
-
-    pais_origen = forms.ChoiceField(
-        choices=PAISES,
-        required=False,
-        label="País de origen",
-        widget=SelectConEmoji(attrs={'class': 'form-control'}),
-    )
+    pais_origen = forms.ChoiceField(choices=PAISES, required=False, label="País de origen", widget=SelectConEmoji(attrs={'class': 'form-control'}))
 
     class Meta:
         model  = Marca
@@ -531,22 +481,14 @@ class MarcaForm(forms.ModelForm):
             raise forms.ValidationError("El nombre de la marca no puede iniciar con un número.")
         if len(nombre) < 2:
             raise forms.ValidationError("El nombre debe tener al menos 2 caracteres.")
-        qs = Marca.objects.filter(nombre__iexact=nombre)
-        if self.instance.pk:
-            qs = qs.exclude(pk=self.instance.pk)
-        if qs.exists():
-            raise forms.ValidationError("Esta marca ya existe en el sistema.")
         return nombre
 
     def clean_pais_origen(self):
-        pais = self.cleaned_data.get('pais_origen', '')
-        return pais or ''
+        return self.cleaned_data.get('pais_origen', '') or ''
 
     def clean_descripcion(self):
         desc = self.cleaned_data.get('descripcion', '').strip()
         if desc:
-            if not re.match(r'^[a-zA-ZÁÉÍÓÚáéíóúÑñ0-9\s\.,\-\(\)]+$', desc):
-                raise forms.ValidationError("La descripción no permite caracteres especiales.")
             if len(desc) < 5:
                 raise forms.ValidationError("La descripción es demasiado corta (mínimo 5 caracteres).")
             if len(desc) > 200:
@@ -665,10 +607,7 @@ class CompraForm(forms.ModelForm):
             hoy        = timezone.now().date()
             fecha_date = fecha.date() if hasattr(fecha, 'date') else fecha
             if fecha_date != hoy:
-                raise forms.ValidationError(
-                    f"La fecha de compra debe ser el día de hoy ({hoy.strftime('%d/%m/%Y')}). "
-                    "No se permiten fechas pasadas ni futuras."
-                )
+                raise forms.ValidationError(f"La fecha de compra debe ser el día de hoy ({hoy.strftime('%d/%m/%Y')}). No se permiten fechas pasadas ni futuras.")
         return fecha
 
 
@@ -677,21 +616,8 @@ class CompraForm(forms.ModelForm):
 # ══════════════════════════════════════════════════════════
 
 class ClienteForm(forms.ModelForm):
-
-    # ── CAMBIO: HiddenInput para que el dropdown JS con banderas
-    #    tome el control visual. Django sigue procesando el valor.
-    indicativo_telefono = forms.ChoiceField(
-        choices=INDICATIVOS_PAISES,
-        required=True,
-        label="Indicativo",
-        widget=forms.HiddenInput(),
-    )
-    numero_telefono = forms.CharField(
-        max_length=15,
-        required=True,
-        label="Teléfono",
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
-    )
+    indicativo_telefono = forms.ChoiceField(choices=INDICATIVOS_PAISES, required=True, label="Indicativo", widget=forms.HiddenInput())
+    numero_telefono     = forms.CharField(max_length=15, required=True, label="Teléfono", widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model  = Cliente
@@ -772,14 +698,30 @@ class ClienteForm(forms.ModelForm):
 class VehiculoForm(forms.ModelForm):
     class Meta:
         model  = Vehiculo
-        fields = ['placa', 'modelo', 'marca', 'cliente', 'km_proximo_mantenimiento']
+        fields = [
+            'placa', 'modelo', 'marca', 'cliente',
+            'km_ultimo_servicio',      # km actuales al registrar
+            'km_diarios_promedio',     # configurable por vehículo
+            'km_alerta_anticipacion',  # configurable por vehículo
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['marca'].queryset = Marca.objects.filter(categoria='AUTO', estado=True)
-        self.fields['km_proximo_mantenimiento'].required  = False
-        self.fields['km_proximo_mantenimiento'].help_text = (
-            "Opcional. Se calculará automáticamente al registrar la primera orden de servicio."
+
+        self.fields['km_ultimo_servicio'].required  = True
+        self.fields['km_ultimo_servicio'].label     = "Km actuales del vehículo"
+        self.fields['km_ultimo_servicio'].help_text = (
+            "Ingrese el kilometraje actual del vehículo. "
+            "El próximo mantenimiento se calculará automáticamente al registrar la primera orden de servicio."
+        )
+        self.fields['km_diarios_promedio'].required  = True
+        self.fields['km_diarios_promedio'].help_text = (
+            "Km promedio que recorre este vehículo por día. Ej: 30 uso bajo, 50 normal, 80 alto."
+        )
+        self.fields['km_alerta_anticipacion'].required  = True
+        self.fields['km_alerta_anticipacion'].help_text = (
+            "Con cuántos km de anticipación avisar del próximo mantenimiento. Ej: 500 moto, 1000 carro, 2000 camión."
         )
 
     def clean_placa(self):
@@ -792,7 +734,7 @@ class VehiculoForm(forms.ModelForm):
         return placa
 
     def clean_modelo(self):
-        modelo      = self.cleaned_data['modelo'].strip()
+        modelo = self.cleaned_data['modelo'].strip()
         if not re.match(r'^\d{4}$', modelo):
             raise forms.ValidationError("El año debe tener exactamente 4 dígitos. Ej: 2019")
         anio        = int(modelo)
@@ -801,13 +743,28 @@ class VehiculoForm(forms.ModelForm):
             raise forms.ValidationError(f"El año debe estar entre 1900 y {anio_actual}.")
         return modelo
 
-    def clean_km_proximo_mantenimiento(self):
-        km = self.cleaned_data.get('km_proximo_mantenimiento')
-        if km is not None:
-            if km <= 0:
-                raise forms.ValidationError("El km debe ser mayor que 0.")
-            if km > 1000000:
-                raise forms.ValidationError("El km no puede superar 1.000.000.")
+    def clean_km_ultimo_servicio(self):
+        km = self.cleaned_data.get('km_ultimo_servicio')
+        if km is None or km < 0:
+            raise forms.ValidationError("El kilometraje no puede ser negativo.")
+        if km > 1000000:
+            raise forms.ValidationError("El kilometraje no puede superar 1.000.000 km.")
+        return km
+
+    def clean_km_diarios_promedio(self):
+        km = self.cleaned_data.get('km_diarios_promedio')
+        if km is None or km <= 0:
+            raise forms.ValidationError("El promedio de km diarios debe ser mayor que 0.")
+        if km > 1000:
+            raise forms.ValidationError("El promedio de km diarios no puede superar 1.000 km.")
+        return km
+
+    def clean_km_alerta_anticipacion(self):
+        km = self.cleaned_data.get('km_alerta_anticipacion')
+        if km is None or km <= 0:
+            raise forms.ValidationError("Los km de anticipación deben ser mayor que 0.")
+        if km > 10000:
+            raise forms.ValidationError("Los km de anticipación no pueden superar 10.000 km.")
         return km
 
 
@@ -894,19 +851,14 @@ class OrdenServicioForm(forms.ModelForm):
             raise forms.ValidationError("La fecha de la orden no puede ser una fecha futura.")
         limite = timezone.now() - timezone.timedelta(days=30)
         if fecha < limite:
-            raise forms.ValidationError(
-                "La fecha de la orden no puede ser anterior a 30 días. "
-                "Si necesita registrar una orden antigua, contacte al administrador."
-            )
+            raise forms.ValidationError("La fecha de la orden no puede ser anterior a 30 días. Si necesita registrar una orden antigua, contacte al administrador.")
         return fecha
 
     def clean_estado(self):
-        estado         = self.cleaned_data.get('estado')
+        estado          = self.cleaned_data.get('estado')
         estados_validos = [e[0] for e in OrdenServicio.ESTADOS]
         if estado not in estados_validos:
-            raise forms.ValidationError(
-                f"Estado no válido. Opciones permitidas: {', '.join(estados_validos)}."
-            )
+            raise forms.ValidationError(f"Estado no válido. Opciones permitidas: {', '.join(estados_validos)}.")
         return estado
 
     def clean(self):
@@ -914,18 +866,11 @@ class OrdenServicioForm(forms.ModelForm):
         vehiculo = cleaned.get('vehiculo')
         estado   = cleaned.get('estado')
         if not self.instance.pk and estado == 'Terminado':
-            self.add_error('estado',
-                "No puede crear una orden con estado 'Terminado'. "
-                "Inicie con 'Pendiente' o 'En Proceso'.")
+            self.add_error('estado', "No puede crear una orden con estado 'Terminado'. Inicie con 'Pendiente' o 'En Proceso'.")
         if vehiculo and not self.instance.pk:
-            orden_activa = OrdenServicio.objects.filter(
-                vehiculo=vehiculo,
-                estado__in=['Pendiente', 'En Proceso']
-            ).exists()
+            orden_activa = OrdenServicio.objects.filter(vehiculo=vehiculo, estado__in=['Pendiente', 'En Proceso']).exists()
             if orden_activa:
-                self.add_error('vehiculo',
-                    f"El vehículo con placa '{vehiculo.placa}' ya tiene una orden activa "
-                    "(Pendiente o En Proceso). Finalícela antes de crear una nueva.")
+                self.add_error('vehiculo', f"El vehículo con placa '{vehiculo.placa}' ya tiene una orden activa (Pendiente o En Proceso). Finalícela antes de crear una nueva.")
         return cleaned
 
 
@@ -954,10 +899,7 @@ class DetalleOrdenProductoForm(forms.ModelForm):
         cantidad = cleaned.get('cantidad')
         if producto and cantidad:
             if cantidad > producto.stock:
-                raise forms.ValidationError(
-                    f"Stock insuficiente para '{producto.nombre}'. "
-                    f"Disponible: {producto.stock}, solicitado: {cantidad}."
-                )
+                raise forms.ValidationError(f"Stock insuficiente para '{producto.nombre}'. Disponible: {producto.stock}, solicitado: {cantidad}.")
         return cleaned
 
 
@@ -983,18 +925,11 @@ class CompatibilidadProductoForm(forms.ModelForm):
         marca_vehiculo = cleaned.get('marca_vehiculo')
         tipo_servicio  = cleaned.get('tipo_servicio')
         if producto and marca_vehiculo:
-            qs = CompatibilidadProducto.objects.filter(
-                producto=producto,
-                marca_vehiculo=marca_vehiculo,
-                tipo_servicio=tipo_servicio,
-            )
+            qs = CompatibilidadProducto.objects.filter(producto=producto, marca_vehiculo=marca_vehiculo, tipo_servicio=tipo_servicio)
             if self.instance.pk:
                 qs = qs.exclude(pk=self.instance.pk)
             if qs.exists():
-                raise forms.ValidationError(
-                    f"Ya existe la compatibilidad entre '{producto.nombre}', "
-                    f"'{marca_vehiculo.nombre}' y el servicio seleccionado."
-                )
+                raise forms.ValidationError(f"Ya existe la compatibilidad entre '{producto.nombre}', '{marca_vehiculo.nombre}' y el servicio seleccionado.")
         return cleaned
 
 
@@ -1045,7 +980,7 @@ class CajaForm(forms.ModelForm):
 
 
 # ══════════════════════════════════════════════════════════
-#  NOTIFICACIÓN  (solo para las manuales — origen ADMIN)
+#  NOTIFICACIÓN
 # ══════════════════════════════════════════════════════════
 
 class NotificacionForm(forms.ModelForm):
@@ -1057,12 +992,7 @@ class NotificacionForm(forms.ModelForm):
         ('Urgente',      'Urgente'),
         ('Informacion',  'Información'),
     ]
-
-    tipo = forms.ChoiceField(
-        choices=TIPOS_NOTIFICACION,
-        label="Tipo de Notificación",
-        widget=forms.Select(attrs={'class': 'form-control'}),
-    )
+    tipo = forms.ChoiceField(choices=TIPOS_NOTIFICACION, label="Tipo de Notificación", widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model  = Notificacion
@@ -1109,40 +1039,22 @@ class FacturaForm(forms.ModelForm):
         model  = Factura
         fields = ['tipo', 'numero_factura', 'orden_servicio', 'producto', 'cantidad']
         widgets = {
-            'tipo': forms.Select(attrs={
-                'class': 'form-control',
-                'id': 'id_tipo',
-            }),
-            'numero_factura': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ej: FAC-0001',
-            }),
-            'orden_servicio': forms.Select(attrs={
-                'class': 'form-control',
-                'id': 'id_orden_servicio',
-            }),
-            'producto': forms.Select(attrs={
-                'class': 'form-control',
-                'id': 'id_producto',
-            }),
-            'cantidad': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': '1',
-                'id': 'id_cantidad',
-            }),
+            'tipo'           : forms.Select(attrs={'class': 'form-control', 'id': 'id_tipo'}),
+            'numero_factura' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: FAC-0001'}),
+            'orden_servicio' : forms.Select(attrs={'class': 'form-control', 'id': 'id_orden_servicio'}),
+            'producto'       : forms.Select(attrs={'class': 'form-control', 'id': 'id_producto'}),
+            'cantidad'       : forms.NumberInput(attrs={'class': 'form-control', 'min': '1', 'id': 'id_cantidad'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['orden_servicio'].queryset = OrdenServicio.objects.filter(
-            estado__in=['En Proceso', 'Terminado']
-        ).select_related('vehiculo', 'servicio')
+        self.fields['orden_servicio'].queryset  = OrdenServicio.objects.filter(estado__in=['En Proceso', 'Terminado']).select_related('vehiculo', 'servicio')
         self.fields['orden_servicio'].empty_label = "-- Seleccione una Orden --"
-        self.fields['orden_servicio'].required    = False
-        self.fields['producto'].queryset   = Producto.objects.filter(estado=True, stock__gt=0)
-        self.fields['producto'].empty_label = "-- Seleccione un Producto --"
-        self.fields['producto'].required   = False
-        self.fields['cantidad'].required   = False
+        self.fields['orden_servicio'].required  = False
+        self.fields['producto'].queryset        = Producto.objects.filter(estado=True, stock__gt=0)
+        self.fields['producto'].empty_label     = "-- Seleccione un Producto --"
+        self.fields['producto'].required        = False
+        self.fields['cantidad'].required        = False
 
     def clean(self):
         cleaned  = super().clean()
@@ -1154,19 +1066,15 @@ class FacturaForm(forms.ModelForm):
         if tipo == 'SERVICIO':
             if not orden:
                 self.add_error('orden_servicio', "Seleccione una Orden de Servicio.")
-            elif Factura.objects.filter(
-                orden_servicio=orden, estado_pago='Pagada'
-            ).exclude(pk=self.instance.pk if self.instance.pk else None).exists():
-                self.add_error('orden_servicio',
-                    "Esta orden ya tiene una factura pagada asociada.")
+            elif Factura.objects.filter(orden_servicio=orden, estado_pago='Pagada').exclude(pk=self.instance.pk if self.instance.pk else None).exists():
+                self.add_error('orden_servicio', "Esta orden ya tiene una factura pagada asociada.")
         elif tipo == 'PRODUCTO':
             if not producto:
                 self.add_error('producto', "Seleccione un Producto.")
             if not cantidad or cantidad < 1:
                 self.add_error('cantidad', "Ingrese una cantidad válida (mínimo 1).")
             elif producto and cantidad > producto.stock:
-                self.add_error('cantidad',
-                    f"Stock insuficiente. Disponible: {producto.stock}, solicitado: {cantidad}.")
+                self.add_error('cantidad', f"Stock insuficiente. Disponible: {producto.stock}, solicitado: {cantidad}.")
 
         nf = cleaned.get('numero_factura', '').strip()
         if not nf:
@@ -1183,16 +1091,14 @@ class FacturaForm(forms.ModelForm):
 
 
 # ══════════════════════════════════════════════════════════
-#  FACTURA — PAGAR  (solo método de pago)
+#  FACTURA — PAGAR
 # ══════════════════════════════════════════════════════════
 
 class PagarFacturaForm(forms.ModelForm):
     class Meta:
         model  = Factura
         fields = ['metodo_pago']
-        widgets = {
-            'metodo_pago': forms.Select(attrs={'class': 'form-control'}),
-        }
+        widgets = {'metodo_pago': forms.Select(attrs={'class': 'form-control'})}
 
     def clean_metodo_pago(self):
         metodo = self.cleaned_data.get('metodo_pago')

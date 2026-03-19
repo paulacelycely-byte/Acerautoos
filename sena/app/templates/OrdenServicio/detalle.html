@@ -14,180 +14,97 @@
         --muted:  #888;
     }
 
-    /* ── Encabezado ── */
-    .taller-header {
-        position: relative; background: var(--carbon);
-        border-radius: 16px; padding: 28px 32px;
-        margin-bottom: 28px; overflow: hidden;
-        display: flex; align-items: center; justify-content: space-between;
-    }
-    .taller-header::before {
-        content: ''; position: absolute; top: 0; right: 0;
-        width: 260px; height: 100%;
-        background: repeating-linear-gradient(-55deg, transparent, transparent 14px,
-            rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
-    }
-    .taller-header::after {
-        content: ''; position: absolute; left: 0; top: 0;
-        width: 5px; height: 100%; background: var(--rojo);
-        border-radius: 16px 0 0 16px;
-    }
-    .header-left  { display: flex; align-items: center; gap: 18px; position: relative; }
-    .header-icon-wrap {
-        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.4rem; color: white;
-        box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
-    }
-    .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: 2rem; font-weight: 800; color: white;
-        letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
-    }
-    .header-sub {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px;
-    }
-    .header-badge {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .8rem; font-weight: 700;
-        color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1px;
-    }
+    .taller-header { position:relative; background:var(--carbon); border-radius:16px; padding:28px 32px; margin-bottom:28px; overflow:hidden; display:flex; align-items:center; justify-content:space-between; }
+    .taller-header::before { content:''; position:absolute; top:0; right:0; width:260px; height:100%; background:repeating-linear-gradient(-55deg,transparent,transparent 14px,rgba(255,255,255,.03) 14px,rgba(255,255,255,.03) 28px); }
+    .header-left { display:flex; align-items:center; gap:18px; position:relative; }
+    .header-icon-wrap { width:56px; height:56px; background:var(--rojo); border-radius:12px; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 4px rgba(211,47,47,.25); flex-shrink:0; }
+    .header-icon-wrap svg { width:28px; height:28px; stroke:white; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+    .header-titulo { font-family:'Barlow Condensed',sans-serif; font-size:2rem; font-weight:800; color:white; letter-spacing:1px; text-transform:uppercase; line-height:1; margin:0; }
+    .header-sub { font-family:'DM Sans',sans-serif; font-size:.78rem; color:rgba(255,255,255,.45); margin-top:4px; }
+    .header-badge { font-family:'Barlow Condensed',sans-serif; font-size:.8rem; font-weight:700; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:1px; }
 
-    /* ── Tarjeta ── */
-    .detalle-card {
-        background: white; border-radius: 16px;
-        border: 1px solid var(--borde); overflow: hidden; margin-bottom: 20px;
-    }
-    .detalle-card-header {
-        background: var(--carbon); padding: 14px 24px;
-        display: flex; align-items: center; gap: 10px;
-    }
-    .detalle-card-header span {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .85rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1px;
-        color: rgba(255,255,255,.7);
-    }
-    .detalle-card-header i { color: var(--rojo); font-size: .9rem; }
-    .detalle-card-body     { padding: 28px 32px; }
+    .detalle-card { background:white; border-radius:16px; border:1px solid var(--borde); overflow:hidden; margin-bottom:20px; }
+    .detalle-card-header { background:var(--carbon); padding:14px 24px; display:flex; align-items:center; gap:10px; }
+    .detalle-card-header svg { width:16px; height:16px; stroke:var(--rojo); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+    .detalle-card-header span { font-family:'Barlow Condensed',sans-serif; font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,.7); }
+    .detalle-card-body { padding:28px 32px; }
 
-    /* ── Info grid ── */
-    .info-grid {
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;
-    }
-    .info-item {}
-    .info-label {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .68rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .9px;
-        color: var(--muted); margin-bottom: 4px;
-    }
-    .info-value {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .95rem; font-weight: 600; color: var(--texto);
-    }
+    .info-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:20px; }
+    .info-label { font-family:'DM Sans',sans-serif; font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.9px; color:var(--muted); margin-bottom:4px; }
+    .info-value { font-family:'DM Sans',sans-serif; font-size:.95rem; font-weight:600; color:var(--texto); }
 
-    /* ── Badge estado ── */
-    .badge-estado {
-        display: inline-flex; align-items: center; gap: 6px;
-        padding: 5px 14px; border-radius: 50px;
-        font-family: 'DM Sans', sans-serif;
-        font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
-    }
-    .badge-pendiente  { background: rgba(255,152,0,.15);  color: #e65100; }
-    .badge-en-proceso { background: rgba(33,150,243,.15); color: #0d47a1; }
-    .badge-terminado  { background: rgba(76,175,80,.15);  color: #1b5e20; }
+    .badge-estado { display:inline-flex; align-items:center; gap:6px; padding:5px 14px; border-radius:50px; font-family:'DM Sans',sans-serif; font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
+    .badge-estado svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .badge-pendiente  { background:rgba(255,152,0,.15);  color:#e65100; }
+    .badge-en-proceso { background:rgba(33,150,243,.15); color:#0d47a1; }
+    .badge-terminado  { background:rgba(76,175,80,.15);  color:#1b5e20; }
 
-    /* ── Tabla productos ── */
-    .tabla-productos {
-        width: 100%; border-collapse: collapse; font-family: 'DM Sans', sans-serif;
-    }
-    .tabla-productos thead tr {
-        background: var(--carbon);
-    }
-    .tabla-productos thead th {
-        padding: 12px 16px; font-size: .75rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px;
-        color: rgba(255,255,255,.7); text-align: left; border: none;
-    }
-    .tabla-productos tbody tr {
-        border-bottom: 1px solid var(--borde); transition: background .15s;
-    }
-    .tabla-productos tbody tr:hover { background: var(--gris); }
-    .tabla-productos tbody tr:last-child { border-bottom: none; }
-    .tabla-productos tbody td {
-        padding: 13px 16px; font-size: .88rem; color: var(--texto);
-    }
-    .tabla-productos .td-num { text-align: right; font-weight: 600; }
-    .sin-productos {
-        text-align: center; padding: 32px !important;
-        color: var(--muted); font-style: italic;
-    }
+    .tabla-productos { width:100%; border-collapse:collapse; font-family:'DM Sans',sans-serif; }
+    .tabla-productos thead tr { background:var(--carbon); }
+    .tabla-productos thead th { padding:12px 16px; font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:rgba(255,255,255,.7); text-align:left; border:none; }
+    .tabla-productos tbody tr { border-bottom:1px solid var(--borde); transition:background .15s; }
+    .tabla-productos tbody tr:hover { background:var(--gris); }
+    .tabla-productos tbody tr:last-child { border-bottom:none; }
+    .tabla-productos tbody td { padding:13px 16px; font-size:.88rem; color:var(--texto); vertical-align:middle; }
+    .tabla-productos .td-num { text-align:right; font-weight:600; }
+    .sin-productos { text-align:center; padding:32px !important; color:var(--muted); font-style:italic; }
+    .sin-productos svg { width:32px; height:32px; stroke:var(--muted); fill:none; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round; display:block; margin:0 auto 10px; }
+    .badge-codigo { font-family:'DM Sans',sans-serif; font-size:.7rem; font-weight:600; background:var(--gris); color:var(--texto); border:1px solid var(--borde); border-radius:6px; padding:2px 8px; }
 
-    /* ── Resumen totales ── */
-    .totales-box {
-        background: var(--gris); border-radius: 12px;
-        padding: 20px 24px; margin-top: 20px;
+    /* ── Badges de compatibilidad en detalle ── */
+    .compat-badge {
+        display: inline-flex; align-items: center; gap: 4px;
+        font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700;
+        padding: 3px 9px; border-radius: 20px; white-space: nowrap;
     }
-    .totales-row {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 6px 0; font-family: 'DM Sans', sans-serif;
-        font-size: .9rem; color: var(--texto);
-        border-bottom: 1px dashed var(--borde);
-    }
-    .totales-row:last-child { border-bottom: none; }
-    .totales-row.total-final {
-        font-size: 1.1rem; font-weight: 800;
-        color: var(--rojo); padding-top: 12px; margin-top: 4px;
-        border-top: 2px solid var(--rojo); border-bottom: none;
-    }
-    .totales-row span:last-child { font-weight: 700; }
+    .compat-badge svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+    .compat-ok      { background: #dcfce7; color: #15803d; }
+    .compat-warn    { background: #fef9c3; color: #a16207; }
+    .compat-neutral { background: #f1f5f9; color: #64748b; }
 
-    /* ── Botones footer ── */
-    .detalle-footer {
-        background: var(--gris); border-top: 1px solid var(--borde);
-        padding: 20px 32px;
-        display: flex; align-items: center; justify-content: space-between; gap: 12px;
-        flex-wrap: wrap;
+    /* Aviso de incompatibilidad en detalle */
+    .compat-aviso-detalle {
+        display: flex; align-items: flex-start; gap: 12px;
+        padding: 12px 16px; border-radius: 10px;
+        border: 1.5px solid #fde68a; background: #fffbeb;
+        margin: 0 28px 16px;
     }
-    .btn-volver {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .82rem; font-weight: 600; text-transform: uppercase;
-        padding: 10px 22px; border-radius: 10px;
-        border: 1.5px solid var(--borde); background: white; color: var(--muted);
-        text-decoration: none; transition: .2s; display: inline-flex; align-items: center; gap: 8px;
-    }
-    .btn-volver:hover { background: var(--borde); color: var(--texto); }
-    .btn-agregar-detalle {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px;
-        padding: 11px 24px; border-radius: 10px; border: none;
-        background: var(--carbon); color: white; cursor: pointer;
-        text-decoration: none; transition: .2s;
-        display: inline-flex; align-items: center; gap: 8px;
-    }
-    .btn-agregar-detalle:hover { background: #333; color: white; }
-    .btn-editar-orden {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px;
-        padding: 11px 24px; border-radius: 10px; border: none;
-        background: var(--rojo); color: white; cursor: pointer;
-        text-decoration: none; transition: .2s;
-        display: inline-flex; align-items: center; gap: 8px;
-        box-shadow: 0 4px 14px rgba(211,47,47,.35);
-    }
-    .btn-editar-orden:hover { background: var(--rojo2); color: white; transform: translateY(-1px); }
+    .compat-aviso-detalle .av-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .compat-aviso-detalle .av-texto { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: #92400e; font-weight: 600; }
+    .compat-aviso-detalle .av-sub   { font-family: 'DM Sans', sans-serif; font-size: .72rem; color: #a16207; margin-top: 2px; }
+
+    .totales-box { background:var(--gris); border-radius:12px; padding:20px 24px; margin-top:20px; }
+    .totales-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-family:'DM Sans',sans-serif; font-size:.9rem; color:var(--texto); border-bottom:1px dashed var(--borde); }
+    .totales-row:last-child { border-bottom:none; }
+    .totales-row.total-final { font-size:1.1rem; font-weight:800; color:var(--rojo); padding-top:12px; margin-top:4px; border-top:2px solid var(--rojo); border-bottom:none; }
+    .totales-row span:last-child { font-weight:700; }
+    .totales-row .t-icon { display:inline-flex; align-items:center; gap:6px; }
+    .totales-row .t-icon svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+    .detalle-footer { background:var(--gris); border-top:1px solid var(--borde); padding:20px 32px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .btn-volver { font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:600; text-transform:uppercase; padding:10px 22px; border-radius:10px; border:1.5px solid var(--borde); background:white; color:var(--muted); text-decoration:none; transition:.2s; display:inline-flex; align-items:center; gap:8px; }
+    .btn-volver svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .btn-volver:hover { background:var(--borde); color:var(--texto); }
+    .btn-agregar-detalle { font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; padding:11px 24px; border-radius:10px; border:none; background:var(--carbon); color:white; cursor:pointer; text-decoration:none; transition:.2s; display:inline-flex; align-items:center; gap:8px; }
+    .btn-agregar-detalle svg { width:14px; height:14px; stroke:white; fill:none; stroke-width:2.5; stroke-linecap:round; }
+    .btn-agregar-detalle:hover { background:#333; color:white; }
+    .btn-empleados { font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; padding:11px 24px; border-radius:10px; border:none; background:#2e7d32; color:white; cursor:pointer; text-decoration:none; transition:.2s; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 14px rgba(46,125,50,.3); }
+    .btn-empleados svg { width:14px; height:14px; stroke:white; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .btn-empleados:hover { background:#1b5e20; color:white; transform:translateY(-1px); }
+    .btn-editar-orden { font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; padding:11px 24px; border-radius:10px; border:none; background:#1565c0; color:white; cursor:pointer; text-decoration:none; transition:.2s; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 14px rgba(21,101,192,.3); }
+    .btn-editar-orden svg { width:14px; height:14px; stroke:white; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .btn-editar-orden:hover { background:#0d47a1; color:white; transform:translateY(-1px); }
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container animate__animated animate__fadeIn" style="max-width:960px;">
 
-    <!-- Encabezado -->
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap"><i class="fas fa-clipboard-list"></i></div>
+            <div class="header-icon-wrap">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+            </div>
             <div>
                 <h1 class="header-titulo">Orden #{{ orden.pk }}</h1>
                 <div class="header-sub">{{ orden.fecha|date:"d/m/Y H:i" }} — {{ orden.vehiculo.placa }}</div>
@@ -196,87 +113,92 @@
         <span class="header-badge">Acerautos S.A.S</span>
     </div>
 
-    <!-- ── Datos de la orden ── -->
+    <!-- Datos de la orden -->
     <div class="detalle-card">
         <div class="detalle-card-header">
-            <i class="fas fa-info-circle"></i>
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             <span>Información de la Orden</span>
         </div>
         <div class="detalle-card-body">
             <div class="info-grid">
-
                 <div class="info-item">
                     <div class="info-label">Estado</div>
                     <div class="info-value">
                         {% if orden.estado == 'Pendiente' %}
-                            <span class="badge-estado badge-pendiente"><i class="fas fa-clock"></i> Pendiente</span>
+                            <span class="badge-estado badge-pendiente"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Pendiente</span>
                         {% elif orden.estado == 'En Proceso' %}
-                            <span class="badge-estado badge-en-proceso"><i class="fas fa-tools"></i> En Proceso</span>
+                            <span class="badge-estado badge-en-proceso"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> En Proceso</span>
                         {% else %}
-                            <span class="badge-estado badge-terminado"><i class="fas fa-check-circle"></i> Terminado</span>
+                            <span class="badge-estado badge-terminado"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Terminado</span>
                         {% endif %}
                     </div>
                 </div>
-
                 <div class="info-item">
                     <div class="info-label">Vehículo</div>
                     <div class="info-value">{{ orden.vehiculo.placa }} — {{ orden.vehiculo.marca }}</div>
                 </div>
-
                 <div class="info-item">
                     <div class="info-label">Modelo</div>
                     <div class="info-value">{{ orden.vehiculo.modelo }}</div>
                 </div>
-
                 <div class="info-item">
                     <div class="info-label">Cliente</div>
                     <div class="info-value">{{ orden.vehiculo.cliente.nombre }}</div>
                 </div>
-
                 <div class="info-item">
                     <div class="info-label">Servicio</div>
                     <div class="info-value">{{ orden.servicio.nombre }}</div>
                 </div>
-
                 <div class="info-item">
                     <div class="info-label">Mano de Obra</div>
                     <div class="info-value">$ {{ orden.servicio.precio_mano_obra|floatformat:0 }}</div>
                 </div>
-
                 <div class="info-item">
                     <div class="info-label">Kilometraje</div>
                     <div class="info-value">{{ orden.km_actual|floatformat:0 }} km</div>
                 </div>
-
                 <div class="info-item">
                     <div class="info-label">Fecha</div>
                     <div class="info-value">{{ orden.fecha|date:"d/m/Y H:i" }}</div>
                 </div>
-
-                {% if orden.usuario %}
+                {% if orden.empleado %}
                 <div class="info-item">
                     <div class="info-label">Asignado a</div>
-                    <div class="info-value">{{ orden.usuario }}</div>
+                    <div class="info-value">{{ orden.empleado }}</div>
                 </div>
                 {% endif %}
-
             </div>
         </div>
     </div>
 
-    <!-- ── Productos usados ── -->
+    <!-- Productos usados -->
     <div class="detalle-card">
         <div class="detalle-card-header">
-            <i class="fas fa-boxes"></i>
+            <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
             <span>Productos / Repuestos Usados</span>
         </div>
         <div class="detalle-card-body" style="padding:0;">
+
+            {# ── Aviso si hay productos incompatibles ── #}
+            {% for d in detalles %}
+                {% if d.compat_status == 'warn' %}
+                <div class="compat-aviso-detalle">
+                    <div class="av-icon">⚠️</div>
+                    <div>
+                        <div class="av-texto">Hay productos sin compatibilidad registrada para la marca de este vehículo.</div>
+                        <div class="av-sub">Verifica que todos los repuestos sean correctos para {{ orden.vehiculo.marca.nombre }}.</div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+
             <table class="tabla-productos">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Producto</th>
                         <th>Código</th>
+                        <th>Compatibilidad</th>
                         <th class="td-num">Precio Unit.</th>
                         <th class="td-num">Cantidad</th>
                         <th class="td-num">Subtotal</th>
@@ -285,17 +207,35 @@
                 <tbody>
                     {% for d in detalles %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
+                        <td style="color:var(--muted);font-size:.8rem;font-weight:700;">{{ forloop.counter }}</td>
                         <td><strong>{{ d.producto.nombre }}</strong></td>
-                        <td><code>{{ d.producto.codigo }}</code></td>
+                        <td><span class="badge-codigo">{{ d.producto.codigo }}</span></td>
+                        <td>
+                            {% if d.compat_status == 'ok' %}
+                                <span class="compat-badge compat-ok" title="{{ d.compat_mensaje }}">
+                                    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                    Compatible
+                                </span>
+                            {% elif d.compat_status == 'warn' %}
+                                <span class="compat-badge compat-warn" title="{{ d.compat_mensaje }}">
+                                    <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                    Revisar
+                                </span>
+                            {% else %}
+                                <span class="compat-badge compat-neutral">
+                                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                    Sin restricción
+                                </span>
+                            {% endif %}
+                        </td>
                         <td class="td-num">$ {{ d.producto.precio|floatformat:0 }}</td>
                         <td class="td-num">{{ d.cantidad }}</td>
                         <td class="td-num">$ {% widthratio d.cantidad 1 d.producto.precio %}</td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="sin-productos">
-                            <i class="fas fa-box-open" style="font-size:1.5rem;margin-bottom:8px;display:block;"></i>
+                        <td colspan="7" class="sin-productos">
+                            <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                             No hay productos registrados en esta orden.
                         </td>
                     </tr>
@@ -303,36 +243,41 @@
                 </tbody>
             </table>
 
-            <!-- Totales -->
-            <div style="padding: 0 28px 24px;">
+            <div style="padding:0 28px 24px;">
                 <div class="totales-box">
                     <div class="totales-row">
-                        <span>Subtotal productos</span>
+                        <span class="t-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> Subtotal productos</span>
                         <span>$ {{ subtotal_productos|floatformat:0 }}</span>
                     </div>
                     <div class="totales-row">
-                        <span>Mano de obra ({{ orden.servicio.nombre }})</span>
+                        <span class="t-icon"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Mano de obra ({{ orden.servicio.nombre }})</span>
                         <span>$ {{ mano_obra|floatformat:0 }}</span>
                     </div>
                     <div class="totales-row total-final">
-                        <span><i class="fas fa-receipt mr-1"></i> TOTAL ESTIMADO</span>
+                        <span class="t-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> TOTAL ESTIMADO</span>
                         <span>$ {{ total|floatformat:0 }}</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Footer botones -->
         <div class="detalle-footer">
             <a href="{{ listar_url }}" class="btn-volver">
-                <i class="fas fa-arrow-left"></i> Volver al listado
+                <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Volver al listado
             </a>
             <div style="display:flex;gap:12px;flex-wrap:wrap;">
                 <a href="{% url 'app:detalle_orden_add' %}?orden={{ orden.pk }}" class="btn-agregar-detalle">
-                    <i class="fas fa-plus"></i> Agregar Producto
+                    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Agregar Producto
+                </a>
+                <a href="{% url 'app:listar_empleado' %}" class="btn-empleados">
+                    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Ver Empleados
                 </a>
                 <a href="{% url 'app:orden_servicio_edit' orden.pk %}" class="btn-editar-orden">
-                    <i class="fas fa-edit"></i> Editar Orden
+                    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Editar Orden
                 </a>
             </div>
         </div>

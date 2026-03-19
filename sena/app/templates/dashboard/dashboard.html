@@ -10,101 +10,19 @@
 .dash-wrapper {
   min-height: 100vh;
   background:
-    linear-gradient(rgba(37, 36, 36, 0.75), rgba(40, 40, 40, 0.82)),
+    linear-gradient(rgba(37,36,36,0.78), rgba(40,40,40,0.85)),
     url("{% static 'imagenes/fondo2.jpg' %}") center/cover no-repeat fixed;
 }
 
-.dc {
-  display: block; text-decoration: none; position: relative;
-  border-radius: 14px; overflow: hidden; height: 150px;
-  border: 1px solid rgba(20, 18, 18, 0.15);
-  background: rgba(30,30,30,0.88);
-  backdrop-filter: blur(10px);
-  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
-  cursor: pointer;
-}
-.dc:hover {
-  transform: translateY(-5px) scale(1.01);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.6);
-  border-color: rgba(255,255,255,0.3);
-  background: rgba(40,40,40,0.92);
-  text-decoration: none;
-}
-.dc::before {
-  content: ''; position: absolute;
-  left: 0; top: 0; bottom: 0; width: 4px;
-  background: var(--accent, #c30a0a);
-  border-radius: 14px 0 0 14px;
-  transition: width .22s;
-}
-.dc:hover::before { width: 6px; }
-
-.dc-bg-icon {
-  position: absolute; right: 14px; bottom: 12px;
-  width: 48px; height: 48px;
-  color: white; opacity: 0.10;
-  pointer-events: none;
-  transition: opacity .22s, transform .22s;
-}
-.dc:hover .dc-bg-icon { opacity: 0.20; transform: scale(1.08); }
-
-.dc-corner {
-  position: absolute; top: 0; right: 0;
-  width: 48px; height: 48px;
-  border-top: 2px solid var(--accent, #d32f2f);
-  border-right: 2px solid var(--accent, #d32f2f);
-  border-radius: 0 14px 0 0;
-  opacity: 0.35;
-  transition: opacity .22s;
-}
-.dc:hover .dc-corner { opacity: 0.7; }
-
-.dc-inner {
-  position: relative; z-index: 1; height: 100%;
-  padding: 1rem 1.2rem 1rem 1.5rem;
-  display: flex; flex-direction: column; justify-content: space-between;
-}
-.dc-step {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 0.6rem; font-weight: 800; letter-spacing: 2px;
-  color: var(--accent, #d32f2f); text-transform: uppercase;
-}
-.dc-title {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 1.45rem; font-weight: 800; letter-spacing: 0.5px;
-  color: #fff; margin: 0; line-height: 1.1; text-transform: uppercase;
-}
-.dc-sub { font-size: 0.72rem; color: rgba(255,255,255,0.45); margin: 3px 0 0; }
-.dc-cta {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
-  color: var(--accent, #d32f2f); text-transform: uppercase;
-  transition: letter-spacing .2s;
-}
-.dc:hover .dc-cta { letter-spacing: 2.5px; }
-
-.sdiv { display: flex; align-items: center; gap: 14px; margin: 2rem 0 1rem; }
-.sdiv-num {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 2rem; font-weight: 900; color: var(--red); line-height: 1;
-}
-.sdiv-label {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 0.78rem; font-weight: 800; letter-spacing: 3px;
-  text-transform: uppercase; color: rgba(255,255,255,0.85);
-  text-shadow: 0 1px 8px rgba(0,0,0,0.9);
-}
-.sdiv-line {
-  flex: 1; height: 1px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.03));
-}
-
+/* ─── CABECERA ─── */
 .dash-head {
-  background: rgba(0,0,0,0.5); border: 1px solid var(--border);
-  border-left: 4px solid var(--red); border-radius: 14px;
-  padding: 1.4rem 2rem; margin-bottom: 0.5rem;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.2rem 2rem;
+  margin-bottom: 1rem;
   backdrop-filter: blur(8px);
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
 }
 .dash-head-title {
   font-family: 'Barlow Condensed', sans-serif;
@@ -112,317 +30,308 @@
   color: #fff; text-transform: uppercase; line-height: 1; margin: 0;
 }
 .dash-head-title span { color: var(--red); }
-.dash-head-sub { font-size: 0.8rem; color: rgba(255,255,255,0.4); margin: 5px 0 0; letter-spacing: 0.5px; }
+.dash-head-sub { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin: 4px 0 0; }
 
-.user-avatar {
-  width: 46px; height: 46px; border-radius: 50%; background: var(--red);
-  display: flex; align-items: center; justify-content: center;
+/* Usuario en texto simple */
+.dash-user-simple { text-align: right; flex-shrink: 0; }
+.dash-user-name {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 1.4rem; font-weight: 900; color: #fff; flex-shrink: 0;
-  border: 2px solid rgba(255,255,255,0.15);
+  font-size: 1.15rem; font-weight: 800; color: #fff;
+  text-transform: uppercase; letter-spacing: 1px; line-height: 1;
 }
+.dash-user-role { font-size: 0.72rem; color: rgba(255,255,255,0.35); margin-top: 3px; }
 .badge-active {
   background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.35);
   color: #10b981; font-family: 'Barlow Condensed', sans-serif;
-  font-size: 0.65rem; letter-spacing: 2px; font-weight: 700;
-  padding: 4px 14px; border-radius: 50px; display: inline-block;
+  font-size: 0.62rem; letter-spacing: 2px; font-weight: 700;
+  padding: 3px 10px; border-radius: 50px; display: inline-block; margin-top: 5px;
 }
+
+/* ─── STAT CARDS — borde de color completo igual que las dc ─── */
+.stat-card {
+  display: block; position: relative;
+  border-radius: 14px; overflow: hidden;
+  background: rgba(22,22,22,0.92);
+  backdrop-filter: blur(12px);
+  border: 2px solid color-mix(in srgb, var(--sc, #c30a0a) 45%, transparent);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  padding: 20px 22px;
+  display: flex; align-items: center; gap: 16px;
+}
+.stat-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: color-mix(in srgb, var(--sc, #c30a0a) 90%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--sc, #c30a0a) 30%, transparent),
+    0 0 22px color-mix(in srgb, var(--sc, #c30a0a) 22%, transparent),
+    0 14px 36px rgba(0,0,0,0.5);
+}
+
+/* Esquina decorativa igual que dc-corner */
+.stat-corner {
+  position: absolute; top: 0; right: 0;
+  width: 44px; height: 44px;
+  border-top: 2px solid var(--sc, #d32f2f);
+  border-right: 2px solid var(--sc, #d32f2f);
+  border-radius: 0 14px 0 0;
+  opacity: 0.3;
+  transition: opacity .25s, width .25s, height .25s;
+}
+.stat-card:hover .stat-corner { opacity: 0.8; width: 54px; height: 54px; }
+
+.stat-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.stat-icon svg {
+  width: 22px; height: 22px;
+  stroke: var(--sc, var(--red)); fill: none;
+  stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+}
+.stat-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2rem; font-weight: 900; color: #fff; line-height: 1;
+}
+.stat-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem; color: rgba(255,255,255,0.45);
+  text-transform: uppercase; letter-spacing: 0.8px; margin-top: 3px;
+}
+.stat-badge {
+  margin-left: auto; flex-shrink: 0;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 1px;
+  padding: 3px 9px; border-radius: 6px;
+  background: color-mix(in srgb, var(--sc, #c30a0a) 15%, transparent);
+  color: color-mix(in srgb, var(--sc, #c30a0a) 100%, white 20%);
+  text-transform: uppercase; border: 1px solid color-mix(in srgb, var(--sc, #c30a0a) 30%, transparent);
+}
+
+/* ─── GRÁFICO ─── */
+.chart-card {
+  background: rgba(22,22,22,0.92);
+  backdrop-filter: blur(12px);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 20px 22px;
+}
+.chart-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.75rem; font-weight: 800; letter-spacing: 2px;
+  text-transform: uppercase; color: rgba(255,255,255,0.5);
+  margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+}
+.chart-title span {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--red); display: inline-block; flex-shrink: 0;
+}
+
+/* ─── ÓRDENES RECIENTES ─── */
+.recientes-card {
+  background: rgba(22,22,22,0.92);
+  backdrop-filter: blur(12px);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 20px 22px; height: 100%;
+}
+.recientes-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.recientes-item:last-child { border-bottom: none; }
+.recientes-placa {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.85rem; font-weight: 800; letter-spacing: 1px;
+  color: #fff; background: rgba(255,255,255,0.07);
+  padding: 4px 10px; border-radius: 6px; flex-shrink: 0;
+}
+.recientes-info { flex: 1; min-width: 0; }
+.recientes-servicio {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem; color: rgba(255,255,255,0.75);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.recientes-fecha { font-size: 0.68rem; color: rgba(255,255,255,0.3); margin-top: 2px; }
+.estado-badge {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 1px;
+  padding: 3px 8px; border-radius: 5px; flex-shrink: 0; text-transform: uppercase;
+}
+.estado-pendiente { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.estado-proceso   { background: rgba(59,130,246,0.15);  color: #3b82f6; }
+.estado-terminado { background: rgba(16,185,129,0.15);  color: #10b981; }
+
+/* ─── DIVISOR ─── */
+.sdiv { display: flex; align-items: center; gap: 14px; margin: 1.8rem 0 1rem; }
+.sdiv-num { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 900; color: var(--red); line-height: 1; }
+.sdiv-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.85); text-shadow: 0 1px 8px rgba(0,0,0,0.9); }
+.sdiv-line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.03)); }
+
+/* ─── CARDS NAV ─── */
+.dc {
+  display: block; text-decoration: none; position: relative;
+  border-radius: 14px; overflow: hidden; height: 150px;
+  background: rgba(22,22,22,0.92); backdrop-filter: blur(12px);
+  border: 2px solid color-mix(in srgb, var(--accent, #c30a0a) 45%, transparent);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; cursor: pointer;
+}
+.dc:hover {
+  transform: translateY(-5px) scale(1.015);
+  border-color: color-mix(in srgb, var(--accent, #c30a0a) 90%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent, #c30a0a) 30%, transparent), 0 0 22px color-mix(in srgb, var(--accent, #c30a0a) 28%, transparent), 0 18px 40px rgba(0,0,0,0.6);
+  text-decoration: none;
+}
+.dc-corner { position: absolute; top: 0; right: 0; width: 52px; height: 52px; border-top: 2px solid var(--accent, #d32f2f); border-right: 2px solid var(--accent, #d32f2f); border-radius: 0 14px 0 0; opacity: 0.35; transition: opacity .25s, width .25s, height .25s; z-index: 1; }
+.dc:hover .dc-corner { opacity: 0.85; width: 62px; height: 62px; }
+.dc-bg-icon { position: absolute; right: 14px; bottom: 12px; width: 54px; height: 54px; color: white; opacity: 0.07; pointer-events: none; transition: opacity .25s, transform .25s; z-index: 1; }
+.dc:hover .dc-bg-icon { opacity: 0.18; transform: scale(1.1) rotate(-5deg); }
+.dc-inner { position: relative; z-index: 2; height: 100%; padding: 1rem 1.2rem 1rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between; }
+.dc-step { font-family: 'Barlow Condensed', sans-serif; font-size: 0.6rem; font-weight: 800; letter-spacing: 2px; color: color-mix(in srgb, var(--accent, #d32f2f) 100%, white 20%); text-transform: uppercase; }
+.dc-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.45rem; font-weight: 800; letter-spacing: 0.5px; color: #fff; margin: 0; line-height: 1.1; text-transform: uppercase; }
+.dc-sub { font-size: 0.72rem; color: rgba(255,255,255,0.45); margin: 3px 0 0; }
+.dc-cta { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px; color: color-mix(in srgb, var(--accent, #d32f2f) 100%, white 20%); text-transform: uppercase; transition: letter-spacing .2s; }
+.dc:hover .dc-cta { letter-spacing: 2.5px; }
+.user-avatar { width: 46px; height: 46px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 900; color: #fff; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.15); }
 </style>
 {% endblock %}
 
 {% block contenido %}
 
-<!-- SVG sprite oculto -->
+<!-- SVG sprite -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-  <symbol id="ico-clientes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-  </symbol>
-  <symbol id="ico-vehiculos" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 12l2-5h12l2 5"/><rect x="2" y="12" width="20" height="6" rx="2"/>
-    <circle cx="6.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/>
-  </symbol>
-  <symbol id="ico-ordenes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="6" y="2" width="12" height="18" rx="2"/><path d="M10 7h4M10 11h4M10 15h2"/>
-  </symbol>
-  <symbol id="ico-servicio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M17.5 3a4 4 0 0 1 0 8 4 4 0 0 1-3-1.35L5 19H4v-1L13.35 9A4 4 0 0 1 17.5 3z"/>
-  </symbol>
-  <symbol id="ico-detalles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 6h16M4 10h10M4 14h12M4 18h8"/>
-  </symbol>
-  <symbol id="ico-compat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M11 3H6a2 2 0 0 0-2 2v5h2.5a2.5 2.5 0 0 1 0 5H4v5a2 2 0 0 0 2 2h5v-2.5a2.5 2.5 0 0 1 5 0V20h5a2 2 0 0 0 2-2v-5h-2.5a2.5 2.5 0 0 1 0-5H21V5a2 2 0 0 0-2-2h-5v2.5a2.5 2.5 0 0 1-5 0V3z"/>
-  </symbol>
-  <symbol id="ico-productos" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 2L2 7v10l10 5 10-5V7L12 2z"/><path d="M2 7l10 5 10-5M12 12v10"/>
-  </symbol>
-  <symbol id="ico-marcas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3 3h9l9 9-9 9-9-9V3z"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/>
-  </symbol>
-  <symbol id="ico-proveedores" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="1" y="6" width="13" height="11" rx="1"/><path d="M14 9h5l3 4v5h-8V9z"/>
-    <circle cx="5.5" cy="18.5" r="1.5"/><circle cx="18.5" cy="18.5" r="1.5"/>
-  </symbol>
-  <symbol id="ico-compras" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M1 1h4l2.5 11.5h10L20 6H7"/><circle cx="9.5" cy="20.5" r="1.5"/><circle cx="18.5" cy="20.5" r="1.5"/>
-  </symbol>
-  <symbol id="ico-caja" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="2" y="9" width="20" height="12" rx="2"/><path d="M7 9V6a5 5 0 0 1 10 0v3"/><path d="M10 14h4M10 17h4"/>
-  </symbol>
-  <symbol id="ico-factura" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="4" y="2" width="16" height="20" rx="2"/>
-    <path d="M12 7v10M9.5 9c0-1 1.1-2 2.5-2s2.5.9 2.5 2-1.1 2-2.5 2-2.5.9-2.5 2 1.1 2 2.5 2 2.5-1 2.5-2"/>
-  </symbol>
-  <symbol id="ico-empleados" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="6" r="3"/><path d="M7 11h10l1.5 9H5.5L7 11z"/><path d="M9.5 11v9M14.5 11v9"/>
-  </symbol>
-  <symbol id="ico-usuarios" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="9" cy="7" r="3"/><path d="M2 20c0-3.5 3.1-6 7-6"/>
-    <circle cx="17" cy="7" r="3"/><path d="M22 20c0-3.5-3.1-6-7-6s-7 2.5-7 6"/>
-  </symbol>
-  <symbol id="ico-notif" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 2a7 7 0 0 1 7 7v4l2 3H3l2-3V9a7 7 0 0 1 7-7z"/><path d="M9.5 18a2.5 2.5 0 0 0 5 0"/>
-  </symbol>
+  <symbol id="ico-clientes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="ico-vehiculos" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l2-5h12l2 5"/><rect x="2" y="12" width="20" height="6" rx="2"/><circle cx="6.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></symbol>
+  <symbol id="ico-ordenes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="18" rx="2"/><path d="M10 7h4M10 11h4M10 15h2"/></symbol>
+  <symbol id="ico-servicio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 3a4 4 0 0 1 0 8 4 4 0 0 1-3-1.35L5 19H4v-1L13.35 9A4 4 0 0 1 17.5 3z"/></symbol>
+  <symbol id="ico-detalles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 10h10M4 14h12M4 18h8"/></symbol>
+  <symbol id="ico-compat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3H6a2 2 0 0 0-2 2v5h2.5a2.5 2.5 0 0 1 0 5H4v5a2 2 0 0 0 2 2h5v-2.5a2.5 2.5 0 0 1 5 0V20h5a2 2 0 0 0 2-2v-5h-2.5a2.5 2.5 0 0 1 0-5H21V5a2 2 0 0 0-2-2h-5v2.5a2.5 2.5 0 0 1-5 0V3z"/></symbol>
+  <symbol id="ico-productos" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z"/><path d="M2 7l10 5 10-5M12 12v10"/></symbol>
+  <symbol id="ico-marcas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h9l9 9-9 9-9-9V3z"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ico-proveedores" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="13" height="11" rx="1"/><path d="M14 9h5l3 4v5h-8V9z"/><circle cx="5.5" cy="18.5" r="1.5"/><circle cx="18.5" cy="18.5" r="1.5"/></symbol>
+  <symbol id="ico-compras" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1h4l2.5 11.5h10L20 6H7"/><circle cx="9.5" cy="20.5" r="1.5"/><circle cx="18.5" cy="20.5" r="1.5"/></symbol>
+  <symbol id="ico-caja" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M7 9V6a5 5 0 0 1 10 0v3"/><path d="M10 14h4M10 17h4"/></symbol>
+  <symbol id="ico-factura" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M12 7v10M9.5 9c0-1 1.1-2 2.5-2s2.5.9 2.5 2-1.1 2-2.5 2-2.5.9-2.5 2 1.1 2 2.5 2 2.5-1 2.5-2"/></symbol>
+  <symbol id="ico-empleados" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="6" r="3"/><path d="M7 11h10l1.5 9H5.5L7 11z"/><path d="M9.5 11v9M14.5 11v9"/></symbol>
+  <symbol id="ico-usuarios" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><path d="M2 20c0-3.5 3.1-6 7-6"/><circle cx="17" cy="7" r="3"/><path d="M22 20c0-3.5-3.1-6-7-6s-7 2.5-7 6"/></symbol>
+  <symbol id="ico-notif" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7v4l2 3H3l2-3V9a7 7 0 0 1 7-7z"/><path d="M9.5 18a2.5 2.5 0 0 0 5 0"/></symbol>
 </svg>
 
 <div class="dash-wrapper">
 <div class="container-fluid py-3 px-4">
 
+  <!-- ── CABECERA ── -->
   <div class="dash-head mb-3">
     <div>
       <h1 class="dash-head-title">ACER<span>AUTOS</span></h1>
-      <p class="dash-head-sub">GESTIÓN INTEGRAL DE AUTOPARTES Y TALLER</p>
+      <p class="dash-head-sub">TALLER ESPECIALISTA EN CAMBIO DE ACEITE &nbsp;·&nbsp; {% now "l, d F Y" %}</p>
     </div>
-    <div class="text-end d-none d-md-block">
-      <div style="color:rgba(255,255,255,0.7);font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:1px;">{% now "l, d F Y" %}</div>
-      <div class="badge-active mt-2">● SISTEMA ACTIVO</div>
+    <div class="dash-user-simple d-none d-md-block">
+      <div class="dash-user-name">
+        {% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}
+      </div>
+      <div class="dash-user-role">{{ user.get_cargo_display|default:"Administrador del sistema" }}</div>
+      <div class="badge-active">● ACTIVO</div>
     </div>
   </div>
 
   <!-- 01 Recepción -->
-  <div class="sdiv">
-    <span class="sdiv-num">01</span>
-    <span class="sdiv-label">Recepción de Clientes y Vehículos</span>
-    <div class="sdiv-line"></div>
-  </div>
+  <div class="sdiv"><span class="sdiv-num">01</span><span class="sdiv-label">Recepción de Clientes y Vehículos</span><div class="sdiv-line"></div></div>
   <div class="row g-3">
-    <div class="col-xl-3 col-md-6">
-      <a href="{% url 'app:listar_clientes' %}" class="dc" style="--accent:#3b82f6;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-clientes"/></svg>
-        <div class="dc-inner">
-          <span class="dc-step">PASO 01</span>
-          <div><h4 class="dc-title">Clientes</h4><p class="dc-sub">Registrar y gestionar clientes del taller</p></div>
-          <span class="dc-cta">Gestionar →</span>
-        </div>
-      </a>
-    </div>
-    <div class="col-xl-3 col-md-6">
-      <a href="{% url 'app:listar_vehiculos' %}" class="dc" style="--accent:#3b82f6;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-vehiculos"/></svg>
-        <div class="dc-inner">
-          <span class="dc-step">PASO 02</span>
-          <div><h4 class="dc-title">Vehículos</h4><p class="dc-sub">Asociar vehículos a los clientes</p></div>
-          <span class="dc-cta">Gestionar →</span>
-        </div>
-      </a>
-    </div>
-    <div class="col-xl-3 col-md-6">
-      <a href="{% url 'app:orden_servicio_list' %}" class="dc" style="--accent:#3b82f6;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-ordenes"/></svg>
-        <div class="dc-inner">
-          <span class="dc-step">PASO 03</span>
-          <div><h4 class="dc-title">Órdenes de Servicio</h4><p class="dc-sub">Crear órdenes para el vehículo</p></div>
-          <span class="dc-cta">Ver Órdenes →</span>
-        </div>
-      </a>
-    </div>
-    <div class="col-xl-3 col-md-6">
-      <a href="{% url 'app:tipo_servicio_list' %}" class="dc" style="--accent:#3b82f6;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-servicio"/></svg>
-        <div class="dc-inner">
-          <span class="dc-step">PASO 04</span>
-          <div><h4 class="dc-title">Tipos de Servicio</h4><p class="dc-sub">Definir los servicios disponibles</p></div>
-          <span class="dc-cta">Catálogo →</span>
-        </div>
-      </a>
-    </div>
+    <!-- Clientes: silueta persona -->
+    <div class="col-xl-3 col-md-6"><a href="{% url 'app:listar_clientes' %}" class="dc" style="--accent:#3b82f6;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="dc-inner"><span class="dc-step">PASO 01</span><div><h4 class="dc-title">Clientes</h4><p class="dc-sub">Propietarios de vehículos del taller</p></div><span class="dc-cta">Gestionar →</span></div></a></div>
+    <!-- Vehículos: sedán con ruedas -->
+    <div class="col-xl-3 col-md-6"><a href="{% url 'app:listar_vehiculos' %}" class="dc" style="--accent:#3b82f6;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M5 17H3v-6l2-5h12l2 5h1a1 1 0 0 1 1 1v4h-2"/><path d="M9 17h6"/></svg><div class="dc-inner"><span class="dc-step">PASO 02</span><div><h4 class="dc-title">Vehículos</h4><p class="dc-sub">Vehículos registrados para servicio</p></div><span class="dc-cta">Gestionar →</span></div></a></div>
+    <!-- Órdenes: documento con líneas -->
+    <div class="col-xl-3 col-md-6"><a href="{% url 'app:orden_servicio_list' %}" class="dc" style="--accent:#3b82f6;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg><div class="dc-inner"><span class="dc-step">PASO 03</span><div><h4 class="dc-title">Órdenes de Servicio</h4><p class="dc-sub">Órdenes de cambio de aceite</p></div><span class="dc-cta">Ver Órdenes →</span></div></a></div>
+    <!-- Tipos servicio: gota de aceite -->
+    <div class="col-xl-3 col-md-6"><a href="{% url 'app:tipo_servicio_list' %}" class="dc" style="--accent:#3b82f6;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6 9 4 13.5 4 16a8 8 0 0 0 16 0c0-2.5-2-7-8-14z"/></svg><div class="dc-inner"><span class="dc-step">PASO 04</span><div><h4 class="dc-title">Tipos de Servicio</h4><p class="dc-sub">Aceites y servicios disponibles</p></div><span class="dc-cta">Catálogo →</span></div></a></div>
   </div>
 
   <!-- 02 Ejecución -->
-  <div class="sdiv">
-    <span class="sdiv-num">02</span>
-    <span class="sdiv-label">Ejecución de la Orden</span>
-    <div class="sdiv-line"></div>
-  </div>
+  <div class="sdiv"><span class="sdiv-num">02</span><span class="sdiv-label">Ejecución de la Orden</span><div class="sdiv-line"></div></div>
   <div class="row g-3">
-    <div class="col-xl-3 col-md-6">
-      <a href="{% url 'app:detalle_orden_list' %}" class="dc" style="--accent:#8b5cf6;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-detalles"/></svg>
-        <div class="dc-inner">
-          <span class="dc-step">PASO 05</span>
-          <div><h4 class="dc-title">Detalles de Orden</h4><p class="dc-sub">Agregar productos y servicios</p></div>
-          <span class="dc-cta">Ver Detalles →</span>
-        </div>
-      </a>
-    </div>
-    <div class="col-xl-3 col-md-6">
-      <a href="{% url 'app:listar_compatibilidad' %}" class="dc" style="--accent:#8b5cf6;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-compat"/></svg>
-        <div class="dc-inner">
-          <span class="dc-step">PASO 06</span>
-          <div><h4 class="dc-title">Compatibilidad</h4><p class="dc-sub">Verificar piezas compatibles</p></div>
-          <span class="dc-cta">Consultar →</span>
-        </div>
-      </a>
-    </div>
-    <div class="col-xl-3 col-md-6">
-      <a href="{% url 'app:listar_producto' %}" class="dc" style="--accent:#8b5cf6;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-productos"/></svg>
-        <div class="dc-inner">
-          <span class="dc-step">PASO 07</span>
-          <div><h4 class="dc-title">Productos</h4><p class="dc-sub">Consultar y controlar el stock</p></div>
-          <span class="dc-cta">Ver Stock →</span>
-        </div>
-      </a>
-    </div>
-    <div class="col-xl-3 col-md-6">
-      <a href="{% url 'app:listar_marca' %}" class="dc" style="--accent:#8b5cf6;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-marcas"/></svg>
-        <div class="dc-inner">
-          <span class="dc-step">PASO 08</span>
-          <div><h4 class="dc-title">Marcas</h4><p class="dc-sub">Gestionar marcas de productos</p></div>
-          <span class="dc-cta">Catálogo →</span>
-        </div>
-      </a>
-    </div>
+    <!-- Detalles: lista con puntos -->
+    <div class="col-xl-3 col-md-6"><a href="{% url 'app:detalle_orden_list' %}" class="dc" style="--accent:#8b5cf6;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><div class="dc-inner"><span class="dc-step">PASO 05</span><div><h4 class="dc-title">Detalles de Orden</h4><p class="dc-sub">Productos usados en cada servicio</p></div><span class="dc-cta">Ver Detalles →</span></div></a></div>
+    <!-- Compatibilidad: engranaje con ondas -->
+    <div class="col-xl-3 col-md-6"><a href="{% url 'app:listar_compatibilidad' %}" class="dc" style="--accent:#8b5cf6;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><polyline points="4 4 9 4 9 9"/></svg><div class="dc-inner"><span class="dc-step">PASO 06</span><div><h4 class="dc-title">Compatibilidad</h4><p class="dc-sub">Aceites compatibles por marca</p></div><span class="dc-cta">Consultar →</span></div></a></div>
+    <!-- Productos: caja 3D -->
+    <div class="col-xl-3 col-md-6"><a href="{% url 'app:listar_producto' %}" class="dc" style="--accent:#8b5cf6;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg><div class="dc-inner"><span class="dc-step">PASO 07</span><div><h4 class="dc-title">Productos</h4><p class="dc-sub">Stock de aceites y filtros</p></div><span class="dc-cta">Ver Stock →</span></div></a></div>
+    <!-- Marcas: etiqueta tag -->
+    <div class="col-xl-3 col-md-6"><a href="{% url 'app:listar_marca' %}" class="dc" style="--accent:#8b5cf6;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><div class="dc-inner"><span class="dc-step">PASO 08</span><div><h4 class="dc-title">Marcas</h4><p class="dc-sub">Marcas de aceite y repuestos</p></div><span class="dc-cta">Catálogo →</span></div></a></div>
   </div>
 
   <!-- 03 Abastecimiento -->
-  <div class="sdiv">
-    <span class="sdiv-num">03</span>
-    <span class="sdiv-label">Abastecimiento</span>
-    <div class="sdiv-line"></div>
-  </div>
+  <div class="sdiv"><span class="sdiv-num">03</span><span class="sdiv-label">Abastecimiento</span><div class="sdiv-line"></div></div>
   <div class="row g-3">
-    <div class="col-xl-6 col-md-6">
-      <a href="{% url 'app:listar_proveedores' %}" class="dc" style="--accent:#f59e0b;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-proveedores"/></svg>
-        <div class="dc-inner">
-          <span class="dc-step">PASO 09</span>
-          <div><h4 class="dc-title">Proveedores</h4><p class="dc-sub">Gestionar socios y proveedores de partes</p></div>
-          <span class="dc-cta">Ver Socios →</span>
-        </div>
-      </a>
-    </div>
-    <div class="col-xl-6 col-md-6">
-      <a href="{% url 'app:lista_compras' %}" class="dc" style="--accent:#f59e0b;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-compras"/></svg>
-        <div class="dc-inner">
-          <span class="dc-step">PASO 10</span>
-          <div><h4 class="dc-title">Compras</h4><p class="dc-sub">Registrar egresos y compras de productos</p></div>
-          <span class="dc-cta">Ver Egresos →</span>
-        </div>
-      </a>
-    </div>
+    <!-- Proveedores: camión de entrega -->
+    <div class="col-xl-6 col-md-6"><a href="{% url 'app:listar_proveedores' %}" class="dc" style="--accent:#f59e0b;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><div class="dc-inner"><span class="dc-step">PASO 09</span><div><h4 class="dc-title">Proveedores</h4><p class="dc-sub">Proveedores de aceites y filtros</p></div><span class="dc-cta">Ver Socios →</span></div></a></div>
+    <!-- Compras: carrito -->
+    <div class="col-xl-6 col-md-6"><a href="{% url 'app:lista_compras' %}" class="dc" style="--accent:#f59e0b;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><div class="dc-inner"><span class="dc-step">PASO 10</span><div><h4 class="dc-title">Compras</h4><p class="dc-sub">Compras de aceite y consumibles</p></div><span class="dc-cta">Ver Egresos →</span></div></a></div>
   </div>
 
   <!-- 04 Cobro -->
-  <div class="sdiv">
-    <span class="sdiv-num">04</span>
-    <span class="sdiv-label">Cobro y Cierre</span>
-    <div class="sdiv-line"></div>
-  </div>
+  <div class="sdiv"><span class="sdiv-num">04</span><span class="sdiv-label">Cobro y Cierre</span><div class="sdiv-line"></div></div>
   <div class="row g-3">
-    <div class="col-xl-6 col-md-6">
-      <a href="{% url 'app:caja_listar' %}" class="dc" style="--accent:#10b981;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-caja"/></svg>
-        <div class="dc-inner">
-          <span class="dc-step">PASO 11</span>
-          <div><h4 class="dc-title">Caja</h4><p class="dc-sub">Registrar movimientos de caja y pagos</p></div>
-          <span class="dc-cta">Movimientos →</span>
-        </div>
-      </a>
-    </div>
-    <div class="col-xl-6 col-md-6">
-      <a href="{% url 'app:listar_factura' %}" class="dc" style="--accent:#10b981;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-factura"/></svg>
-        <div class="dc-inner">
-          <span class="dc-step">PASO 12</span>
-          <div><h4 class="dc-title">Facturación</h4><p class="dc-sub">Generar y gestionar facturas al cliente</p></div>
-          <span class="dc-cta">Ver Facturas →</span>
-        </div>
-      </a>
-    </div>
+    <!-- Caja: tarjeta de crédito -->
+    <div class="col-xl-6 col-md-6"><a href="{% url 'app:caja_listar' %}" class="dc" style="--accent:#10b981;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="15" x2="10" y2="15"/></svg><div class="dc-inner"><span class="dc-step">PASO 11</span><div><h4 class="dc-title">Caja</h4><p class="dc-sub">Ingresos y egresos del taller</p></div><span class="dc-cta">Movimientos →</span></div></a></div>
+    <!-- Facturación: documento con signo + -->
+    <div class="col-xl-6 col-md-6"><a href="{% url 'app:listar_factura' %}" class="dc" style="--accent:#10b981;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg><div class="dc-inner"><span class="dc-step">PASO 12</span><div><h4 class="dc-title">Facturación</h4><p class="dc-sub">Facturar servicios de cambio de aceite</p></div><span class="dc-cta">Ver Facturas →</span></div></a></div>
   </div>
 
   <!-- 05 Sistema -->
-  <div class="sdiv">
-    <span class="sdiv-num">05</span>
-    <span class="sdiv-label">Sistema y Configuración</span>
-    <div class="sdiv-line"></div>
-  </div>
+  <div class="sdiv"><span class="sdiv-num">05</span><span class="sdiv-label">Sistema y Configuración</span><div class="sdiv-line"></div></div>
   <div class="row g-3">
-    <div class="col-xl-4 col-md-6">
-      <a href="{% url 'app:listar_empleado' %}" class="dc" style="--accent:#d31414;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-empleados"/></svg>
-        <div class="dc-inner">
-          <div></div>
-          <div><h4 class="dc-title">Empleados</h4><p class="dc-sub">Directorio del personal del taller</p></div>
-          <span class="dc-cta">Ver Personal →</span>
+    <!-- Empleados: grupo de personas -->
+    <div class="col-xl-4 col-md-6"><a href="{% url 'app:listar_empleado' %}" class="dc" style="--accent:#d31414;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><div class="dc-inner"><div></div><div><h4 class="dc-title">Empleados</h4><p class="dc-sub">Mecánicos y personal del taller</p></div><span class="dc-cta">Ver Personal →</span></div></a></div>
+    <!-- Usuarios: candado -->
+    <div class="col-xl-4 col-md-6"><a href="{% url 'app:listar_usuario' %}" class="dc" style="--accent:#d31414;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><div class="dc-inner"><div></div><div><h4 class="dc-title">Usuarios</h4><p class="dc-sub">Control de acceso al sistema</p></div><span class="dc-cta">Accesos →</span></div></a></div>
+    <!-- Notificaciones: campana -->
+    <div class="col-xl-4 col-md-6"><a href="{% url 'app:listar_notificacion' %}" class="dc" style="--accent:#d31414;"><div class="dc-corner"></div><svg class="dc-bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><div class="dc-inner">
+      <div class="d-flex align-items-center gap-3">
+        <div class="user-avatar">{% if user.first_name %}{{ user.first_name|slice:':1'|upper }}{% else %}{{ user.username|slice:':1'|upper }}{% endif %}</div>
+        <div>
+          <div style="color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;">{% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;">{{ user.get_cargo_display|default:"Administrador del sistema" }}</div>
         </div>
-      </a>
-    </div>
-    <div class="col-xl-4 col-md-6">
-      <a href="{% url 'app:listar_usuario' %}" class="dc" style="--accent:#d31414;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-usuarios"/></svg>
-        <div class="dc-inner">
-          <div></div>
-          <div><h4 class="dc-title">Usuarios</h4><p class="dc-sub">Gestionar accesos y permisos del sistema</p></div>
-          <span class="dc-cta">Accesos →</span>
-        </div>
-      </a>
-    </div>
-    <div class="col-xl-4 col-md-6">
-      <a href="{% url 'app:listar_notificacion' %}" class="dc" style="--accent:#d31414;">
-        <div class="dc-corner"></div>
-        <svg class="dc-bg-icon"><use href="#ico-notif"/></svg>
-        <div class="dc-inner">
-          <div class="d-flex align-items-center gap-3">
-            <div class="user-avatar">
-              {% if user.nombres %}{{ user.nombres|slice:':1'|upper }}{% else %}{{ user.username|slice:':1'|upper }}{% endif %}
-            </div>
-            <div>
-              <div style="color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;">
-                {% if user.nombres %}{{ user.nombres }}{% else %}{{ user.username }}{% endif %}
-              </div>
-              <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;">
-                {% if user.cargo %}{{ user.get_cargo_display }}{% else %}{{ user.email|default:"Administrador del sistema" }}{% endif %}
-              </div>
-            </div>
-          </div>
-          <div><h4 class="dc-title">Notificaciones</h4><p class="dc-sub">Ver alertas y avisos del sistema</p></div>
-          <span class="dc-cta">Ver Notificaciones →</span>
-        </div>
-      </a>
-    </div>
+      </div>
+      <div><h4 class="dc-title">Notificaciones</h4><p class="dc-sub">Alertas de aceite y mantenimiento</p></div>
+      <span class="dc-cta">Ver Notificaciones →</span>
+    </div></a></div>
   </div>
 
   <div style="height:2rem;"></div>
+</div>
+</div>
+{% endblock %}
 
-</div>
-</div>
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+new Chart(document.getElementById('chartFinanzas').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: {{ chart_labels|safe }},
+    datasets: [
+      { label: 'Ingresos', data: {{ chart_ingresos|safe }}, backgroundColor: 'rgba(16,185,129,0.7)', borderColor: 'rgba(16,185,129,1)', borderWidth: 1.5, borderRadius: 6 },
+      { label: 'Egresos',  data: {{ chart_egresos|safe }},  backgroundColor: 'rgba(211,47,47,0.7)',  borderColor: 'rgba(211,47,47,1)',  borderWidth: 1.5, borderRadius: 6 }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { labels: { color: 'rgba(255,255,255,0.55)', font: { family: "'DM Sans',sans-serif", size: 11 }, boxWidth: 12, boxHeight: 12 } },
+      tooltip: {
+        backgroundColor: 'rgba(0,0,0,0.85)', titleColor: '#fff', bodyColor: 'rgba(255,255,255,0.7)',
+        callbacks: { label: c => ' $' + c.parsed.y.toLocaleString('es-CO') }
+      }
+    },
+    scales: {
+      x: { ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 11 }, callback: v => '$' + v.toLocaleString('es-CO') }, grid: { color: 'rgba(255,255,255,0.06)' } }
+    }
+  }
+});
+</script>
 {% endblock %}

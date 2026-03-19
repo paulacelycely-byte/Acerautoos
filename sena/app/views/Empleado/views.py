@@ -1,6 +1,7 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.shortcuts import redirect
 
 from app.models import Empleado
 from app.forms import EmpleadoForm
@@ -16,7 +17,7 @@ class EmpleadoListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Listado de Empleados'
+        context['titulo']    = 'Listado de Empleados'
         context['crear_url'] = reverse_lazy('app:crear_empleado')
         return context
 
@@ -29,13 +30,19 @@ class EmpleadoCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Registrar Empleado'
-        context['listar_url'] = reverse_lazy('app:listar_empleado')
+        context['titulo']    = 'Registrar Empleado'
+        context['listar_url']= reverse_lazy('app:listar_empleado')
+        context['es_editar'] = False
+        context['next']      = self.request.GET.get('next', '')
         return context
 
     def form_valid(self, form):
+        self.object = form.save()
+        next_param = self.request.POST.get('next', '')
         messages.success(self.request, 'Empleado registrado correctamente.')
-        return super().form_valid(form)
+        if next_param == 'orden':
+            return redirect(reverse_lazy('app:orden_servicio_create'))
+        return redirect(self.success_url)
 
 
 class EmpleadoUpdateView(UpdateView):
@@ -46,13 +53,19 @@ class EmpleadoUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Editar Empleado'
-        context['listar_url'] = reverse_lazy('app:listar_empleado')
+        context['titulo']    = 'Editar Empleado'
+        context['listar_url']= reverse_lazy('app:listar_empleado')
+        context['es_editar'] = True
+        context['next']      = self.request.GET.get('next', '')
         return context
 
     def form_valid(self, form):
+        self.object = form.save()
+        next_param = self.request.POST.get('next', '')
         messages.success(self.request, 'Empleado actualizado correctamente.')
-        return super().form_valid(form)
+        if next_param == 'orden':
+            return redirect(reverse_lazy('app:orden_servicio_create'))
+        return redirect(self.success_url)
 
 
 class EmpleadoDeleteView(DeleteView):
@@ -62,8 +75,8 @@ class EmpleadoDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar Empleado'
-        context['listar_url'] = reverse_lazy('app:listar_empleado')
+        context['titulo']    = 'Eliminar Empleado'
+        context['listar_url']= reverse_lazy('app:listar_empleado')
         return context
 
     def form_valid(self, form):

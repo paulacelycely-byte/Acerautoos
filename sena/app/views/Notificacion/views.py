@@ -3,6 +3,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, V
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 from app.models import Notificacion
 from app.forms import NotificacionForm
 
@@ -11,9 +12,6 @@ class NotificacionListView(ListView):
     model = Notificacion
     template_name = 'Notificacion/listar.html'
     context_object_name = 'object_list'
-
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -31,16 +29,16 @@ class NotificacionCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo']     = "Crear Notificación"
+        context['titulo']     = 'Crear Notificación'
         context['listar_url'] = reverse_lazy('app:listar_notificacion')
+        context['es_editar']  = False
         return context
 
     def form_valid(self, form):
-        # Las notificaciones creadas desde el panel siempre son de origen ADMIN
         notificacion = form.save(commit=False)
         notificacion.origen = 'ADMIN'
         notificacion.save()
-        messages.success(self.request, "Se creó correctamente la notificación")
+        messages.success(self.request, 'Se creó correctamente la notificación.')
         return redirect(self.success_url)
 
 
@@ -50,17 +48,15 @@ class NotificacionUpdateView(UpdateView):
     template_name = 'Notificacion/crear.html'
     success_url = reverse_lazy('app:listar_notificacion')
 
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo']     = 'Editar Notificación'
         context['listar_url'] = reverse_lazy('app:listar_notificacion')
+        context['es_editar']  = True
         return context
 
     def form_valid(self, form):
-        messages.success(self.request, "Se editó correctamente")
+        messages.success(self.request, 'Notificación actualizada correctamente.')
         return super().form_valid(form)
 
 
@@ -69,23 +65,18 @@ class NotificacionDeleteView(DeleteView):
     template_name = 'Notificacion/eliminar.html'
     success_url = reverse_lazy('app:listar_notificacion')
 
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo']     = 'Eliminar Notificación'
         context['listar_url'] = reverse_lazy('app:listar_notificacion')
         return context
 
-    def form_valid(self, form):
-        messages.success(self.request, "Se eliminó correctamente")
-        return super().form_valid(form)
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Notificación eliminada correctamente.')
+        return super().delete(request, *args, **kwargs)
 
 
-# ══════════════════════════════════════════════════════════
-#  MARCAR UNA NOTIFICACIÓN COMO LEÍDA  (AJAX — POST)
-# ══════════════════════════════════════════════════════════
+# ── Marcar una notificación como leída (AJAX POST) ────────
 class MarcarLeidaView(View):
     def post(self, request, pk):
         notificacion = get_object_or_404(Notificacion, pk=pk)
@@ -94,14 +85,25 @@ class MarcarLeidaView(View):
         return JsonResponse({'ok': True, 'mensaje': 'Notificación marcada como leída.'})
 
 
-# ══════════════════════════════════════════════════════════
-#  MARCAR TODAS LAS NOTIFICACIONES COMO LEÍDAS  (AJAX — POST)
-# ══════════════════════════════════════════════════════════
+# ── Marcar todas como leídas (AJAX POST) ──────────────────
 class MarcarTodasLeidasView(View):
     def post(self, request):
         cantidad = Notificacion.objects.filter(leido=False).update(leido=True)
+        sufijo_es = 'es' if cantidad != 1 else ''
+        sufijo_as = 'as' if cantidad != 1 else 'a'
         return JsonResponse({
-            'ok': True,
+            'ok':      True,
             'cantidad': cantidad,
-            'mensaje': f'{cantidad} notificación{"es" if cantidad != 1 else ""} marcada{"s" if cantidad != 1 else ""} como leída{"s" if cantidad != 1 else ""}.'
+            'mensaje': f'{cantidad} notificación{sufijo_es} marcada{sufijo_as} como leída{sufijo_as}.'
         })
+
+
+# ── Conteo de no leídas para el punto rojo del aside ──────
+@login_required
+def notificaciones_no_leidas(request):
+    """
+    GET /api/notificaciones/no-leidas/
+    Devuelve {"count": N} — usado por aside.html para mostrar el punto rojo.
+    """
+    count = Notificacion.objects.filter(leido=False).count()
+    return JsonResponse({'count': count})

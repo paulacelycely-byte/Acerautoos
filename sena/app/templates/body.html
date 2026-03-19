@@ -10,11 +10,9 @@
   <style>
     html, body { margin:0; padding:0; }
 
-    /* ── Layout principal ── */
     .app-wrapper        { display:flex; width:100%; min-height:100vh; background:#1a1a1a; }
     .app-main-container { flex:1; display:flex; flex-direction:column; min-width:0; overflow:hidden; border-left:3px solid rgba(255,255,255,.25); }
 
-    /* ── Sidebar ── */
     .app-sidebar           { width:260px; min-width:260px; background:#0f172a; z-index:1030; height:100vh; position:sticky; top:0; border-right:1px solid rgba(255,255,255,.05); transition:width .3s ease,min-width .3s ease; overflow:hidden; display:flex; flex-direction:column; flex-shrink:0; }
     body.sidebar-mini   .app-sidebar { width:72px;  min-width:72px; }
     body.sidebar-hidden .app-sidebar { width:0;     min-width:0; }
@@ -23,111 +21,118 @@
       body.sidebar-open .app-sidebar { width:260px; min-width:260px; }
     }
 
-    /* ── Header oscuro ── */
-    .app-header { background:#0d0d0d; border-bottom:2px solid rgba(255,255,255,.2); padding:.75rem 1.5rem; z-index:900; position:sticky; top:0; box-shadow:0 2px 12px rgba(0,0,0,.7); }
-    .app-header::before { display:none; }
-    .app-header > *     { position:relative; z-index:1; }
+    .app-header {
+      background: #0d0d0d;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      padding: .55rem 1.5rem;
+      z-index: 900;
+      position: sticky; top: 0;
+      box-shadow: 0 1px 0 rgba(211,47,47,.25), 0 4px 24px rgba(0,0,0,.7);
+    }
 
-    /* ── Botón hamburguesa ── */
-    .btn-toggle-menu       { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .2s,border-color .2s; color:#fff; }
-    .btn-toggle-menu:hover { background:rgba(255,255,255,.18); border-color:rgba(255,255,255,.5); }
-    .btn-toggle-menu i     { color:#fff; }
+    .btn-toggle-menu {
+      background: transparent; border: none;
+      width: 34px; height: 34px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background .2s; color: rgba(255,255,255,.5);
+      flex-shrink: 0;
+    }
+    .btn-toggle-menu:hover { background: rgba(255,255,255,.07); color: #fff; }
+    .btn-toggle-menu svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-    /* ── Botón Backup ── */
+    .navbar-brand-text { font-family:'Barlow Condensed',sans-serif; font-size:1.4rem; font-weight:900; letter-spacing:2px; color:#fff; text-transform:uppercase; line-height:1; }
+    .navbar-brand-text span { color:#d32f2f; }
+
+    .nav-vdivider { width:1px; height:20px; background:rgba(255,255,255,.1); margin: 0 2px; flex-shrink:0; }
+
     .btn-backup {
-        background: rgba(255,255,255,.08);
-        border: 1px solid rgba(255,255,255,.18);
-        width: 38px; height: 38px; border-radius: 10px;
-        display: flex; align-items: center; justify-content: center;
-        cursor: pointer; transition: background .2s, border-color .2s, box-shadow .2s;
-        color: #fff; text-decoration: none; position: relative;
+      background: transparent; border: none;
+      width: 34px; height: 34px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background .2s, color .2s;
+      color: rgba(255,255,255,.4); text-decoration: none; position: relative;
+      flex-shrink: 0;
     }
-    .btn-backup:hover {
-        background: rgba(211,47,47,.2);
-        border-color: rgba(211,47,47,.5);
-        box-shadow: 0 0 12px rgba(211,47,47,.3);
-        color: #fff;
-    }
-    .btn-backup i { color: #fff; font-size: .9rem; }
-    /* Tooltip */
+    .btn-backup svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-backup:hover { background: rgba(211,47,47,.12); color: #e05252; }
     .btn-backup::after {
-        content: 'Backup BD';
-        position: absolute; top: calc(100% + 8px); left: 50%;
-        transform: translateX(-50%);
-        background: #1a1a1a; color: #f1f5f9;
-        font-size: .7rem; font-weight: 600;
-        padding: 4px 10px; border-radius: 6px;
-        white-space: nowrap; pointer-events: none;
-        opacity: 0; transition: opacity .15s;
-        border: 1px solid rgba(211,47,47,.3);
-        z-index: 9999;
+      content: 'Backup BD';
+      position: absolute; top: calc(100% + 6px); left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a; color: rgba(255,255,255,.7);
+      font-size: .65rem; font-weight: 600;
+      padding: 3px 8px; border-radius: 5px;
+      white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: opacity .15s;
+      border: 1px solid rgba(255,255,255,.08);
+      z-index: 9999;
     }
     .btn-backup:hover::after { opacity: 1; }
 
-    /* ── Pill usuario ── */
-    .user-pill             { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18) !important; border-radius:50px !important; padding:5px 14px 5px 6px; display:flex; align-items:center; gap:10px; transition:background .2s,border-color .2s; cursor:pointer; }
-    .user-pill:hover,
-    .user-pill:focus       { background:rgba(229,57,53,.15) !important; border-color:rgba(229,57,53,.5) !important; outline:none; box-shadow:none !important; }
-    .user-pill .fw-bold    { color:#fff !important; }
-    .pill-arrow            { color:#aaa; font-size:.7rem; transition:transform .25s; }
-    .show > .user-pill .pill-arrow { transform:rotate(180deg); }
+    .user-pill {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.09) !important;
+      border-radius: 10px !important;
+      padding: 5px 10px 5px 6px;
+      display: flex; align-items: center; gap: 9px;
+      transition: background .2s, border-color .2s;
+      cursor: pointer;
+    }
+    .user-pill:hover, .user-pill:focus {
+      background: rgba(211,47,47,.1) !important;
+      border-color: rgba(211,47,47,.35) !important;
+      outline: none; box-shadow: none !important;
+    }
+    .user-pill-avatar {
+      width: 26px; height: 26px; border-radius: 7px;
+      background: #d32f2f;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .8rem; font-weight: 900; color: #fff; flex-shrink: 0;
+    }
+    .user-pill-name { font-family: 'Barlow Condensed', sans-serif; font-size: .82rem; font-weight: 800; color: #fff; letter-spacing: .5px; text-transform: uppercase; line-height: 1; }
+    .user-pill-role { font-size: .62rem; color: rgba(255,255,255,.3); margin-top: 2px; }
+    .pill-arrow { color: rgba(255,255,255,.25); transition: transform .25s; flex-shrink: 0; }
+    .pill-arrow svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .show > .user-pill .pill-arrow { transform: rotate(180deg); }
 
-    /* ── Dropdown usuario ── */
-    .user-dropdown-menu    { background:#1e1e1e !important; border:1px solid #2e2e2e !important; border-radius:14px !important; min-width:235px; box-shadow:0 10px 40px rgba(0,0,0,.6) !important; padding:0 !important; overflow:hidden; margin-top:10px !important; }
-    .dd-header             { padding:14px 16px; border-bottom:1px solid #2e2e2e; display:flex; align-items:center; gap:10px; }
-    .dd-avatar             { width:42px; height:42px; background:linear-gradient(135deg,#e53935,#b71c1c); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.1rem; font-weight:800; color:#fff; flex-shrink:0; }
-    .dd-username           { color:#fff; font-weight:700; font-size:.95rem; line-height:1.2; }
-    .dd-email              { color:#888; font-size:.75rem; }
-    .user-dropdown-menu .dropdown-item       { color:#ccc !important; padding:10px 16px; display:flex; align-items:center; gap:10px; font-size:.875rem; transition:background .15s; }
-    .user-dropdown-menu .dropdown-item:hover { background:#2a2a2a !important; color:#fff !important; }
-    .user-dropdown-menu .dropdown-item i     { color:#e53935; width:16px; text-align:center; }
-    .user-dropdown-menu .dropdown-divider    { border-color:#2e2e2e !important; margin:4px 0; }
-    .dd-logout             { color:#e53935 !important; font-weight:700; border:none; width:100%; text-align:left; cursor:pointer; padding:10px 16px; display:flex; align-items:center; gap:10px; font-size:.875rem; background:transparent; transition:background .15s; }
-    .dd-logout:hover       { background:rgba(229,57,53,.12) !important; }
-    .dd-logout i           { width:16px; text-align:center; }
+    .user-dropdown-menu {
+      background: #141414 !important;
+      border: 1px solid rgba(255,255,255,.07) !important;
+      border-radius: 14px !important;
+      min-width: 215px;
+      box-shadow: 0 20px 56px rgba(0,0,0,.75) !important;
+      padding: 0 !important; overflow: hidden;
+      margin-top: 7px !important;
+    }
+    .dd-header { padding: 13px 15px; border-bottom: 1px solid rgba(255,255,255,.05); display: flex; align-items: center; gap: 10px; }
+    .dd-avatar { width: 38px; height: 38px; background: #d32f2f; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 900; color: #fff; flex-shrink: 0; }
+    .dd-username { color: #fff; font-weight: 700; font-size: .88rem; line-height: 1.2; }
+    .dd-role     { color: rgba(255,255,255,.3); font-size: .7rem; margin-top: 2px; }
 
-    /* ── Brand ── */
-    .navbar-brand-text      { font-family:'Barlow Condensed',sans-serif; font-size:1.35rem; font-weight:700; letter-spacing:2px; color:#fff; text-transform:uppercase; }
-    .navbar-brand-text span { color:#d32f2f; }
+    .user-dropdown-menu .dropdown-item { color: rgba(255,255,255,.55) !important; padding: 9px 15px; display: flex; align-items: center; gap: 10px; font-size: .8rem; transition: background .15s, color .15s; }
+    .user-dropdown-menu .dropdown-item:hover { background: rgba(255,255,255,.04) !important; color: #fff !important; }
+    .user-dropdown-menu .dropdown-item svg { width: 14px; height: 14px; stroke: rgba(255,255,255,.3); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .user-dropdown-menu .dropdown-item:hover svg { stroke: #d32f2f; }
+    .user-dropdown-menu .dropdown-divider { border-color: rgba(255,255,255,.05) !important; margin: 3px 0; }
 
-    /* ── Main con imagen de fondo ── */
+    .dd-logout { color: rgba(211,47,47,.75) !important; font-weight: 600; border: none; width: 100%; text-align: left; cursor: pointer; padding: 9px 15px; display: flex; align-items: center; gap: 10px; font-size: .8rem; background: transparent; transition: background .15s, color .15s; }
+    .dd-logout:hover { background: rgba(211,47,47,.08) !important; color: #e05252 !important; }
+    .dd-logout svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
     .app-main-bg         { position:relative; flex:1; min-height:100vh; }
     .app-main-bg::before { content:''; position:fixed; inset:0; background-image:url("{% static 'imagenes/fondo2.jpg' %}"); background-size:cover; background-position:center; filter:brightness(0.65); z-index:0; }
     .app-main-bg > *     { position:relative; z-index:1; }
 
-    /* ── DataTables / formularios ── */
     .dataTables_wrapper .row                         { margin-bottom:1rem; align-items:center; }
     .page-item.active .page-link                     { background-color:#d32f2f !important; border-color:#d32f2f !important; }
     .form-control.is-invalid, .form-control.is-valid { background-image:none !important; padding-right:15px !important; }
 
-    /* ── Caja de error roja ── */
     .caja-error-roja { background:rgba(211,47,47,.12); border:1px solid rgba(211,47,47,.4); border-radius:6px; padding:6px 10px; font-size:.8rem; color:#ff7070; }
 
-    /* ══════════════════════════════════════════
-       ASTERISCO CAMPOS OBLIGATORIOS — GLOBAL
-    ══════════════════════════════════════════ */
-    .field-label.required::after {
-        content: ' *';
-        color: #d32f2f;
-        font-weight: 800;
-        font-size: .85rem;
-        vertical-align: super;
-        line-height: 1;
-    }
-    .leyenda-obligatorio {
-        font-size: .74rem;
-        color: #888;
-        margin-bottom: 16px;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-    .leyenda-obligatorio::before {
-        content: '* ';
-        color: #d32f2f;
-        font-weight: 800;
-        font-size: .85rem;
-    }
+    .field-label.required::after { content:' *'; color:#d32f2f; font-weight:800; font-size:.85rem; vertical-align:super; line-height:1; }
+    .leyenda-obligatorio { font-size:.74rem; color:#888; margin-bottom:16px; display:flex; align-items:center; gap:4px; }
+    .leyenda-obligatorio::before { content:'* '; color:#d32f2f; font-weight:800; font-size:.85rem; }
   </style>
 
   <div class="app-wrapper">
@@ -135,39 +140,45 @@
 
     <div class="app-main-container">
 
-      <!-- Header -->
       <nav class="app-header d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center">
+
+        <div class="d-flex align-items-center gap-2">
           <button class="btn-toggle-menu" id="sidebar-trigger">
-            <i class="fas fa-bars"></i>
+            <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <div class="ms-3 d-none d-md-block">
-            <span class="navbar-brand-text">ACER<span>AUTOS</span></span>
-          </div>
+          <span class="navbar-brand-text d-none d-md-block">ACER<span>AUTOS</span></span>
         </div>
 
-        <!-- Derecha del navbar -->
         <div class="d-flex align-items-center gap-2">
 
-          <!-- ✅ Botón Backup BD -->
-          <a href="{% url 'app:backup' %}" class="btn-backup" title="Backup BD">
-            <i class="fas fa-database"></i>
+          <a href="{% url 'app:backup' %}" class="btn-backup">
+            <svg viewBox="0 0 24 24">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/>
+              <path d="M21 12c0 1.66-4.03 3-9 3S3 13.66 3 12"/>
+              <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+            </svg>
           </a>
 
+          <div class="nav-vdivider"></div>
+
           <div class="dropdown">
-            <!-- Pill del usuario -->
             <button class="user-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <div class="d-flex align-items-center justify-content-center bg-danger text-white"
-                   style="width:30px;height:30px;border-radius:50%;font-size:.8rem;font-weight:700;flex-shrink:0;">
+              <div class="user-pill-avatar">
                 {% if user.nombres %}{{ user.nombres|slice:':1'|upper }}{% else %}{{ user.username|slice:':1'|upper }}{% endif %}
               </div>
-              <span class="small fw-bold">
-                {% if user.nombres %}{{ user.nombres|upper }}{% else %}{{ user.username|upper }}{% endif %}
+              <div class="user-pill-info d-none d-sm-block">
+                <div class="user-pill-name">
+                  {% if user.nombres %}{{ user.nombres }}{% else %}{{ user.username }}{% endif %}
+                </div>
+                <div class="user-pill-role">
+                  {% if user.cargo %}{{ user.get_cargo_display }}{% else %}Admin{% endif %}
+                </div>
+              </div>
+              <span class="pill-arrow">
+                <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
               </span>
-              <i class="fas fa-chevron-down pill-arrow"></i>
             </button>
 
-            <!-- Dropdown -->
             <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu">
               <li>
                 <div class="dd-header">
@@ -178,20 +189,23 @@
                     <div class="dd-username">
                       {% if user.nombres %}{{ user.nombres }} {{ user.apellidos }}{% else %}{{ user.username|capfirst }}{% endif %}
                     </div>
-                    <div class="dd-email">
-                      {% if user.cargo %}{{ user.get_cargo_display }}{% else %}{{ user.email|default:"Administrador del sistema" }}{% endif %}
+                    <div class="dd-role">
+                      {% if user.cargo %}{{ user.get_cargo_display }}{% else %}{{ user.email|default:"Administrador" }}{% endif %}
                     </div>
                   </div>
                 </div>
               </li>
               <li>
-                <a class="dropdown-item" href="{% url 'app:editar_usuario' user.pk %}">
-                  <i class="fas fa-user"></i> Mi Perfil
+                {# ← CAMBIADO: ahora va al perfil, no al editar #}
+                <a class="dropdown-item" href="{% url 'app:mi_perfil' %}">
+                  <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  Mi Perfil
                 </a>
               </li>
               <li>
                 <a class="dropdown-item" href="{% url 'app:listar_usuario' %}">
-                  <i class="fas fa-user-cog"></i> Administrar Usuarios
+                  <svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M2 20c0-3.5 3.1-6 7-6"/><circle cx="17" cy="7" r="3"/><path d="M22 20c0-3.5-3.1-6-7-6s-7 2.5-7 6"/></svg>
+                  Administrar Usuarios
                 </a>
               </li>
               <li><hr class="dropdown-divider"></li>
@@ -199,7 +213,8 @@
                 <form method="post" action="{% url 'login:logout' %}">
                   {% csrf_token %}
                   <button type="submit" class="dd-logout">
-                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Cerrar Sesión
                   </button>
                 </form>
               </li>
@@ -209,7 +224,6 @@
         </div>
       </nav>
 
-      <!-- Contenido de cada página -->
       <main class="app-main-bg p-4">
         {% block contenido %}{% endblock %}
       </main>
@@ -221,7 +235,6 @@
 
 
 {% block js_base %}
-
   <script>
   document.addEventListener('DOMContentLoaded', function () {
     var trigger = document.getElementById('sidebar-trigger');
@@ -263,125 +276,75 @@
   });
   </script>
 
-  <!-- Asterisco campos obligatorios — global -->
   <script>
   document.addEventListener('DOMContentLoaded', function () {
-
     document.querySelectorAll('input, select, textarea').forEach(function(campo) {
       if (!campo.required) return;
       if (campo.type === 'hidden' || campo.type === 'submit') return;
-
       var label = null;
-
-      if (campo.id) {
-        label = document.querySelector('label[for="' + campo.id + '"]');
-      }
-      if (!label) {
-        var grupo = campo.closest('.field-group');
-        if (grupo) label = grupo.querySelector('.field-label');
-      }
-      if (!label) {
-        var col = campo.closest('[class*="col-"]');
-        if (col) label = col.querySelector('.field-label');
-      }
-
+      if (campo.id) label = document.querySelector('label[for="' + campo.id + '"]');
+      if (!label) { var grupo = campo.closest('.field-group'); if (grupo) label = grupo.querySelector('.field-label'); }
+      if (!label) { var col = campo.closest('[class*="col-"]'); if (col) label = col.querySelector('.field-label'); }
       if (label) label.classList.add('required');
     });
-
   });
   </script>
 
-  <!-- Validador en tiempo real — solo blur/input/change, NUNCA bloquea submit -->
   <script>
   document.addEventListener('DOMContentLoaded', function () {
-
-    function contenedorDe(input) {
-      return input.closest('.col-md-6') || input.closest('.mb-4') || input.closest('.form-group') || input.parentNode;
-    }
+    function contenedorDe(input) { return input.closest('.col-md-6') || input.closest('.mb-4') || input.closest('.form-group') || input.parentNode; }
     function mostrarError(input, mensaje) {
-      limpiarError(input);
-      input.classList.add('is-invalid');
+      limpiarError(input); input.classList.add('is-invalid');
       var div = document.createElement('div');
-      div.className = 'caja-error-roja mt-1';
-      div.setAttribute('data-live-error', '1');
-      div.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i><strong>' + mensaje + '</strong>';
+      div.className = 'caja-error-roja mt-1'; div.setAttribute('data-live-error', '1');
+      div.innerHTML = '⚠ <strong>' + mensaje + '</strong>';
       contenedorDe(input).appendChild(div);
     }
-    function mostrarOk(input) {
-      limpiarError(input);
-      input.classList.remove('is-invalid');
-      input.classList.add('is-valid');
-    }
-    function limpiarError(input) {
-      input.classList.remove('is-invalid', 'is-valid');
-      contenedorDe(input).querySelectorAll('[data-live-error]').forEach(function(el){ el.remove(); });
-    }
+    function mostrarOk(input) { limpiarError(input); input.classList.remove('is-invalid'); input.classList.add('is-valid'); }
+    function limpiarError(input) { input.classList.remove('is-invalid','is-valid'); contenedorDe(input).querySelectorAll('[data-live-error]').forEach(function(el){ el.remove(); }); }
     function esVacio(val) { return !val || val.trim() === '' || val === '--'; }
-    function labelDe(input) {
-      if (input.labels && input.labels[0]) return input.labels[0].innerText.trim().replace('*','').trim();
-      return input.name || '';
-    }
+    function labelDe(input) { if (input.labels && input.labels[0]) return input.labels[0].innerText.trim().replace('*','').trim(); return input.name || ''; }
 
     function validarCampo(input) {
-      var name  = (input.name || '').toLowerCase();
-      var val   = input.value;
-      var tipo  = input.type;
-      var label = labelDe(input);
-
+      var name = (input.name || '').toLowerCase(), val = input.value, tipo = input.type, label = labelDe(input);
       if (!name || name === 'csrfmiddlewaretoken') return;
       if (tipo === 'hidden' || tipo === 'submit' || tipo === 'file') return;
-
-      if (tipo === 'select-one') {
-        if (esVacio(val)) mostrarError(input, 'Seleccione una opción para "' + label + '".');
-        else              mostrarOk(input);
-        return;
-      }
-
-      if (tipo === 'date' || tipo === 'datetime-local') {
-        if (!esVacio(val)) mostrarOk(input);
-        return;
-      }
-
+      if (tipo === 'select-one') { if (esVacio(val)) mostrarError(input, 'Seleccione una opción para "' + label + '".'); else mostrarOk(input); return; }
+      if (tipo === 'date' || tipo === 'datetime-local') { if (!esVacio(val)) mostrarOk(input); return; }
       if (name === 'telefono' && tipo === 'hidden') return;
-
       var opcionales = ['email','correo','direccion','observacion','descripcion','logo','comprobante','indicativo','numero_telefono'];
       var esOpcional = opcionales.some(function(op){ return name.includes(op); });
       if (esOpcional && esVacio(val)) { limpiarError(input); return; }
       if (!esOpcional && esVacio(val)) { mostrarError(input, 'El campo "' + label + '" es obligatorio.'); return; }
-
       if (name.includes('nombre') || name.includes('apellido')) {
         if (!/^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s\-]+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite letras y espacios.'); return; }
         if (val.trim().length < 2) { mostrarError(input, '"' + label + '" debe tener al menos 2 caracteres.'); return; }
       }
       if (name.includes('cedula') || name === 'numero_documento') {
         if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
-        var len = val.trim().length;
-        if (len < 8 || len > 14) { mostrarError(input, '"' + label + '" debe tener entre 8 y 14 dígitos.'); return; }
+        var len = val.trim().length; if (len < 8 || len > 14) { mostrarError(input, '"' + label + '" debe tener entre 8 y 14 dígitos.'); return; }
       }
       if (name === 'nit') {
         if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
-        var lenNit = val.trim().length;
-        if (lenNit < 9 || lenNit > 10) { mostrarError(input, '"' + label + '" debe tener 9 o 10 dígitos.'); return; }
+        var lenNit = val.trim().length; if (lenNit < 9 || lenNit > 10) { mostrarError(input, '"' + label + '" debe tener 9 o 10 dígitos.'); return; }
       }
       if (name === 'numero_telefono') {
         if (!esVacio(val)) {
           if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
-          var lenTel = val.trim().length;
-          if (lenTel !== 7 && lenTel !== 10) { mostrarError(input, '"' + label + '" debe tener 10 dígitos (celular) o 7 (fijo).'); return; }
+          var lenTel = val.trim().length; if (lenTel !== 7 && lenTel !== 10) { mostrarError(input, '"' + label + '" debe tener 10 dígitos (celular) o 7 (fijo).'); return; }
         }
         mostrarOk(input); return;
       }
       if (name.includes('email') || name.includes('correo')) {
-        if (!esVacio(val) && !/^[\w.\+\-]+@[\w\-]+\.[a-zA-Z]{2,}$/.test(val.trim())) { mostrarError(input, '"' + label + '" no tiene formato válido. Ej: correo@dominio.com'); return; }
+        if (!esVacio(val) && !/^[\w.\+\-]+@[\w\-]+\.[a-zA-Z]{2,}$/.test(val.trim())) { mostrarError(input, '"' + label + '" no tiene formato válido.'); return; }
       }
       if (name.includes('placa')) {
         var placa = val.trim().toUpperCase().replace(/\s/g,'');
-        if (!/^[A-Z]{3}[0-9]{3}$/.test(placa) && !/^[A-Z]{3}[0-9]{2}[A-Z]{1}$/.test(placa)) { mostrarError(input, 'Placa inválida. Use ABC123 (carro) o ABC12D (moto).'); return; }
+        if (!/^[A-Z]{3}[0-9]{3}$/.test(placa) && !/^[A-Z]{3}[0-9]{2}[A-Z]{1}$/.test(placa)) { mostrarError(input, 'Placa inválida. Use ABC123 o ABC12D.'); return; }
       }
       if (name === 'modelo') {
-        if (!/^\d{4}$/.test(val.trim())) { mostrarError(input, 'El año debe tener exactamente 4 dígitos. Ej: 2019'); return; }
-        var anio = parseInt(val.trim());
-        var actual = new Date().getFullYear();
+        if (!/^\d{4}$/.test(val.trim())) { mostrarError(input, 'El año debe tener 4 dígitos. Ej: 2019'); return; }
+        var anio = parseInt(val.trim()), actual = new Date().getFullYear();
         if (anio < 1900 || anio > actual + 1) { mostrarError(input, 'El año debe estar entre 1900 y ' + (actual + 1) + '.'); return; }
       }
       if (name === 'codigo') {
@@ -389,39 +352,23 @@
         if (val.trim().length < 3) { mostrarError(input, '"' + label + '" debe tener al menos 3 dígitos.'); return; }
       }
       if (name.includes('precio') || name.includes('monto') || name.includes('total')) {
-        var num = parseFloat(val);
-        if (isNaN(num) || num <= 0) { mostrarError(input, '"' + label + '" debe ser mayor a 0.'); return; }
-        if (num > 999999999)        { mostrarError(input, '"' + label + '" es demasiado alto.'); return; }
+        var num = parseFloat(val); if (isNaN(num) || num <= 0) { mostrarError(input, '"' + label + '" debe ser mayor a 0.'); return; }
+        if (num > 999999999) { mostrarError(input, '"' + label + '" es demasiado alto.'); return; }
       }
-      if (name.includes('stock')) {
-        var numStock = parseInt(val);
-        if (isNaN(numStock) || numStock < 0) { mostrarError(input, '"' + label + '" no puede ser negativo.'); return; }
-      }
-      if (name === 'cantidad') {
-        var numCant = parseInt(val);
-        if (isNaN(numCant) || numCant <= 0) { mostrarError(input, '"' + label + '" debe ser mayor a 0.'); return; }
-        if (numCant > 10000)                { mostrarError(input, '"' + label + '" no puede superar 10.000 unidades.'); return; }
-      }
-      if (name.includes('km')) {
-        var numKm = parseInt(val);
-        if (isNaN(numKm) || numKm < 0) { mostrarError(input, '"' + label + '" no puede ser negativo.'); return; }
-        if (numKm > 1000000)           { mostrarError(input, '"' + label + '" es demasiado alto (máx. 1.000.000 km).'); return; }
-      }
-      if (name.includes('descripcion') || name.includes('mensaje') || name.includes('observacion')) {
-        if (!esVacio(val) && val.trim().length < 5) { mostrarError(input, '"' + label + '" es demasiado corto (mínimo 5 caracteres).'); return; }
-      }
+      if (name.includes('stock')) { var numStock = parseInt(val); if (isNaN(numStock) || numStock < 0) { mostrarError(input, '"' + label + '" no puede ser negativo.'); return; } }
+      if (name === 'cantidad') { var numCant = parseInt(val); if (isNaN(numCant) || numCant <= 0) { mostrarError(input, '"' + label + '" debe ser mayor a 0.'); return; } if (numCant > 10000) { mostrarError(input, '"' + label + '" no puede superar 10.000.'); return; } }
+      if (name.includes('km')) { var numKm = parseInt(val); if (isNaN(numKm) || numKm < 0) { mostrarError(input, '"' + label + '" no puede ser negativo.'); return; } if (numKm > 1000000) { mostrarError(input, '"' + label + '" máx. 1.000.000 km.'); return; } }
       if (name === 'password') {
-        if (val.length < 8)     { mostrarError(input, 'La contraseña debe tener al menos 8 caracteres.'); return; }
-        if (!/[A-Z]/.test(val)) { mostrarError(input, 'Debe incluir al menos una letra mayúscula.'); return; }
-        if (!/[a-z]/.test(val)) { mostrarError(input, 'Debe incluir al menos una letra minúscula.'); return; }
-        if (!/[0-9]/.test(val)) { mostrarError(input, 'Debe incluir al menos un número.'); return; }
-        if (!/[!@#$%\^&*()\-_=+\[\]{};\':"\\|,.<>\/?]/.test(val)) { mostrarError(input, 'Debe incluir al menos un carácter especial. Ej: !@#$%&*'); return; }
+        if (val.length < 8) { mostrarError(input, 'Mínimo 8 caracteres.'); return; }
+        if (!/[A-Z]/.test(val)) { mostrarError(input, 'Debe incluir una mayúscula.'); return; }
+        if (!/[a-z]/.test(val)) { mostrarError(input, 'Debe incluir una minúscula.'); return; }
+        if (!/[0-9]/.test(val)) { mostrarError(input, 'Debe incluir un número.'); return; }
+        if (!/[!@#$%\^&*()\-_=+\[\]{};\':"\\|,.<>\/?]/.test(val)) { mostrarError(input, 'Debe incluir un carácter especial.'); return; }
       }
       if (name.includes('confirmacion') || name.includes('password2')) {
         var passField = document.querySelector('input[name="password"]');
         if (passField && val !== passField.value) { mostrarError(input, 'Las contraseñas no coinciden.'); return; }
       }
-
       mostrarOk(input);
     }
 
@@ -431,7 +378,6 @@
       input.addEventListener('change', function(){ validarCampo(this); });
       input.addEventListener('blur',   function(){ validarCampo(this); });
     });
-
   });
   </script>
 

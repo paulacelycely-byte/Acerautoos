@@ -1,36 +1,40 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from django.shortcuts import redirect
 
 from app.models import Producto
 from app.forms import ProductoForm
 
 
-# ==============================
-# LISTAR PRODUCTOS
-# ==============================
-
 class ProductoListView(ListView):
     model = Producto
     template_name = 'producto/listar.html'
-    context_object_name = 'producto'
+    context_object_name = 'productos'
     login_url = '/login/'
 
     def get_queryset(self):
-        return Producto.objects.all().order_by('-id')
+        return Producto.objects.select_related('marca', 'proveedor').order_by('-id')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Listado de Producto'
-        context['crear_url'] = reverse_lazy('app:crear_producto')
+        qs = Producto.objects.all()
+
+        total_productos  = qs.count()
+        activos          = qs.filter(estado=True).count()
+        sin_stock        = qs.filter(stock=0).count()
+        # Stock bajo: tiene stock pero está en o por debajo del mínimo
+        stock_bajo       = sum(1 for p in qs.filter(stock__gt=0) if p.stock <= p.stock_minimo)
+        valor_inventario = sum(p.precio * p.stock for p in qs.filter(estado=True))
+
+        context['titulo']           = 'Inventario de Productos'
+        context['crear_url']        = reverse_lazy('app:crear_producto')
+        context['total_productos']  = total_productos
+        context['activos']          = activos
+        context['sin_stock']        = sin_stock
+        context['stock_bajo']       = stock_bajo
+        context['valor_inventario'] = valor_inventario
         return context
 
-
-# ==============================
-# CREAR PRODUCTO
-# ==============================
 
 class ProductoCreateView(CreateView):
     model = Producto
@@ -49,14 +53,10 @@ class ProductoCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Crear Producto'
+        context['titulo']     = 'Crear Producto'
         context['listar_url'] = reverse_lazy('app:listar_producto')
         return context
 
-
-# ==============================
-# EDITAR PRODUCTO
-# ==============================
 
 class ProductoUpdateView(UpdateView):
     model = Producto
@@ -75,14 +75,10 @@ class ProductoUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Editar Producto'
+        context['titulo']     = 'Editar Producto'
         context['listar_url'] = reverse_lazy('app:listar_producto')
         return context
 
-
-# ==============================
-# ELIMINAR PRODUCTO
-# ==============================
 
 class ProductoDeleteView(DeleteView):
     model = Producto
@@ -96,6 +92,6 @@ class ProductoDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar Producto'
+        context['titulo']     = 'Eliminar Producto'
         context['listar_url'] = reverse_lazy('app:listar_producto')
         return context

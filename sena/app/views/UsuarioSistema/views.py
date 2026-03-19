@@ -1,9 +1,33 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import View
+from django.shortcuts import render
 
-from app.models import UsuarioSistema
+from app.models import UsuarioSistema, OrdenServicio, Empleado
 from app.forms import UsuarioSistemaForm
+
+
+class PerfilView(LoginRequiredMixin, View):
+    """Vista de perfil del usuario logueado."""
+    def get(self, request):
+        usuario = request.user
+        # Últimas órdenes asignadas si es mecánico (via empleado)
+        ordenes_recientes = []
+        try:
+            empleado = Empleado.objects.get(correo=usuario.email)
+            ordenes_recientes = OrdenServicio.objects.filter(
+                empleado=empleado
+            ).select_related('vehiculo', 'servicio').order_by('-fecha')[:5]
+        except Empleado.DoesNotExist:
+            pass
+
+        return render(request, 'UsuarioSistema/perfil.html', {
+            'usuario'          : usuario,
+            'ordenes_recientes': ordenes_recientes,
+            'titulo'           : 'Mi Perfil',
+        })
 
 
 class UsuarioSistemaListView(ListView):
@@ -12,12 +36,12 @@ class UsuarioSistemaListView(ListView):
     context_object_name = 'usuarios'
 
     def get_queryset(self):
-        return UsuarioSistema.objects.all().order_by('username')  # AbstractUser no tiene 'nombres'
+        return UsuarioSistema.objects.all().order_by('username')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Listado de Usuarios'
-        context['crear_url'] = reverse_lazy('app:crear_usuario')
+        context['titulo']     = 'Listado de Usuarios'
+        context['crear_url']  = reverse_lazy('app:crear_usuario')
         context['listar_url'] = reverse_lazy('app:listar_usuario')
         return context
 
@@ -30,9 +54,9 @@ class UsuarioSistemaCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Registro de Usuario'
+        context['titulo']     = 'Registro de Usuario'
         context['listar_url'] = reverse_lazy('app:listar_usuario')
-        context['action'] = 'add'
+        context['action']     = 'add'
         return context
 
     def form_valid(self, form):
@@ -48,9 +72,9 @@ class UsuarioSistemaUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Editar Usuario'
+        context['titulo']     = 'Editar Usuario'
         context['listar_url'] = reverse_lazy('app:listar_usuario')
-        context['action'] = 'edit'
+        context['action']     = 'edit'
         return context
 
     def form_valid(self, form):
@@ -65,7 +89,7 @@ class UsuarioSistemaDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar Usuario'
+        context['titulo']     = 'Eliminar Usuario'
         context['listar_url'] = reverse_lazy('app:listar_usuario')
         return context
 
@@ -74,7 +98,7 @@ class UsuarioSistemaDeleteView(DeleteView):
         return super().form_valid(form)
 
 
-# ── Aliases para compatibilidad con urls.py ──
+# ── Aliases ──
 UsuarioListView   = UsuarioSistemaListView
 UsuarioCreateView = UsuarioSistemaCreateView
 UsuarioUpdateView = UsuarioSistemaUpdateView

@@ -25,9 +25,9 @@ class MarcaListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Listado de Marca'
+        context['titulo']    = 'Listado de Marca'
         context['crear_url'] = reverse_lazy('app:crear_marca')
-        context['listar_url'] = reverse_lazy('app:listar_marca')
+        context['listar_url']= reverse_lazy('app:listar_marca')
         return context
 
 
@@ -49,9 +49,20 @@ class MarcaCreateView(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Registro de Marca'
-        context['listar_url'] = reverse_lazy('app:listar_marca')
+        context['titulo']    = 'Registro de Marca'
+        context['listar_url']= reverse_lazy('app:listar_marca')
+        context['next']      = self.request.GET.get('next', '')
         return context
+
+    def form_valid(self, form):
+        self.object = form.save()
+        next_param = self.request.POST.get('next', '')
+        messages.success(self.request, 'Marca creada exitosamente.')
+        if next_param == 'vehiculos':
+            return redirect(reverse_lazy('app:crear_vehiculo'))
+        if next_param == 'producto':
+            return redirect(reverse_lazy('app:crear_producto'))
+        return redirect(self.success_url)
 
 
 # ================================
@@ -72,9 +83,20 @@ class MarcaUpdateView(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Editar Marca'
-        context['listar_url'] = reverse_lazy('app:listar_marca')
+        context['titulo']    = 'Editar Marca'
+        context['listar_url']= reverse_lazy('app:listar_marca')
+        context['next']      = self.request.GET.get('next', '')
         return context
+
+    def form_valid(self, form):
+        self.object = form.save()
+        next_param = self.request.POST.get('next', '')
+        messages.success(self.request, 'Marca actualizada exitosamente.')
+        if next_param == 'vehiculos':
+            return redirect(reverse_lazy('app:crear_vehiculo'))
+        if next_param == 'producto':
+            return redirect(reverse_lazy('app:crear_producto'))
+        return redirect(self.success_url)
 
 
 # ================================
@@ -84,13 +106,13 @@ class MarcaDeleteView(View):
     def get(self, request, pk):
         marca = get_object_or_404(Marca, pk=pk)
         return render(request, 'Marca/eliminar.html', {
-            'object': marca,
-            'titulo': 'Eliminar Marca',
-            'listar_url': reverse_lazy('app:listar_marca')
+            'object':     marca,
+            'titulo':     'Eliminar Marca',
+            'listar_url': reverse_lazy('app:listar_marca'),
         })
 
     def post(self, request, pk):
-        marca = get_object_or_404(Marca, pk=pk)
+        marca  = get_object_or_404(Marca, pk=pk)
         accion = request.POST.get("accion")
 
         if accion == "desactivar":
@@ -129,8 +151,8 @@ def crear_marca_ajax(request):
         return JsonResponse({'success': False, 'error': f'La marca "{nombre}" ya existe en el sistema.'})
 
     marca = Marca.objects.create(
-        nombre=nombre,
-        pais_origen=pais or None,
-        descripcion=desc or None
+        nombre      = nombre,
+        pais_origen = pais or None,
+        descripcion = desc or None,
     )
     return JsonResponse({'success': True, 'id': marca.pk, 'nombre': marca.nombre})

@@ -7,67 +7,82 @@ from app.models import TipoServicio
 from app.forms import TipoServicioForm
 
 
-class TipoServicioListView(ListView): 
+class TipoServicioListView(ListView):
     model = TipoServicio
     template_name = 'TipoServicio/listar.html'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Listado de Tipos de Servicio'
-        context['crear_url'] = reverse_lazy('app:create_servico') 
+        context['titulo']    = 'Listado de Tipos de Servicio'
+        context['crear_url'] = reverse_lazy('app:create_servico')
         return context
+
 
 class TipoServicioCreateView(CreateView):
-    model = TipoServicio
-    form_class = TipoServicioForm
+    model         = TipoServicio
+    form_class    = TipoServicioForm
     template_name = 'TipoServicio/crear.html'
-    success_url = reverse_lazy('app:tipo_servicio_list') 
-    
+    success_url   = reverse_lazy('app:tipo_servicio_list')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Crear Tipo de Servicio'
+        context['titulo']     = 'Crear Tipo de Servicio'
         context['listar_url'] = reverse_lazy('app:tipo_servicio_list')
+        context['es_editar']  = False  # ← rojo
+        context['next']       = self.request.GET.get('next', '')
         return context
-    
+
     def form_valid(self, form):
-        messages.success(self.request, 'Tipo de servicio creado exitosamente')
-        return super().form_valid(form)
-    
+        form.save()  # ← guardar siempre primero
+        messages.success(self.request, 'Tipo de servicio creado exitosamente.')
+        next_param = self.request.POST.get('next', '')
+        if next_param == 'orden':
+            return redirect(reverse_lazy('app:orden_servicio_create'))
+        return redirect(self.success_url)
+
     def form_invalid(self, form):
-        messages.error(self.request, 'Error al guardar. Por favor verifica los campos')
+        messages.error(self.request, 'Error al guardar. Por favor verifica los campos.')
         return super().form_invalid(form)
+
 
 class TipoServicioUpdateView(UpdateView):
-    model = TipoServicio
-    form_class = TipoServicioForm
+    model         = TipoServicio
+    form_class    = TipoServicioForm
     template_name = 'TipoServicio/crear.html'
-    success_url = reverse_lazy('app:tipo_servicio_list') 
-    
+    success_url   = reverse_lazy('app:tipo_servicio_list')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Editar Tipo de Servicio'
+        context['titulo']     = 'Editar Tipo de Servicio'
         context['listar_url'] = reverse_lazy('app:tipo_servicio_list')
+        context['es_editar']  = True   # ← azul
+        context['next']       = self.request.GET.get('next', '')
         return context
-    
+
     def form_valid(self, form):
-        messages.success(self.request, 'Tipo de servicio actualizado exitosamente')
-        return super().form_valid(form)
-    
+        form.save()  # ← guardar siempre primero
+        messages.success(self.request, 'Tipo de servicio actualizado exitosamente.')
+        next_param = self.request.POST.get('next', '')
+        if next_param == 'orden':
+            return redirect(reverse_lazy('app:orden_servicio_create'))
+        return redirect(self.success_url)
+
     def form_invalid(self, form):
-        messages.error(self.request, 'Error al actualizar. Por favor verifica los campos')
+        messages.error(self.request, 'Error al actualizar. Por favor verifica los campos.')
         return super().form_invalid(form)
 
+
 class TipoServicioDeleteView(DeleteView):
-    model = TipoServicio
+    model         = TipoServicio
     template_name = 'TipoServicio/eliminar.html'
-    success_url = reverse_lazy('app:tipo_servicio_list') 
-    
+    success_url   = reverse_lazy('app:tipo_servicio_list')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar Tipo de Servicio'
+        context['titulo']     = 'Eliminar Tipo de Servicio'
         context['listar_url'] = reverse_lazy('app:tipo_servicio_list')
         return context
-    
+
     def post(self, request, *args, **kwargs):
         try:
             self.object = self.get_object()

@@ -1,0 +1,295 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block css %}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --rojo:   #d32f2f;
+        --rojo2:  #b71c1c;
+        --carbon: #1a1a1a;
+        --gris:   #f2f2f0;
+        --borde:  #e0ddd8;
+        --texto:  #2a2a2a;
+        --muted:  #888;
+    }
+
+    .perfil-grid {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 24px;
+        align-items: start;
+    }
+    @media (max-width: 900px) {
+        .perfil-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Card lateral izquierda ── */
+    .perfil-card {
+        background: white; border-radius: 16px;
+        border: 1px solid var(--borde); overflow: hidden;
+    }
+    .perfil-card-top {
+        background: var(--carbon); padding: 32px 24px 24px;
+        display: flex; flex-direction: column; align-items: center; gap: 14px;
+        position: relative; overflow: hidden;
+    }
+    .perfil-card-top::before {
+        content: ''; position: absolute; top: 0; right: 0;
+        width: 180px; height: 100%;
+        background: repeating-linear-gradient(-55deg, transparent, transparent 12px, rgba(255,255,255,.03) 12px, rgba(255,255,255,.03) 24px);
+    }
+    .perfil-card-top::after {
+        content: ''; position: absolute; left: 0; top: 0;
+        width: 4px; height: 100%; background: var(--rojo);
+    }
+    .perfil-avatar-grande {
+        width: 80px; height: 80px; border-radius: 20px;
+        background: var(--rojo); display: flex; align-items: center; justify-content: center;
+        font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900;
+        color: white; box-shadow: 0 0 0 5px rgba(211,47,47,.25);
+        position: relative; z-index: 1;
+    }
+    .perfil-nombre {
+        font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 800;
+        color: white; text-transform: uppercase; letter-spacing: .5px;
+        text-align: center; line-height: 1.1; position: relative; z-index: 1;
+    }
+    .perfil-cargo-badge {
+        background: rgba(211,47,47,.2); border: 1px solid rgba(211,47,47,.4);
+        color: #ff9090; font-family: 'DM Sans', sans-serif;
+        font-size: .72rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: .8px; padding: 4px 12px; border-radius: 20px;
+        position: relative; z-index: 1;
+    }
+
+    .perfil-card-body { padding: 20px; }
+    .perfil-dato { margin-bottom: 16px; }
+    .perfil-dato-label {
+        font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .9px; color: var(--muted); margin-bottom: 4px;
+    }
+    .perfil-dato-valor {
+        font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 600;
+        color: var(--texto); display: flex; align-items: center; gap: 8px;
+    }
+    .perfil-dato-valor i { color: var(--muted); font-size: .85rem; width: 16px; text-align: center; }
+
+    .perfil-card-footer {
+        padding: 16px 20px; border-top: 1px solid var(--borde);
+        background: var(--gris);
+    }
+    .btn-editar-perfil {
+        font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .6px;
+        padding: 10px 20px; border-radius: 10px; border: none;
+        background: var(--carbon); color: white; text-decoration: none;
+        display: flex; align-items: center; gap: 8px; justify-content: center;
+        transition: .2s; width: 100%;
+    }
+    .btn-editar-perfil:hover { background: #333; color: white; transform: translateY(-1px); }
+
+    /* ── Panel derecho ── */
+    .info-card {
+        background: white; border-radius: 16px;
+        border: 1px solid var(--borde); overflow: hidden; margin-bottom: 20px;
+    }
+    .info-card-header {
+        background: var(--carbon); padding: 13px 22px;
+        display: flex; align-items: center; gap: 10px;
+    }
+    .info-card-header i { color: var(--rojo); }
+    .info-card-header span {
+        font-family: 'Barlow Condensed', sans-serif; font-size: .85rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.7);
+    }
+    .info-card-body { padding: 24px; }
+
+    .datos-grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px;
+    }
+    .dato-item {}
+    .dato-label {
+        font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .9px; color: var(--muted); margin-bottom: 4px;
+    }
+    .dato-valor {
+        font-family: 'DM Sans', sans-serif; font-size: .92rem; font-weight: 600; color: var(--texto);
+    }
+
+    /* Tabla de órdenes recientes */
+    .tabla-mini { width: 100%; border-collapse: collapse; font-family: 'DM Sans', sans-serif; font-size: .85rem; }
+    .tabla-mini thead tr { background: var(--gris); border-bottom: 2px solid var(--borde); }
+    .tabla-mini thead th { font-family: 'Barlow Condensed', sans-serif; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); padding: 10px 14px; border: none; }
+    .tabla-mini tbody tr { border-bottom: 1px solid var(--borde); }
+    .tabla-mini tbody tr:last-child { border-bottom: none; }
+    .tabla-mini tbody td { padding: 11px 14px; color: var(--texto); vertical-align: middle; border: none; }
+    .tabla-mini tbody tr:hover { background: #fafaf8; }
+
+    .placa-mini { font-family: 'Barlow Condensed', sans-serif; font-size: .9rem; font-weight: 800; color: var(--rojo); background: #fff5f5; border: 1px solid rgba(211,47,47,.2); border-radius: 6px; padding: 2px 9px; }
+    .badge-estado-mini { font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700; text-transform: uppercase; border-radius: 6px; padding: 3px 8px; }
+    .ep { background: #fff8e1; color: #f59e0b; }
+    .ep2 { background: #e0f2fe; color: #0284c7; }
+    .et { background: #dcfce7; color: #16a34a; }
+
+    .sin-ordenes {
+        text-align: center; padding: 28px; color: var(--muted);
+        font-family: 'DM Sans', sans-serif; font-size: .85rem; font-style: italic;
+    }
+
+    /* Estado activo badge */
+    .badge-activo   { background: #dcfce7; color: #16a34a; padding: 3px 10px; border-radius: 6px; font-size: .72rem; font-weight: 700; text-transform: uppercase; }
+    .badge-inactivo { background: var(--gris); color: var(--muted); padding: 3px 10px; border-radius: 6px; font-size: .72rem; font-weight: 700; text-transform: uppercase; }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="container animate__animated animate__fadeIn" style="max-width:1000px;">
+
+    <div class="perfil-grid">
+
+        <!-- ── Columna izquierda: tarjeta de perfil ── -->
+        <div>
+            <div class="perfil-card">
+                <div class="perfil-card-top">
+                    <div class="perfil-avatar-grande">
+                        {% if usuario.first_name %}{{ usuario.first_name|slice:':1'|upper }}{% else %}{{ usuario.username|slice:':1'|upper }}{% endif %}
+                    </div>
+                    <div class="perfil-nombre">
+                        {{ usuario.first_name }} {{ usuario.last_name }}
+                        {% if not usuario.first_name %}{{ usuario.username }}{% endif %}
+                    </div>
+                    <span class="perfil-cargo-badge">
+                        {% if usuario.cargo %}{{ usuario.get_cargo_display }}{% else %}Usuario{% endif %}
+                    </span>
+                </div>
+
+                <div class="perfil-card-body">
+                    <div class="perfil-dato">
+                        <div class="perfil-dato-label">Usuario</div>
+                        <div class="perfil-dato-valor"><i class="fas fa-at"></i> {{ usuario.username }}</div>
+                    </div>
+                    <div class="perfil-dato">
+                        <div class="perfil-dato-label">Correo electrónico</div>
+                        <div class="perfil-dato-valor"><i class="fas fa-envelope"></i> {{ usuario.email|default:"—" }}</div>
+                    </div>
+                    <div class="perfil-dato">
+                        <div class="perfil-dato-label">Teléfono</div>
+                        <div class="perfil-dato-valor"><i class="fas fa-phone"></i> {{ usuario.telefono|default:"—" }}</div>
+                    </div>
+                    <div class="perfil-dato">
+                        <div class="perfil-dato-label">Tipo de documento</div>
+                        <div class="perfil-dato-valor"><i class="fas fa-id-card"></i> {{ usuario.get_tipo_documento_display|default:"—" }}</div>
+                    </div>
+                    <div class="perfil-dato">
+                        <div class="perfil-dato-label">Cédula</div>
+                        <div class="perfil-dato-valor"><i class="fas fa-fingerprint"></i> {{ usuario.cedula|default:"—" }}</div>
+                    </div>
+                    <div class="perfil-dato">
+                        <div class="perfil-dato-label">Estado</div>
+                        <div class="perfil-dato-valor">
+                            {% if usuario.is_active %}
+                                <span class="badge-activo"><i class="fas fa-check-circle"></i> Activo</span>
+                            {% else %}
+                                <span class="badge-inactivo">Inactivo</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if usuario.last_login %}
+                    <div class="perfil-dato">
+                        <div class="perfil-dato-label">Último acceso</div>
+                        <div class="perfil-dato-valor"><i class="fas fa-clock"></i> {{ usuario.last_login|date:"d/m/Y H:i" }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="perfil-card-footer">
+                    <a href="{% url 'app:editar_usuario' usuario.pk %}" class="btn-editar-perfil">
+                        <i class="fas fa-pen"></i> Editar mis datos
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Columna derecha ── -->
+        <div>
+
+            <!-- Información de acceso -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Información del sistema</span>
+                </div>
+                <div class="info-card-body">
+                    <div class="datos-grid">
+                        <div class="dato-item">
+                            <div class="dato-label">Rol en el sistema</div>
+                            <div class="dato-valor">{{ usuario.get_cargo_display|default:"—" }}</div>
+                        </div>
+                        <div class="dato-item">
+                            <div class="dato-label">Superusuario</div>
+                            <div class="dato-valor">{% if usuario.is_superuser %}Sí{% else %}No{% endif %}</div>
+                        </div>
+                        <div class="dato-item">
+                            <div class="dato-label">Miembro desde</div>
+                            <div class="dato-valor">{{ usuario.date_joined|date:"d/m/Y" }}</div>
+                        </div>
+                        <div class="dato-item">
+                            <div class="dato-label">Staff</div>
+                            <div class="dato-valor">{% if usuario.is_staff %}Sí{% else %}No{% endif %}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Órdenes recientes (si tiene empleado vinculado) -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Órdenes recientes asignadas</span>
+                </div>
+                <div class="info-card-body" style="padding:0;">
+                    {% if ordenes_recientes %}
+                    <table class="tabla-mini">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Vehículo</th>
+                                <th>Servicio</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for o in ordenes_recientes %}
+                            <tr>
+                                <td style="color:var(--muted);font-size:.8rem;font-weight:700;">{{ o.id }}</td>
+                                <td><span class="placa-mini">{{ o.vehiculo.placa }}</span></td>
+                                <td style="color:var(--muted);font-size:.8rem;">{{ o.servicio.nombre }}</td>
+                                <td style="color:var(--muted);font-size:.78rem;">{{ o.fecha|date:"d/m/Y" }}</td>
+                                <td>
+                                    {% if o.estado == 'Pendiente' %}
+                                        <span class="badge-estado-mini ep">Pendiente</span>
+                                    {% elif o.estado == 'En Proceso' %}
+                                        <span class="badge-estado-mini ep2">En Proceso</span>
+                                    {% else %}
+                                        <span class="badge-estado-mini et">Terminado</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="sin-ordenes">
+                        <i class="fas fa-clipboard" style="font-size:1.8rem;color:#ddd;display:block;margin-bottom:8px;"></i>
+                        No hay órdenes asignadas a este usuario{% if usuario.cargo == 'MECANICO' %} aún{% else %} — el usuario no está vinculado como mecánico{% endif %}.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

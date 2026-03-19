@@ -6,8 +6,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
     :root {
-        --rojo:   #d32f2f;
-        --rojo2:  #b71c1c;
+        --acento:  {% if es_editar %}#1565c0{% else %}#d32f2f{% endif %};
+        --acento2: {% if es_editar %}#0d47a1{% else %}#b71c1c{% endif %};
+        --acento-glow: {% if es_editar %}rgba(21,101,192,.25){% else %}rgba(211,47,47,.25){% endif %};
+        --acento-ring: {% if es_editar %}rgba(21,101,192,.1){% else %}rgba(211,47,47,.1){% endif %};
         --carbon: #1a1a1a;
         --gris:   #f2f2f0;
         --borde:  #e0ddd8;
@@ -16,174 +18,59 @@
     }
 
     .taller-header {
-        position: relative;
-        background: var(--carbon);
-        border-radius: 16px;
-        padding: 28px 32px;
-        margin-bottom: 28px;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        position: relative; background: var(--carbon);
+        border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
+        overflow: hidden; display: flex; align-items: center; justify-content: space-between;
     }
     .taller-header::before {
-        content: '';
-        position: absolute;
-        top: 0; right: 0;
-        width: 260px; height: 100%;
-        background: repeating-linear-gradient(
-            -55deg, transparent, transparent 14px,
-            rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px
-        );
-    }
-    .taller-header::after {
-        content: '';
-        position: absolute;
-        left: 0; top: 0;
-        width: 5px; height: 100%;
-        background: var(--rojo);
-        border-radius: 16px 0 0 16px;
+        content: ''; position: absolute; top: 0; right: 0; width: 260px; height: 100%;
+        background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
     }
     .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
-    .header-icon-wrap {
-        width: 56px; height: 56px;
-        background: var(--rojo);
-        border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.4rem; color: white;
-        box-shadow: 0 0 0 4px rgba(211,47,47,.25);
-        flex-shrink: 0;
-    }
-    .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: 2rem; font-weight: 800;
-        color: white; letter-spacing: 1px;
-        text-transform: uppercase; line-height: 1; margin: 0;
-    }
-    .header-sub {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .78rem; color: rgba(255,255,255,.45);
-        margin-top: 4px; letter-spacing: .5px;
-    }
-    .header-badge {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .8rem; font-weight: 700;
-        color: rgba(255,255,255,.4);
-        text-transform: uppercase; letter-spacing: 1px;
-        position: relative;
-    }
+    .header-icon-wrap { width: 56px; height: 56px; background: var(--acento); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 4px var(--acento-glow); flex-shrink: 0; }
+    .header-icon-wrap svg { width: 28px; height: 28px; stroke: white; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .header-titulo { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0; }
+    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; letter-spacing: .5px; }
+    .header-badge { font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; font-weight: 700; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1px; }
 
-    .form-card {
-        background: white;
-        border-radius: 16px;
-        border: 1px solid var(--borde);
-        overflow: hidden;
-    }
-    .form-card-header {
-        background: var(--carbon);
-        padding: 14px 24px;
-        display: flex; align-items: center; gap: 10px;
-    }
-    .form-card-header span {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .85rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1px;
-        color: rgba(255,255,255,.7);
-    }
-    .form-card-header i { color: var(--rojo); font-size: .9rem; }
+    .form-card { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
+    .form-card-header { background: var(--carbon); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
+    .form-card-header svg { width: 16px; height: 16px; stroke: var(--acento); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .form-card-header span { font-family: 'Barlow Condensed', sans-serif; font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.7); }
+    .modo-chip { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: .7rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; background: var(--acento); color: white; opacity: .85; }
     .form-card-body { padding: 32px; }
 
     .field-group { margin-bottom: 22px; }
-    .field-label {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .72rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .9px;
-        color: var(--muted); display: block; margin-bottom: 7px;
-    }
+    .field-label { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .9px; color: var(--muted); display: block; margin-bottom: 7px; }
     .field-inner { position: relative; }
-    .field-inner .field-icon {
-        position: absolute; left: 14px; top: 50%;
-        transform: translateY(-50%);
-        color: #bbb; font-size: .85rem;
-        pointer-events: none; transition: color .2s;
-    }
-    .field-inner input,
-    .field-inner select {
-        width: 100%;
-        padding: 12px 14px 12px 40px;
-        border: 1.5px solid var(--borde);
-        border-radius: 10px;
-        font-family: 'DM Sans', sans-serif;
-        font-size: .9rem; color: var(--texto);
-        background: var(--gris);
-        outline: none;
-        transition: border-color .2s, background .2s, box-shadow .2s;
-        -webkit-appearance: none;
-        appearance: none;
-    }
-    .field-inner input:focus,
-    .field-inner select:focus {
-        border-color: var(--rojo);
-        background: white;
-        box-shadow: 0 0 0 3px rgba(211,47,47,.1);
-    }
-    .field-inner:focus-within .field-icon { color: var(--rojo); }
+    .field-inner .field-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: #bbb; pointer-events: none; transition: color .2s; display: flex; align-items: center; justify-content: center; }
+    .field-inner .field-icon svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .field-inner input, .field-inner select { width: 100%; padding: 12px 14px 12px 40px; border: 1.5px solid var(--borde); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: .9rem; color: var(--texto); background: var(--gris); outline: none; transition: border-color .2s, background .2s, box-shadow .2s; -webkit-appearance: none; appearance: none; }
+    .field-inner input:focus, .field-inner select:focus { border-color: var(--acento); background: white; box-shadow: 0 0 0 3px var(--acento-ring); }
+    .field-inner:focus-within .field-icon { color: var(--acento); }
 
-    /* Campo con botón adjunto (marca) */
-    .field-with-btn { display: flex; gap: 0; }
+    .field-with-btn { display: flex; }
     .field-with-btn .field-inner { flex: 1; }
-    .field-with-btn .field-inner input,
-    .field-with-btn .field-inner select {
-        border-radius: 10px 0 0 10px;
-    }
-    .btn-add-inline {
-        background: var(--rojo);
-        color: white;
-        border: none;
-        border-radius: 0 10px 10px 0;
-        padding: 0 16px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background .2s;
-        display: flex; align-items: center;
-        text-decoration: none;
-    }
-    .btn-add-inline:hover { background: var(--rojo2); color: white; }
+    .field-with-btn .field-inner input, .field-with-btn .field-inner select { border-radius: 10px 0 0 10px; }
+    .btn-add-inline { background: var(--acento); color: white; border: none; border-radius: 0 10px 10px 0; padding: 0 14px; cursor: pointer; transition: background .2s; display: flex; align-items: center; justify-content: center; text-decoration: none; width: 42px; }
+    .btn-add-inline svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+    .btn-add-inline:hover { background: var(--acento2); color: white; }
 
-    .field-error {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .78rem; color: var(--rojo);
-        margin-top: 5px; display: flex; align-items: center; gap: 5px;
-    }
+    .field-help { font-family: 'DM Sans', sans-serif; font-size: .72rem; color: var(--muted); margin-top: 5px; display: block; }
+    .field-error { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: #d32f2f; margin-top: 5px; display: flex; align-items: center; gap: 5px; }
 
-    .form-card-footer {
-        background: var(--gris);
-        border-top: 1px solid var(--borde);
-        padding: 20px 32px;
-        display: flex; align-items: center; justify-content: flex-end; gap: 12px;
-    }
-    .btn-cancelar {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .82rem; font-weight: 600;
-        text-transform: uppercase; letter-spacing: .5px;
-        padding: 10px 22px; border-radius: 10px;
-        border: 1.5px solid var(--borde);
-        background: white; color: var(--muted);
-        text-decoration: none; transition: .2s; cursor: pointer;
-    }
+    /* Separador de sección */
+    .section-sep { display: flex; align-items: center; gap: 12px; margin: 6px 0 18px; }
+    .section-sep-label { font-family: 'Barlow Condensed', sans-serif; font-size: .75rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--acento); white-space: nowrap; }
+    .section-sep-line { flex: 1; height: 1px; background: var(--borde); }
+
+    .form-card-footer { background: var(--gris); border-top: 1px solid var(--borde); padding: 20px 32px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+    .btn-cancelar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; padding: 10px 22px; border-radius: 10px; border: 1.5px solid var(--borde); background: white; color: var(--muted); text-decoration: none; transition: .2s; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+    .btn-cancelar svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
     .btn-cancelar:hover { background: var(--borde); color: var(--texto); }
-    .btn-guardar {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .82rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px;
-        padding: 11px 28px; border-radius: 10px;
-        border: none; background: var(--rojo);
-        color: white; cursor: pointer;
-        box-shadow: 0 4px 14px rgba(211,47,47,.35);
-        transition: .2s;
-        display: flex; align-items: center; gap: 8px;
-    }
-    .btn-guardar:hover { background: var(--rojo2); transform: translateY(-1px); }
+    .btn-guardar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 11px 28px; border-radius: 10px; border: none; background: var(--acento); color: white; cursor: pointer; box-shadow: 0 4px 14px var(--acento-glow); transition: .2s; display: flex; align-items: center; gap: 8px; }
+    .btn-guardar svg { width: 15px; height: 15px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-guardar:hover { background: var(--acento2); transform: translateY(-1px); }
 </style>
 {% endblock %}
 
@@ -192,10 +79,23 @@
 
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap"><i class="fas fa-car-side"></i></div>
+            <div class="header-icon-wrap">
+                {% if es_editar %}
+                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                {% else %}
+                <svg viewBox="0 0 24 24">
+                    <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/>
+                    <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/>
+                    <path d="M5 17H3v-6l2-5h12l2 5h1a1 1 0 0 1 1 1v4h-2"/>
+                    <path d="M9 17h6"/>
+                    <line x1="19" y1="5" x2="19" y2="11"/>
+                    <line x1="16" y1="8" x2="22" y2="8"/>
+                </svg>
+                {% endif %}
+            </div>
             <div>
                 <h1 class="header-titulo">{{ titulo }}</h1>
-                <div class="header-sub">Completa las especificaciones del vehículo</div>
+                <div class="header-sub">{% if es_editar %}Modifica los datos del vehículo{% else %}Completa las especificaciones del vehículo{% endif %}</div>
             </div>
         </div>
         <span class="header-badge">Acerautos S.A.S</span>
@@ -203,11 +103,17 @@
 
     <form method="post" action="." id="formVehiculo">
         {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
 
         <div class="form-card">
             <div class="form-card-header">
-                <i class="fas fa-car"></i>
+                {% if es_editar %}
+                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                {% else %}
+                <svg viewBox="0 0 24 24"><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M5 17H3v-6l2-5h12l2 5h1a1 1 0 0 1 1 1v4h-2"/><path d="M9 17h6"/></svg>
+                {% endif %}
                 <span>Especificaciones del Vehículo</span>
+                <span class="modo-chip">{% if es_editar %}✎ Editando{% else %}+ Nuevo{% endif %}</span>
             </div>
 
             <div class="form-card-body">
@@ -218,34 +124,27 @@
                         <div class="field-group">
                             <label class="field-label">{{ form.placa.label }}</label>
                             <div class="field-inner">
-                                <i class="fas fa-id-card-alt field-icon"></i>
+                                <span class="field-icon"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="16" y2="14"/></svg></span>
                                 {{ form.placa|add_class:'form-field'|attr:'autocomplete:off'|attr:'style:text-transform:uppercase' }}
                             </div>
-                            {% for error in form.placa.errors %}
-                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-                            {% endfor %}
+                            {% for error in form.placa.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
                         </div>
                     </div>
 
-                    <!-- Marca con botón "+" — pasa ?next=vehiculos para que crear_marca sepa de dónde viene -->
+                    <!-- Marca con + -->
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.marca.label }}</label>
                             <div class="field-with-btn">
                                 <div class="field-inner">
-                                    <i class="fas fa-copyright field-icon"></i>
+                                    <span class="field-icon"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span>
                                     {{ form.marca|add_class:'form-field' }}
                                 </div>
-                                <a href="{% url 'app:crear_marca' %}?next=vehiculos"
-                                   target="_blank"
-                                   class="btn-add-inline"
-                                   title="Agregar nueva marca">
-                                    <i class="fas fa-plus"></i>
+                                <a href="{% url 'app:crear_marca' %}?next=vehiculos" target="_blank" class="btn-add-inline" title="Nueva marca">
+                                    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                                 </a>
                             </div>
-                            {% for error in form.marca.errors %}
-                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-                            {% endfor %}
+                            {% for error in form.marca.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
                         </div>
                     </div>
 
@@ -254,56 +153,97 @@
                         <div class="field-group">
                             <label class="field-label">{{ form.modelo.label }}</label>
                             <div class="field-inner">
-                                <i class="fas fa-calendar-alt field-icon"></i>
+                                <span class="field-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
                                 {{ form.modelo|add_class:'form-field'|attr:'autocomplete:off'|attr:'placeholder:Ej: 2020' }}
                             </div>
-                            {% for error in form.modelo.errors %}
-                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-                            {% endfor %}
+                            {% for error in form.modelo.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
                         </div>
                     </div>
 
-                    <!-- Cliente / Propietario -->
+                    <!-- Cliente con + -->
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.cliente.label }}</label>
-                            <div class="field-inner">
-                                <i class="fas fa-user-tie field-icon"></i>
-                                {{ form.cliente|add_class:'form-field' }}
+                            <div class="field-with-btn">
+                                <div class="field-inner">
+                                    <span class="field-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                                    {{ form.cliente|add_class:'form-field' }}
+                                </div>
+                                <a href="{% url 'app:crear_cliente' %}?next=orden" target="_blank" class="btn-add-inline" title="Nuevo cliente">
+                                    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                </a>
                             </div>
-                            {% for error in form.cliente.errors %}
-                                <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-                            {% endfor %}
+                            {% for error in form.cliente.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
                         </div>
                     </div>
 
-                    <!-- Resto de campos -->
-                    {% for field in form.visible_fields %}
-                        {% if field.name != 'placa' and field.name != 'marca' and field.name != 'modelo' and field.name != 'cliente' %}
-                        <div class="col-md-6">
-                            <div class="field-group">
-                                <label class="field-label">{{ field.label }}</label>
-                                <div class="field-inner">
-                                    <i class="fas fa-edit field-icon"></i>
-                                    {{ field|add_class:'form-field'|attr:'autocomplete:off' }}
-                                </div>
-                                {% for error in field.errors %}
-                                    <div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ error }}</div>
-                                {% endfor %}
+                    <!-- Km actuales del vehículo -->
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.km_ultimo_servicio.label }}</label>
+                            <div class="field-inner">
+                                <span class="field-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span>
+                                {{ form.km_ultimo_servicio|add_class:'form-field'|attr:'autocomplete:off'|attr:'placeholder:Ej: 45000' }}
                             </div>
+                            <small class="field-help">{{ form.km_ultimo_servicio.help_text }}</small>
+                            {% for error in form.km_ultimo_servicio.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
                         </div>
-                        {% endif %}
-                    {% endfor %}
+                    </div>
+
+                    <!-- Separador sección alertas -->
+                    <div class="col-12">
+                        <div class="section-sep">
+                            <span class="section-sep-label">⚙ Configuración de alertas de mantenimiento</span>
+                            <div class="section-sep-line"></div>
+                        </div>
+                    </div>
+
+                    <!-- Km diarios promedio -->
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.km_diarios_promedio.label }}</label>
+                            <div class="field-inner">
+                                <span class="field-icon">
+                                    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                                </span>
+                                {{ form.km_diarios_promedio|add_class:'form-field'|attr:'autocomplete:off'|attr:'placeholder:Ej: 50' }}
+                            </div>
+                            <small class="field-help">{{ form.km_diarios_promedio.help_text }}</small>
+                            {% for error in form.km_diarios_promedio.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Km anticipación alerta -->
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.km_alerta_anticipacion.label }}</label>
+                            <div class="field-inner">
+                                <span class="field-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                </span>
+                                {{ form.km_alerta_anticipacion|add_class:'form-field'|attr:'autocomplete:off'|attr:'placeholder:Ej: 1000' }}
+                            </div>
+                            <small class="field-help">{{ form.km_alerta_anticipacion.help_text }}</small>
+                            {% for error in form.km_alerta_anticipacion.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
 
                 </div>
             </div>
 
             <div class="form-card-footer">
                 <button type="button" class="btn-cancelar" onclick="confirmarCancelacion('{% url "app:listar_vehiculos" %}')">
-                    <i class="fas fa-times me-1"></i> Cancelar
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Cancelar
                 </button>
                 <button type="submit" class="btn-guardar">
-                    <i class="fas fa-save"></i> Guardar Vehículo
+                    {% if es_editar %}
+                    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Actualizar Vehículo
+                    {% else %}
+                    <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Guardar Vehículo
+                    {% endif %}
                 </button>
             </div>
         </div>
@@ -314,53 +254,43 @@
 {% block js %}
 <script>
 document.querySelectorAll('.form-field').forEach(el => {
-    el.style.width           = '100%';
-    el.style.padding         = '12px 14px 12px 40px';
-    el.style.border          = '1.5px solid #e0ddd8';
-    el.style.borderRadius    = '10px';
-    el.style.fontFamily      = "'DM Sans', sans-serif";
-    el.style.fontSize        = '.9rem';
-    el.style.color           = '#2a2a2a';
-    el.style.background      = '#f2f2f0';
-    el.style.outline         = 'none';
-    el.style.transition      = 'border-color .2s, box-shadow .2s';
-    el.style.webkitAppearance = 'none';
-    el.style.appearance      = 'none';
-    el.addEventListener('focus', () => {
-        el.style.borderColor = '#d32f2f';
-        el.style.background  = 'white';
-        el.style.boxShadow   = '0 0 0 3px rgba(211,47,47,.1)';
-    });
-    el.addEventListener('blur', () => {
-        el.style.borderColor = '#e0ddd8';
-        el.style.background  = '#f2f2f0';
-        el.style.boxShadow   = 'none';
-    });
+    const acento = getComputedStyle(document.documentElement).getPropertyValue('--acento').trim();
+    const enGrupo = el.closest('.field-with-btn');
+    const radius = enGrupo ? '10px 0 0 10px' : '10px';
+    el.style.cssText = `width:100%;padding:12px 14px 12px 40px;border:1.5px solid #e0ddd8;border-radius:${radius};font-family:'DM Sans',sans-serif;font-size:.9rem;color:#2a2a2a;background:#f2f2f0;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none;`;
+    el.addEventListener('focus', () => { el.style.borderColor = acento; el.style.background = 'white'; el.style.boxShadow = `0 0 0 3px ${acento}22`; });
+    el.addEventListener('blur',  () => { el.style.borderColor = '#e0ddd8'; el.style.background = '#f2f2f0'; el.style.boxShadow = 'none'; });
 });
+
+const esDesdeOrden = new URLSearchParams(window.location.search).get('next') === 'orden';
+const esEditar = {% if es_editar %}true{% else %}false{% endif %};
 
 $(function () {
     $('#formVehiculo').on('submit', function (e) {
         e.preventDefault();
         var formulario = this;
         Swal.fire({
-            title: '¿Confirmar registro?',
-            text: 'Se guardará la ficha del vehículo en el sistema.',
+            title: esEditar ? '¿Actualizar vehículo?' : '¿Confirmar registro?',
+            text:  esEditar ? 'Se guardarán los cambios del vehículo.' : 'Se guardará la ficha del vehículo en el sistema.',
             icon: 'question',
             showCancelButton: true,
-            confirmButtonText: 'Sí, guardar',
+            confirmButtonText: esEditar ? 'Sí, actualizar' : 'Sí, guardar',
             cancelButtonText: 'Revisar',
-            confirmButtonColor: '#d32f2f',
+            confirmButtonColor: esEditar ? '#1565c0' : '#d32f2f',
             cancelButtonColor: '#888',
         }).then((result) => {
-            if (result.isConfirmed) { $(formulario).off('submit').submit(); }
+            if (result.isConfirmed) {
+                $(formulario).off('submit').submit();
+            }
         });
     });
 });
 
 function confirmarCancelacion(url) {
+    const destino = esDesdeOrden ? '{% url "app:orden_servicio_create" %}' : url;
     Swal.fire({
-        title: '¿Cancelar registro?',
-        text: 'Si sales ahora, los datos del vehículo no se guardarán.',
+        title: '¿Cancelar?',
+        text: 'Los datos no guardados se perderán.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sí, salir',
@@ -368,7 +298,7 @@ function confirmarCancelacion(url) {
         confirmButtonColor: '#d32f2f',
         cancelButtonColor: '#888'
     }).then((result) => {
-        if (result.isConfirmed) { window.location.href = url; }
+        if (result.isConfirmed) { window.location.href = destino; }
     });
 }
 </script>
