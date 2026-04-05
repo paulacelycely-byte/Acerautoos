@@ -195,6 +195,7 @@ class Producto(models.Model):
     stock_minimo  = models.PositiveIntegerField(default=0)
     codigo        = models.CharField(max_length=20, unique=True)
     unidad_medida = models.CharField(max_length=5, choices=UNIDADES, default='UND', verbose_name='Unidad de medida')
+    imagen        = models.ImageField(upload_to='productos/', blank=True, null=True)  # ← NUEVO
     estado        = models.BooleanField(default=True)
 
     def __str__(self):
@@ -226,9 +227,9 @@ class TipoServicio(models.Model):
 #  COMPATIBILIDAD PRODUCTO
 # ══════════════════════════════════════════════════════════
 class CompatibilidadProducto(models.Model):
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, limit_choices_to={'estado': True})
+    producto       = models.ForeignKey(Producto, on_delete=models.CASCADE, limit_choices_to={'estado': True})
     marca_vehiculo = models.ForeignKey(Marca, on_delete=models.CASCADE, limit_choices_to={'categoria': 'AUTO', 'estado': True})
-    tipo_servicio = models.ForeignKey(TipoServicio, on_delete=models.CASCADE, null=True, blank=True,
+    tipo_servicio  = models.ForeignKey(TipoServicio, on_delete=models.CASCADE, null=True, blank=True,
         help_text="Servicio donde se usa este producto. Dejar vacío si aplica para cualquiera.")
 
     def __str__(self):
@@ -376,17 +377,12 @@ class OrdenServicio(models.Model):
         vehiculo = self.vehiculo
         servicio = self.servicio
 
-        # ── Actualizar km y fecha si el km de esta orden es el mayor registrado ──
         if self.km_actual >= vehiculo.km_ultimo_servicio:
             vehiculo.km_ultimo_servicio    = self.km_actual
             vehiculo.fecha_ultimo_servicio = self.fecha.date() if hasattr(self.fecha, 'date') else timezone.now().date()
 
-        # ── Recalcular próximo mantenimiento SIEMPRE que el servicio tenga intervalo ──
-        # Esto permite que al editar el tipo de servicio y guardar la orden,
-        # el km_proximo_mantenimiento se actualice con el nuevo intervalo.
         if servicio.intervalo_km > 0:
             nuevo_proximo = vehiculo.km_ultimo_servicio + servicio.intervalo_km
-            # Solo actualiza si no hay uno definido, o si el nuevo es menor (más urgente)
             if vehiculo.km_proximo_mantenimiento is None or nuevo_proximo != vehiculo.km_proximo_mantenimiento:
                 vehiculo.km_proximo_mantenimiento = nuevo_proximo
 
@@ -396,7 +392,6 @@ class OrdenServicio(models.Model):
             'fecha_ultimo_servicio',
         ])
 
-        # ── Notificación si ya está en zona de alerta ──
         if vehiculo.km_proximo_mantenimiento:
             km_restante = vehiculo.km_proximo_mantenimiento - self.km_actual
             if km_restante <= vehiculo.km_alerta_anticipacion:
@@ -509,9 +504,12 @@ class DetalleOrdenProducto(models.Model):
 class Factura(models.Model):
     TIPO_FACTURA = [('SERVICIO', 'Orden de Servicio'), ('PRODUCTO', 'Venta de Producto')]
     METODOS_PAGO = [
-        ('Efectivo', 'Efectivo'), ('Transferencia', 'Transferencia Bancaria'),
-        ('TarjetaDebito', 'Tarjeta Débito'), ('TarjetaCredito', 'Tarjeta Crédito'),
-        ('Nequi', 'Nequi'), ('Daviplata', 'Daviplata'),
+        ('Efectivo',       'Efectivo'),
+        ('Transferencia',  'Transferencia Bancaria'),
+        ('TarjetaDebito',  'Tarjeta Débito'),
+        ('TarjetaCredito', 'Tarjeta Crédito'),
+        ('Nequi',          'Nequi'),
+        ('Daviplata',      'Daviplata'),
     ]
     ESTADOS_PAGO = [('Pendiente', 'Pendiente'), ('Pagada', 'Pagada')]
 

@@ -69,6 +69,48 @@
     }
     .btn-backup:hover::after { opacity: 1; }
 
+    /* ── BOTÓN NOTIFICACIONES ── */
+    .btn-notif {
+      background: transparent; border: none;
+      width: 34px; height: 34px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background .2s, color .2s;
+      color: rgba(255,255,255,.4); text-decoration: none;
+      position: relative; flex-shrink: 0;
+    }
+    .btn-notif svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-notif:hover { background: rgba(211,47,47,.12); color: #e05252; }
+
+    .notif-badge {
+      position: absolute;
+      top: 3px; right: 3px;
+      min-width: 16px; height: 16px;
+      background: #d32f2f;
+      color: #fff;
+      font-size: .55rem; font-weight: 800;
+      border-radius: 20px;
+      padding: 0 4px;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #0d0d0d;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .notif-badge.hidden { display: none; }
+
+    .btn-notif::after {
+      content: 'Notificaciones';
+      position: absolute; top: calc(100% + 6px); left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a; color: rgba(255,255,255,.7);
+      font-size: .65rem; font-weight: 600;
+      padding: 3px 8px; border-radius: 5px;
+      white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: opacity .15s;
+      border: 1px solid rgba(255,255,255,.08);
+      z-index: 9999;
+    }
+    .btn-notif:hover::after { opacity: 1; }
+
     .user-pill {
       background: rgba(255,255,255,.05);
       border: 1px solid rgba(255,255,255,.09) !important;
@@ -161,6 +203,19 @@
 
           <div class="nav-vdivider"></div>
 
+          <a href="{% url 'app:listar_notificacion' %}" class="btn-notif" id="btn-notif-navbar">
+            <svg viewBox="0 0 24 24">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+
+            <span class="notif-badge {% if not total_notificaciones %}hidden{% endif %}" id="notif-badge-navbar">
+              {{ total_notificaciones|default:"0" }}
+            </span>
+          </a>
+
+          <div class="nav-vdivider"></div>
+
           <div class="dropdown">
             <button class="user-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false">
               <div class="user-pill-avatar">
@@ -196,7 +251,6 @@
                 </div>
               </li>
               <li>
-                {# ← CAMBIADO: ahora va al perfil, no al editar #}
                 <a class="dropdown-item" href="{% url 'app:mi_perfil' %}">
                   <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                   Mi Perfil

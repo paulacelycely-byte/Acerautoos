@@ -209,6 +209,12 @@ body.sidebar-mini .sb-item::after {
     box-shadow: 0 4px 16px rgba(0,0,0,.5), 0 0 0 1px rgba(211,47,47,.1);
 }
 body.sidebar-mini .sb-item:hover::after { opacity: 1; }
+
+/* Fix: limpiar tooltip huérfano si el mouse sale del sidebar */
+body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
+    opacity: 0 !important;
+    pointer-events: none;
+}
 </style>
 
 <nav class="app-sidebar">
@@ -442,16 +448,7 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
             <span class="sb-item-text">Usuarios</span>
         </a>
 
-        <a href="{% url 'app:listar_notificacion' %}"
-           class="sb-item {% if request.resolver_match.url_name == 'listar_notificacion' %}active{% endif %}"
-           data-tip="Notificaciones">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-            </svg>
-            <span class="sb-item-text">Notificaciones</span>
-            <span class="sb-badge" id="notif-count" style="display:none;"></span>
-        </a>
+        {# Notificaciones removidas del aside — ahora están en la navbar superior #}
 
     </div>
 
@@ -478,3 +475,18 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
     </div>
 
 </nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var sidebar = document.querySelector('.app-sidebar');
+    if (!sidebar) return;
+    sidebar.addEventListener('mouseleave', function () {
+        sidebar.querySelectorAll('.sb-item').forEach(function(item) {
+            item.blur();
+            
+            item.style.pointerEvents = 'none';
+            setTimeout(function(){ item.style.pointerEvents = ''; }, 50);
+        });
+    });
+});
+</script>

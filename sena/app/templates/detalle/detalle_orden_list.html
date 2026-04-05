@@ -14,161 +14,59 @@
         --muted:  #888;
     }
 
-    .taller-header {
-        position: relative;
-        background: var(--carbon);
-        border-radius: 16px;
-        padding: 28px 32px;
-        margin-bottom: 28px;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-    .taller-header::before {
-        content: '';
-        position: absolute;
-        top: 0; right: 0;
-        width: 260px; height: 100%;
-        background: repeating-linear-gradient(
-            -55deg, transparent, transparent 14px,
-            rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px
-        );
-    }
-    .taller-header::after {
-        content: '';
-        position: absolute;
-        left: 0; top: 0;
-        width: 5px; height: 100%;
-        background: var(--rojo);
-        border-radius: 16px 0 0 16px;
-    }
-    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
-    .header-icon-wrap {
-        width: 56px; height: 56px;
-        background: var(--rojo);
-        border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.4rem; color: white;
-        box-shadow: 0 0 0 4px rgba(211,47,47,.25);
-        flex-shrink: 0;
-    }
-    .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: 2rem; font-weight: 800;
-        color: white; letter-spacing: 1px;
-        text-transform: uppercase; line-height: 1; margin: 0;
-    }
-    .header-sub {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .78rem; color: rgba(255,255,255,.45);
-        margin-top: 4px; letter-spacing: .5px;
-    }
-    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
-    .btn-accion {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .75rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px;
-        padding: 10px 18px; border-radius: 10px;
-        display: flex; align-items: center; gap: 8px;
-        border: none; cursor: pointer; text-decoration: none;
-        transition: transform .2s, box-shadow .2s;
-    }
-    .btn-accion:hover { transform: translateY(-2px); }
-    .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
-    .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
+    .taller-header { position:relative; background:var(--carbon); border-radius:16px; padding:28px 32px; margin-bottom:28px; overflow:hidden; display:flex; align-items:center; justify-content:space-between; }
+    .taller-header::before { content:''; position:absolute; top:0; right:0; width:260px; height:100%; background:repeating-linear-gradient(-55deg,transparent,transparent 14px,rgba(255,255,255,.03) 14px,rgba(255,255,255,.03) 28px); }
+    .header-left { display:flex; align-items:center; gap:18px; position:relative; }
+    .header-icon-wrap { width:56px; height:56px; background:var(--rojo); border-radius:12px; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 4px rgba(211,47,47,.25); flex-shrink:0; }
+    .header-icon-wrap svg { width:28px; height:28px; stroke:white; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+    .header-titulo { font-family:'Barlow Condensed',sans-serif; font-size:2rem; font-weight:800; color:white; letter-spacing:1px; text-transform:uppercase; line-height:1; margin:0; }
+    .header-sub { font-family:'DM Sans',sans-serif; font-size:.78rem; color:rgba(255,255,255,.45); margin-top:4px; }
+    .header-actions { display:flex; align-items:center; gap:10px; position:relative; }
+    .btn-accion { font-family:'DM Sans',sans-serif; font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; padding:10px 18px; border-radius:10px; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; text-decoration:none; transition:transform .2s, box-shadow .2s; }
+    .btn-accion svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .btn-accion:hover { transform:translateY(-2px); }
+    .btn-nuevo { background:var(--rojo); color:white !important; box-shadow:0 4px 16px rgba(211,47,47,.4); }
+    .btn-nuevo:hover { box-shadow:0 6px 20px rgba(211,47,47,.5); color:white !important; }
 
-    .tabla-wrap {
-        background: white;
-        border-radius: 16px;
-        border: 1px solid var(--borde);
-        overflow: hidden;
-    }
+    .tabla-wrap { background:white; border-radius:16px; border:1px solid var(--borde); overflow:hidden; }
+    #tabla_detalles { font-family:'DM Sans',sans-serif; font-size:.875rem; border-collapse:collapse; width:100%; }
+    #tabla_detalles thead tr { background:var(--gris); border-bottom:2px solid var(--borde); }
+    #tabla_detalles thead th { font-family:'Barlow Condensed',sans-serif; font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); padding:14px 16px; border:none; }
+    #tabla_detalles tbody tr { border-bottom:1px solid var(--borde); transition:background .15s; }
+    #tabla_detalles tbody tr:hover { background:#fafaf8; }
+    #tabla_detalles tbody tr:last-child { border-bottom:none; }
+    #tabla_detalles tbody td { padding:13px 16px; color:var(--texto); vertical-align:middle; border:none; }
 
-    #tabla_detalles {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .875rem;
-        border-collapse: collapse;
-        width: 100%;
-    }
-    #tabla_detalles thead tr {
-        background: var(--gris);
-        border-bottom: 2px solid var(--borde);
-    }
-    #tabla_detalles thead th {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .78rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1.2px;
-        color: var(--muted); padding: 14px 16px; border: none;
-    }
-    #tabla_detalles tbody tr {
-        border-bottom: 1px solid var(--borde);
-        transition: background .15s;
-    }
-    #tabla_detalles tbody tr:hover { background: #fafaf8; }
-    #tabla_detalles tbody tr:last-child { border-bottom: none; }
-    #tabla_detalles tbody td {
-        padding: 13px 16px; color: var(--texto);
-        vertical-align: middle; border: none;
-    }
+    .orden-badge { font-family:'Barlow Condensed',sans-serif; font-size:.9rem; font-weight:800; color:var(--muted); letter-spacing:.5px; }
 
-    .orden-badge {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .9rem; font-weight: 800;
-        color: var(--muted); letter-spacing: .5px;
-    }
+    .placa-box { font-family:'Barlow Condensed',sans-serif; font-size:.95rem; font-weight:800; color:var(--rojo); background:#fff5f5; border:1px solid rgba(211,47,47,.2); border-radius:8px; padding:4px 12px; text-transform:uppercase; letter-spacing:1px; display:inline-block; }
 
-    .placa-box {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .95rem; font-weight: 800;
-        color: var(--rojo); background: #fff5f5;
-        border: 1px solid rgba(211,47,47,.2);
-        border-radius: 8px; padding: 4px 12px;
-        text-transform: uppercase; letter-spacing: 1px;
-        display: inline-block;
-    }
+    /* Celda producto con imagen */
+    .producto-cell { display:flex; align-items:center; gap:12px; }
+    .producto-img-wrap { width:44px; height:44px; border-radius:10px; border:1px solid var(--borde); background:var(--gris); overflow:hidden; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+    .producto-img-wrap img { width:100%; height:100%; object-fit:contain; padding:4px; }
+    .producto-img-placeholder svg { width:22px; height:22px; stroke:var(--muted); fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+    .producto-nombre { font-weight:600; color:var(--carbon); font-size:.9rem; line-height:1.2; }
+    .producto-codigo { font-size:.72rem; color:var(--muted); margin-top:2px; }
 
-    .producto-nombre { font-weight: 600; color: var(--carbon); font-size: .9rem; }
+    .cantidad-badge { font-family:'DM Sans',sans-serif; font-size:.75rem; font-weight:700; background:var(--gris); color:var(--texto); border:1px solid var(--borde); border-radius:6px; padding:3px 10px; display:inline-block; }
 
-    .cantidad-badge {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .75rem; font-weight: 700;
-        background: var(--gris); color: var(--texto);
-        border: 1px solid var(--borde);
-        border-radius: 6px; padding: 3px 10px;
-        display: inline-block;
-    }
+    .btn-fila { width:32px; height:32px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; border:none; cursor:pointer; transition:transform .2s, box-shadow .2s; text-decoration:none; }
+    .btn-fila svg { width:14px; height:14px; stroke:white; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; pointer-events:none; }
+    .btn-fila:hover { transform:translateY(-2px); box-shadow:0 4px 10px rgba(0,0,0,.2); }
+    .btn-edit { background:#1565c0; margin:0 4px; }
+    .btn-del  { background:var(--rojo); }
 
-    .btn-fila {
-        width: 32px; height: 32px; border-radius: 8px;
-        display: inline-flex; align-items: center; justify-content: center;
-        border: none; cursor: pointer; transition: .2s; font-size: .8rem;
-    }
-    .btn-fila:hover { transform: translateY(-2px); }
-    .btn-edit { background: #f39c12; color: white; }
-    .btn-del  { background: var(--rojo); color: white; }
-
-    .dataTables_wrapper { padding: 16px 20px; }
-    .dataTables_filter input {
-        border: 1.5px solid var(--borde) !important;
-        border-radius: 8px !important; padding: 6px 12px !important;
-        font-family: 'DM Sans', sans-serif !important; font-size: .85rem !important;
-        outline: none !important; transition: border-color .2s;
-    }
-    .dataTables_filter input:focus { border-color: var(--rojo) !important; }
-    .dataTables_filter label,
-    .dataTables_length label,
-    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
-    .dataTables_length select {
-        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
-        padding: 4px 8px !important; appearance: none !important;
-        background-image: none !important; background: white !important;
-    }
-    .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
-    .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
-    .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
-    .paginate_button.disabled { display: inline-block !important; opacity: .4; }
-    .dataTables_paginate { display: block !important; }
+    .dataTables_wrapper { padding:16px 20px; }
+    .dataTables_filter input { border:1.5px solid var(--borde) !important; border-radius:8px !important; padding:6px 12px !important; font-family:'DM Sans',sans-serif !important; font-size:.85rem !important; outline:none !important; transition:border-color .2s; }
+    .dataTables_filter input:focus { border-color:var(--rojo) !important; }
+    .dataTables_filter label, .dataTables_length label, .dataTables_info { font-family:'DM Sans',sans-serif; font-size:.8rem; color:var(--muted); }
+    .dataTables_length select { border:1.5px solid var(--borde) !important; border-radius:8px !important; padding:4px 8px !important; appearance:none !important; background:white !important; }
+    .page-item.active .page-link { background:var(--rojo) !important; border-color:var(--rojo) !important; color:white !important; font-weight:700 !important; }
+    .page-link { color:var(--rojo) !important; font-family:'DM Sans',sans-serif; font-size:.85rem; font-weight:600; }
+    .paginate_button { border-radius:7px !important; font-family:'DM Sans',sans-serif !important; font-size:.82rem !important; font-weight:600 !important; }
+    .paginate_button.disabled { display:inline-block !important; opacity:.4; }
+    .dataTables_paginate { display:block !important; }
 </style>
 {% endblock %}
 
@@ -177,7 +75,9 @@
 
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap"><i class="fas fa-boxes"></i></div>
+            <div class="header-icon-wrap">
+                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            </div>
             <div>
                 <h1 class="header-titulo">Detalle de Productos</h1>
                 <div class="header-sub">Productos usados por orden de servicio</div>
@@ -185,7 +85,8 @@
         </div>
         <div class="header-actions">
             <a href="{% url 'app:detalle_orden_add' %}" class="btn-accion btn-nuevo">
-                <i class="fas fa-plus"></i> Agregar Producto
+                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Agregar Producto
             </a>
         </div>
     </div>
@@ -207,16 +108,34 @@
                     <tr>
                         <td><span class="orden-badge">#{{ detalle.orden.id }}</span></td>
                         <td><span class="placa-box">{{ detalle.orden.vehiculo.placa }}</span></td>
-                        <td><span class="producto-nombre">{{ detalle.producto.nombre }}</span></td>
+                        <td>
+                            <div class="producto-cell">
+                                <div class="producto-img-wrap">
+                                    {% if detalle.producto.marca.logo %}
+                                        <img src="{{ detalle.producto.marca.logo.url }}" alt="{{ detalle.producto.nombre }}">
+                                    {% elif detalle.producto.imagen %}
+                                        <img src="{{ detalle.producto.imagen.url }}" alt="{{ detalle.producto.nombre }}">
+                                    {% else %}
+                                        <div class="producto-img-placeholder">
+                                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <div class="producto-nombre">{{ detalle.producto.nombre }}</div>
+                                    <div class="producto-codigo">{{ detalle.producto.codigo }}</div>
+                                </div>
+                            </div>
+                        </td>
                         <td class="text-center">
                             <span class="cantidad-badge">{{ detalle.cantidad }}</span>
                         </td>
                         <td class="text-center">
                             <a href="{% url 'app:detalle_orden_edit' detalle.id %}" class="btn-fila btn-edit" title="Editar">
-                                <i class="fas fa-pen"></i>
+                                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                             </a>
-                            <a href="{% url 'app:detalle_orden_delete' detalle.id %}" class="btn-fila btn-del ms-1" title="Eliminar">
-                                <i class="fas fa-trash-alt"></i>
+                            <a href="{% url 'app:detalle_orden_delete' detalle.id %}" class="btn-fila btn-del" title="Eliminar">
+                                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
                             </a>
                         </td>
                     </tr>
@@ -230,30 +149,20 @@
 
 {% block js %}
 <script>
-    $(document).ready(function () {
-        $('#tabla_detalles').DataTable({
-            responsive: true,
-            autoWidth: false,
-            order: [[0, "desc"]],
-            pagingType: "full_numbers",
-            language: {
-                "sProcessing":     "Procesando...",
-                "sLengthMenu":     "Mostrar _MENU_ registros",
-                "sZeroRecords":    "No se encontraron resultados",
-                "sEmptyTable":     "Ningún dato disponible",
-                "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                "sInfoEmpty":      "Mostrando 0 a 0 de 0 registros",
-                "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
-                "sSearch":         "Buscar:",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst":    "«",
-                    "sLast":     "»",
-                    "sNext":     "›",
-                    "sPrevious": "‹"
-                }
-            }
-        });
+$(document).ready(function () {
+    $('#tabla_detalles').DataTable({
+        responsive: true, autoWidth: false,
+        order: [[0, "desc"]], pagingType: "full_numbers",
+        language: {
+            "sProcessing":"Procesando...", "sLengthMenu":"Mostrar _MENU_ registros",
+            "sZeroRecords":"No se encontraron resultados", "sEmptyTable":"Ningún dato disponible",
+            "sInfo":"Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "sInfoEmpty":"Mostrando 0 a 0 de 0 registros",
+            "sInfoFiltered":"(filtrado de _MAX_ registros totales)",
+            "sSearch":"Buscar:", "sLoadingRecords":"Cargando...",
+            "oPaginate":{"sFirst":"«","sLast":"»","sNext":"›","sPrevious":"‹"}
+        }
     });
+});
 </script>
 {% endblock %}

@@ -1,179 +1,192 @@
 {% extends 'body.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block css %}
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
     :root {
-        --rojo:   #d32f2f;
-        --rojo2:  #b71c1c;
-        --carbon: #1a1a1a;
-        --gris:   #f2f2f0;
-        --borde:  #e0ddd8;
-        --texto:  #2a2a2a;
-        --muted:  #888;
+        --rojo:        #d32f2f;
+        --carbon:      #1a1a1a;
+        --gris:        #f2f2f0;
+        --borde:       #e0ddd8;
+        --texto:       #2a2a2a;
+        --muted:       #888;
+        --verde:       #2e7d32;
+        --verde-bg:    #e8f5e9;
+        --amarillo:    #f57c00;
+        --amarillo-bg: #fff8e1;
     }
 
     /* ── HEADER ── */
     .taller-header {
         position: relative; background: var(--carbon);
-        border-radius: 16px; padding: 28px 32px; margin-bottom: 24px;
-        overflow: hidden; display: flex; align-items: center; justify-content: space-between;
+        border-radius: 16px; padding: 28px 32px; margin-bottom: 16px;
+        overflow: hidden; display: flex; align-items: center;
+        justify-content: space-between; flex-wrap: wrap; gap: 16px;
     }
     .taller-header::before {
         content: ''; position: absolute; top: 0; right: 0; width: 260px; height: 100%;
         background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
     }
-    .taller-header::after {
-        content: ''; position: absolute; left: 0; top: 0;
-        width: 5px; height: 100%; background: var(--rojo); border-radius: 16px 0 0 16px;
-    }
     .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
     .header-icon-wrap {
         width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
         display: flex; align-items: center; justify-content: center;
-        font-size: 1.4rem; color: white; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
+        box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
     }
+    .header-icon-wrap svg { width: 28px; height: 28px; stroke: white; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
     .header-titulo { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0; }
     .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
-    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
-    .btn-accion { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 10px 18px; border-radius: 10px; display: flex; align-items: center; gap: 8px; border: none; cursor: pointer; text-decoration: none; transition: transform .2s, box-shadow .2s; }
+    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; flex-wrap: wrap; }
+
+    /* ── BOTONES ── */
+    .btn-accion { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 10px 18px; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer; text-decoration: none; transition: transform .2s, box-shadow .2s; }
     .btn-accion:hover { transform: translateY(-2px); }
+    .btn-accion svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .btn-pdf   { background: #c0392b; color: white !important; }
     .btn-excel { background: #1e7e45; color: white !important; }
     .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
-    .btn-nuevo:hover { color: white !important; box-shadow: 0 6px 20px rgba(211,47,47,.5); }
+    .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
 
-    /* ── STAT CARDS ── */
+    /* ── TOGGLE VISTA ── */
+    .vista-toggle { display: inline-flex; background: rgba(255,255,255,.08); border-radius: 10px; padding: 4px; gap: 2px; }
+    .vista-btn { width: 36px; height: 32px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; background: transparent; color: rgba(255,255,255,.5); transition: .2s; }
+    .vista-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .vista-btn.activo { background: var(--rojo); color: white; }
+
+    /* ── STATS CARDS ── */
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-        margin-bottom: 24px;
+        gap: 14px;
+        margin-bottom: 20px;
     }
     .stat-card {
-        background: white; border-radius: 14px;
-        border: 1px solid var(--borde);
-        padding: 20px 22px;
-        display: flex; align-items: center; gap: 16px;
+        border-radius: 16px;
+        border: none;
+        padding: 22px 24px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
         transition: transform .2s, box-shadow .2s;
-        position: relative; overflow: hidden;
+        position: relative;
+        overflow: hidden;
     }
-    .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
-    .stat-card::before {
-        content: ''; position: absolute; top: 0; left: 0;
-        width: 4px; height: 100%; border-radius: 14px 0 0 14px;
+    .stat-card::after {
+        content: '';
+        position: absolute;
+        bottom: -18px; right: -18px;
+        width: 90px; height: 90px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.08);
     }
-    .stat-card.card-total::before  { background: var(--carbon); }
-    .stat-card.card-activo::before { background: #16a34a; }
-    .stat-card.card-bajo::before   { background: #f59e0b; }
-    .stat-card.card-sin::before    { background: var(--rojo); }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,.18); }
+    .stat-card.total-card  { background: var(--carbon); }
+    .stat-card.activo-card { background: #2e7d32; }
+    .stat-card.bajo-card   { background: #e65100; }
+    .stat-card.sin-card    { background: var(--rojo); }
 
     .stat-icon {
-        width: 48px; height: 48px; border-radius: 12px;
+        width: 50px; height: 50px; border-radius: 12px;
+        flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+        background: rgba(255,255,255,.15);
+    }
+    .stat-icon svg { width: 24px; height: 24px; stroke: white; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .stat-num {
+        font-family: 'Bebas Neue', 'Barlow Condensed', sans-serif;
+        font-size: 2.8rem; font-weight: 400;
+        color: white; line-height: 1; letter-spacing: 1px;
+    }
+    .stat-lbl {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .63rem; font-weight: 600;
+        text-transform: uppercase; letter-spacing: 1.2px;
+        color: rgba(255,255,255,.6); margin-top: 2px;
+    }
+    @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    /* ── PRECIO y STOCK tipografía ── */
+    .precio-val {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: .95rem; font-weight: 700;
+        color: var(--carbon); letter-spacing: -.3px;
+    }
+    .stock-num {
+        font-family: 'Space Grotesk', sans-serif !important;
+        font-size: .95rem !important; font-weight: 700 !important;
+        color: var(--carbon); min-width: 28px;
+    }
+
+    /* ── FILTROS ── */
+    .filtros-bar {
+        background: white; border-radius: 14px; border: 1px solid var(--borde);
+        padding: 10px 14px; margin-bottom: 20px;
+        display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+        box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+    .filtro-tab {
+        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .7px;
+        padding: 6px 14px; border-radius: 100px;
+        border: 1.5px solid var(--borde); background: white; color: var(--muted);
+        cursor: pointer; transition: all .18s;
+        display: inline-flex; align-items: center; gap: 5px;
+    }
+    .filtro-tab svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .filtro-tab:hover  { border-color: var(--rojo); color: var(--rojo); background: #fff5f5; }
+    .filtro-tab.activo { background: var(--rojo); color: white; border-color: var(--rojo); }
+    .busq-wrap { margin-left: auto; position: relative; display: flex; align-items: center; }
+    .busq-input {
+        font-family: 'DM Sans', sans-serif; font-size: .83rem;
+        padding: 8px 16px 8px 38px;
+        border: 1.5px solid var(--borde); border-radius: 100px;
+        outline: none; transition: .18s; width: 230px;
+        background: white; color: var(--texto);
+        line-height: 1;
+    }
+    .busq-input::placeholder { color: var(--muted); }
+    .busq-input:focus { border-color: var(--rojo); box-shadow: 0 0 0 3px rgba(211,47,47,.08); }
+    .busq-icon {
+        position: absolute; left: 13px;
+        top: 50%; transform: translateY(-50%);
+        color: var(--muted);
         display: flex; align-items: center; justify-content: center;
-        font-size: 1.2rem; flex-shrink: 0;
+        pointer-events: none; line-height: 0;
     }
-    .stat-card.card-total  .stat-icon { background: #f1f5f9; color: var(--carbon); }
-    .stat-card.card-activo .stat-icon { background: #dcfce7; color: #16a34a; }
-    .stat-card.card-bajo   .stat-icon { background: #fef9c3; color: #a16207; }
-    .stat-card.card-sin    .stat-icon { background: #fee2e2; color: var(--rojo); }
-
-    .stat-info { flex: 1; min-width: 0; }
-    .stat-valor { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; color: var(--carbon); line-height: 1; }
-    .stat-label { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin-top: 3px; }
-
-    /* ── VALOR INVENTARIO ── */
-    .valor-banner {
-        background: var(--carbon); border-radius: 14px;
-        padding: 18px 26px; margin-bottom: 24px;
-        display: flex; align-items: center; justify-content: space-between;
-        position: relative; overflow: hidden;
-    }
-    .valor-banner::before {
-        content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 200px;
-        background: repeating-linear-gradient(-55deg, transparent, transparent 12px, rgba(255,255,255,.02) 12px, rgba(255,255,255,.02) 24px);
-    }
-    .valor-banner-left { display: flex; align-items: center; gap: 14px; position: relative; }
-    .valor-icon { width: 44px; height: 44px; background: rgba(255,255,255,.08); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #fbbf24; }
-    .valor-titulo { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: rgba(255,255,255,.4); }
-    .valor-monto { font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 800; color: white; letter-spacing: .5px; margin-top: 2px; }
-    .valor-sub { font-family: 'DM Sans', sans-serif; font-size: .72rem; color: rgba(255,255,255,.35); position: relative; }
+    .busq-icon svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
 
     /* ── TABLA ── */
+    #vista-tabla { display: block; }
+    #vista-catalogo { display: none; }
     .tabla-wrap { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
-
     #tabla_productos { font-family: 'DM Sans', sans-serif; font-size: .875rem; border-collapse: collapse; width: 100%; }
     #tabla_productos thead tr { background: var(--gris); border-bottom: 2px solid var(--borde); }
     #tabla_productos thead th { font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 14px 16px; border: none; }
     #tabla_productos tbody tr { border-bottom: 1px solid var(--borde); transition: background .15s; }
     #tabla_productos tbody tr:hover { background: #fafaf8; }
     #tabla_productos tbody tr:last-child { border-bottom: none; }
-    #tabla_productos tbody td { padding: 13px 16px; color: var(--texto); vertical-align: middle; border: none; }
-
-    .producto-avatar {
-        width: 38px; height: 38px; background: var(--carbon); color: white;
-        border-radius: 10px; display: flex; align-items: center; justify-content: center;
-        font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 800; flex-shrink: 0;
-    }
-    .producto-nombre { font-weight: 600; color: var(--carbon); font-size: .9rem; }
-    .producto-marca  { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
-    .cod-badge { font-family: 'Barlow Condensed', sans-serif; font-size: .9rem; font-weight: 700; color: var(--muted); }
-
-    /* Stock visual */
-    .stock-cell { min-width: 140px; }
-    .stock-num {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 800;
-        line-height: 1; margin-bottom: 5px;
-    }
-    .stock-num.ok   { color: #16a34a; }
-    .stock-num.bajo { color: #d97706; }
-    .stock-num.sin  { color: var(--rojo); }
-
-    .stock-bar-wrap {
-        height: 5px; background: #eee; border-radius: 10px; overflow: hidden; width: 100%; margin-bottom: 3px;
-    }
-    .stock-bar {
-        height: 100%; border-radius: 10px; transition: width .4s ease;
-    }
-    .stock-bar.ok   { background: #16a34a; }
-    .stock-bar.bajo { background: #f59e0b; }
-    .stock-bar.sin  { background: var(--rojo); width: 100% !important; }
-
-    .stock-label {
-        font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 600;
-        text-transform: uppercase; letter-spacing: .5px;
-    }
-    .stock-label.ok   { color: #16a34a; }
-    .stock-label.bajo { color: #d97706; }
-    .stock-label.sin  { color: var(--rojo); }
-
-    .precio-val { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--carbon); }
-    .unidad-badge { font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700; background: var(--gris); color: var(--muted); border: 1px solid var(--borde); border-radius: 6px; padding: 2px 8px; }
-
-    .badge-estado { font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; border-radius: 6px; padding: 4px 10px; display: inline-block; }
-    .estado-activo   { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
-    .estado-inactivo { background: var(--gris); color: var(--muted); border: 1px solid var(--borde); }
-
-    .btn-fila { width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: .2s; font-size: .8rem; text-decoration: none; }
-    .btn-fila:hover { transform: translateY(-2px); }
-    .btn-edit { background: #f39c12; color: white; }
-    .btn-del  { background: var(--rojo); color: white; }
-
-    /* Filtro rápido */
-    .filtros-bar {
-        display: flex; gap: 8px; padding: 16px 20px 0;
-    }
-    .filtro-btn {
-        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .5px;
-        padding: 6px 14px; border-radius: 8px; border: 1.5px solid var(--borde);
-        background: white; color: var(--muted); cursor: pointer; transition: .15s;
-    }
-    .filtro-btn:hover { border-color: #ccc; color: var(--texto); }
-    .filtro-btn.activo { background: var(--carbon); border-color: var(--carbon); color: white; }
-    .filtro-btn.activo-bajo { background: #fef9c3; border-color: #f59e0b; color: #a16207; }
-    .filtro-btn.activo-sin  { background: #fee2e2; border-color: var(--rojo); color: var(--rojo); }
+    #tabla_productos tbody td { padding: 12px 16px; color: var(--texto) !important; vertical-align: middle; border: none; }
+    .prod-avatar { width: 36px; height: 36px; background: var(--carbon); color: white; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 800; flex-shrink: 0; }
+    .prod-nombre { font-weight: 600; color: var(--carbon); font-size: .88rem; }
+    .prod-codigo { font-size: .72rem; color: var(--muted); margin-top: 1px; display: flex; align-items: center; gap: 4px; }
+    .tag-unidad { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; padding: 2px 7px; border-radius: 5px; background: var(--gris); color: var(--muted); border: 1px solid var(--borde); }
+    .stock-col { display: flex; align-items: center; gap: 8px; }
+    .mini-bar  { flex: 1; height: 4px; background: var(--gris); border-radius: 100px; overflow: hidden; min-width: 50px; }
+    .mini-bar-fill { height: 100%; border-radius: 100px; }
+    .mini-bar-fill.ok   { background: var(--verde); }
+    .mini-bar-fill.bajo { background: var(--amarillo); }
+    .mini-bar-fill.sin  { background: var(--rojo); }
+    .stock-min { font-size: .7rem; color: var(--muted); white-space: nowrap; }
+    .badge-estado-activo   { font-size: .7rem; font-weight: 700; padding: 4px 11px; border-radius: 100px; text-transform: uppercase; letter-spacing: .4px; background: var(--verde-bg); color: var(--verde); border: 1px solid #c8e6c9; display: inline-flex; align-items: center; gap: 5px; }
+    .badge-estado-inactivo { font-size: .7rem; font-weight: 700; padding: 4px 11px; border-radius: 100px; text-transform: uppercase; letter-spacing: .4px; background: #fff3f3; color: var(--rojo); border: 1px solid #ffd0d0; display: inline-flex; align-items: center; gap: 5px; }
+    .badge-estado-activo svg, .badge-estado-inactivo svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-fila { width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: transform .2s, box-shadow .2s; text-decoration: none; }
+    .btn-fila svg { width: 14px; height: 14px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+    .btn-fila:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,.2); }
+    .btn-edit { background: #1565c0; margin-right: 4px; }
+    .btn-del  { background: var(--rojo); }
+    .btn-ver  { background: var(--carbon); margin-right: 4px; }
 
     /* DataTables */
     .dataTables_wrapper { padding: 16px 20px; }
@@ -184,219 +197,740 @@
     .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
     .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
     .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
-    .paginate_button.disabled { display: inline-block !important; opacity: .4; }
-    .dataTables_paginate { display: block !important; }
 
-    @media (max-width: 768px) {
-        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    /* ── CATÁLOGO ── */
+    .catalogo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .prod-card {
+        background: white; border-radius: 16px; border: 1px solid var(--borde);
+        overflow: hidden; transition: transform .2s, box-shadow .2s;
+        position: relative; display: flex; flex-direction: column;
+        box-shadow: 0 1px 4px rgba(0,0,0,.05);
     }
+    .prod-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,.1); }
+    .card-img-wrap {
+        height: 148px; background: var(--gris); border-bottom: 1px solid var(--borde);
+        display: flex; align-items: center; justify-content: center;
+        position: relative; overflow: hidden;
+    }
+    .card-img-wrap img { width: 90px; height: 90px; object-fit: contain; }
+    .card-img-placeholder {
+        width: 54px; height: 54px; background: var(--carbon); color: white;
+        border-radius: 12px; display: flex; align-items: center; justify-content: center;
+        font-family: 'Bebas Neue', 'Barlow Condensed', sans-serif; font-size: 1.7rem;
+    }
+    .card-badge-estado {
+        position: absolute; top: 10px; right: 10px;
+        font-family: 'DM Sans', sans-serif; font-size: .6rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .5px;
+        padding: 3px 9px; border-radius: 100px;
+    }
+    .card-badge-estado.activo   { background: var(--verde-bg); color: var(--verde); }
+    .card-badge-estado.inactivo { background: #fff3f3; color: var(--rojo); }
+    .card-stock-badge {
+        position: absolute; top: 10px; left: 10px;
+        font-family: 'DM Sans', sans-serif; font-size: .6rem; font-weight: 700;
+        padding: 3px 9px; border-radius: 100px;
+    }
+    .card-stock-badge.ok   { background: var(--verde-bg); color: var(--verde); }
+    .card-stock-badge.bajo { background: var(--amarillo-bg); color: var(--amarillo); }
+    .card-stock-badge.sin  { background: #fff3f3; color: var(--rojo); }
+    .card-body-prod { padding: 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .card-codigo { font-family: 'DM Sans', sans-serif; font-size: .62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+    .card-nombre { font-family: 'Space Grotesk', sans-serif; font-size: .97rem; font-weight: 700; color: var(--carbon); line-height: 1.25; margin-top: 2px; }
+    .card-marca  { font-family: 'DM Sans', sans-serif; font-size: .74rem; color: var(--muted); margin-top: 1px; }
+    .card-precio { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--carbon); margin-top: 9px; letter-spacing: -.3px; }
+    .card-stock-row { display: flex; align-items: center; justify-content: space-between; font-family: 'DM Sans', sans-serif; font-size: .74rem; color: var(--muted); margin-top: 6px; }
+    .card-stock-num { font-weight: 700; color: var(--texto); }
+    .stock-bar-wrap { background: var(--gris); border-radius: 100px; height: 4px; width: 100%; overflow: hidden; margin-top: 7px; }
+    .stock-bar { height: 100%; border-radius: 100px; }
+    .stock-bar.ok   { background: var(--verde); }
+    .stock-bar.bajo { background: var(--amarillo); }
+    .stock-bar.sin  { background: var(--rojo); width: 100% !important; }
+    .card-footer-prod { padding: 10px 14px; border-top: 1px solid var(--borde); display: flex; gap: 6px; justify-content: flex-end; }
+
+    /* ── MODAL DETALLE PRODUCTO ── */
+    .modal-prod-overlay {
+        position: fixed; inset: 0; z-index: 9999;
+        background: rgba(0,0,0,.7); backdrop-filter: blur(8px);
+        display: flex; align-items: center; justify-content: center;
+        padding: 16px; opacity: 0; pointer-events: none; transition: opacity .3s;
+    }
+    .modal-prod-overlay.abierto { opacity: 1; pointer-events: all; }
+    .modal-prod-box {
+        background: white; border-radius: 24px;
+        width: 100%; max-width: 480px;
+        max-height: 90vh; overflow-y: auto;
+        box-shadow: 0 40px 100px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.1), inset 0 1px 0 rgba(255,255,255,.3);
+        transform: translateY(30px) scale(.92);
+        transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s ease;
+        position: relative; overflow: hidden;
+    }
+    .modal-prod-overlay.abierto .modal-prod-box { transform: translateY(0) scale(1); }
+    .modal-prod-box::-webkit-scrollbar { width: 6px; }
+    .modal-prod-box::-webkit-scrollbar-track { background: transparent; }
+    .modal-prod-box::-webkit-scrollbar-thumb { background: var(--rojo); border-radius: 3px; }
+
+    .modal-top-row {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        position: relative; overflow: hidden;
+        display: flex; align-items: stretch; min-height: 150px;
+        padding: 0;
+    }
+    .modal-top-row::before {
+        content: ''; position: absolute; inset: 0;
+        background: 
+            repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255,255,255,.015) 10px, rgba(255,255,255,.015) 20px),
+            radial-gradient(circle at 20% 50%, rgba(211,47,47,.08) 0%, transparent 50%);
+    }
+    .modal-top-row::after {
+        content: ''; position: absolute; bottom: -40px; right: -40px;
+        width: 150px; height: 150px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(211,47,47,.15) 0%, transparent 70%);
+        animation: pulse-glow 3s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: .8; }
+    }
+    .modal-red-bar { display: none; }
+
+    .modal-close {
+        position: absolute; top: 14px; right: 14px; z-index: 10;
+        width: 32px; height: 32px; border-radius: 9px;
+        background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.15);
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: all .2s;
+    }
+    .modal-close:hover { background: rgba(211,47,47,.5); border-color: rgba(211,47,47,.6); transform: rotate(90deg); }
+    .modal-close svg { width: 14px; height: 14px; stroke: rgba(255,255,255,.9); fill: none; stroke-width: 2.5; stroke-linecap: round; }
+
+    .modal-img-side {
+        width: 130px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        padding: 20px 12px; position: relative; z-index: 1;
+    }
+    .modal-img-side img { max-width: 100px; max-height: 100px; object-fit: contain; filter: drop-shadow(0 6px 16px rgba(0,0,0,.4)); }
+    .modal-img-placeholder {
+        width: 70px; height: 70px;
+        background: rgba(255,255,255,.12); border: 2.5px solid rgba(255,255,255,.2);
+        color: rgba(255,255,255,.8); border-radius: 16px;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; font-weight: 700;
+    }
+    .modal-estado-badge {
+        position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+        font-family: 'DM Sans', sans-serif; font-size: .58rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 1px;
+        padding: 4px 11px; border-radius: 100px; white-space: nowrap; border: 1.5px solid; backdrop-filter: blur(4px);
+    }
+    .modal-estado-badge.activo   { background: rgba(46,125,50,.3); color: #69f07a; border-color: rgba(105,240,122,.4); box-shadow: 0 0 12px rgba(105,240,122,.25); }
+    .modal-estado-badge.inactivo { background: rgba(211,47,47,.3); color: #ff8a80; border-color: rgba(255,138,128,.4); box-shadow: 0 0 12px rgba(255,138,128,.25); }
+
+    .modal-info-side {
+        flex: 1; padding: 22px 48px 18px 8px;
+        display: flex; flex-direction: column; justify-content: center; gap: 6px;
+        position: relative; z-index: 1;
+    }
+    .modal-codigo-line {
+        font-family: 'DM Sans', sans-serif; font-size: .62rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,.45);
+        display: flex; align-items: center; gap: 6px;
+    }
+    .modal-codigo-line svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2.2; flex-shrink: 0; }
+    .modal-unidad-tag {
+        font-size: .6rem; font-weight: 800; text-transform: uppercase; letter-spacing: .6px;
+        padding: 3px 8px; border-radius: 5px;
+        background: rgba(211,47,47,.25); border: 1.2px solid rgba(211,47,47,.4); color: #ff8a80;
+        align-self: fit-content;
+    }
+    .modal-nombre {
+        font-family: 'Barlow Condensed', sans-serif; font-size: 1.65rem; font-weight: 800;
+        color: white; text-transform: uppercase; line-height: 1.1; letter-spacing: .8px;
+        margin: 4px 0 0 0;
+    }
+    .modal-marca-line {
+        font-family: 'DM Sans', sans-serif; font-size: .75rem; color: rgba(255,255,255,.5);
+        display: flex; align-items: center; gap: 5px; margin-top: 3px;
+    }
+    .modal-marca-line svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
+    .modal-precio-grande {
+        font-family: 'Space Grotesk', sans-serif; font-size: 1.7rem; font-weight: 800;
+        color: white; letter-spacing: -.5px; margin-top: 8px;
+        text-shadow: 0 0 24px rgba(0,0,0,.45);
+    }
+
+    .modal-body-content { padding: 18px 20px 22px; }
+    .modal-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--borde) 20%, var(--borde) 80%, transparent); margin: 14px 0; }
+
+    .modal-grid-info { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
+    .modal-info-chip { background: linear-gradient(135deg, #f8f7f6 0%, #f2f1f0 100%); border: 1.2px solid var(--borde); border-radius: 12px; padding: 11px 12px; transition: all .2s; }
+    .modal-info-chip:hover { border-color: var(--rojo); background: #fef9f9; }
+    .modal-info-label {
+        font-family: 'DM Sans', sans-serif; font-size: .6rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 1.1px; color: var(--muted); margin-bottom: 4px;
+    }
+    .modal-info-val { font-family: 'Space Grotesk', sans-serif; font-size: .9rem; font-weight: 700; color: var(--carbon); }
+
+    .modal-stock-section {
+        background: linear-gradient(135deg, #f8f7f6 0%, #f2f1f0 100%); border: 1.2px solid var(--borde);
+        border-radius: 14px; padding: 14px 16px; margin-bottom: 14px;
+    }
+    .modal-stock-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 10px; }
+    .modal-stock-label {
+        font-family: 'DM Sans', sans-serif; font-size: .6rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 1.1px; color: var(--muted);
+    }
+    .modal-stock-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--carbon); line-height: .95; font-weight: 400; }
+    .modal-stock-badge {
+        font-family: 'DM Sans', sans-serif; font-size: .62rem; font-weight: 800;
+        padding: 5px 12px; border-radius: 100px; text-transform: uppercase; letter-spacing: .6px; border: 1.5px solid;
+    }
+    .modal-stock-badge.ok   { background: rgba(46,125,50,.15); color: var(--verde); border-color: rgba(46,125,50,.3); }
+    .modal-stock-badge.bajo { background: rgba(230,81,0,.15); color: var(--amarillo); border-color: rgba(230,81,0,.3); }
+    .modal-stock-badge.sin  { background: rgba(211,47,47,.15); color: var(--rojo); border-color: rgba(211,47,47,.3); }
+    .modal-bar-wrap { background: rgba(0,0,0,.06); border-radius: 100px; height: 8px; overflow: hidden; }
+    .modal-bar-fill { height: 100%; border-radius: 100px; transition: width .6s cubic-bezier(.34,1.56,.64,1); box-shadow: 0 0 12px currentColor; }
+    .modal-bar-fill.ok   { background: linear-gradient(90deg,#2e7d32,#66bb6a); }
+    .modal-bar-fill.bajo { background: linear-gradient(90deg,#e65100,#ff9800); }
+    .modal-bar-fill.sin  { background: linear-gradient(90deg,#b71c1c,var(--rojo)); }
+
+    .modal-desc-title {
+        font-family: 'DM Sans', sans-serif; font-size: .62rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin-bottom: 9px;
+        display: flex; align-items: center; gap: 7px;
+    }
+    .modal-desc-title::before { content: ''; display: inline-block; width: 4px; height: 14px; border-radius: 2px; background: linear-gradient(180deg, var(--rojo), #ff6b6b); }
+    .modal-desc-text {
+        font-family: 'DM Sans', sans-serif; font-size: .85rem; color: var(--texto);
+        line-height: 1.6; background: linear-gradient(135deg, #f8f7f6 0%, #f2f1f0 100%); border-radius: 12px; padding: 12px 14px; border: 1.2px solid var(--borde);
+    }
+    .modal-desc-empty {
+        font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted);
+        font-style: italic; background: linear-gradient(135deg, #f8f7f6 0%, #f2f1f0 100%); border-radius: 12px; padding: 12px 14px; border: 1.2px solid var(--borde);
+    }
+
+    .modal-footer-btns { display: flex; gap: 9px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--borde); }
+    .modal-btn-edit {
+        flex: 1; padding: 12px; border-radius: 12px;
+        background: linear-gradient(135deg, #1a1a1a, #2d2d2d); color: white; border: none;
+        font-family: 'Barlow Condensed', sans-serif; font-size: .98rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 1.2px;
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        text-decoration: none; transition: all .25s; cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    }
+    .modal-btn-edit:hover { 
+        transform: translateY(-2px); 
+        box-shadow: 0 8px 24px rgba(0,0,0,.25); 
+        color: white;
+        background: linear-gradient(135deg, #2d2d2d, #3d3d3d);
+    }
+    .modal-btn-edit svg { width: 15px; height: 15px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .modal-btn-del {
+        padding: 12px 16px; border-radius: 12px;
+        background: linear-gradient(135deg, #fff3f3, #ffe8e8); color: var(--rojo); border: 1.5px solid #ffd0d0;
+        font-family: 'Barlow Condensed', sans-serif; font-size: .98rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 1.2px;
+        display: inline-flex; align-items: center; gap: 8px;
+        text-decoration: none; transition: all .25s; cursor: pointer;
+    }
+    .modal-btn-del:hover { 
+        background: linear-gradient(135deg, var(--rojo), #ff5252); 
+        color: white; 
+        border-color: var(--rojo); 
+        transform: translateY(-2px); 
+        box-shadow: 0 8px 24px rgba(211,47,47,.4); 
+    }
+    .modal-btn-del svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container-fluid py-2">
 
-    <!-- Header -->
+    <!-- HEADER -->
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap"><i class="fas fa-boxes"></i></div>
+            <div class="header-icon-wrap">
+                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            </div>
             <div>
                 <h1 class="header-titulo">Inventario de Productos</h1>
                 <div class="header-sub">Control de stock y catálogo del taller</div>
             </div>
         </div>
         <div class="header-actions">
-            <a href="{% url 'app:reporte_productos_pdf' %}" class="btn-accion btn-pdf">
-                <i class="fas fa-file-pdf"></i> PDF
+            <div class="vista-toggle">
+                <button class="vista-btn activo" id="btn-tabla" onclick="cambiarVista('tabla')" title="Vista tabla">
+                    <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                </button>
+                <button class="vista-btn" id="btn-catalogo" onclick="cambiarVista('catalogo')" title="Vista catálogo">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                </button>
+            </div>
+            <a href="{% url 'app:reporte_productos_pdf' %}" class="btn-accion btn-pdf" target="_blank">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+                PDF
             </a>
             <a href="{% url 'app:reporte_productos_excel' %}" class="btn-accion btn-excel">
-                <i class="fas fa-file-excel"></i> Excel
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+                Excel
             </a>
-            <a href="{{ crear_url }}" class="btn-accion btn-nuevo">
-                <i class="fas fa-plus"></i> Nuevo Producto
+            <a href="{% url 'app:crear_producto' %}" class="btn-accion btn-nuevo">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nuevo Producto
             </a>
         </div>
     </div>
 
-    <!-- Stat cards -->
+    <!-- STATS CARDS -->
     <div class="stats-grid">
-        <div class="stat-card card-total">
-            <div class="stat-icon"><i class="fas fa-boxes"></i></div>
-            <div class="stat-info">
-                <div class="stat-valor">{{ total_productos }}</div>
-                <div class="stat-label">Total productos</div>
+        <div class="stat-card total-card">
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
             </div>
-        </div>
-        <div class="stat-card card-activo">
-            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-            <div class="stat-info">
-                <div class="stat-valor">{{ activos }}</div>
-                <div class="stat-label">Activos</div>
-            </div>
-        </div>
-        <div class="stat-card card-bajo" style="cursor:pointer;" onclick="filtrarStock('bajo')">
-            <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
-            <div class="stat-info">
-                <div class="stat-valor">{{ stock_bajo }}</div>
-                <div class="stat-label">Stock bajo</div>
-            </div>
-        </div>
-        <div class="stat-card card-sin" style="cursor:pointer;" onclick="filtrarStock('sin')">
-            <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
-            <div class="stat-info">
-                <div class="stat-valor">{{ sin_stock }}</div>
-                <div class="stat-label">Sin stock</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Valor inventario -->
-    <div class="valor-banner">
-        <div class="valor-banner-left">
-            <div class="valor-icon"><i class="fas fa-dollar-sign"></i></div>
             <div>
-                <div class="valor-titulo">Valor total del inventario</div>
-                <div class="valor-monto">$ {{ valor_inventario|floatformat:0 }}</div>
+                <div class="stat-num">{{ total_productos }}</div>
+                <div class="stat-lbl">Total Productos</div>
             </div>
         </div>
-        <div class="valor-sub">Calculado sobre productos activos con stock disponible</div>
+        <div class="stat-card activo-card">
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div>
+                <div class="stat-num">{{ activos }}</div>
+                <div class="stat-lbl">Activos</div>
+            </div>
+        </div>
+        <div class="stat-card bajo-card">
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div>
+                <div class="stat-num">{{ stock_bajo }}</div>
+                <div class="stat-lbl">Stock Bajo</div>
+            </div>
+        </div>
+        <div class="stat-card sin-card">
+            <div class="stat-icon">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            </div>
+            <div>
+                <div class="stat-num">{{ sin_stock }}</div>
+                <div class="stat-lbl">Sin Stock</div>
+            </div>
+        </div>
     </div>
 
-    <!-- Tabla -->
-    <div class="tabla-wrap">
-        <!-- Filtros rápidos -->
-        <div class="filtros-bar">
-            <button class="filtro-btn activo" id="filtro-todos" onclick="filtrarStock('todos')">Todos</button>
-            <button class="filtro-btn" id="filtro-bajo" onclick="filtrarStock('bajo')">⚠ Stock bajo</button>
-            <button class="filtro-btn" id="filtro-sin"  onclick="filtrarStock('sin')">✕ Sin stock</button>
-            <button class="filtro-btn" id="filtro-ok"   onclick="filtrarStock('ok')">✓ Stock OK</button>
+    <!-- FILTROS catálogo -->
+    <div class="filtros-bar" id="barra-filtros" style="display:none;">
+        <button class="filtro-tab activo" data-filtro="todos" onclick="filtrarCatalogo('todos', this)">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Todos
+        </button>
+        <button class="filtro-tab" data-filtro="stock-ok" onclick="filtrarCatalogo('stock-ok', this)">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Stock OK
+        </button>
+        <button class="filtro-tab" data-filtro="stock-bajo" onclick="filtrarCatalogo('stock-bajo', this)">
+            <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg> Stock Bajo
+        </button>
+        <button class="filtro-tab" data-filtro="sin-stock" onclick="filtrarCatalogo('sin-stock', this)">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Sin Stock
+        </button>
+        <div class="busq-wrap">
+            <span class="busq-icon">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input type="text" class="busq-input" id="busq-catalogo" placeholder="Buscar producto..." oninput="buscarCatalogo(this.value)">
+        </div>
+    </div>
+
+    <!-- VISTA TABLA -->
+    <div id="vista-tabla">
+        <div class="tabla-wrap">
+            <div class="table-responsive">
+                <table id="tabla_productos" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th>Producto</th>
+                            <th>Marca / Proveedor</th>
+                            <th class="text-center">Precio</th>
+                            <th>Stock</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in productos %}
+                        <tr>
+                            <td class="text-center" style="font-weight:700;color:var(--muted);font-size:.8rem;">{{ forloop.counter }}</td>
+                            <td>
+                                <div class="d-flex align-items-center" style="gap:10px;">
+                                    {% if p.marca.logo %}
+                                        <img src="{{ p.marca.logo.url }}" style="width:36px;height:36px;object-fit:contain;border-radius:8px;background:#f2f2f0;padding:3px;">
+                                    {% else %}
+                                        <div class="prod-avatar">{{ p.nombre|first|upper }}</div>
+                                    {% endif %}
+                                    <div>
+                                        <div class="prod-nombre">{{ p.nombre }}</div>
+                                        <div class="prod-codigo">
+                                            <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;"><path d="M3 5h2M7 5h2M11 5h8M3 12h4M9 12h2M13 12h6M3 19h6M11 19h4M17 19h2"/></svg>
+                                            {{ p.codigo }}
+                                            <span class="tag-unidad ms-1">{{ p.get_unidad_medida_display }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-size:.85rem;font-weight:600;">{{ p.marca.nombre }}</div>
+                                {% if p.proveedor %}
+                                    <div style="font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:4px;margin-top:2px;">
+                                        <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                                        {{ p.proveedor.nombre }}
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <span class="precio-val">${{ p.precio|intcomma }}</span>
+                            </td>
+                            <td>
+                                <div class="stock-col">
+                                    <span class="stock-num {% if p.stock == 0 %}text-danger{% elif p.stock <= p.stock_minimo %}text-warning{% endif %}">{{ p.stock }}</span>
+                                    <div class="mini-bar">
+                                        {% if p.stock_minimo > 0 %}
+                                            {% widthratio p.stock p.stock_minimo 100 as pct %}
+                                            <div class="mini-bar-fill {% if p.stock == 0 %}sin{% elif p.stock <= p.stock_minimo %}bajo{% else %}ok{% endif %}" style="width:{% if pct > 100 %}100{% else %}{{ pct }}{% endif %}%;"></div>
+                                        {% else %}
+                                            <div class="mini-bar-fill ok" style="width:100%;"></div>
+                                        {% endif %}
+                                    </div>
+                                    <span class="stock-min">mín {{ p.stock_minimo }}</span>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                {% if p.estado %}
+                                    <span class="badge-estado-activo"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Activo</span>
+                                {% else %}
+                                    <span class="badge-estado-inactivo"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Inactivo</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <button class="btn-fila btn-ver" title="Ver detalle"
+                                    onclick="abrirModal({
+                                        nombre: '{{ p.nombre|escapejs }}',
+                                        codigo: '{{ p.codigo|escapejs }}',
+                                        marca: '{{ p.marca.nombre|escapejs }}',
+                                        proveedor: '{% if p.proveedor %}{{ p.proveedor.nombre|escapejs }}{% endif %}',
+                                        precio: '{{ p.precio|intcomma }}',
+                                        stock: {{ p.stock }},
+                                        stockMin: {{ p.stock_minimo }},
+                                        unidad: '{{ p.get_unidad_medida_display|escapejs }}',
+                                        estado: {% if p.estado %}true{% else %}false{% endif %},
+                                        descripcion: '{{ p.descripcion|default:''|escapejs }}',
+                                        img: '{% if p.marca.logo %}{{ p.marca.logo.url }}{% endif %}',
+                                        editUrl: '{% url 'app:editar_producto' p.pk %}',
+                                        delUrl: '{% url 'app:eliminar_producto' p.pk %}'
+                                    })">
+                                    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                </button>
+                                <a href="{% url 'app:editar_producto' p.pk %}" class="btn-fila btn-edit" title="Editar">
+                                    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                </a>
+                                <a href="{% url 'app:eliminar_producto' p.pk %}" class="btn-fila btn-del" title="Eliminar">
+                                    <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="7" class="text-center py-4" style="color:var(--muted);font-family:'DM Sans',sans-serif;">No hay productos registrados.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISTA CATÁLOGO -->
+    <div id="vista-catalogo">
+        <div class="catalogo-grid" id="grid-catalogo">
+            {% for p in productos %}
+            <div class="prod-card"
+                data-nombre="{{ p.nombre|lower }}"
+                data-marca="{{ p.marca.nombre|lower }}"
+                data-stock-estado="{% if p.stock == 0 %}sin-stock{% elif p.stock <= p.stock_minimo %}stock-bajo{% else %}stock-ok{% endif %}">
+                <div class="card-img-wrap">
+                    {% if p.marca.logo %}
+                        <img src="{{ p.marca.logo.url }}" alt="{{ p.marca.nombre }}">
+                    {% else %}
+                        <div class="card-img-placeholder">{{ p.nombre|first|upper }}</div>
+                    {% endif %}
+                    <span class="card-badge-estado {% if p.estado %}activo{% else %}inactivo{% endif %}">{% if p.estado %}Activo{% else %}Inactivo{% endif %}</span>
+                    <span class="card-stock-badge {% if p.stock == 0 %}sin{% elif p.stock <= p.stock_minimo %}bajo{% else %}ok{% endif %}">{% if p.stock == 0 %}Sin stock{% elif p.stock <= p.stock_minimo %}Stock bajo{% else %}{{ p.stock }} uds{% endif %}</span>
+                </div>
+                <div class="card-body-prod">
+                    <div class="card-codigo">{{ p.codigo }}</div>
+                    <div class="card-nombre">{{ p.nombre }}</div>
+                    <div class="card-marca">{{ p.marca.nombre }}{% if p.proveedor %} · {{ p.proveedor.nombre }}{% endif %}</div>
+                    <div class="card-precio">${{ p.precio|intcomma }}</div>
+                    <div class="card-stock-row">
+                        <span>Stock: <span class="card-stock-num">{{ p.stock }}</span> {{ p.get_unidad_medida_display }}</span>
+                        <span style="font-size:.7rem;">mín {{ p.stock_minimo }}</span>
+                    </div>
+                    <div class="stock-bar-wrap">
+                        {% if p.stock_minimo > 0 %}
+                            {% widthratio p.stock p.stock_minimo 100 as pct2 %}
+                            <div class="stock-bar {% if p.stock == 0 %}sin{% elif p.stock <= p.stock_minimo %}bajo{% else %}ok{% endif %}" style="width:{% if pct2 > 100 %}100{% else %}{{ pct2 }}{% endif %}%;"></div>
+                        {% else %}
+                            <div class="stock-bar ok" style="width:100%;"></div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer-prod">
+                    <button class="btn-fila btn-ver" title="Ver detalle"
+                        onclick="abrirModal({
+                            nombre: '{{ p.nombre|escapejs }}',
+                            codigo: '{{ p.codigo|escapejs }}',
+                            marca: '{{ p.marca.nombre|escapejs }}',
+                            proveedor: '{% if p.proveedor %}{{ p.proveedor.nombre|escapejs }}{% endif %}',
+                            precio: '{{ p.precio|intcomma }}',
+                            stock: {{ p.stock }},
+                            stockMin: {{ p.stock_minimo }},
+                            unidad: '{{ p.get_unidad_medida_display|escapejs }}',
+                            estado: {% if p.estado %}true{% else %}false{% endif %},
+                            descripcion: '{{ p.descripcion|default:''|escapejs }}',
+                            img: '{% if p.marca.logo %}{{ p.marca.logo.url }}{% endif %}',
+                            editUrl: '{% url 'app:editar_producto' p.pk %}',
+                            delUrl: '{% url 'app:eliminar_producto' p.pk %}'
+                        })">
+                        <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                    <a href="{% url 'app:editar_producto' p.pk %}" class="btn-fila btn-edit" title="Editar"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>
+                    <a href="{% url 'app:eliminar_producto' p.pk %}" class="btn-fila btn-del" title="Eliminar"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></a>
+                </div>
+            </div>
+            {% empty %}
+            <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);font-family:'DM Sans',sans-serif;">No hay productos registrados.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+<!-- MODAL DETALLE PRODUCTO -->
+<div class="modal-prod-overlay" id="modal-overlay" onclick="cerrarModalOverlay(event)">
+    <div class="modal-prod-box" id="modal-box">
+        <button class="modal-close" onclick="cerrarModal()">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+
+        <!-- Fila superior: imagen | info básica -->
+        <div class="modal-top-row">
+            <div class="modal-red-bar"></div>
+            <div class="modal-img-side" id="modal-img-side">
+                <!-- inyectado por JS -->
+            </div>
+            <div class="modal-info-side">
+                <div class="modal-codigo-line">
+                    <svg viewBox="0 0 24 24"><path d="M3 5h2M7 5h2M11 5h8M3 12h4M9 12h2M13 12h6M3 19h6M11 19h4M17 19h2"/></svg>
+                    <span id="modal-codigo"></span>
+                    <span class="modal-unidad-tag" id="modal-unidad"></span>
+                </div>
+                <div class="modal-nombre" id="modal-nombre"></div>
+                <div class="modal-marca-line">
+                    <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    <span id="modal-marca"></span>
+                </div>
+                <div class="modal-precio-grande" id="modal-precio"></div>
+            </div>
         </div>
 
-        <div class="table-responsive">
-            <table id="tabla_productos" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Cód</th>
-                        <th>Producto</th>
-                        <th>Proveedor</th>
-                        <th>Precio</th>
-                        <th>Stock</th>
-                        <th class="text-center">Estado</th>
-                        <th class="text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for p in productos %}
-                    {% with pct=p.stock|default:0 %}
-                    <tr data-stock-status="{% if p.stock == 0 %}sin{% elif p.stock <= p.stock_minimo %}bajo{% else %}ok{% endif %}">
-                        <td><span class="cod-badge">{{ p.codigo }}</span></td>
-                        <td>
-                            <div class="d-flex align-items-center" style="gap:10px;">
-                                <div class="producto-avatar">{{ p.nombre|first|upper }}</div>
-                                <div>
-                                    <span class="producto-nombre d-block">{{ p.nombre }}</span>
-                                    <span class="producto-marca">{{ p.marca.nombre }} · <span class="unidad-badge">{{ p.get_unidad_medida_display }}</span></span>
-                                </div>
-                            </div>
-                        </td>
-                        <td style="color:var(--muted);">{{ p.proveedor.nombre|default:"—" }}</td>
-                        <td><span class="precio-val">$ {{ p.precio|floatformat:0 }}</span></td>
-                        <td class="stock-cell">
-                            {% if p.stock == 0 %}
-                                <div class="stock-num sin">0 <small style="font-size:.6em;font-weight:600;">uds</small></div>
-                                <div class="stock-bar-wrap"><div class="stock-bar sin" style="width:100%"></div></div>
-                                <div class="stock-label sin">Sin stock</div>
-                            {% elif p.stock <= p.stock_minimo %}
-                                <div class="stock-num bajo">{{ p.stock }} <small style="font-size:.6em;font-weight:600;">uds</small></div>
-                                <div class="stock-bar-wrap">
-                                    <div class="stock-bar bajo" style="width:{% widthratio p.stock p.stock_minimo 100 %}%"></div>
-                                </div>
-                                <div class="stock-label bajo">Bajo mínimo ({{ p.stock_minimo }})</div>
-                            {% else %}
-                                <div class="stock-num ok">{{ p.stock }} <small style="font-size:.6em;font-weight:600;">uds</small></div>
-                                <div class="stock-bar-wrap">
-                                    {% if p.stock_minimo > 0 %}
-                                        <div class="stock-bar ok" style="width:{% widthratio p.stock p.stock_minimo 100 %}%;max-width:100%"></div>
-                                    {% else %}
-                                        <div class="stock-bar ok" style="width:100%"></div>
-                                    {% endif %}
-                                </div>
-                                <div class="stock-label ok">OK · mín {{ p.stock_minimo }}</div>
-                            {% endif %}
-                        </td>
-                        <td class="text-center">
-                            {% if p.estado %}
-                                <span class="badge-estado estado-activo">Activo</span>
-                            {% else %}
-                                <span class="badge-estado estado-inactivo">Inactivo</span>
-                            {% endif %}
-                        </td>
-                        <td class="text-center">
-                            <a href="{% url 'app:editar_producto' p.id %}" class="btn-fila btn-edit" title="Editar">
-                                <i class="fas fa-pen"></i>
-                            </a>
-                            <a href="{% url 'app:eliminar_producto' p.id %}" class="btn-fila btn-del ms-1" title="Eliminar">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endwith %}
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="modal-body-content">
+            <div class="modal-grid-info">
+                <div class="modal-info-chip">
+                    <div class="modal-info-label">Unidad</div>
+                    <div class="modal-info-val" id="modal-unidad-info"></div>
+                </div>
+                <div class="modal-info-chip">
+                    <div class="modal-info-label">Stock mínimo</div>
+                    <div class="modal-info-val" id="modal-stock-min-info"></div>
+                </div>
+                <div class="modal-info-chip">
+                    <div class="modal-info-label">Estado</div>
+                    <div class="modal-info-val" id="modal-estado-info"></div>
+                </div>
+            </div>
+
+            <div class="modal-stock-section">
+                <div class="modal-stock-header">
+                    <div>
+                        <div class="modal-stock-label">Stock actual</div>
+                        <div class="modal-stock-num" id="modal-stock-num"></div>
+                    </div>
+                    <span class="modal-stock-badge" id="modal-stock-badge"></span>
+                </div>
+                <div class="modal-bar-wrap">
+                    <div class="modal-bar-fill" id="modal-bar-fill"></div>
+                </div>
+            </div>
+
+            <div class="modal-divider"></div>
+            <div class="modal-desc-title">Descripción</div>
+            <div id="modal-desc"></div>
+
+            <div class="modal-footer-btns">
+                <a href="#" class="modal-btn-edit" id="modal-edit-btn">
+                    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Editar
+                </a>
+                <a href="#" class="modal-btn-del" id="modal-del-btn">
+                    <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+                    Eliminar
+                </a>
+            </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block js %}
 <script>
-var tablaProductos;
+// Mover el modal al body para que position:fixed funcione sin interferencia de contenedores padre
+document.addEventListener('DOMContentLoaded', function() {
+    var modal = document.getElementById('modal-overlay');
+    if (modal) document.body.appendChild(modal);
+});
 
 $(document).ready(function () {
-    tablaProductos = $('#tabla_productos').DataTable({
-        responsive: true, autoWidth: false,
-        order: [[0, "desc"]], pagingType: "full_numbers",
-        columnDefs: [{ orderable: false, targets: [6] }],
+    $('#tabla_productos').DataTable({
+        responsive: true, autoWidth: false, pageLength: 10,
+        order: [[1, 'asc']], pagingType: "full_numbers",
+        columnDefs: [{ orderable: false, targets: [0, 5, 6] }],
         language: {
-            "sProcessing":"Procesando...", "sLengthMenu":"Mostrar _MENU_ registros",
-            "sZeroRecords":"No se encontraron resultados", "sEmptyTable":"Ningún dato disponible",
-            "sInfo":"Mostrando _START_ a _END_ de _TOTAL_ registros",
-            "sInfoEmpty":"Mostrando 0 a 0 de 0 registros",
-            "sInfoFiltered":"(filtrado de _MAX_ registros totales)",
-            "sSearch":"Buscar:", "sLoadingRecords":"Cargando...",
-            "oPaginate":{"sFirst":"«","sLast":"»","sNext":"›","sPrevious":"‹"}
+            "sProcessing": "Procesando...", "sLengthMenu": "Mostrar _MENU_ registros",
+            "sZeroRecords": "No se encontraron resultados", "sEmptyTable": "Ningún dato disponible",
+            "sInfo": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "sInfoEmpty": "Mostrando 0 a 0 de 0 registros",
+            "sInfoFiltered": "(filtrado de _MAX_ registros totales)",
+            "sSearch": "Buscar:", "sLoadingRecords": "Cargando...",
+            "oPaginate": { "sFirst": "«", "sLast": "»", "sNext": "›", "sPrevious": "‹" }
         }
-    });
-
-    // Filtro personalizado por data-stock-status
-    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-        var filtroActivo = window._filtroStock || 'todos';
-        if (filtroActivo === 'todos') return true;
-        var row = tablaProductos.row(dataIndex).node();
-        return $(row).data('stock-status') === filtroActivo;
     });
 });
 
-function filtrarStock(tipo) {
-    window._filtroStock = tipo;
+function cambiarVista(modo) {
+    const tabla = document.getElementById('vista-tabla');
+    const cat   = document.getElementById('vista-catalogo');
+    const fil   = document.getElementById('barra-filtros');
+    const btnT  = document.getElementById('btn-tabla');
+    const btnC  = document.getElementById('btn-catalogo');
+    if (modo === 'tabla') {
+        tabla.style.display = 'block'; cat.style.display = 'none'; fil.style.display = 'none';
+        btnT.classList.add('activo'); btnC.classList.remove('activo');
+        localStorage.setItem('prod_vista', 'tabla');
+    } else {
+        tabla.style.display = 'none'; cat.style.display = 'block'; fil.style.display = 'flex';
+        btnT.classList.remove('activo'); btnC.classList.add('activo');
+        localStorage.setItem('prod_vista', 'catalogo');
+    }
+}
+document.addEventListener('DOMContentLoaded', function() {
+    if (localStorage.getItem('prod_vista') === 'catalogo') cambiarVista('catalogo');
+});
 
-    // Resetear estilos
-    ['todos','bajo','sin','ok'].forEach(function(f) {
-        var btn = document.getElementById('filtro-' + f);
-        if (!btn) return;
-        btn.className = 'filtro-btn';
+function filtrarCatalogo(tipo, btn) {
+    document.querySelectorAll('.filtro-tab').forEach(b => b.classList.remove('activo'));
+    btn.classList.add('activo');
+    document.querySelectorAll('.prod-card').forEach(c => {
+        c.style.display = (tipo === 'todos' || c.dataset.stockEstado === tipo) ? 'flex' : 'none';
     });
+}
 
-    // Activar el correcto
-    var btnActivo = document.getElementById('filtro-' + tipo);
-    if (btnActivo) {
-        if (tipo === 'bajo') btnActivo.classList.add('activo-bajo');
-        else if (tipo === 'sin') btnActivo.classList.add('activo-sin');
-        else btnActivo.classList.add('activo');
+function buscarCatalogo(q) {
+    const t = q.toLowerCase();
+    document.querySelectorAll('.prod-card').forEach(c => {
+        c.style.display = (c.dataset.nombre.includes(t) || c.dataset.marca.includes(t)) ? 'flex' : 'none';
+    });
+}
+
+/* ── MODAL ── */
+function abrirModal(d) {
+    // Imagen lateral
+    const side = document.getElementById('modal-img-side');
+    side.innerHTML = '';
+    if (d.img) {
+        const img = document.createElement('img');
+        img.src = d.img; img.alt = d.nombre;
+        side.appendChild(img);
+    } else {
+        const ph = document.createElement('div');
+        ph.className = 'modal-img-placeholder';
+        ph.textContent = d.nombre.charAt(0).toUpperCase();
+        side.appendChild(ph);
+    }
+    const estadoBadge = document.createElement('span');
+    estadoBadge.className = 'modal-estado-badge ' + (d.estado ? 'activo' : 'inactivo');
+    estadoBadge.textContent = d.estado ? 'Activo' : 'Inactivo';
+    side.appendChild(estadoBadge);
+
+    // Info básica
+    document.getElementById('modal-codigo').textContent = d.codigo;
+    document.getElementById('modal-unidad').textContent = d.unidad;
+    document.getElementById('modal-nombre').textContent = d.nombre;
+
+    // Marca / proveedor
+    let marcaTxt = d.marca;
+    if (d.proveedor) marcaTxt += ' · ' + d.proveedor;
+    document.getElementById('modal-marca').textContent = marcaTxt;
+
+    document.getElementById('modal-precio').textContent = '$' + d.precio;
+    document.getElementById('modal-unidad-info').textContent = d.unidad;
+    document.getElementById('modal-stock-min-info').textContent = d.stockMin + ' ' + d.unidad;
+    document.getElementById('modal-estado-info').textContent = d.estado ? 'Activo' : 'Inactivo';
+    document.getElementById('modal-stock-num').textContent = d.stock;
+
+    // Stock badge y barra
+    let estadoStock, pct;
+    if (d.stock === 0) { estadoStock = 'sin'; }
+    else if (d.stockMin > 0 && d.stock <= d.stockMin) { estadoStock = 'bajo'; }
+    else { estadoStock = 'ok'; }
+
+    const badge = document.getElementById('modal-stock-badge');
+    badge.className = 'modal-stock-badge ' + estadoStock;
+    badge.textContent = estadoStock === 'ok' ? 'Stock OK' : estadoStock === 'bajo' ? 'Stock Bajo' : 'Sin Stock';
+
+    pct = d.stockMin > 0 ? Math.min((d.stock / d.stockMin) * 100, 100) : 100;
+    const fill = document.getElementById('modal-bar-fill');
+    fill.className = 'modal-bar-fill ' + estadoStock;
+    fill.style.width = pct + '%';
+
+    // Descripción
+    const descEl = document.getElementById('modal-desc');
+    if (d.descripcion && d.descripcion.trim()) {
+        descEl.innerHTML = '<div class="modal-desc-text">' + d.descripcion + '</div>';
+    } else {
+        descEl.innerHTML = '<div class="modal-desc-empty">Sin descripción registrada.</div>';
     }
 
-    tablaProductos.draw();
+    // Botones
+    document.getElementById('modal-edit-btn').href = d.editUrl;
+    document.getElementById('modal-del-btn').href = d.delUrl;
+
+    // Abrir
+    document.getElementById('modal-overlay').classList.add('abierto');
+    document.body.style.overflow = 'hidden';
 }
+
+function cerrarModal() {
+    document.getElementById('modal-overlay').classList.remove('abierto');
+    document.body.style.overflow = '';
+}
+
+function cerrarModalOverlay(e) {
+    if (e.target === document.getElementById('modal-overlay')) cerrarModal();
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') cerrarModal();
+});
 </script>
 {% endblock %}
