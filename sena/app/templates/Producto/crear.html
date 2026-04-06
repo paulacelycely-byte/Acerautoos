@@ -67,6 +67,17 @@
         position: relative;
     }
 
+    /* Banner de retorno — visible solo cuando viene desde orden */
+    .retorno-banner {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px 20px; border-radius: 11px;
+        background: #fff8e1; border: 1.5px solid #f59e0b;
+        margin-bottom: 20px;
+        font-family: 'DM Sans', sans-serif; font-size: .82rem;
+        color: #92400e; font-weight: 600;
+    }
+    .retorno-banner svg { width: 16px; height: 16px; stroke: #f59e0b; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
     .form-card { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
     .form-card-header {
         background: var(--carbon);
@@ -122,100 +133,75 @@
     }
     .field-inner:focus-within .field-icon { color: var(--rojo); }
 
-    /* Campo con botón adjunto (marca) */
     .field-with-btn { display: flex; gap: 0; }
     .field-with-btn .field-inner { flex: 1; }
     .field-with-btn .field-inner input,
-    .field-with-btn .field-inner select {
-        border-radius: 10px 0 0 10px;
-    }
+    .field-with-btn .field-inner select { border-radius: 10px 0 0 10px; }
     .btn-add-inline {
-        background: var(--rojo);
-        color: white;
-        border: none;
-        border-radius: 0 10px 10px 0;
-        padding: 0 16px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background .2s;
-        display: flex; align-items: center;
-        text-decoration: none;
-        flex-shrink: 0;
+        background: var(--rojo); color: white; border: none;
+        border-radius: 0 10px 10px 0; padding: 0 16px;
+        font-size: 1rem; cursor: pointer; transition: background .2s;
+        display: flex; align-items: center; text-decoration: none; flex-shrink: 0;
     }
     .btn-add-inline:hover { background: var(--rojo2); color: white; }
 
-    /* Switch estado */
     .switch-wrap {
         display: flex; align-items: center; gap: 12px;
-        padding: 12px 16px;
-        background: var(--gris);
-        border: 1.5px solid var(--borde);
-        border-radius: 10px;
-        cursor: pointer;
-        transition: border-color .2s;
+        padding: 12px 16px; background: var(--gris);
+        border: 1.5px solid var(--borde); border-radius: 10px;
+        cursor: pointer; transition: border-color .2s;
     }
     .switch-wrap:has(input:checked) { border-color: var(--rojo); background: #fff5f5; }
     .switch-wrap input[type="checkbox"] { display: none; }
     .switch-toggle {
-        width: 44px; height: 24px;
-        background: var(--borde);
-        border-radius: 24px;
-        position: relative;
-        transition: background .2s;
-        flex-shrink: 0;
+        width: 44px; height: 24px; background: var(--borde);
+        border-radius: 24px; position: relative; transition: background .2s; flex-shrink: 0;
     }
     .switch-toggle::after {
-        content: '';
-        position: absolute;
-        width: 18px; height: 18px;
-        background: white;
-        border-radius: 50%;
-        top: 3px; left: 3px;
-        transition: transform .2s;
-        box-shadow: 0 1px 4px rgba(0,0,0,.2);
+        content: ''; position: absolute;
+        width: 18px; height: 18px; background: white;
+        border-radius: 50%; top: 3px; left: 3px;
+        transition: transform .2s; box-shadow: 0 1px 4px rgba(0,0,0,.2);
     }
     .switch-wrap:has(input:checked) .switch-toggle { background: var(--rojo); }
     .switch-wrap:has(input:checked) .switch-toggle::after { transform: translateX(20px); }
-    .switch-label {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .85rem; font-weight: 600;
-        color: var(--texto);
-    }
+    .switch-label { font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; color: var(--texto); }
 
     .field-error {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .78rem; color: var(--rojo);
-        margin-top: 5px; display: flex; align-items: center; gap: 5px;
+        font-family: 'DM Sans', sans-serif; font-size: .78rem;
+        color: var(--rojo); margin-top: 5px; display: flex; align-items: center; gap: 5px;
     }
 
     .form-card-footer {
-        background: var(--gris);
-        border-top: 1px solid var(--borde);
-        padding: 20px 32px;
-        display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+        background: var(--gris); border-top: 1px solid var(--borde);
+        padding: 20px 32px; display: flex; align-items: center; justify-content: flex-end; gap: 12px;
     }
     .btn-cancelar {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .82rem; font-weight: 600;
-        text-transform: uppercase; letter-spacing: .5px;
-        padding: 10px 22px; border-radius: 10px;
-        border: 1.5px solid var(--borde);
-        background: white; color: var(--muted);
-        text-decoration: none; transition: .2s; cursor: pointer;
+        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 600;
+        text-transform: uppercase; letter-spacing: .5px; padding: 10px 22px;
+        border-radius: 10px; border: 1.5px solid var(--borde);
+        background: white; color: var(--muted); text-decoration: none; transition: .2s; cursor: pointer;
     }
     .btn-cancelar:hover { background: var(--borde); color: var(--texto); }
     .btn-guardar {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .82rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px;
-        padding: 11px 28px; border-radius: 10px;
-        border: none; background: var(--rojo);
-        color: white; cursor: pointer;
-        box-shadow: 0 4px 14px rgba(211,47,47,.35);
-        transition: .2s;
+        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px; padding: 11px 28px;
+        border-radius: 10px; border: none; background: var(--rojo); color: white;
+        cursor: pointer; box-shadow: 0 4px 14px rgba(211,47,47,.35); transition: .2s;
         display: flex; align-items: center; gap: 8px;
     }
     .btn-guardar:hover { background: var(--rojo2); transform: translateY(-1px); }
+
+    /* Botón volver a orden */
+    .btn-volver-orden {
+        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 600;
+        text-transform: uppercase; letter-spacing: .5px; padding: 10px 22px;
+        border-radius: 10px; border: 1.5px solid #f59e0b;
+        background: #fff8e1; color: #92400e; text-decoration: none; transition: .2s;
+        display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+    }
+    .btn-volver-orden:hover { background: #fef3c7; color: #78350f; }
+    .btn-volver-orden svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 </style>
 {% endblock %}
 
@@ -233,8 +219,21 @@
         <span class="header-badge">Acerautos S.A.S</span>
     </div>
 
+    {# ── Banner de retorno: solo aparece cuando viene desde la orden ── #}
+    {% if next == 'orden' %}
+    <div class="retorno-banner">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Estás creando un producto desde la <strong>Orden de Servicio</strong>. Al guardar, volverás automáticamente a la orden.
+    </div>
+    {% endif %}
+
     <form method="post" action="." id="formProducto">
         {% csrf_token %}
+
+        {# ── Pasar next al POST para que la view redirija correctamente ── #}
+        {% if next %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
 
         <div class="form-card">
             <div class="form-card-header">
@@ -263,7 +262,6 @@
                                 </div>
 
                             {% elif field.name == 'marca' %}
-                                <!-- Marca con botón + que lleva a crear_marca con ?next=producto -->
                                 <div class="field-with-btn">
                                     <div class="field-inner">
                                         <i class="fas fa-copyright field-icon"></i>
@@ -306,11 +304,21 @@
             </div>
 
             <div class="form-card-footer">
+                {% if next == 'orden' %}
+                {# Botón volver a la orden sin guardar #}
+                <a href="{% url 'app:orden_servicio_create' %}" class="btn-volver-orden">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                    Volver a la Orden
+                </a>
+                {% else %}
                 <button type="button" class="btn-cancelar" onclick="confirmarCancelacion('{{ listar_url }}')">
                     <i class="fas fa-times me-1"></i> Cancelar
                 </button>
+                {% endif %}
+
                 <button type="submit" class="btn-guardar">
-                    <i class="fas fa-save"></i> Guardar Producto
+                    <i class="fas fa-save"></i>
+                    {% if next == 'orden' %}Guardar y Volver a Orden{% else %}Guardar Producto{% endif %}
                 </button>
             </div>
         </div>
@@ -361,12 +369,15 @@ $(function () {
     $('#formProducto').on('submit', function (e) {
         e.preventDefault();
         var formulario = this;
+        var esOrden    = '{{ next }}' === 'orden';
         Swal.fire({
             title: '¿Confirmar registro?',
-            text: 'El producto se guardará en el catálogo.',
+            text: esOrden
+                ? 'El producto se guardará y volverás a la orden de servicio.'
+                : 'El producto se guardará en el catálogo.',
             icon: 'question',
             showCancelButton: true,
-            confirmButtonText: 'Sí, guardar',
+            confirmButtonText: esOrden ? 'Sí, guardar y volver' : 'Sí, guardar',
             cancelButtonText: 'Revisar',
             confirmButtonColor: '#d32f2f',
             cancelButtonColor: '#888',

@@ -22,7 +22,6 @@ class ProductoListView(ListView):
         total_productos  = qs.count()
         activos          = qs.filter(estado=True).count()
         sin_stock        = qs.filter(stock=0).count()
-        # Stock bajo: tiene stock pero está en o por debajo del mínimo
         stock_bajo       = sum(1 for p in qs.filter(stock__gt=0) if p.stock <= p.stock_minimo)
         valor_inventario = sum(p.precio * p.stock for p in qs.filter(estado=True))
 
@@ -40,8 +39,14 @@ class ProductoCreateView(CreateView):
     model = Producto
     form_class = ProductoForm
     template_name = 'producto/crear.html'
-    success_url = reverse_lazy('app:listar_producto')
     login_url = '/login/'
+
+    def get_success_url(self):
+        # Si viene ?next=orden, regresa a crear orden de servicio
+        next_url = self.request.GET.get('next') or self.request.POST.get('next')
+        if next_url == 'orden':
+            return reverse_lazy('app:orden_servicio_create')
+        return reverse_lazy('app:listar_producto')
 
     def form_valid(self, form):
         messages.success(self.request, 'Producto creado correctamente.')
@@ -55,6 +60,8 @@ class ProductoCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         context['titulo']     = 'Crear Producto'
         context['listar_url'] = reverse_lazy('app:listar_producto')
+        # Pasar next al contexto para que el template lo incluya en el form
+        context['next'] = self.request.GET.get('next', '')
         return context
 
 
