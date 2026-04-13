@@ -28,6 +28,14 @@ class SelectConEmoji(forms.Select):
 
 
 # ══════════════════════════════════════════════════════════
+#  WIDGET PERSONALIZADO PARA MULTI-SERVICIO CON TAGS
+# ══════════════════════════════════════════════════════════
+
+class MultiServicioWidget(forms.MultipleHiddenInput):
+    pass
+
+
+# ══════════════════════════════════════════════════════════
 #  DICCIONARIO DE INDICATIVOS DE PAÍSES
 # ══════════════════════════════════════════════════════════
 
@@ -188,10 +196,7 @@ def val_telefono_colombiano(valor, campo):
 
 def val_documento_colombiano(valor, campo, tipo_doc=None):
     limpio = str(valor).strip()
-    if tipo_doc == 'NIT':
-        if not limpio.isdigit() or not (9 <= len(limpio) <= 10):
-            raise forms.ValidationError(f"'{campo}': NIT debe tener 9 o 10 dígitos.")
-    elif tipo_doc == 'CC':
+    if tipo_doc == 'CC':
         if not limpio.isdigit() or not (8 <= len(limpio) <= 14):
             raise forms.ValidationError(f"'{campo}': Cédula debe tener entre 8 y 14 dígitos.")
     elif tipo_doc == 'CE':
@@ -700,9 +705,9 @@ class VehiculoForm(forms.ModelForm):
         model  = Vehiculo
         fields = [
             'placa', 'modelo', 'marca', 'cliente',
-            'km_ultimo_servicio',      # km actuales al registrar
-            'km_diarios_promedio',     # configurable por vehículo
-            'km_alerta_anticipacion',  # configurable por vehículo
+            'km_ultimo_servicio',
+            'km_diarios_promedio',
+            'km_alerta_anticipacion',
         ]
 
     def __init__(self, *args, **kwargs):
@@ -810,15 +815,30 @@ class TipoServicioForm(forms.ModelForm):
 # ══════════════════════════════════════════════════════════
 
 class OrdenServicioForm(forms.ModelForm):
+    servicios = forms.ModelMultipleChoiceField(
+        queryset      = TipoServicio.objects.all(),
+        required      = True,
+        label         = "Servicios",
+        widget=forms.CheckboxSelectMultiple(),
+        error_messages= {'required': "Debe seleccionar al menos un servicio."},
+    )
+
     class Meta:
         model  = OrdenServicio
-        fields = '__all__'
+        fields = ['empleado', 'vehiculo', 'servicios', 'fecha', 'km_actual', 'estado']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['empleado'].queryset    = Empleado.objects.filter(activo=True)
         self.fields['empleado'].required    = False
         self.fields['empleado'].empty_label = "-- Sin asignar --"
+        self.fields['servicios'].queryset = TipoServicio.objects.all().order_by('nombre')
+
+    def clean_servicios(self):
+        servicios = self.cleaned_data.get('servicios')
+        if not servicios:
+            raise forms.ValidationError("Debe seleccionar al menos un servicio.")
+        return servicios
 
     def clean_km_actual(self):
         km = self.cleaned_data.get('km_actual')
@@ -851,7 +871,10 @@ class OrdenServicioForm(forms.ModelForm):
             raise forms.ValidationError("La fecha de la orden no puede ser una fecha futura.")
         limite = timezone.now() - timezone.timedelta(days=30)
         if fecha < limite:
-            raise forms.ValidationError("La fecha de la orden no puede ser anterior a 30 días. Si necesita registrar una orden antigua, contacte al administrador.")
+            raise forms.ValidationError(
+                "La fecha de la orden no puede ser anterior a 30 días. "
+                "Si necesita registrar una orden antigua, contacte al administrador."
+            )
         return fecha
 
     def clean_estado(self):
@@ -865,12 +888,21 @@ class OrdenServicioForm(forms.ModelForm):
         cleaned  = super().clean()
         vehiculo = cleaned.get('vehiculo')
         estado   = cleaned.get('estado')
+
         if not self.instance.pk and estado == 'Terminado':
             self.add_error('estado', "No puede crear una orden con estado 'Terminado'. Inicie con 'Pendiente' o 'En Proceso'.")
+
         if vehiculo and not self.instance.pk:
-            orden_activa = OrdenServicio.objects.filter(vehiculo=vehiculo, estado__in=['Pendiente', 'En Proceso']).exists()
+            orden_activa = OrdenServicio.objects.filter(
+                vehiculo=vehiculo,
+                estado__in=['Pendiente', 'En Proceso']
+            ).exists()
             if orden_activa:
-                self.add_error('vehiculo', f"El vehículo con placa '{vehiculo.placa}' ya tiene una orden activa (Pendiente o En Proceso). Finalícela antes de crear una nueva.")
+                self.add_error(
+                    'vehiculo',
+                    f"El vehículo con placa '{vehiculo.placa}' ya tiene una orden activa "
+                    "(Pendiente o En Proceso). Finalícela antes de crear una nueva."
+                )
         return cleaned
 
 
@@ -899,7 +931,10 @@ class DetalleOrdenProductoForm(forms.ModelForm):
         cantidad = cleaned.get('cantidad')
         if producto and cantidad:
             if cantidad > producto.stock:
-                raise forms.ValidationError(f"Stock insuficiente para '{producto.nombre}'. Disponible: {producto.stock}, solicitado: {cantidad}.")
+                raise forms.ValidationError(
+                    f"Stock insuficiente para '{producto.nombre}'. "
+                    f"Disponible: {producto.stock}, solicitado: {cantidad}."
+                )
         return cleaned
 
 
@@ -925,11 +960,18 @@ class CompatibilidadProductoForm(forms.ModelForm):
         marca_vehiculo = cleaned.get('marca_vehiculo')
         tipo_servicio  = cleaned.get('tipo_servicio')
         if producto and marca_vehiculo:
-            qs = CompatibilidadProducto.objects.filter(producto=producto, marca_vehiculo=marca_vehiculo, tipo_servicio=tipo_servicio)
+            qs = CompatibilidadProducto.objects.filter(
+                producto=producto,
+                marca_vehiculo=marca_vehiculo,
+                tipo_servicio=tipo_servicio
+            )
             if self.instance.pk:
                 qs = qs.exclude(pk=self.instance.pk)
             if qs.exists():
-                raise forms.ValidationError(f"Ya existe la compatibilidad entre '{producto.nombre}', '{marca_vehiculo.nombre}' y el servicio seleccionado.")
+                raise forms.ValidationError(
+                    f"Ya existe la compatibilidad entre '{producto.nombre}', "
+                    f"'{marca_vehiculo.nombre}' y el servicio seleccionado."
+                )
         return cleaned
 
 
@@ -939,22 +981,14 @@ class CompatibilidadProductoForm(forms.ModelForm):
 
 class CajaForm(forms.ModelForm):
     class Meta:
-        model  = Caja
-        fields = '__all__'
+        model   = Caja
+        exclude = ['descripcion']
 
     def clean_monto(self):
         monto = val_positivo(self.cleaned_data['monto'], "Monto")
         if monto > 999999999:
             raise forms.ValidationError("El monto es demasiado alto. Verifique el valor.")
         return monto
-
-    def clean_descripcion(self):
-        desc = self.cleaned_data['descripcion'].strip()
-        if len(desc) < 5:
-            raise forms.ValidationError("La descripción es demasiado corta (mínimo 5 caracteres).")
-        if len(desc) > 255:
-            raise forms.ValidationError("La descripción no puede superar 255 caracteres.")
-        return desc
 
     def clean_fecha(self):
         fecha = self.cleaned_data.get('fecha')
@@ -992,7 +1026,11 @@ class NotificacionForm(forms.ModelForm):
         ('Urgente',      'Urgente'),
         ('Informacion',  'Información'),
     ]
-    tipo = forms.ChoiceField(choices=TIPOS_NOTIFICACION, label="Tipo de Notificación", widget=forms.Select(attrs={'class': 'form-control'}))
+    tipo = forms.ChoiceField(
+        choices=TIPOS_NOTIFICACION,
+        label="Tipo de Notificación",
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
 
     class Meta:
         model  = Notificacion
@@ -1048,13 +1086,18 @@ class FacturaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['orden_servicio'].queryset  = OrdenServicio.objects.filter(estado__in=['En Proceso', 'Terminado']).select_related('vehiculo', 'servicio')
+        self.fields['orden_servicio'].queryset = (
+            OrdenServicio.objects
+            .filter(estado__in=['En Proceso', 'Terminado'])
+            .select_related('vehiculo')
+            .prefetch_related('servicios')
+        )
         self.fields['orden_servicio'].empty_label = "-- Seleccione una Orden --"
-        self.fields['orden_servicio'].required  = False
-        self.fields['producto'].queryset        = Producto.objects.filter(estado=True, stock__gt=0)
-        self.fields['producto'].empty_label     = "-- Seleccione un Producto --"
-        self.fields['producto'].required        = False
-        self.fields['cantidad'].required        = False
+        self.fields['orden_servicio'].required    = False
+        self.fields['producto'].queryset          = Producto.objects.filter(estado=True, stock__gt=0)
+        self.fields['producto'].empty_label       = "-- Seleccione un Producto --"
+        self.fields['producto'].required          = False
+        self.fields['cantidad'].required          = False
 
     def clean(self):
         cleaned  = super().clean()
@@ -1066,7 +1109,10 @@ class FacturaForm(forms.ModelForm):
         if tipo == 'SERVICIO':
             if not orden:
                 self.add_error('orden_servicio', "Seleccione una Orden de Servicio.")
-            elif Factura.objects.filter(orden_servicio=orden, estado_pago='Pagada').exclude(pk=self.instance.pk if self.instance.pk else None).exists():
+            elif Factura.objects.filter(
+                orden_servicio=orden,
+                estado_pago='Pagada'
+            ).exclude(pk=self.instance.pk if self.instance.pk else None).exists():
                 self.add_error('orden_servicio', "Esta orden ya tiene una factura pagada asociada.")
         elif tipo == 'PRODUCTO':
             if not producto:

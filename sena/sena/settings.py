@@ -101,4 +101,4 @@ MESSAGE_TAGS = {
 }
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'marcas_logos')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

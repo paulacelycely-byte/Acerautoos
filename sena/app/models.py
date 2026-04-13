@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 
 
 # ══════════════════════════════════════════════════════════
@@ -17,7 +18,6 @@ class UsuarioSistema(AbstractUser):
     TIPOS_DOC = [
         ('CC',  'Cédula de Ciudadanía'),
         ('CE',  'Cédula de Extranjería'),
-        ('NIT', 'NIT'),
         ('PAS', 'Pasaporte'),
     ]
     tipo_documento = models.CharField(max_length=3, choices=TIPOS_DOC, default='CC')
@@ -54,7 +54,6 @@ class Empleado(models.Model):
     TIPOS_DOC = [
         ('CC',  'Cédula de Ciudadanía'),
         ('CE',  'Cédula de Extranjería'),
-        ('NIT', 'NIT'),
         ('PAS', 'Pasaporte'),
     ]
     nombres        = models.CharField(max_length=150)
@@ -248,7 +247,6 @@ class Cliente(models.Model):
     TIPOS_DOC = [
         ('CC',  'Cédula de Ciudadanía'),
         ('CE',  'Cédula de Extranjería'),
-        ('NIT', 'NIT'),
         ('PAS', 'Pasaporte'),
     ]
     nombre           = models.CharField(max_length=150)
@@ -362,9 +360,19 @@ class OrdenServicio(models.Model):
         ('En Proceso', 'En Proceso'),
         ('Terminado',  'Terminado'),
     ]
-    empleado  = models.ForeignKey(Empleado, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'activo': True})
+    empleado  = models.ForeignKey(
+        Empleado, on_delete=models.SET_NULL,
+        null=True, blank=True,
+        limit_choices_to={'activo': True}
+    )
     vehiculo  = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
-    servicio  = models.ForeignKey(TipoServicio, on_delete=models.PROTECT)
+
+    servicios = models.ManyToManyField(
+        TipoServicio,
+        verbose_name="Servicios",
+        help_text="Seleccione uno o más servicios para esta orden."
+    )
+
     fecha     = models.DateTimeField(default=timezone.now)
     km_actual = models.IntegerField()
     estado    = models.CharField(max_length=20, choices=ESTADOS, default='Pendiente')
@@ -375,15 +383,19 @@ class OrdenServicio(models.Model):
 
     def _actualizar_km_vehiculo(self):
         vehiculo = self.vehiculo
-        servicio = self.servicio
 
         if self.km_actual >= vehiculo.km_ultimo_servicio:
             vehiculo.km_ultimo_servicio    = self.km_actual
-            vehiculo.fecha_ultimo_servicio = self.fecha.date() if hasattr(self.fecha, 'date') else timezone.now().date()
+            vehiculo.fecha_ultimo_servicio = (
+                self.fecha.date() if hasattr(self.fecha, 'date') else timezone.now().date()
+            )
 
-        if servicio.intervalo_km > 0:
-            nuevo_proximo = vehiculo.km_ultimo_servicio + servicio.intervalo_km
-            if vehiculo.km_proximo_mantenimiento is None or nuevo_proximo != vehiculo.km_proximo_mantenimiento:
+        servicios_con_intervalo = self.servicios.filter(intervalo_km__gt=0)
+        if servicios_con_intervalo.exists():
+            menor_intervalo = servicios_con_intervalo.order_by('intervalo_km').first().intervalo_km
+            nuevo_proximo   = vehiculo.km_ultimo_servicio + menor_intervalo
+            if (vehiculo.km_proximo_mantenimiento is None or
+                    nuevo_proximo != vehiculo.km_proximo_mantenimiento):
                 vehiculo.km_proximo_mantenimiento = nuevo_proximo
 
         vehiculo.save(update_fields=[
@@ -395,6 +407,9 @@ class OrdenServicio(models.Model):
         if vehiculo.km_proximo_mantenimiento:
             km_restante = vehiculo.km_proximo_mantenimiento - self.km_actual
             if km_restante <= vehiculo.km_alerta_anticipacion:
+                nombres_servicios = ", ".join(
+                    self.servicios.values_list('nombre', flat=True)
+                )
                 Notificacion.objects.get_or_create(
                     tipo     = 'Mantenimiento',
                     origen   = 'SISTEMA',
@@ -405,6 +420,7 @@ class OrdenServicio(models.Model):
                         'mensaje': (
                             f"El vehículo {vehiculo.placa} ({vehiculo.marca.nombre} {vehiculo.modelo}) "
                             f"tiene {self.km_actual:,} km actuales. "
+                            f"Servicios realizados: {nombres_servicios}. "
                             f"Próximo mantenimiento a los {vehiculo.km_proximo_mantenimiento:,} km "
                             f"(faltan aprox. {max(km_restante, 0):,} km)."
                         ),
@@ -516,8 +532,15 @@ class Factura(models.Model):
     tipo           = models.CharField(max_length=10, choices=TIPO_FACTURA, default='SERVICIO')
     numero_factura = models.CharField(max_length=20, unique=True)
     fecha_emision  = models.DateTimeField(auto_now_add=True)
-    orden_servicio = models.ForeignKey('OrdenServicio', on_delete=models.SET_NULL, null=True, blank=True, related_name='facturas')
-    producto       = models.ForeignKey('Producto', on_delete=models.SET_NULL, null=True, blank=True, related_name='facturas', limit_choices_to={'estado': True})
+    orden_servicio = models.ForeignKey(
+        'OrdenServicio', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='facturas'
+    )
+    producto       = models.ForeignKey(
+        'Producto', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='facturas',
+        limit_choices_to={'estado': True}
+    )
     cantidad       = models.PositiveIntegerField(default=1, null=True, blank=True)
     subtotal       = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     iva            = models.DecimalField(max_digits=12, decimal_places=2, default=0)
@@ -540,7 +563,8 @@ class Factura(models.Model):
             if not Caja.objects.filter(descripcion__icontains=self.numero_factura).exists():
                 Caja.objects.create(
                     descripcion = f"Factura {self.numero_factura} — {self.get_tipo_display()}",
-                    monto       = self.total, tipo = 'INGRESO',
+                    monto       = self.total,
+                    tipo        = 'INGRESO',
                     categoria   = 'Ventas' if self.tipo == 'PRODUCTO' else 'Servicios',
                     metodo_pago = self.metodo_pago or 'Efectivo',
                 )

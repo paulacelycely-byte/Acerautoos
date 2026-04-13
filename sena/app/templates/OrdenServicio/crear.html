@@ -98,12 +98,6 @@
     .btn-guardar svg { width: 15px; height: 15px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
     .btn-guardar:hover { background: var(--acento2); transform: translateY(-1px); }
 
-    /* ─── Sección de productos ─── */
-    .productos-header {
-        display: flex; align-items: center; justify-content: space-between;
-        margin-bottom: 16px;
-    }
-    .productos-titulo { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--carbon); }
     .btn-agregar-producto {
         font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
         text-transform: uppercase; letter-spacing: .6px; padding: 8px 16px;
@@ -114,23 +108,15 @@
     .btn-agregar-producto:hover { background: var(--acento2); transform: translateY(-1px); }
     .btn-agregar-producto svg { width: 13px; height: 13px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; }
 
-    /* Fila de producto en la orden */
     .producto-row {
         display: flex; align-items: center; gap: 10px;
         padding: 12px 14px; border-radius: 10px;
         border: 1.5px solid var(--borde); background: var(--gris);
-        margin-bottom: 10px; position: relative;
-        transition: border-color .2s, background .2s;
+        margin-bottom: 10px; position: relative; transition: border-color .2s, background .2s;
     }
     .producto-row:hover { border-color: #c5bfb8; background: white; }
 
-    /* Pill de compatibilidad en cada fila */
-    .compat-pill {
-        font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700;
-        padding: 3px 9px; border-radius: 20px; display: inline-flex;
-        align-items: center; gap: 4px; white-space: nowrap; flex-shrink: 0;
-        transition: all .25s;
-    }
+    .compat-pill { font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; flex-shrink: 0; transition: all .25s; }
     .compat-pill svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
     .compat-ok      { background: #dcfce7; color: #15803d; }
     .compat-warn    { background: #fef9c3; color: #a16207; }
@@ -138,69 +124,51 @@
     .compat-loading { background: #f1f5f9; color: #94a3b8; }
 
     .producto-select-wrap { flex: 1; position: relative; }
-    .producto-select-wrap select {
-        width: 100%; padding: 9px 12px 9px 36px; border: 1.5px solid var(--borde);
-        border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: .85rem;
-        color: var(--texto); background: white; outline: none;
-        transition: border-color .2s; -webkit-appearance: none; appearance: none;
-    }
+    .producto-select-wrap select { width: 100%; padding: 9px 12px 9px 36px; border: 1.5px solid var(--borde); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: .85rem; color: var(--texto); background: white; outline: none; transition: border-color .2s; -webkit-appearance: none; appearance: none; }
     .producto-select-wrap select:focus { border-color: var(--acento); box-shadow: 0 0 0 3px var(--acento-ring); }
     .producto-select-wrap .sel-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: #bbb; pointer-events: none; }
     .producto-select-wrap .sel-icon svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
 
     .cantidad-wrap { width: 80px; flex-shrink: 0; }
-    .cantidad-wrap input {
-        width: 100%; padding: 9px 10px; border: 1.5px solid var(--borde);
-        border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: .9rem;
-        color: var(--texto); background: white; outline: none; text-align: center;
-        transition: border-color .2s;
-    }
+    .cantidad-wrap input { width: 100%; padding: 9px 10px; border: 1.5px solid var(--borde); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: .9rem; color: var(--texto); background: white; outline: none; text-align: center; transition: border-color .2s; }
     .cantidad-wrap input:focus { border-color: var(--acento); box-shadow: 0 0 0 3px var(--acento-ring); }
 
-    .btn-quitar-row {
-        width: 30px; height: 30px; border-radius: 7px; border: none;
-        background: #fee2e2; color: #dc2626; cursor: pointer; flex-shrink: 0;
-        display: flex; align-items: center; justify-content: center; transition: .2s;
-    }
+    .btn-quitar-row { width: 30px; height: 30px; border-radius: 7px; border: none; background: #fee2e2; color: #dc2626; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: .2s; }
     .btn-quitar-row:hover { background: #dc2626; color: white; }
     .btn-quitar-row svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
 
-    .productos-vacio {
-        font-family: 'DM Sans', sans-serif; font-size: .82rem; color: var(--muted);
-        text-align: center; padding: 18px; background: var(--gris);
-        border-radius: 10px; border: 1.5px dashed var(--borde);
-    }
+    .productos-vacio { font-family: 'DM Sans', sans-serif; font-size: .82rem; color: var(--muted); text-align: center; padding: 18px; background: var(--gris); border-radius: 10px; border: 1.5px dashed var(--borde); }
 
-    /* Tooltip de compatibilidad expandido */
-    .compat-detail {
-        font-family: 'DM Sans', sans-serif; font-size: .72rem; color: var(--muted);
-        margin-top: 5px; padding: 0 4px; display: none;
-    }
-    .compat-detail.visible { display: block; }
-    .compat-detail.warn-text { color: #a16207; }
-    .compat-detail.ok-text   { color: #15803d; }
-
-    /* Aviso general de compatibilidad si hay conflictos */
-    .compat-aviso {
-        display: none; align-items: flex-start; gap: 12px;
-        padding: 14px 18px; border-radius: 11px;
-        border: 1.5px solid #fde68a; background: #fffbeb;
-        margin-bottom: 16px;
-    }
+    .compat-aviso { display: none; align-items: flex-start; gap: 12px; padding: 14px 18px; border-radius: 11px; border: 1.5px solid #fde68a; background: #fffbeb; margin-bottom: 16px; }
     .compat-aviso.visible { display: flex; }
     .compat-aviso-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
     .compat-aviso-texto { font-family: 'DM Sans', sans-serif; font-size: .82rem; color: #92400e; font-weight: 600; }
     .compat-aviso-sub   { font-family: 'DM Sans', sans-serif; font-size: .75rem; color: #a16207; margin-top: 2px; }
 
-    /* Hint vehículo sin marca info */
-    .vehiculo-info-strip {
-        display: none; align-items: center; gap: 8px;
-        padding: 8px 14px; border-radius: 8px;
-        background: #f0f9ff; border: 1px solid #bae6fd;
-        margin-top: 6px;
-    }
+    .vehiculo-info-strip { display: none; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 8px; background: #f0f9ff; border: 1px solid #bae6fd; margin-top: 6px; }
     .vehiculo-info-strip.visible { display: flex; }
     .vehiculo-info-strip span { font-family: 'DM Sans', sans-serif; font-size: .75rem; color: #0369a1; font-weight: 600; }
+
+    .srv-tag {
+        display: inline-flex; align-items: center; gap: 5px;
+        background: #fff0f0; border: 1.5px solid #f5c6c6; color: #b71c1c;
+        border-radius: 6px; padding: 4px 10px;
+        font-size: .78rem; font-weight: 600; font-family: 'DM Sans', sans-serif;
+        animation: tagPop .18s ease;
+    }
+    @keyframes tagPop { from { opacity:0; transform:scale(.85); } to { opacity:1; transform:scale(1); } }
+    .srv-tag button { background: none; border: none; color: #b71c1c; cursor: pointer; font-size: 14px; line-height: 1; padding: 0; opacity: .7; transition: opacity .15s; }
+    .srv-tag button:hover { opacity: 1; }
+
+    #servicios-dropdown { border: 1.5px solid var(--borde); border-radius: 10px; background: #fff; box-shadow: 0 6px 20px rgba(0,0,0,.08); max-height: 0; opacity: 0; overflow: hidden; transition: max-height .25s ease, opacity .2s ease; margin-top: 4px; }
+    #servicios-dropdown.open { max-height: 240px; opacity: 1; overflow-y: auto; }
+    #servicios-dropdown::-webkit-scrollbar { width: 4px; }
+    #servicios-dropdown::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+    .srv-dropdown-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; cursor: pointer; font-size: .85rem; font-family: 'DM Sans', sans-serif; color: #2a2a2a; border-bottom: 1px solid #f0f0f0; transition: background .15s; }
+    .srv-dropdown-item:last-child { border-bottom: none; }
+    .srv-dropdown-item:hover, .srv-dropdown-item.sel { background: #fff5f5; color: #b71c1c; }
+    .srv-dropdown-item .chk { font-weight: 700; color: #b71c1c; }
+    .srv-empty { padding: 14px; text-align: center; font-size: .8rem; color: #aaa; font-family: 'DM Sans', sans-serif; }
 </style>
 {% endblock %}
 
@@ -224,11 +192,19 @@
         <span class="header-badge">Acerautos S.A.S</span>
     </div>
 
+    {% if productos_disponibles %}
+    <select id="_productos_source_" style="display:none;">
+        <option value="">— Selecciona un producto —</option>
+        {% for p in productos_disponibles %}
+        <option value="{{ p.pk }}" data-stock="{{ p.stock }}">{{ p.nombre }} (Stock: {{ p.stock }})</option>
+        {% endfor %}
+    </select>
+    {% endif %}
+
     <form method="post" id="formOrden">
         {% csrf_token %}
         <input type="hidden" name="estado" id="campo-estado" value="{{ form.estado.value|default:'Pendiente' }}">
 
-        <!-- ─── Detalles principales ─── -->
         <div class="form-card">
             <div class="form-card-header">
                 {% if es_editar %}
@@ -241,8 +217,6 @@
             </div>
 
             <div class="form-card-body">
-
-                <!-- Estado -->
                 <div class="field-group">
                     <label class="field-label">Estado de la Orden</label>
                     <div class="estado-wrap">
@@ -273,7 +247,7 @@
                                     <small style="font-family:'DM Sans',sans-serif;font-size:.72rem;color:var(--muted);margin-top:4px;display:block;">Se establece automáticamente con la fecha actual.</small>
 
                                 {% elif 'vehiculo' in field.name|lower %}
-                                    <label class="field-label">{{ field.label }}</label>
+                                    <label class="field-label">{{ field.label }} <span style="color:#d32f2f;">*</span></label>
                                     <div class="field-with-btn">
                                         <div class="field-inner">
                                             <span class="field-icon"><svg viewBox="0 0 24 24"><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M5 17H3v-6l2-5h12l2 5h1a1 1 0 0 1 1 1v4h-2"/><path d="M9 17h6"/></svg></span>
@@ -283,7 +257,6 @@
                                             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                                         </a>
                                     </div>
-                                    <!-- Strip con info de marca del vehículo seleccionado -->
                                     <div class="vehiculo-info-strip" id="vehiculo-info-strip">
                                         <svg style="width:13px;height:13px;stroke:#0369a1;fill:none;stroke-width:2;stroke-linecap:round;" viewBox="0 0 24 24"><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M5 17H3v-6l2-5h12l2 5h1a1 1 0 0 1 1 1v4h-2"/></svg>
                                         <span id="vehiculo-info-texto">—</span>
@@ -291,7 +264,7 @@
 
                                 {% elif field.name == 'km_actual' %}
                                     <label class="field-label">
-                                        {{ field.label }}
+                                        {{ field.label }} <span style="color:#d32f2f;">*</span>
                                         <span class="badge-km-auto" id="badge-km">✓ Autocompletado</span>
                                     </label>
                                     <div class="field-inner">
@@ -303,17 +276,26 @@
                                         <span id="km-hint-texto">Km traídos del registro del vehículo.</span>
                                     </div>
 
-                                {% elif 'servicio' in field.name|lower %}
-                                    <label class="field-label">{{ field.label }}</label>
+                                {% elif 'servicios' in field.name|lower %}
+                                    <label class="field-label">{{ field.label }} <span style="color:#d32f2f;">*</span></label>
+                                    <div id="servicios-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:0;"></div>
                                     <div class="field-with-btn">
                                         <div class="field-inner">
-                                            <span class="field-icon"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
-                                            {{ field|add_class:'form-field'|attr:'id:id_servicio' }}
+                                            <span class="field-icon">
+                                                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                            </span>
+                                            <input type="text" id="servicios-search" placeholder="Buscar servicio..." autocomplete="off"
+                                                style="width:100%;padding:12px 14px 12px 40px;border:1.5px solid var(--borde);border-radius:10px 0 0 10px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--texto);background:var(--gris);outline:none;transition:border-color .2s,background .2s,box-shadow .2s;-webkit-appearance:none;appearance:none;"
+                                                onfocus="this.style.borderColor='var(--acento)';this.style.background='white';this.style.boxShadow='0 0 0 3px var(--acento-ring)';abrirServicioDropdown();"
+                                                onblur="this.style.borderColor='var(--borde)';this.style.background='var(--gris)';this.style.boxShadow='none';"
+                                                oninput="filtrarServicioDropdown(this.value);">
                                         </div>
                                         <a href="{% url 'app:create_servico' %}?next=orden" class="btn-add-inline" data-tip="Nuevo servicio">
                                             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                                         </a>
                                     </div>
+                                    <div id="servicios-dropdown"></div>
+                                    <div id="servicios-hidden" style="display:none;">{{ field }}</div>
 
                                 {% elif 'empleado' in field.name|lower %}
                                     <label class="field-label">{{ field.label }}</label>
@@ -346,7 +328,6 @@
             </div>
         </div>
 
-        <!-- ─── Sección productos usados en la orden ─── -->
         <div class="form-card">
             <div class="form-card-header">
                 <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
@@ -355,7 +336,6 @@
             </div>
             <div class="form-card-body">
 
-                <!-- Aviso general si hay incompatibles -->
                 <div class="compat-aviso" id="compat-aviso">
                     <div class="compat-aviso-icon">⚠️</div>
                     <div>
@@ -371,12 +351,17 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn-agregar-producto" id="btn-agregar-producto" onclick="agregarFilaProducto()">
-                    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Agregar producto
-                </button>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    <button type="button" class="btn-agregar-producto" onclick="agregarFilaProducto()">
+                        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Agregar producto
+                    </button>
+                    <a href="{% url 'app:crear_producto' %}?next=orden" class="btn-agregar-producto" style="background:white;color:var(--acento);border:1.5px solid var(--acento);box-shadow:none;text-decoration:none;">
+                        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
+                        Nuevo Producto
+                    </a>
+                </div>
 
-                <!-- Hidden inputs para enviar productos al servidor -->
                 <div id="productos-hidden"></div>
             </div>
 
@@ -385,7 +370,7 @@
                     <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     Cancelar
                 </a>
-                <button type="submit" class="btn-guardar" form="formOrden">
+                <button type="submit" class="btn-guardar">
                     {% if es_editar %}
                     <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                     Actualizar Orden
@@ -403,37 +388,109 @@
 
 {% block js %}
 <script>
-/* ─── Datos pasados desde Django ─── */
 const URL_KM        = '{% url "app:vehiculo_km" 0 %}'.replace('/0/', '/VEHICULO_ID/');
 const URL_COMPAT    = '{% url "app:verificar_compatibilidad" %}';
 const URL_PRODUCTOS = '{% url "app:productos_compatibles" %}';
 const ES_EDITAR     = {% if es_editar %}true{% else %}false{% endif %};
 
-/* Estado del módulo de productos */
-let marcaVehiculo   = null;   // ID de la marca del vehículo seleccionado
-let servicioActual  = null;   // ID del servicio seleccionado
-let contadorFilas   = 0;
+let marcaVehiculo = null;
+let contadorFilas = 0;
+let vehiculoCargado = false;
 
-/* Lista de todos los productos disponibles (se carga desde el DOM) */
-const todosLosProductos = Array.from(
-    document.querySelectorAll ? [] : []  // se llena tras DOMContentLoaded
-);
+const SERVICIOS_CATALOG = [
+    {% for s in form.servicios.field.queryset %}
+    { id: {{ s.id }}, nombre: "{{ s.nombre|escapejs }}" },
+    {% endfor %}
+];
 
-/* ═══════════════════════════════════
-   INIT
-═══════════════════════════════════ */
+let srvSeleccionados = [
+    {% if form.instance.pk %}
+        {% for s in form.instance.servicios.all %}
+        { id: {{ s.id }}, nombre: "{{ s.nombre|escapejs }}" },
+        {% endfor %}
+    {% endif %}
+];
+
+function srvRenderTags() {
+    var wrap = document.getElementById('servicios-tags');
+    wrap.innerHTML = '';
+    srvSeleccionados.forEach(function(s) {
+        var tag = document.createElement('span');
+        tag.className = 'srv-tag';
+        tag.innerHTML = s.nombre + ' <button type="button" onclick="srvQuitar(' + s.id + ')">✕</button>';
+        wrap.appendChild(tag);
+    });
+}
+
+function srvRenderHidden() {
+    document.querySelectorAll('input.srv-dyn').forEach(function(i){ i.remove(); });
+    var wrap = document.getElementById('servicios-hidden');
+    srvSeleccionados.forEach(function(s) {
+        var inp = document.createElement('input');
+        inp.type = 'hidden'; inp.name = 'servicios'; inp.value = s.id; inp.className = 'srv-dyn';
+        wrap.appendChild(inp);
+    });
+}
+
+function srvRenderDropdown(q) {
+    q = (q || '').toLowerCase();
+    var dd = document.getElementById('servicios-dropdown');
+    var filtrados = SERVICIOS_CATALOG.filter(function(s){ return s.nombre.toLowerCase().indexOf(q) !== -1; });
+    if (!filtrados.length) { dd.innerHTML = '<div class="srv-empty">Sin resultados</div>'; return; }
+    dd.innerHTML = filtrados.map(function(s) {
+        var sel = srvSeleccionados.find(function(x){ return x.id === s.id; });
+        return '<div class="srv-dropdown-item' + (sel ? ' sel' : '') + '" onclick="srvToggle(' + s.id + ',\'' + s.nombre.replace(/'/g,"\\'") + '\')">'
+             + '<span>' + s.nombre + '</span><span class="chk">' + (sel ? '✓' : '') + '</span></div>';
+    }).join('');
+}
+
+function abrirServicioDropdown() {
+    var dd = document.getElementById('servicios-dropdown');
+    srvRenderDropdown(document.getElementById('servicios-search').value);
+    dd.classList.add('open');
+}
+
+function filtrarServicioDropdown(q) {
+    document.getElementById('servicios-dropdown').classList.add('open');
+    srvRenderDropdown(q);
+}
+
+function srvToggle(id, nombre) {
+    var idx = srvSeleccionados.findIndex(function(x){ return x.id === id; });
+    if (idx === -1) srvSeleccionados.push({ id: id, nombre: nombre });
+    else srvSeleccionados.splice(idx, 1);
+    srvRenderTags(); srvRenderHidden();
+    srvRenderDropdown(document.getElementById('servicios-search').value);
+    revalidarTodosLosProductos();
+}
+
+function srvQuitar(id) {
+    srvSeleccionados = srvSeleccionados.filter(function(x){ return x.id !== id; });
+    srvRenderTags(); srvRenderHidden();
+    srvRenderDropdown(document.getElementById('servicios-search').value);
+    revalidarTodosLosProductos();
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#servicios-search') && !e.target.closest('#servicios-dropdown')) {
+        var dd = document.getElementById('servicios-dropdown');
+        if (dd) dd.classList.remove('open');
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function () {
 
-    /* Fecha automática */
+    srvRenderTags();
+    srvRenderHidden();
+
     var campoFecha = document.getElementById('campo_fecha');
     if (campoFecha && !campoFecha.value) {
-        var hoy = new Date(), pad = n => String(n).padStart(2, '0');
+        var hoy = new Date(), pad = function(n){ return String(n).padStart(2,'0'); };
         campoFecha.value = campoFecha.type === 'datetime-local'
             ? hoy.getFullYear()+'-'+pad(hoy.getMonth()+1)+'-'+pad(hoy.getDate())+'T'+pad(hoy.getHours())+':'+pad(hoy.getMinutes())
             : hoy.getFullYear()+'-'+pad(hoy.getMonth()+1)+'-'+pad(hoy.getDate());
     }
 
-    /* Vehículo → km + marca */
     var selectVehiculo = document.getElementById('id_vehiculo');
     var campoKm        = document.getElementById('id_km_actual');
     var badgeKm        = document.getElementById('badge-km');
@@ -442,180 +499,146 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function cargarDatosVehiculo(vehiculoId) {
         if (!vehiculoId) {
-            badgeKm.classList.remove('visible');
-            kmHint.classList.remove('visible');
-            marcaVehiculo = null;
-            actualizarInfoStrip(null, null);
-            revalidarTodosLosProductos();
-            return;
+            badgeKm.classList.remove('visible'); kmHint.classList.remove('visible');
+            marcaVehiculo = null; vehiculoCargado = false;
+            actualizarInfoStrip(null, null); revalidarTodosLosProductos(); return;
         }
-        // Cargar km
         fetch(URL_KM.replace('VEHICULO_ID', vehiculoId))
-            .then(r => r.json())
-            .then(data => {
+            .then(function(r){ return r.json(); })
+            .then(function(data) {
                 if (data.km !== undefined && data.km > 0) {
-                    campoKm.value = data.km;
-                    badgeKm.classList.add('visible');
-                    kmHint.classList.add('visible');
-                    kmHintTexto.textContent = 'Km traídos del registro del vehículo (' + data.km.toLocaleString('es-CO') + ' km). Puede editarlo si el cliente trae más km.';
+                    if (!ES_EDITAR) {
+                        campoKm.value = data.km;
+                        badgeKm.classList.add('visible'); kmHint.classList.add('visible');
+                        kmHintTexto.textContent = 'Km traídos del registro del vehículo (' + data.km.toLocaleString('es-CO') + ' km). Puede editarlo si el cliente trae más km.';
+                    }
                 } else {
-                    badgeKm.classList.remove('visible');
-                    kmHint.classList.remove('visible');
+                    badgeKm.classList.remove('visible'); kmHint.classList.remove('visible');
                 }
-                // Guardar marca desde data (si viene) o desde el texto del option
                 if (data.marca_id) {
                     marcaVehiculo = data.marca_id;
                     actualizarInfoStrip(data.placa, data.marca_nombre);
                 } else {
-                    // Fallback: extraer marca del texto del option seleccionado
-                    var opt = selectVehiculo.options[selectVehiculo.selectedIndex];
-                    actualizarInfoStrip(data.placa, null);
-                    marcaVehiculo = data.marca_id || null;
+                    actualizarInfoStrip(data.placa, null); marcaVehiculo = null;
                 }
+                vehiculoCargado = true;
                 revalidarTodosLosProductos();
             })
-            .catch(() => {
-                badgeKm.classList.remove('visible');
-                kmHint.classList.remove('visible');
+            .catch(function() {
+                badgeKm.classList.remove('visible'); kmHint.classList.remove('visible');
+                vehiculoCargado = true;
             });
     }
 
     if (selectVehiculo) {
         selectVehiculo.addEventListener('change', function () {
-            cargarDatosVehiculo(this.value);
+            vehiculoCargado = false; cargarDatosVehiculo(this.value);
         });
-        if (!ES_EDITAR && selectVehiculo.value) {
-            cargarDatosVehiculo(selectVehiculo.value);
-        }
+        if (selectVehiculo.value) cargarDatosVehiculo(selectVehiculo.value);
     }
-
     if (campoKm) {
         campoKm.addEventListener('input', function () {
-            badgeKm.classList.remove('visible');
-            kmHint.classList.remove('visible');
+            badgeKm.classList.remove('visible'); kmHint.classList.remove('visible');
         });
     }
 
-    /* Servicio → actualizar compatibilidad */
-    var selectServicio = document.getElementById('id_servicio');
-    if (selectServicio) {
-        selectServicio.addEventListener('change', function () {
-            servicioActual = this.value;
-            revalidarTodosLosProductos();
-        });
-        if (selectServicio.value) servicioActual = selectServicio.value;
-    }
-
-    /* Estado inicial de botones */
     var estadoInicial = document.getElementById('campo-estado').value;
-    document.querySelectorAll('.estado-btn').forEach(btn => {
+    document.querySelectorAll('.estado-btn').forEach(function(btn) {
         if (btn.dataset.estado === estadoInicial)
             btn.classList.add('activo-' + estadoInicial.replace(' ', ''));
     });
 
-    /* Estilos form-field */
-    document.querySelectorAll('.form-field').forEach(el => {
+    var acento = getComputedStyle(document.documentElement).getPropertyValue('--acento').trim();
+    document.querySelectorAll('.form-field').forEach(function(el) {
         if (el.classList.contains('fecha-auto')) return;
-        const acento  = getComputedStyle(document.documentElement).getPropertyValue('--acento').trim();
-        const enGrupo = el.closest('.field-with-btn');
-        const radius  = enGrupo ? '10px 0 0 10px' : '10px';
-        el.style.cssText = `width:100%;padding:12px 14px 12px 40px;border:1.5px solid #e0ddd8;border-radius:${radius};font-family:'DM Sans',sans-serif;font-size:.9rem;color:#2a2a2a;background:#f2f2f0;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none;`;
-        el.addEventListener('focus', () => { el.style.borderColor = acento; el.style.background = 'white'; el.style.boxShadow = `0 0 0 3px ${acento}22`; });
-        el.addEventListener('blur',  () => { el.style.borderColor = '#e0ddd8'; el.style.background = '#f2f2f0'; el.style.boxShadow = 'none'; });
+        var enGrupo = el.closest('.field-with-btn');
+        var radius  = enGrupo ? '10px 0 0 10px' : '10px';
+        el.style.cssText = 'width:100%;padding:12px 14px 12px 40px;border:1.5px solid #e0ddd8;border-radius:'+radius+';font-family:\'DM Sans\',sans-serif;font-size:.9rem;color:#2a2a2a;background:#f2f2f0;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none;';
+        el.addEventListener('focus', function() { el.style.borderColor = acento; el.style.background = 'white'; el.style.boxShadow = '0 0 0 3px '+acento+'22'; });
+        el.addEventListener('blur',  function() { el.style.borderColor = '#e0ddd8'; el.style.background = '#f2f2f0'; el.style.boxShadow = 'none'; });
     });
 
-    /* SweetAlert submit */
-    $('#formOrden').on('submit', function (e) {
+    {% if es_editar %}
+    var productosIniciales = [
+        {% for detalle in form.instance.productos_usados.all %}
+        { productoId: '{{ detalle.producto.pk }}', cantidad: {{ detalle.cantidad }} },
+        {% endfor %}
+    ];
+    productosIniciales.forEach(function(d) { agregarFilaProducto(d.productoId, d.cantidad); });
+    {% endif %}
+
+    document.getElementById('formOrden').addEventListener('submit', function(e) {
         e.preventDefault();
-        sincronizarProductosHidden();
+        if (srvSeleccionados.length === 0) {
+            Swal.fire({ icon: 'warning', title: 'Servicio requerido', text: 'Debe seleccionar al menos un servicio antes de guardar.', confirmButtonColor: '#d32f2f' });
+            return;
+        }
         var formulario = this;
         Swal.fire({
             title: ES_EDITAR ? '¿Actualizar orden?' : '¿Confirmar registro?',
             text:  ES_EDITAR ? 'Se guardarán los cambios de la orden.' : 'Se guardará la orden de servicio en el sistema.',
-            icon: 'question',
-            showCancelButton: true,
+            icon: 'question', showCancelButton: true,
             confirmButtonText: ES_EDITAR ? 'Sí, actualizar' : 'Sí, guardar',
             cancelButtonText: 'Revisar',
             confirmButtonColor: ES_EDITAR ? '#1565c0' : '#d32f2f',
             cancelButtonColor: '#888',
-        }).then((result) => {
-            if (result.isConfirmed) { $(formulario).off('submit').submit(); }
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                sincronizarProductosHidden();
+                formulario.submit();
+            }
         });
     });
 });
 
-/* ═══════════════════════════════════
-   INFO STRIP DEL VEHÍCULO
-═══════════════════════════════════ */
 function actualizarInfoStrip(placa, marcaNombre) {
-    var strip  = document.getElementById('vehiculo-info-strip');
-    var texto  = document.getElementById('vehiculo-info-texto');
+    var strip = document.getElementById('vehiculo-info-strip');
+    var texto = document.getElementById('vehiculo-info-texto');
     if (!placa) { strip.classList.remove('visible'); return; }
-    var msg = placa;
-    if (marcaNombre) msg += ' · Marca: ' + marcaNombre;
-    texto.textContent = msg;
+    texto.textContent = placa + (marcaNombre ? ' · Marca: ' + marcaNombre : '');
     strip.classList.add('visible');
 }
 
-/* ═══════════════════════════════════
-   ESTADO SELECTOR
-═══════════════════════════════════ */
 function seleccionarEstado(btn) {
-    document.querySelectorAll('.estado-btn').forEach(b => b.className = 'estado-btn');
+    document.querySelectorAll('.estado-btn').forEach(function(b){ b.className = 'estado-btn'; });
     var estado = btn.dataset.estado;
     btn.classList.add('activo-' + estado.replace(' ', ''));
     document.getElementById('campo-estado').value = estado;
 }
 
-/* ═══════════════════════════════════
-   MÓDULO DE PRODUCTOS
-═══════════════════════════════════ */
-function getOpcionesProductos() {
-    /* Toma las opciones del primer select de productos si existe, o del DOM */
-    var primer = document.querySelector('.producto-row select.sel-producto');
-    if (primer) return primer.innerHTML;
-    return '<option value="">— Selecciona un producto —</option>';
-}
-
-function agregarFilaProducto() {
-    var lista  = document.getElementById('productos-lista');
-    var vacio  = document.getElementById('productos-vacio');
+function agregarFilaProducto(productoIdInicial, cantidadInicial) {
+    var lista = document.getElementById('productos-lista');
+    var vacio = document.getElementById('productos-vacio');
     if (vacio) vacio.style.display = 'none';
-
     contadorFilas++;
     var id = 'fila-' + contadorFilas;
-
     var fila = document.createElement('div');
-    fila.className = 'producto-row';
-    fila.id = id;
-    fila.innerHTML = `
-        <div class="producto-select-wrap">
-            <span class="sel-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>
-            <select class="sel-producto" onchange="onProductoChange(this, '${id}')">
-                <option value="">— Selecciona un producto —</option>
-                ${cargarOpcionesProductos()}
-            </select>
-        </div>
-        <div class="cantidad-wrap">
-            <input type="number" class="inp-cantidad" min="1" value="1" placeholder="Cant." oninput="revalidarAvisoGeneral()">
-        </div>
-        <span class="compat-pill compat-neutral" id="pill-${id}">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            Sin verificar
-        </span>
-        <button type="button" class="btn-quitar-row" onclick="quitarFila('${id}')">
-            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-    `;
+    fila.className = 'producto-row'; fila.id = id;
+    var opcionesHTML = obtenerOpcionesProductos();
+    fila.innerHTML =
+        '<div class="producto-select-wrap">'
+        + '<span class="sel-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>'
+        + '<select class="sel-producto" onchange="onProductoChange(this,\'' + id + '\')">' + opcionesHTML + '</select></div>'
+        + '<div class="cantidad-wrap"><input type="number" class="inp-cantidad" min="1" value="' + (cantidadInicial || 1) + '" placeholder="Cant." oninput="revalidarAvisoGeneral()"></div>'
+        + '<span class="compat-pill compat-neutral" id="pill-' + id + '"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Sin verificar</span>'
+        + '<button type="button" class="btn-quitar-row" onclick="quitarFila(\'' + id + '\')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
     lista.appendChild(fila);
+    if (productoIdInicial) {
+        var sel = fila.querySelector('.sel-producto');
+        sel.value = productoIdInicial;
+        if (sel.value) onProductoChange(sel, id);
+    }
 }
 
-function cargarOpcionesProductos() {
-    /* Lee opciones del primer select de producto existente en el form principal, si no, hace fetch */
-    /* Como es Django, usamos un select auxiliar invisible que podemos poblar */
-    var sel = document.getElementById('_productos_source_');
-    if (sel) return sel.innerHTML;
-    return '<option value="">Cargando...</option>';
+function obtenerOpcionesProductos() {
+    var fuente = document.getElementById('_productos_source_');
+    if (!fuente) return '<option value="">— No hay productos disponibles —</option>';
+    var html = '';
+    for (var i = 0; i < fuente.options.length; i++) {
+        var opt = fuente.options[i];
+        html += '<option value="' + opt.value + '">' + opt.text + '</option>';
+    }
+    return html;
 }
 
 function quitarFila(id) {
@@ -632,56 +655,39 @@ function quitarFila(id) {
 function onProductoChange(sel, filaId) {
     var productoId = sel.value;
     var pill = document.getElementById('pill-' + filaId);
-
-    if (!productoId) {
-        setPill(pill, 'neutral', null, 'Sin verificar');
-        revalidarAvisoGeneral();
-        return;
-    }
-
-    if (!marcaVehiculo) {
-        setPill(pill, 'neutral', null, 'Selecciona un vehículo primero');
-        return;
-    }
-
-    /* Verificar compatibilidad via AJAX */
+    if (!productoId) { setPill(pill, 'neutral', null, 'Sin verificar'); revalidarAvisoGeneral(); return; }
+    if (!marcaVehiculo) { setPill(pill, 'neutral', null, 'Selecciona un vehículo primero'); return; }
     setPill(pill, 'loading', null, 'Verificando…');
-
-    var params = new URLSearchParams({ producto: productoId });
-    if (marcaVehiculo)  params.append('marca', marcaVehiculo);
-    if (servicioActual) params.append('servicio', servicioActual);
-
+    /* Enviar también el servicio seleccionado para verificar compatibilidad correctamente */
+    var servicioId = srvSeleccionados.length > 0 ? srvSeleccionados[0].id : null;
+    var params = new URLSearchParams({ producto: productoId, marca: marcaVehiculo });
+    if (servicioId) params.append('servicio', servicioId);
     fetch(URL_COMPAT + '?' + params.toString())
-        .then(r => r.json())
-        .then(data => {
-            if (data.compatible === true) {
-                setPill(pill, 'ok', data.mensaje, '✓ Compatible');
-            } else if (data.compatible === false) {
-                setPill(pill, 'warn', data.mensaje, '⚠ Revisar');
-            } else {
-                /* Sin reglas → neutral, no alarmar */
-                setPill(pill, 'neutral', 'Sin restricciones configuradas para este producto.', 'Sin restricción');
-            }
+        .then(function(r){ return r.json(); })
+        .then(function(data) {
+            if (data.compatible === true)       setPill(pill, 'ok',      data.mensaje, '✓ Compatible');
+            else if (data.compatible === false) setPill(pill, 'warn',    data.mensaje, '⚠ Revisar');
+            else                                setPill(pill, 'neutral', 'Sin restricciones configuradas.', 'Sin restricción');
             revalidarAvisoGeneral();
         })
-        .catch(() => {
-            setPill(pill, 'neutral', null, 'Sin verificar');
-        });
+        .catch(function(){ setPill(pill, 'neutral', null, 'Sin verificar'); });
 }
 
 function setPill(pill, tipo, tooltip, texto) {
     pill.className = 'compat-pill compat-' + tipo;
-    if (tipo === 'ok')      pill.innerHTML = `<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ${texto}`;
-    else if (tipo === 'warn') pill.innerHTML = `<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> ${texto}`;
-    else if (tipo === 'loading') pill.innerHTML = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${texto}`;
-    else pill.innerHTML = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> ${texto}`;
-
-    if (tooltip) pill.title = tooltip;
-    else pill.removeAttribute('title');
+    if (tipo === 'ok')
+        pill.innerHTML = '<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ' + texto;
+    else if (tipo === 'warn')
+        pill.innerHTML = '<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> ' + texto;
+    else if (tipo === 'loading')
+        pill.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ' + texto;
+    else
+        pill.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> ' + texto;
+    if (tooltip) pill.title = tooltip; else pill.removeAttribute('title');
 }
 
 function revalidarTodosLosProductos() {
-    document.querySelectorAll('.producto-row').forEach(fila => {
+    document.querySelectorAll('.producto-row').forEach(function(fila) {
         var sel = fila.querySelector('.sel-producto');
         if (sel && sel.value) onProductoChange(sel, fila.id);
     });
@@ -694,36 +700,18 @@ function revalidarAvisoGeneral() {
     else aviso.classList.remove('visible');
 }
 
-/* Serializa productos a hidden inputs antes de enviar */
 function sincronizarProductosHidden() {
     var contenedor = document.getElementById('productos-hidden');
     contenedor.innerHTML = '';
-    document.querySelectorAll('.producto-row').forEach(fila => {
+    document.querySelectorAll('.producto-row').forEach(function(fila) {
         var sel  = fila.querySelector('.sel-producto');
         var cant = fila.querySelector('.inp-cantidad');
-        if (sel && sel.value && cant && cant.value > 0) {
-            var h1 = document.createElement('input');
-            h1.type  = 'hidden';
-            h1.name  = 'producto_ids[]';
-            h1.value = sel.value;
-            var h2 = document.createElement('input');
-            h2.type  = 'hidden';
-            h2.name  = 'producto_cantidades[]';
-            h2.value = cant.value;
-            contenedor.appendChild(h1);
-            contenedor.appendChild(h2);
+        if (sel && sel.value && cant && parseInt(cant.value) > 0) {
+            var h1 = document.createElement('input'); h1.type = 'hidden'; h1.name = 'producto_ids[]'; h1.value = sel.value;
+            var h2 = document.createElement('input'); h2.type = 'hidden'; h2.name = 'producto_cantidades[]'; h2.value = cant.value;
+            contenedor.appendChild(h1); contenedor.appendChild(h2);
         }
     });
 }
 </script>
-
-{# Select oculto fuente de opciones de productos — poblado por Django #}
-{% if productos_disponibles %}
-<select id="_productos_source_" style="display:none;">
-    <option value="">— Selecciona un producto —</option>
-    {% for p in productos_disponibles %}
-    <option value="{{ p.pk }}" data-stock="{{ p.stock }}">{{ p.nombre }} (Stock: {{ p.stock }})</option>
-    {% endfor %}
-</select>
-{% endif %}
 {% endblock %}

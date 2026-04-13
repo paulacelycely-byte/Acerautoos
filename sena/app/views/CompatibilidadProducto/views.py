@@ -31,6 +31,7 @@ class CompatibilidadCreateView(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Nueva Compatibilidad'
+        context['es_editar'] = False  
         return context
 
 
@@ -44,6 +45,7 @@ class CompatibilidadUpdateView(SuccessMessageMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Editar Compatibilidad'
+        context['es_editar'] = True  
         return context
 
 
