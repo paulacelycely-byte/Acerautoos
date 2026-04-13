@@ -5,117 +5,302 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
     :root {
-        --rojo:   #d32f2f;
-        --rojo2:  #b71c1c;
-        --carbon: #1a1a1a;
-        --gris:   #f2f2f0;
-        --borde:  #e0ddd8;
-        --texto:  #2a2a2a;
-        --muted:  #888;
+        --rojo:    #d32f2f;
+        --rojo2:   #b71c1c;
+        --carbon:  #1a1a1a;
+        --gris:    #f2f2f0;
+        --borde:   #e0ddd8;
+        --texto:   #2a2a2a;
+        --muted:   #888;
     }
 
+    /* ── Encabezado ── */
     .taller-header {
-        position: relative; background: var(--carbon);
-        border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
-        overflow: hidden; display: flex; align-items: center; justify-content: space-between;
+        position: relative;
+        background: var(--carbon);
+        border-radius: 16px;
+        padding: 28px 32px;
+        margin-bottom: 28px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
+
     .taller-header::before {
-        content: ''; position: absolute; top: 0; right: 0;
+        content: '';
+        position: absolute;
+        top: 0; right: 0;
         width: 260px; height: 100%;
-        background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
+        background: repeating-linear-gradient(
+            -55deg,
+            transparent,
+            transparent 14px,
+            rgba(255,255,255,.03) 14px,
+            rgba(255,255,255,.03) 28px
+        );
     }
-    .taller-header::after {
-        content: ''; position: absolute; left: 0; top: 0;
-        width: 5px; height: 100%; background: var(--rojo);
-        border-radius: 16px 0 0 16px;
-    }
+
     .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
+
     .header-icon-wrap {
-        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
-        display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
-        color: white; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
+        width: 56px; height: 56px;
+        background: var(--rojo);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 0 0 4px rgba(211,47,47,.25);
+        flex-shrink: 0;
     }
+
+    .header-icon-wrap svg {
+        width: 28px; height: 28px;
+        stroke: white; fill: none;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
     .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800;
-        color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 2rem; font-weight: 800;
+        color: white; letter-spacing: 1px;
+        text-transform: uppercase; line-height: 1;
+        margin: 0;
     }
-    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
+
+    .header-sub {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem; color: rgba(255,255,255,.45);
+        margin-top: 4px; letter-spacing: .5px;
+    }
+
     .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
+
+    /* Botones encabezado */
     .btn-accion {
-        font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px; padding: 10px 18px;
-        border-radius: 10px; display: flex; align-items: center; gap: 8px;
-        border: none; cursor: pointer; text-decoration: none; transition: transform .2s, box-shadow .2s;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px;
+        padding: 10px 18px; border-radius: 10px;
+        display: flex; align-items: center; gap: 8px;
+        border: none; cursor: pointer; text-decoration: none;
+        transition: transform .2s, box-shadow .2s;
     }
     .btn-accion:hover { transform: translateY(-2px); }
-    .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
+    .btn-accion svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .btn-nuevo {
+        background: var(--rojo);
+        color: white !important;
+        box-shadow: 0 4px 16px rgba(211,47,47,.4);
+    }
     .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
 
-    .tabla-wrap { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
+    /* ── Tabla ── */
+    .tabla-wrap {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid var(--borde);
+        overflow: hidden;
+    }
 
     #tabla_compatibilidad {
-        font-family: 'DM Sans', sans-serif; font-size: .875rem;
-        border-collapse: collapse; width: 100%;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .875rem;
+        border-collapse: collapse;
+        width: 100%;
     }
-    #tabla_compatibilidad thead tr { background: var(--gris); border-bottom: 2px solid var(--borde); }
+
+    #tabla_compatibilidad thead tr {
+        background: var(--gris);
+        border-bottom: 2px solid var(--borde);
+    }
+
     #tabla_compatibilidad thead th {
-        font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 14px 16px; border: none;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: .78rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1.2px;
+        color: var(--muted); padding: 14px 16px;
+        border: none;
     }
-    #tabla_compatibilidad tbody tr { border-bottom: 1px solid var(--borde); transition: background .15s; }
+
+    #tabla_compatibilidad tbody tr {
+        border-bottom: 1px solid var(--borde);
+        transition: background .15s;
+    }
+
     #tabla_compatibilidad tbody tr:hover { background: #fafaf8; }
     #tabla_compatibilidad tbody tr:last-child { border-bottom: none; }
-    #tabla_compatibilidad tbody td { padding: 13px 16px; color: var(--texto); vertical-align: middle; border: none; }
 
-    .id-badge { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; color: var(--muted); }
-    .producto-nombre { font-weight: 600; color: var(--carbon); font-size: .9rem; }
-    .producto-sub { font-size: .75rem; color: var(--muted); margin-top: 2px; }
-
-    .badge-marca {
-        background: var(--carbon); color: white; padding: 4px 12px;
-        border-radius: 8px; font-family: 'DM Sans', sans-serif;
-        font-size: .75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;
-    }
-    .badge-servicio {
-        background: #e0f2fe; color: #0369a1; padding: 4px 10px;
-        border-radius: 8px; font-size: .72rem; font-weight: 700;
-        display: inline-flex; align-items: center; gap: 5px; margin-top: 4px;
-    }
-    .badge-servicio-vacio {
-        background: var(--gris); color: var(--muted); padding: 4px 10px;
-        border-radius: 8px; font-size: .72rem; font-style: italic;
-        display: inline-flex; align-items: center; gap: 5px; margin-top: 4px;
+    #tabla_compatibilidad tbody td {
+        padding: 13px 16px; color: var(--texto);
+        vertical-align: middle; border: none;
     }
 
-    /* Stock badges */
-    .stock-ok   { background: #dcfce7; color: #16a34a; padding: 4px 10px; border-radius: 8px; font-size: .75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
-    .stock-bajo { background: #fef9c3; color: #a16207; padding: 4px 10px; border-radius: 8px; font-size: .75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
-    .stock-sin  { background: #fee2e2; color: #dc2626; padding: 4px 10px; border-radius: 8px; font-size: .75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+    /* ── ID Badge ── */
+    .id-badge {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: .8rem; font-weight: 700;
+        color: var(--muted); letter-spacing: .5px;
+    }
 
+    /* ── Producto cell ── */
+    .producto-cell { 
+        display: flex; align-items: center; gap: 12px; 
+    }
+
+    .producto-img-wrap { 
+        width: 38px; height: 38px;
+        border-radius: 8px; border: 1px solid var(--borde);
+        background: var(--gris); overflow: hidden; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+    }
+
+    .producto-img-wrap img { 
+        width: 100%; height: 100%; object-fit: contain; padding: 4px; 
+    }
+
+    .producto-img-placeholder svg { 
+        width: 18px; height: 18px; stroke: var(--muted); fill: none;
+        stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .producto-nombre { 
+        font-weight: 600; color: var(--carbon); font-size: .9rem;
+    }
+
+    .producto-codigo { 
+        font-size: .72rem; color: var(--muted); margin-top: 2px;
+    }
+
+    /* ── Badges mejorados ── */
+    .badge-marca { 
+        background: var(--carbon); color: white;
+        padding: 6px 14px; border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700;
+        display: inline-flex; align-items: center; gap: 7px;
+        text-transform: capitalize;
+        letter-spacing: .4px;
+    }
+    .badge-marca svg { 
+        width: 14px; height: 14px; stroke: white; fill: none;
+        stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .badge-servicio { 
+        background: #dbeafe; color: #0369a1;
+        padding: 6px 14px; border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700;
+        display: inline-flex; align-items: center; gap: 7px;
+        text-transform: capitalize;
+        letter-spacing: .4px;
+    }
+    .badge-servicio svg { 
+        width: 14px; height: 14px; stroke: #0369a1; fill: none;
+        stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .badge-servicio-vacio { 
+        background: #f3f4f6; color: #6b7280;
+        padding: 6px 14px; border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700;
+        display: inline-flex; align-items: center; gap: 7px;
+        letter-spacing: .4px;
+    }
+    .badge-servicio-vacio svg { 
+        width: 14px; height: 14px; stroke: #6b7280; fill: none;
+        stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ── Stock badges ── */
+    .stock-ok   { 
+        background: #dcfce7; color: #16a34a;
+        padding: 4px 10px; border-radius: 8px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700;
+        display: inline-flex; align-items: center; gap: 5px;
+    }
+    .stock-bajo { 
+        background: #fef9c3; color: #a16207;
+        padding: 4px 10px; border-radius: 8px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700;
+        display: inline-flex; align-items: center; gap: 5px;
+    }
+    .stock-sin  { 
+        background: #fee2e2; color: #dc2626;
+        padding: 4px 10px; border-radius: 8px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700;
+        display: inline-flex; align-items: center; gap: 5px;
+    }
+
+    .stock-ok svg, .stock-bajo svg, .stock-sin svg { 
+        width: 12px; height: 12px; fill: none;
+        stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .stock-ok svg   { stroke: #16a34a; }
+    .stock-bajo svg { stroke: #a16207; }
+    .stock-sin svg  { stroke: #dc2626; }
+
+    /* ── Botones de fila rediseñados con SVG ── */
     .btn-fila {
         width: 32px; height: 32px; border-radius: 8px;
         display: inline-flex; align-items: center; justify-content: center;
-        border: none; cursor: pointer; transition: .2s; font-size: .8rem;
+        border: none; cursor: pointer;
+        transition: transform .2s, box-shadow .2s;
+        text-decoration: none;
     }
-    .btn-fila:hover { transform: translateY(-2px); }
-    .btn-edit { background: #f39c12; color: white; }
-    .btn-del  { background: var(--rojo); color: white; }
+    .btn-fila svg {
+        width: 14px; height: 14px;
+        stroke: white; fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        pointer-events: none;
+    }
+    .btn-fila:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,.2); }
 
-    /* DataTables override */
+    .btn-edit {
+        background: #1565c0;
+        margin-right: 4px;
+    }
+    .btn-del  { background: var(--rojo); }
+
+    /* ── DataTables overrides ── */
     .dataTables_wrapper { padding: 16px 20px; }
     .dataTables_filter input {
-        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
-        padding: 6px 12px !important; font-family: 'DM Sans', sans-serif !important;
-        font-size: .85rem !important; outline: none !important; transition: border-color .2s;
+        border: 1.5px solid var(--borde) !important;
+        border-radius: 8px !important;
+        padding: 6px 12px !important;
+        font-family: 'DM Sans', sans-serif !important;
+        font-size: .85rem !important;
+        outline: none !important;
+        transition: border-color .2s;
     }
     .dataTables_filter input:focus { border-color: var(--rojo) !important; }
-    .dataTables_filter label, .dataTables_length label, .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
-    .dataTables_length select { border: 1.5px solid var(--borde) !important; border-radius: 8px !important; padding: 4px 8px !important; appearance: none !important; background: white !important; }
+    .dataTables_filter label,
+    .dataTables_length label,
+    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
+    .dataTables_length select {
+        border: 1.5px solid var(--borde) !important;
+        border-radius: 8px !important;
+        padding: 4px 8px !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        background: white !important;
+    }
     .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
     .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
+    .paginate_button.current a, .paginate_button.current a:hover { color: white !important; }
     .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
     .paginate_button.disabled { display: inline-block !important; opacity: .4; }
     .dataTables_paginate { display: block !important; }
+    .dataTables_length select { -webkit-appearance: none !important; -moz-appearance: none !important; appearance: none !important; padding-right: 10px !important; }
 </style>
 {% endblock %}
 
@@ -124,7 +309,14 @@
 
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap"><i class="fas fa-cogs"></i></div>
+            <div class="header-icon-wrap">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="17 1 21 5 17 9"/>
+                    <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+                    <polyline points="7 23 3 19 7 15"/>
+                    <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                                                        </svg>
+            </div>
             <div>
                 <h1 class="header-titulo">Compatibilidad de Productos</h1>
                 <div class="header-sub">Relaciones producto — marca — tipo de servicio</div>
@@ -132,7 +324,8 @@
         </div>
         <div class="header-actions">
             <a href="{% url 'app:crear_compatibilidad' %}" class="btn-accion btn-nuevo">
-                <i class="fas fa-plus"></i> Nueva Relación
+                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nueva Relación
             </a>
         </div>
     </div>
@@ -155,40 +348,67 @@
                     <tr>
                         <td class="text-center"><span class="id-badge">#{{ comp.id }}</span></td>
                         <td>
-                            <div class="producto-nombre">{{ comp.producto.nombre }}</div>
-                            <div class="producto-sub">{{ comp.producto.marca.nombre }} · {{ comp.producto.get_unidad_medida_display }}</div>
+                            <div class="producto-cell">
+                                <div class="producto-img-wrap">
+                                    {% if comp.producto.marca.logo %}
+                                        <img src="{{ comp.producto.marca.logo.url }}" alt="{{ comp.producto.nombre }}">
+                                    {% elif comp.producto.imagen %}
+                                        <img src="{{ comp.producto.imagen.url }}" alt="{{ comp.producto.nombre }}">
+                                    {% else %}
+                                        <div class="producto-img-placeholder">
+                                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <div class="producto-nombre">{{ comp.producto.nombre }}</div>
+                                    <div class="producto-codigo">{{ comp.producto.marca.nombre }} · {{ comp.producto.get_unidad_medida_display }}</div>
+                                </div>
+                            </div>
                         </td>
                         <td>
                             <span class="badge-marca">
-                                <i class="fas fa-car"></i> {{ comp.marca_vehiculo.nombre }}
+                                <svg viewBox="0 0 24 24"><path d="M19 17h2v2h-2zM1 6v8h6V4H7a2 2 0 0 0-2 2H3a2 2 0 0 0-2 2v0z"/><path d="M17 6a2 2 0 0 0-2-2h-5v12h7V6z"/><path d="M3 17h2v2H3z"/></svg>
+                                {{ comp.marca_vehiculo.nombre }}
                             </span>
                         </td>
                         <td>
                             {% if comp.tipo_servicio %}
                                 <span class="badge-servicio">
-                                    <i class="fas fa-wrench"></i> {{ comp.tipo_servicio.nombre }}
+                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                    {{ comp.tipo_servicio.nombre }}
                                 </span>
                             {% else %}
                                 <span class="badge-servicio-vacio">
-                                    <i class="fas fa-infinity"></i> Cualquier servicio
+                                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                                    Cualquier servicio
                                 </span>
                             {% endif %}
                         </td>
                         <td class="text-center">
                             {% if comp.producto.stock == 0 %}
-                                <span class="stock-sin"><i class="fas fa-times-circle"></i> Sin stock</span>
+                                <span class="stock-sin">
+                                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                                    Sin stock
+                                </span>
                             {% elif comp.producto.stock <= comp.producto.stock_minimo %}
-                                <span class="stock-bajo"><i class="fas fa-exclamation-triangle"></i> {{ comp.producto.stock }} uds</span>
+                                <span class="stock-bajo">
+                                    <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                    {{ comp.producto.stock }} uds
+                                </span>
                             {% else %}
-                                <span class="stock-ok"><i class="fas fa-check-circle"></i> {{ comp.producto.stock }} uds</span>
+                                <span class="stock-ok">
+                                    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                    {{ comp.producto.stock }} uds
+                                </span>
                             {% endif %}
                         </td>
                         <td class="text-center">
                             <a href="{% url 'app:editar_compatibilidad' comp.id %}" class="btn-fila btn-edit" title="Editar">
-                                <i class="fas fa-pen"></i>
+                                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                             </a>
-                            <a href="{% url 'app:eliminar_compatibilidad' comp.id %}" class="btn-fila btn-del ms-1" title="Eliminar">
-                                <i class="fas fa-trash-alt"></i>
+                            <a href="{% url 'app:eliminar_compatibilidad' comp.id %}" class="btn-fila btn-del" title="Eliminar">
+                                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
                             </a>
                         </td>
                     </tr>
@@ -202,25 +422,21 @@
 
 {% block js %}
 <script>
-    $(document).ready(function () {
-        $('#tabla_compatibilidad').DataTable({
-            responsive: true,
-            autoWidth: false,
-            order: [[0, "desc"]],
-            pagingType: "full_numbers",
-            columnDefs: [{ orderable: false, targets: [5] }],
-            language: {
-                "sProcessing":   "Procesando...",
-                "sLengthMenu":   "Mostrar _MENU_ registros",
-                "sZeroRecords":  "No se encontraron resultados",
-                "sEmptyTable":   "Ningún dato disponible",
-                "sInfo":         "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                "sInfoEmpty":    "Mostrando 0 a 0 de 0 registros",
-                "sInfoFiltered": "(filtrado de _MAX_ registros totales)",
-                "sSearch":       "Buscar:",
-                "oPaginate": { "sFirst": "«", "sLast": "»", "sNext": "›", "sPrevious": "‹" }
-            }
-        });
+$(document).ready(function () {
+    $('#tabla_compatibilidad').DataTable({
+        responsive: true, autoWidth: false,
+        order: [[0, "desc"]], pagingType: "full_numbers",
+        columnDefs: [{ orderable: false, targets: [5] }],
+        language: {
+            "sProcessing":"Procesando...", "sLengthMenu":"Mostrar _MENU_ registros",
+            "sZeroRecords":"No se encontraron resultados", "sEmptyTable":"Ningún dato disponible",
+            "sInfo":"Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "sInfoEmpty":"Mostrando 0 a 0 de 0 registros",
+            "sInfoFiltered":"(filtrado de _MAX_ registros totales)",
+            "sSearch":"Buscar:", "sLoadingRecords":"Cargando...",
+            "oPaginate":{"sFirst":"«","sLast":"»","sNext":"›","sPrevious":"‹"}
+        }
     });
+});
 </script>
 {% endblock %}

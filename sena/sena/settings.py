@@ -57,9 +57,9 @@ WSGI_APPLICATION = 'sena.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.mysql',
-        'NAME':     'aceerauto',
+        'NAME':     'acerautos_db',
         'USER':     'root',
-        'PASSWORD': '12345678',
+        'PASSWORD': 'Acerautos2026*',
         'HOST':     'localhost',
         'PORT':     '3306',
         'OPTIONS': {
@@ -101,4 +101,4 @@ MESSAGE_TAGS = {
 }
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'marcas_logos')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

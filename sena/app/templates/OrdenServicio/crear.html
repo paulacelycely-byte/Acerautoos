@@ -98,7 +98,6 @@
     .btn-guardar svg { width: 15px; height: 15px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
     .btn-guardar:hover { background: var(--acento2); transform: translateY(-1px); }
 
-    /* ─── Sección de productos ─── */
     .btn-agregar-producto {
         font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
         text-transform: uppercase; letter-spacing: .6px; padding: 8px 16px;
@@ -150,7 +149,6 @@
     .vehiculo-info-strip.visible { display: flex; }
     .vehiculo-info-strip span { font-family: 'DM Sans', sans-serif; font-size: .75rem; color: #0369a1; font-weight: 600; }
 
-    /* ─── Multi-servicio ─── */
     .srv-tag {
         display: inline-flex; align-items: center; gap: 5px;
         background: #fff0f0; border: 1.5px solid #f5c6c6; color: #b71c1c;
@@ -194,8 +192,6 @@
         <span class="header-badge">Acerautos S.A.S</span>
     </div>
 
-    {# ✅ FIX 1: Select fuente de productos DENTRO del contenido, antes del form,
-       así existe en el DOM cuando el JS lo necesite #}
     {% if productos_disponibles %}
     <select id="_productos_source_" style="display:none;">
         <option value="">— Selecciona un producto —</option>
@@ -209,7 +205,6 @@
         {% csrf_token %}
         <input type="hidden" name="estado" id="campo-estado" value="{{ form.estado.value|default:'Pendiente' }}">
 
-        <!-- ─── Detalles principales ─── -->
         <div class="form-card">
             <div class="form-card-header">
                 {% if es_editar %}
@@ -222,8 +217,6 @@
             </div>
 
             <div class="form-card-body">
-
-                <!-- Estado -->
                 <div class="field-group">
                     <label class="field-label">Estado de la Orden</label>
                     <div class="estado-wrap">
@@ -285,32 +278,22 @@
 
                                 {% elif 'servicios' in field.name|lower %}
                                     <label class="field-label">{{ field.label }} <span style="color:#d32f2f;">*</span></label>
-
                                     <div id="servicios-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:0;"></div>
-
                                     <div class="field-with-btn">
                                         <div class="field-inner">
                                             <span class="field-icon">
                                                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                                             </span>
-                                            <input
-                                                type="text"
-                                                id="servicios-search"
-                                                placeholder="Buscar servicio..."
-                                                autocomplete="off"
+                                            <input type="text" id="servicios-search" placeholder="Buscar servicio..." autocomplete="off"
                                                 style="width:100%;padding:12px 14px 12px 40px;border:1.5px solid var(--borde);border-radius:10px 0 0 10px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--texto);background:var(--gris);outline:none;transition:border-color .2s,background .2s,box-shadow .2s;-webkit-appearance:none;appearance:none;"
                                                 onfocus="this.style.borderColor='var(--acento)';this.style.background='white';this.style.boxShadow='0 0 0 3px var(--acento-ring)';abrirServicioDropdown();"
                                                 onblur="this.style.borderColor='var(--borde)';this.style.background='var(--gris)';this.style.boxShadow='none';"
-                                                oninput="filtrarServicioDropdown(this.value);"
-                                            >
+                                                oninput="filtrarServicioDropdown(this.value);">
                                         </div>
-                                        <a href="{% url 'app:create_servico' %}?next=orden"
-                                           class="btn-add-inline"
-                                           data-tip="Nuevo servicio">
+                                        <a href="{% url 'app:create_servico' %}?next=orden" class="btn-add-inline" data-tip="Nuevo servicio">
                                             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                                         </a>
                                     </div>
-
                                     <div id="servicios-dropdown"></div>
                                     <div id="servicios-hidden" style="display:none;">{{ field }}</div>
 
@@ -345,7 +328,6 @@
             </div>
         </div>
 
-        <!-- ─── Sección productos usados en la orden ─── -->
         <div class="form-card">
             <div class="form-card-header">
                 <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
@@ -374,15 +356,12 @@
                         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Agregar producto
                     </button>
-                    <a href="{% url 'app:crear_producto' %}?next=orden"
-                       class="btn-agregar-producto"
-                       style="background:white;color:var(--acento);border:1.5px solid var(--acento);box-shadow:none;text-decoration:none;">
+                    <a href="{% url 'app:crear_producto' %}?next=orden" class="btn-agregar-producto" style="background:white;color:var(--acento);border:1.5px solid var(--acento);box-shadow:none;text-decoration:none;">
                         <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
                         Nuevo Producto
                     </a>
                 </div>
 
-                {# ✅ FIX 2: Contenedor de inputs hidden para productos — se llena en JS antes del submit #}
                 <div id="productos-hidden"></div>
             </div>
 
@@ -409,7 +388,6 @@
 
 {% block js %}
 <script>
-/* ─── URLs desde Django ─── */
 const URL_KM        = '{% url "app:vehiculo_km" 0 %}'.replace('/0/', '/VEHICULO_ID/');
 const URL_COMPAT    = '{% url "app:verificar_compatibilidad" %}';
 const URL_PRODUCTOS = '{% url "app:productos_compatibles" %}';
@@ -417,14 +395,8 @@ const ES_EDITAR     = {% if es_editar %}true{% else %}false{% endif %};
 
 let marcaVehiculo = null;
 let contadorFilas = 0;
-/* ✅ FIX 3: flag para saber si los datos del vehículo ya cargaron —
-   los productos en edición esperan a que marcaVehiculo esté listo */
 let vehiculoCargado = false;
-let productosPendientesRevalidar = [];
 
-/* ══════════════════════════════════════════════════
-   MULTI-SERVICIO
-══════════════════════════════════════════════════ */
 const SERVICIOS_CATALOG = [
     {% for s in form.servicios.field.queryset %}
     { id: {{ s.id }}, nombre: "{{ s.nombre|escapejs }}" },
@@ -455,10 +427,7 @@ function srvRenderHidden() {
     var wrap = document.getElementById('servicios-hidden');
     srvSeleccionados.forEach(function(s) {
         var inp = document.createElement('input');
-        inp.type      = 'hidden';
-        inp.name      = 'servicios';
-        inp.value     = s.id;
-        inp.className = 'srv-dyn';
+        inp.type = 'hidden'; inp.name = 'servicios'; inp.value = s.id; inp.className = 'srv-dyn';
         wrap.appendChild(inp);
     });
 }
@@ -466,19 +435,12 @@ function srvRenderHidden() {
 function srvRenderDropdown(q) {
     q = (q || '').toLowerCase();
     var dd = document.getElementById('servicios-dropdown');
-    var filtrados = SERVICIOS_CATALOG.filter(function(s){
-        return s.nombre.toLowerCase().indexOf(q) !== -1;
-    });
-    if (!filtrados.length) {
-        dd.innerHTML = '<div class="srv-empty">Sin resultados</div>';
-        return;
-    }
+    var filtrados = SERVICIOS_CATALOG.filter(function(s){ return s.nombre.toLowerCase().indexOf(q) !== -1; });
+    if (!filtrados.length) { dd.innerHTML = '<div class="srv-empty">Sin resultados</div>'; return; }
     dd.innerHTML = filtrados.map(function(s) {
         var sel = srvSeleccionados.find(function(x){ return x.id === s.id; });
         return '<div class="srv-dropdown-item' + (sel ? ' sel' : '') + '" onclick="srvToggle(' + s.id + ',\'' + s.nombre.replace(/'/g,"\\'") + '\')">'
-             + '<span>' + s.nombre + '</span>'
-             + '<span class="chk">' + (sel ? '✓' : '') + '</span>'
-             + '</div>';
+             + '<span>' + s.nombre + '</span><span class="chk">' + (sel ? '✓' : '') + '</span></div>';
     }).join('');
 }
 
@@ -489,8 +451,7 @@ function abrirServicioDropdown() {
 }
 
 function filtrarServicioDropdown(q) {
-    var dd = document.getElementById('servicios-dropdown');
-    dd.classList.add('open');
+    document.getElementById('servicios-dropdown').classList.add('open');
     srvRenderDropdown(q);
 }
 
@@ -498,16 +459,16 @@ function srvToggle(id, nombre) {
     var idx = srvSeleccionados.findIndex(function(x){ return x.id === id; });
     if (idx === -1) srvSeleccionados.push({ id: id, nombre: nombre });
     else srvSeleccionados.splice(idx, 1);
-    srvRenderTags();
-    srvRenderHidden();
+    srvRenderTags(); srvRenderHidden();
     srvRenderDropdown(document.getElementById('servicios-search').value);
+    revalidarTodosLosProductos();
 }
 
 function srvQuitar(id) {
     srvSeleccionados = srvSeleccionados.filter(function(x){ return x.id !== id; });
-    srvRenderTags();
-    srvRenderHidden();
+    srvRenderTags(); srvRenderHidden();
     srvRenderDropdown(document.getElementById('servicios-search').value);
+    revalidarTodosLosProductos();
 }
 
 document.addEventListener('click', function(e) {
@@ -517,15 +478,11 @@ document.addEventListener('click', function(e) {
     }
 });
 
-/* ══════════════════════════════════════════════════
-   INIT
-══════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', function () {
 
     srvRenderTags();
     srvRenderHidden();
 
-    /* Fecha automática */
     var campoFecha = document.getElementById('campo_fecha');
     if (campoFecha && !campoFecha.value) {
         var hoy = new Date(), pad = function(n){ return String(n).padStart(2,'0'); };
@@ -534,7 +491,6 @@ document.addEventListener('DOMContentLoaded', function () {
             : hoy.getFullYear()+'-'+pad(hoy.getMonth()+1)+'-'+pad(hoy.getDate());
     }
 
-    /* Vehículo → km + marca */
     var selectVehiculo = document.getElementById('id_vehiculo');
     var campoKm        = document.getElementById('id_km_actual');
     var badgeKm        = document.getElementById('badge-km');
@@ -543,13 +499,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function cargarDatosVehiculo(vehiculoId) {
         if (!vehiculoId) {
-            badgeKm.classList.remove('visible');
-            kmHint.classList.remove('visible');
-            marcaVehiculo  = null;
-            vehiculoCargado = false;
-            actualizarInfoStrip(null, null);
-            revalidarTodosLosProductos();
-            return;
+            badgeKm.classList.remove('visible'); kmHint.classList.remove('visible');
+            marcaVehiculo = null; vehiculoCargado = false;
+            actualizarInfoStrip(null, null); revalidarTodosLosProductos(); return;
         }
         fetch(URL_KM.replace('VEHICULO_ID', vehiculoId))
             .then(function(r){ return r.json(); })
@@ -557,56 +509,45 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.km !== undefined && data.km > 0) {
                     if (!ES_EDITAR) {
                         campoKm.value = data.km;
-                        badgeKm.classList.add('visible');
-                        kmHint.classList.add('visible');
+                        badgeKm.classList.add('visible'); kmHint.classList.add('visible');
                         kmHintTexto.textContent = 'Km traídos del registro del vehículo (' + data.km.toLocaleString('es-CO') + ' km). Puede editarlo si el cliente trae más km.';
                     }
                 } else {
-                    badgeKm.classList.remove('visible');
-                    kmHint.classList.remove('visible');
+                    badgeKm.classList.remove('visible'); kmHint.classList.remove('visible');
                 }
                 if (data.marca_id) {
                     marcaVehiculo = data.marca_id;
                     actualizarInfoStrip(data.placa, data.marca_nombre);
                 } else {
-                    actualizarInfoStrip(data.placa, null);
-                    marcaVehiculo = null;
+                    actualizarInfoStrip(data.placa, null); marcaVehiculo = null;
                 }
-                /* ✅ FIX 4: marcar como cargado y revalidar productos
-                   que se agregaron mientras se esperaba la respuesta */
                 vehiculoCargado = true;
                 revalidarTodosLosProductos();
             })
             .catch(function() {
-                badgeKm.classList.remove('visible');
-                kmHint.classList.remove('visible');
-                vehiculoCargado = true; /* igual marcamos para no bloquear */
+                badgeKm.classList.remove('visible'); kmHint.classList.remove('visible');
+                vehiculoCargado = true;
             });
     }
 
     if (selectVehiculo) {
         selectVehiculo.addEventListener('change', function () {
-            vehiculoCargado = false;
-            cargarDatosVehiculo(this.value);
+            vehiculoCargado = false; cargarDatosVehiculo(this.value);
         });
-        /* Cargar datos del vehículo al iniciar (crear y editar) */
         if (selectVehiculo.value) cargarDatosVehiculo(selectVehiculo.value);
     }
     if (campoKm) {
         campoKm.addEventListener('input', function () {
-            badgeKm.classList.remove('visible');
-            kmHint.classList.remove('visible');
+            badgeKm.classList.remove('visible'); kmHint.classList.remove('visible');
         });
     }
 
-    /* Estado inicial botones */
     var estadoInicial = document.getElementById('campo-estado').value;
     document.querySelectorAll('.estado-btn').forEach(function(btn) {
         if (btn.dataset.estado === estadoInicial)
             btn.classList.add('activo-' + estadoInicial.replace(' ', ''));
     });
 
-    /* Estilos form-field */
     var acento = getComputedStyle(document.documentElement).getPropertyValue('--acento').trim();
     document.querySelectorAll('.form-field').forEach(function(el) {
         if (el.classList.contains('fecha-auto')) return;
@@ -617,46 +558,32 @@ document.addEventListener('DOMContentLoaded', function () {
         el.addEventListener('blur',  function() { el.style.borderColor = '#e0ddd8'; el.style.background = '#f2f2f0'; el.style.boxShadow = 'none'; });
     });
 
-    /* ✅ FIX 5: Cargar productos existentes al editar.
-       Se agregan las filas y se setean valores DESPUÉS de que
-       cargarDatosVehiculo resuelva (via revalidarTodosLosProductos).
-       Los valores de producto/cantidad se setean aquí directamente. */
     {% if es_editar %}
     var productosIniciales = [
         {% for detalle in form.instance.productos_usados.all %}
         { productoId: '{{ detalle.producto.pk }}', cantidad: {{ detalle.cantidad }} },
         {% endfor %}
     ];
-    productosIniciales.forEach(function(d) {
-        agregarFilaProducto(d.productoId, d.cantidad);
-    });
+    productosIniciales.forEach(function(d) { agregarFilaProducto(d.productoId, d.cantidad); });
     {% endif %}
 
-    /* ✅ FIX 6: Submit handler corregido — sincronizar DENTRO del .then() */
     document.getElementById('formOrden').addEventListener('submit', function(e) {
         e.preventDefault();
         if (srvSeleccionados.length === 0) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Servicio requerido',
-                text: 'Debe seleccionar al menos un servicio antes de guardar.',
-                confirmButtonColor: '#d32f2f'
-            });
+            Swal.fire({ icon: 'warning', title: 'Servicio requerido', text: 'Debe seleccionar al menos un servicio antes de guardar.', confirmButtonColor: '#d32f2f' });
             return;
         }
         var formulario = this;
         Swal.fire({
             title: ES_EDITAR ? '¿Actualizar orden?' : '¿Confirmar registro?',
             text:  ES_EDITAR ? 'Se guardarán los cambios de la orden.' : 'Se guardará la orden de servicio en el sistema.',
-            icon: 'question',
-            showCancelButton: true,
+            icon: 'question', showCancelButton: true,
             confirmButtonText: ES_EDITAR ? 'Sí, actualizar' : 'Sí, guardar',
             cancelButtonText: 'Revisar',
             confirmButtonColor: ES_EDITAR ? '#1565c0' : '#d32f2f',
             cancelButtonColor: '#888',
         }).then(function(result) {
             if (result.isConfirmed) {
-                /* ✅ Sincronizar productos justo antes de enviar */
                 sincronizarProductosHidden();
                 formulario.submit();
             }
@@ -664,22 +591,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-/* ══════════════════════════════════════════════════
-   INFO STRIP DEL VEHÍCULO
-══════════════════════════════════════════════════ */
 function actualizarInfoStrip(placa, marcaNombre) {
     var strip = document.getElementById('vehiculo-info-strip');
     var texto = document.getElementById('vehiculo-info-texto');
     if (!placa) { strip.classList.remove('visible'); return; }
-    var msg = placa;
-    if (marcaNombre) msg += ' · Marca: ' + marcaNombre;
-    texto.textContent = msg;
+    texto.textContent = placa + (marcaNombre ? ' · Marca: ' + marcaNombre : '');
     strip.classList.add('visible');
 }
 
-/* ══════════════════════════════════════════════════
-   ESTADO SELECTOR
-══════════════════════════════════════════════════ */
 function seleccionarEstado(btn) {
     document.querySelectorAll('.estado-btn').forEach(function(b){ b.className = 'estado-btn'; });
     var estado = btn.dataset.estado;
@@ -687,51 +606,33 @@ function seleccionarEstado(btn) {
     document.getElementById('campo-estado').value = estado;
 }
 
-/* ══════════════════════════════════════════════════
-   MÓDULO DE PRODUCTOS
-══════════════════════════════════════════════════ */
-
-/* ✅ FIX 7: agregarFilaProducto acepta productoId y cantidad opcionales
-   para poder precargar valores al editar */
 function agregarFilaProducto(productoIdInicial, cantidadInicial) {
     var lista = document.getElementById('productos-lista');
     var vacio = document.getElementById('productos-vacio');
     if (vacio) vacio.style.display = 'none';
-
     contadorFilas++;
-    var id   = 'fila-' + contadorFilas;
+    var id = 'fila-' + contadorFilas;
     var fila = document.createElement('div');
-    fila.className = 'producto-row';
-    fila.id = id;
-
-    /* ✅ FIX 8: Las opciones se leen del select fuente que YA existe en el DOM */
+    fila.className = 'producto-row'; fila.id = id;
     var opcionesHTML = obtenerOpcionesProductos();
-
     fila.innerHTML =
         '<div class="producto-select-wrap">'
         + '<span class="sel-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>'
-        + '<select class="sel-producto" onchange="onProductoChange(this,\'' + id + '\')">'
-        + opcionesHTML
-        + '</select></div>'
+        + '<select class="sel-producto" onchange="onProductoChange(this,\'' + id + '\')">' + opcionesHTML + '</select></div>'
         + '<div class="cantidad-wrap"><input type="number" class="inp-cantidad" min="1" value="' + (cantidadInicial || 1) + '" placeholder="Cant." oninput="revalidarAvisoGeneral()"></div>'
         + '<span class="compat-pill compat-neutral" id="pill-' + id + '"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Sin verificar</span>'
         + '<button type="button" class="btn-quitar-row" onclick="quitarFila(\'' + id + '\')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
     lista.appendChild(fila);
-
-    /* Setear el producto inicial si viene (modo editar) */
     if (productoIdInicial) {
         var sel = fila.querySelector('.sel-producto');
         sel.value = productoIdInicial;
-        /* Disparar validación de compatibilidad */
         if (sel.value) onProductoChange(sel, id);
     }
 }
 
-/* ✅ FIX 9: función robusta que lee el select fuente correctamente */
 function obtenerOpcionesProductos() {
     var fuente = document.getElementById('_productos_source_');
     if (!fuente) return '<option value="">— No hay productos disponibles —</option>';
-    /* Clonar las opciones del select fuente */
     var html = '';
     for (var i = 0; i < fuente.options.length; i++) {
         var opt = fuente.options[i];
@@ -754,17 +655,13 @@ function quitarFila(id) {
 function onProductoChange(sel, filaId) {
     var productoId = sel.value;
     var pill = document.getElementById('pill-' + filaId);
-    if (!productoId) {
-        setPill(pill, 'neutral', null, 'Sin verificar');
-        revalidarAvisoGeneral();
-        return;
-    }
-    if (!marcaVehiculo) {
-        setPill(pill, 'neutral', null, 'Selecciona un vehículo primero');
-        return;
-    }
+    if (!productoId) { setPill(pill, 'neutral', null, 'Sin verificar'); revalidarAvisoGeneral(); return; }
+    if (!marcaVehiculo) { setPill(pill, 'neutral', null, 'Selecciona un vehículo primero'); return; }
     setPill(pill, 'loading', null, 'Verificando…');
+    /* Enviar también el servicio seleccionado para verificar compatibilidad correctamente */
+    var servicioId = srvSeleccionados.length > 0 ? srvSeleccionados[0].id : null;
     var params = new URLSearchParams({ producto: productoId, marca: marcaVehiculo });
+    if (servicioId) params.append('servicio', servicioId);
     fetch(URL_COMPAT + '?' + params.toString())
         .then(function(r){ return r.json(); })
         .then(function(data) {
@@ -803,7 +700,6 @@ function revalidarAvisoGeneral() {
     else aviso.classList.remove('visible');
 }
 
-/* ✅ FIX 10: sincronizar inputs hidden con los datos actuales de las filas */
 function sincronizarProductosHidden() {
     var contenedor = document.getElementById('productos-hidden');
     contenedor.innerHTML = '';
@@ -811,16 +707,9 @@ function sincronizarProductosHidden() {
         var sel  = fila.querySelector('.sel-producto');
         var cant = fila.querySelector('.inp-cantidad');
         if (sel && sel.value && cant && parseInt(cant.value) > 0) {
-            var h1 = document.createElement('input');
-            h1.type  = 'hidden';
-            h1.name  = 'producto_ids[]';
-            h1.value = sel.value;
-            var h2 = document.createElement('input');
-            h2.type  = 'hidden';
-            h2.name  = 'producto_cantidades[]';
-            h2.value = cant.value;
-            contenedor.appendChild(h1);
-            contenedor.appendChild(h2);
+            var h1 = document.createElement('input'); h1.type = 'hidden'; h1.name = 'producto_ids[]'; h1.value = sel.value;
+            var h2 = document.createElement('input'); h2.type = 'hidden'; h2.name = 'producto_cantidades[]'; h2.value = cant.value;
+            contenedor.appendChild(h1); contenedor.appendChild(h2);
         }
     });
 }

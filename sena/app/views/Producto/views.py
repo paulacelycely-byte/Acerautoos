@@ -41,8 +41,15 @@ class ProductoCreateView(CreateView):
     template_name = 'producto/crear.html'
     login_url = '/login/'
 
+    def post(self, request, *args, **kwargs):
+        # ✅ Pasar request.FILES explícitamente para que la imagen se guarde
+        self.object = None
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            return self.form_valid(form)
+        return self.form_invalid(form)
+
     def get_success_url(self):
-        # Si viene ?next=orden, regresa a crear orden de servicio
         next_url = self.request.GET.get('next') or self.request.POST.get('next')
         if next_url == 'orden':
             return reverse_lazy('app:orden_servicio_create')
@@ -60,8 +67,7 @@ class ProductoCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         context['titulo']     = 'Crear Producto'
         context['listar_url'] = reverse_lazy('app:listar_producto')
-        # Pasar next al contexto para que el template lo incluya en el form
-        context['next'] = self.request.GET.get('next', '')
+        context['next']       = self.request.GET.get('next', '')
         return context
 
 
@@ -71,6 +77,14 @@ class ProductoUpdateView(UpdateView):
     template_name = 'producto/crear.html'
     success_url = reverse_lazy('app:listar_producto')
     login_url = '/login/'
+
+    def post(self, request, *args, **kwargs):
+        # ✅ Pasar request.FILES explícitamente para que la imagen se actualice
+        self.object = self.get_object()
+        form = self.form_class(request.POST, request.FILES, instance=self.object)
+        if form.is_valid():
+            return self.form_valid(form)
+        return self.form_invalid(form)
 
     def form_valid(self, form):
         messages.success(self.request, 'Producto actualizado correctamente.')
@@ -84,6 +98,7 @@ class ProductoUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['titulo']     = 'Editar Producto'
         context['listar_url'] = reverse_lazy('app:listar_producto')
+        context['next']       = self.request.GET.get('next', '')
         return context
 
 

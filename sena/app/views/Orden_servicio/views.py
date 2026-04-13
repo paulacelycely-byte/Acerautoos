@@ -50,17 +50,32 @@ def _guardar_productos(request, orden):
 
 
 def _hay_incompatibles(request, marca_id, servicio_ids):
+    """
+    Solo bloquea si el producto tiene reglas de compatibilidad definidas
+    Y no es compatible con ninguno de los servicios de la orden.
+    Si no tiene reglas (neutral) o es compatible con al menos uno, lo deja pasar.
+    """
     for pid in request.POST.getlist('producto_ids[]'):
         try:
             prod = Producto.objects.get(pk=pid, estado=True)
-            es_warn = True
+
+            # Sin reglas configuradas = neutral, no bloquear
+            total_reglas = CompatibilidadProducto.objects.filter(producto=prod).count()
+            if total_reglas == 0:
+                continue
+
+            # Verificar si es compatible con AL MENOS un servicio de la orden
+            es_compatible = False
             for sid in servicio_ids:
                 status, _ = _verificar_compat(prod, marca_id, sid)
-                if status != 'warn':
-                    es_warn = False
+                if status in ('ok', 'neutral'):
+                    es_compatible = True
                     break
-            if es_warn:
+
+            # Si no encontró compatibilidad con ningún servicio, bloquear
+            if not es_compatible:
                 return True
+
         except Producto.DoesNotExist:
             continue
     return False
@@ -249,12 +264,12 @@ class OrdenServicioCreateView(CreateView):
 
     def form_invalid(self, form):
         print("ERRORES FORM ORDEN:", form.errors)
-        messages.error(self.request,form.errors)
+        messages.error(self.request, form.errors)
         return super().form_invalid(form)
 
 
 # ══════════════════════════════════════════════════════════
-#  EDITAR ORDEN  ← CORREGIDO
+#  EDITAR ORDEN
 # ══════════════════════════════════════════════════════════
 
 class OrdenServicioUpdateView(UpdateView):
@@ -291,7 +306,6 @@ class OrdenServicioUpdateView(UpdateView):
             )
             return self.form_invalid(form)
 
-        # ✅ CORRECCIÓN: borrar productos anteriores y guardar los nuevos
         orden.productos_usados.all().delete()
         _guardar_productos(self.request, orden)
 
