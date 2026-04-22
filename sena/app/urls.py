@@ -86,11 +86,11 @@ urlpatterns = [
     path('orden_servicio/listar/',                   orden.OrdenServicioListView.as_view(),       name='orden_servicio_list'),
     path('orden_servicio/crear/',                    orden.OrdenServicioCreateView.as_view(),     name='orden_servicio_create'),
     path('orden_servicio/detalle/<int:pk>/',         orden.OrdenServicioDetailView.as_view(),     name='orden_servicio_detail'),
-    path('orden_servicio/editar/<int:pk>/',          orden.OrdenServicioUpdateView.as_view(),     name='orden_servicio_edit'),
+    path('orden_servicio/editar/<int:pk>/',           orden.OrdenServicioUpdateView.as_view(),     name='orden_servicio_edit'),
     path('orden_servicio/eliminar/<int:pk>/',        orden.OrdenServicioDeleteView.as_view(),     name='orden_servicio_delete'),
     path('orden_servicio/vehiculo-km/<int:pk>/',     orden.VehiculoKmView.as_view(),              name='vehiculo_km'),
     path('orden_servicio/verificar-compatibilidad/', orden.VerificarCompatibilidadView.as_view(), name='verificar_compatibilidad'),
-    path('orden_servicio/productos-compatibles/',    orden.ProductosCompatiblesView.as_view(),    name='productos_compatibles'),
+    path('orden_servicio/productos-compatibles/',     orden.ProductosCompatiblesView.as_view(),    name='productos_compatibles'),
 
     # ── DETALLES DE ORDEN
     path('detalles/',                 detalles.DetalleOrdenListView.as_view(),   name='detalle_orden_list'),
@@ -117,13 +117,14 @@ urlpatterns = [
     path('factura/eliminar/<int:pk>/', factura.FacturaDeleteView.as_view(), name='eliminar_factura'),
     path('factura/pagar/<int:pk>/',    factura.PagarFacturaView.as_view(),  name='pagar_factura'),
 
-    # ── NOTIFICACIONES
+    # ── NOTIFICACIONES 
     path('notificaciones/listar/',                notif.NotificacionListView.as_view(),   name='listar_notificacion'),
     path('notificaciones/crear/',                 notif.NotificacionCreateView.as_view(), name='crear_notificacion'),
     path('notificaciones/editar/<int:pk>/',       notif.NotificacionUpdateView.as_view(), name='editar_notificacion'),
     path('notificaciones/eliminar/<int:pk>/',     notif.NotificacionDeleteView.as_view(), name='eliminar_notificacion'),
     path('notificaciones/marcar-leida/<int:pk>/', notif.MarcarLeidaView.as_view(),        name='marcar_notificacion_leida'),
     path('notificaciones/marcar-todas-leidas/',   notif.MarcarTodasLeidasView.as_view(),  name='marcar_todas_leidas'),
+    path('notificaciones/no-leidas/',             notif.notificaciones_no_leidas,         name='notificaciones_no_leidas'),
 
     # ── REPORTES PDF
     path('reportes/clientes/pdf/',    rep.ExportarClientesPDF.as_view(),    name='reporte_clientes_pdf'),

@@ -4,12 +4,10 @@
 {% block body %}
   {% block css %}{% endblock %}
 
-  
-
   <style>
     html, body { margin:0; padding:0; }
 
-    .app-wrapper        { display:flex; width:100%; min-height:100vh; background:#1a1a1a; }
+    .app-wrapper         { display:flex; width:100%; min-height:100vh; background:#1a1a1a; }
     .app-main-container { flex:1; display:flex; flex-direction:column; min-width:0; overflow:hidden; border-left:3px solid rgba(255,255,255,.25); }
 
     .app-sidebar           { width:260px; min-width:260px; background:#0f172a; z-index:1030; height:100vh; position:sticky; top:0; border-right:1px solid rgba(255,255,255,.05); transition:width .3s ease,min-width .3s ease; overflow:hidden; display:flex; flex-direction:column; flex-shrink:0; }
@@ -68,7 +66,7 @@
     }
     .btn-backup:hover::after { opacity: 1; }
 
-    /* ── BOTÓN NOTIFICACIONES ── */
+    /* ── BOTÓN NOTIFICACIONES (ACTUALIZADO PARA DROPDOWN) ── */
     .btn-notif {
       background: transparent; border: none;
       width: 34px; height: 34px; border-radius: 8px;
@@ -96,19 +94,18 @@
     }
     .notif-badge.hidden { display: none; }
 
-    .btn-notif::after {
-      content: 'Notificaciones';
-      position: absolute; top: calc(100% + 6px); left: 50%;
-      transform: translateX(-50%);
-      background: #1a1a1a; color: rgba(255,255,255,.7);
-      font-size: .65rem; font-weight: 600;
-      padding: 3px 8px; border-radius: 5px;
-      white-space: nowrap; pointer-events: none;
-      opacity: 0; transition: opacity .15s;
-      border: 1px solid rgba(255,255,255,.08);
-      z-index: 9999;
+    /* Estilos para los elementos dentro del dropdown de notificaciones */
+    .notif-item {
+        padding: 10px 15px;
+        border-bottom: 1px solid rgba(255,255,255,.05);
+        color: rgba(255,255,255,.7);
+        font-size: 0.75rem;
+        transition: background .2s;
+        display: block;
+        text-decoration: none;
     }
-    .btn-notif:hover::after { opacity: 1; }
+    .notif-item:hover { background: rgba(255,255,255,.03); color: #fff; }
+    .notif-empty { padding: 15px; text-align: center; color: rgba(255,255,255,.3); font-size: 0.75rem; }
 
     .user-pill {
       background: rgba(255,255,255,.05);
@@ -163,7 +160,7 @@
 
     .app-main-bg         { position:relative; flex:1; min-height:100vh; }
     .app-main-bg::before { content:''; position:fixed; inset:0; background-image:url("{% static 'imagenes/fondo2.jpg' %}"); background-size:cover; background-position:center; filter:brightness(0.65); z-index:0; }
-    .app-main-bg > *     { position:relative; z-index:1; }
+    .app-main-bg > * { position:relative; z-index:1; }
 
     .dataTables_wrapper .row                         { margin-bottom:1rem; align-items:center; }
     .page-item.active .page-link                     { background-color:#d32f2f !important; border-color:#d32f2f !important; }
@@ -202,16 +199,23 @@
 
           <div class="nav-vdivider"></div>
 
-          <a href="{% url 'app:listar_notificacion' %}" class="btn-notif" id="btn-notif-navbar">
-            <svg viewBox="0 0 24 24">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-            </svg>
-
-            <span class="notif-badge {% if not total_notificaciones %}hidden{% endif %}" id="notif-badge-navbar">
-              {{ total_notificaciones|default:"0" }}
-            </span>
-          </a>
+          <div class="dropdown">
+            <button class="btn-notif" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="btn-notif-navbar">
+              <svg viewBox="0 0 24 24">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+              <span class="notif-badge hidden" id="notif-badge-navbar">0</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu" style="width: 300px;">
+              <li><div class="dd-header"><span class="dd-username" style="font-size: 0.8rem;">Notificaciones Recientes</span></div></li>
+              <div id="notif-list-container">
+                <div class="notif-empty">Cargando...</div>
+              </div>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item justify-content-center" href="{% url 'app:listar_notificacion' %}" style="font-size: 0.7rem; color: #d32f2f !important;">Ver todas las notificaciones</a></li>
+            </ul>
+          </div>
 
           <div class="nav-vdivider"></div>
 
@@ -290,6 +294,7 @@
 {% block js_base %}
   <script>
   document.addEventListener('DOMContentLoaded', function () {
+    // ── LÓGICA DEL SIDEBAR ──
     var trigger = document.getElementById('sidebar-trigger');
     var body    = document.body;
     var MINI    = 'sidebar-mini';
@@ -315,6 +320,44 @@
     if (saved === 'mini')   body.classList.add(MINI);
     if (saved === 'hidden') body.classList.add(HIDDEN);
 
+    // ── LÓGICA DE NOTIFICACIONES DINÁMICAS ──
+    function actualizarNotificaciones() {
+        fetch("{% url 'app:notificaciones_no_leidas' %}")
+        .then(response => response.json())
+        .then(data => {
+            const badge = document.getElementById('notif-badge-navbar');
+            const container = document.getElementById('notif-list-container');
+            
+            // Actualizar número en el badge
+            if (data.count > 0) {
+                badge.innerText = data.count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            // Actualizar lista en el dropdown
+            if (data.results && data.results.length > 0) {
+                container.innerHTML = '';
+                data.results.forEach(n => {
+                    container.innerHTML += `
+                        <a href="/notificacion/listar/" class="notif-item">
+                            <div style="font-weight:bold; color:#e05252; margin-bottom:2px;">${n.tipo}</div>
+                            <div>${n.mensaje}</div>
+                        </a>`;
+                });
+            } else {
+                container.innerHTML = '<div class="notif-empty">No hay notificaciones nuevas</div>';
+            }
+        })
+        .catch(error => console.error('Error cargando notificaciones:', error));
+    }
+
+    // Carga inicial y repetición cada 30 segundos
+    actualizarNotificaciones();
+    setInterval(actualizarNotificaciones, 30000);
+
+    // ── SWEETALERT MENSAJES ──
     {% if messages %}
       {% for message in messages %}
         Swal.fire({
@@ -330,6 +373,7 @@
   </script>
 
   <script>
+  // ── MARCAR CAMPOS OBLIGATORIOS ──
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('input, select, textarea').forEach(function(campo) {
       if (!campo.required) return;
@@ -344,6 +388,7 @@
   </script>
 
   <script>
+  // ── VALIDACIÓN DE FORMULARIOS EN TIEMPO REAL ──
   document.addEventListener('DOMContentLoaded', function () {
     function contenedorDe(input) { return input.closest('.col-md-6') || input.closest('.mb-4') || input.closest('.form-group') || input.parentNode; }
     function mostrarError(input, mensaje) {
@@ -427,9 +472,9 @@
 
     document.querySelectorAll('form input, form select, form textarea').forEach(function(input) {
       if (input.type === 'hidden' || input.type === 'submit' || input.name === 'csrfmiddlewaretoken') return;
-      input.addEventListener('input',  function(){ validarCampo(this); });
+      input.addEventListener('input',   function(){ validarCampo(this); });
       input.addEventListener('change', function(){ validarCampo(this); });
-      input.addEventListener('blur',   function(){ validarCampo(this); });
+      input.addEventListener('blur',    function(){ validarCampo(this); });
     });
   });
   </script>

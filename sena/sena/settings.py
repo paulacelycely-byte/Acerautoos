@@ -3,13 +3,11 @@ from pathlib import Path
 from django.contrib.messages import constants as messages
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 SECRET_KEY = 'django-insecure-(1x7w0^_8zvx$7z$@4z!j+31!r0@=13vs0@qby2-ac8xuj#c=u'
 DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -19,7 +17,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'app',
     'login',
-    "usuario",
+    'usuario',
+    'django.contrib.admin',
 ]
 
 AUTH_USER_MODEL = 'app.UsuarioSistema'
@@ -40,12 +39,16 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,
+        'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+            ],
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
             ],
         },
     },
@@ -82,23 +85,33 @@ USE_I18N = True
 USE_TZ = True
 USE_THOUSAND_SEPARATOR = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Redireccion tras login/logout
+# ========== REDIRECCION LOGIN/LOGOUT ==========
 LOGIN_REDIRECT_URL = '/principal/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/login/'
 
+# ========== MESSAGES + SWEETALERT2 ==========
 MESSAGE_TAGS = {
-    messages.DEBUG: 'secondary',
-    messages.INFO: 'info',
+    messages.DEBUG:   'info',
+    messages.INFO:    'info',
     messages.SUCCESS: 'success',
     messages.WARNING: 'warning',
-    messages.ERROR: 'danger',
+    messages.ERROR:   'error',
 }
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# ========== CORREO GMAIL ==========
+EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST          = 'smtp.gmail.com'
+EMAIL_PORT          = 587
+EMAIL_USE_TLS       = True
+EMAIL_HOST_USER     = 'acerautos09@gmail.com'
+EMAIL_HOST_PASSWORD = 'ydvbowswvxangcxs'
+DEFAULT_FROM_EMAIL  = 'ACERAUTOS <acerautos09@gmail.com>'

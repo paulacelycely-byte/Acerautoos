@@ -5,6 +5,19 @@ from django.contrib import messages
 from app.models import Producto
 from app.forms import ProductoForm
 
+STOCK_MINIMO_DEFAULT = 5
+
+def get_stock_status(producto):
+    """
+    Devuelve 'sin', 'bajo' u 'ok' para un producto.
+    Si stock_minimo == 0, usa STOCK_MINIMO_DEFAULT como fallback.
+    """
+    if producto.stock == 0:
+        return 'sin'
+    minimo = producto.stock_minimo if producto.stock_minimo > 0 else STOCK_MINIMO_DEFAULT
+    if producto.stock <= minimo:
+        return 'bajo'
+    return 'ok'
 
 class ProductoListView(ListView):
     model = Producto
@@ -13,7 +26,12 @@ class ProductoListView(ListView):
     login_url = '/login/'
 
     def get_queryset(self):
-        return Producto.objects.select_related('marca', 'proveedor').order_by('-id')
+        qs = Producto.objects.select_related('marca', 'proveedor').order_by('-id')
+        # Anotar cada producto con su estado de stock calculado
+        for p in qs:
+            p.stock_status         = get_stock_status(p)
+            p.stock_minimo_efectivo = p.stock_minimo if p.stock_minimo > 0 else STOCK_MINIMO_DEFAULT
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -22,16 +40,17 @@ class ProductoListView(ListView):
         total_productos  = qs.count()
         activos          = qs.filter(estado=True).count()
         sin_stock        = qs.filter(stock=0).count()
-        stock_bajo       = sum(1 for p in qs.filter(stock__gt=0) if p.stock <= p.stock_minimo)
+        stock_bajo       = sum(1 for p in qs.filter(stock__gt=0) if get_stock_status(p) == 'bajo')
         valor_inventario = sum(p.precio * p.stock for p in qs.filter(estado=True))
 
-        context['titulo']           = 'Inventario de Productos'
-        context['crear_url']        = reverse_lazy('app:crear_producto')
-        context['total_productos']  = total_productos
-        context['activos']          = activos
-        context['sin_stock']        = sin_stock
-        context['stock_bajo']       = stock_bajo
-        context['valor_inventario'] = valor_inventario
+        context['titulo']               = 'Inventario de Productos'
+        context['crear_url']            = reverse_lazy('app:crear_producto')
+        context['total_productos']      = total_productos
+        context['activos']              = activos
+        context['sin_stock']            = sin_stock
+        context['stock_bajo']           = stock_bajo
+        context['valor_inventario']     = valor_inventario
+        context['stock_minimo_default'] = STOCK_MINIMO_DEFAULT
         return context
 
 
@@ -42,7 +61,6 @@ class ProductoCreateView(CreateView):
     login_url = '/login/'
 
     def post(self, request, *args, **kwargs):
-        # ✅ Pasar request.FILES explícitamente para que la imagen se guarde
         self.object = None
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
@@ -79,7 +97,6 @@ class ProductoUpdateView(UpdateView):
     login_url = '/login/'
 
     def post(self, request, *args, **kwargs):
-        # ✅ Pasar request.FILES explícitamente para que la imagen se actualice
         self.object = self.get_object()
         form = self.form_class(request.POST, request.FILES, instance=self.object)
         if form.is_valid():

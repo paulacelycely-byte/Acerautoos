@@ -867,14 +867,19 @@ class OrdenServicioForm(forms.ModelForm):
         fecha = self.cleaned_data.get('fecha')
         if not fecha:
             return timezone.now()
+
+    # Al editar, si la fecha no cambió, dejarla pasar sin validar
+        if self.instance.pk and self.instance.fecha == fecha:
+            return fecha
+
         if fecha > timezone.now():
             raise forms.ValidationError("La fecha de la orden no puede ser una fecha futura.")
         limite = timezone.now() - timezone.timedelta(days=30)
         if fecha < limite:
             raise forms.ValidationError(
-                "La fecha de la orden no puede ser anterior a 30 días. "
-                "Si necesita registrar una orden antigua, contacte al administrador."
-            )
+            "La fecha de la orden no puede ser anterior a 30 días. "
+            "Si necesita registrar una orden antigua, contacte al administrador."
+        )
         return fecha
 
     def clean_estado(self):
@@ -1075,14 +1080,25 @@ class NotificacionForm(forms.ModelForm):
 class FacturaForm(forms.ModelForm):
     class Meta:
         model  = Factura
-        fields = ['tipo', 'numero_factura', 'orden_servicio', 'producto', 'cantidad']
+        fields = ['tipo', 'numero_factura', 'orden_servicio']
         widgets = {
             'tipo'           : forms.Select(attrs={'class': 'form-control', 'id': 'id_tipo'}),
             'numero_factura' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: FAC-0001'}),
             'orden_servicio' : forms.Select(attrs={'class': 'form-control', 'id': 'id_orden_servicio'}),
-            'producto'       : forms.Select(attrs={'class': 'form-control', 'id': 'id_producto'}),
-            'cantidad'       : forms.NumberInput(attrs={'class': 'form-control', 'min': '1', 'id': 'id_cantidad'}),
         }
+
+    # Campos extra para venta de producto (no están en el modelo, son solo para el form)
+    producto = forms.ModelChoiceField(
+        queryset      = Producto.objects.filter(estado=True, stock__gt=0),
+        required      = False,
+        empty_label   = "-- Seleccione un Producto --",
+        widget        = forms.Select(attrs={'class': 'form-control', 'id': 'id_producto'})
+    )
+    cantidad = forms.IntegerField(
+        required = False,
+        min_value = 1,
+        widget   = forms.NumberInput(attrs={'class': 'form-control', 'min': '1', 'id': 'id_cantidad'})
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1094,10 +1110,6 @@ class FacturaForm(forms.ModelForm):
         )
         self.fields['orden_servicio'].empty_label = "-- Seleccione una Orden --"
         self.fields['orden_servicio'].required    = False
-        self.fields['producto'].queryset          = Producto.objects.filter(estado=True, stock__gt=0)
-        self.fields['producto'].empty_label       = "-- Seleccione un Producto --"
-        self.fields['producto'].required          = False
-        self.fields['cantidad'].required          = False
 
     def clean(self):
         cleaned  = super().clean()
@@ -1134,7 +1146,6 @@ class FacturaForm(forms.ModelForm):
             if qs.exists():
                 self.add_error('numero_factura', "Ya existe una factura con este número.")
         return cleaned
-
 
 # ══════════════════════════════════════════════════════════
 #  FACTURA — PAGAR

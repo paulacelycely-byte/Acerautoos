@@ -21,7 +21,7 @@
     .taller-header {
         position: relative;
         background: var(--carbon);
-        border-radius: 16px;
+        border-radius: 10px;
         padding: 28px 32px;
         margin-bottom: 28px;
         overflow: hidden;
@@ -29,16 +29,7 @@
         align-items: center;
         justify-content: space-between;
     }
-    .taller-header::before {
-        content: '';
-        position: absolute;
-        top: 0; right: 0;
-        width: 260px; height: 100%;
-        background: repeating-linear-gradient(
-            -55deg, transparent, transparent 14px,
-            rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px
-        );
-    }
+    
     .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
 
     .header-icon-wrap {
@@ -268,20 +259,8 @@
 
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap">
-                {% if es_editar %}
-                <svg viewBox="0 0 24 24">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                </svg>
-                {% else %}
-                <svg viewBox="0 0 24 24">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <line x1="19" y1="8" x2="19" y2="14"/>
-                    <line x1="16" y1="11" x2="22" y2="11"/>
-                </svg>
-                {% endif %}
+            <div class="header-icon-wrap" style="background:transparent; box-shadow:none;">
+            <img src="{% static 'imagenes/agregar_cliente.jpeg' %}" style="width:56px;height:56px;object-fit:contain;border-radius:12px;">
             </div>
             <div>
                 <h1 class="header-titulo">{{ titulo }}</h1>

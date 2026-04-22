@@ -16,13 +16,10 @@
 
     .taller-header {
         position: relative; background: var(--carbon);
-        border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
+        border-radius: 10px; padding: 28px 32px; margin-bottom: 28px;
         overflow: hidden; display: flex; align-items: center; justify-content: space-between;
     }
-    .taller-header::before {
-        content: ''; position: absolute; top: 0; right: 0; width: 260px; height: 100%;
-        background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
-    }
+    
     .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
     .header-icon-wrap {
         width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
@@ -31,8 +28,36 @@
     }
     .header-icon-wrap svg { width: 28px; height: 28px; stroke: white; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
     .header-titulo { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0; }
-    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
+    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 0; }
     .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
+
+    /* Badges con tooltip */
+    .badge-alerta { position: relative; }
+    .badge-alerta:hover { opacity: 0.85; }
+    
+    .tooltip-flotante {
+        position: fixed;
+        background: var(--carbon);
+        color: white;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        z-index: 9999;
+        pointer-events: none;
+        white-space: nowrap;
+        box-shadow: 0 4px 20px rgba(0,0,0,.3);
+        display: none;
+        animation: fadeIn .2s ease-in-out;
+    }
+    
+    .tooltip-flotante.mostrar { display: block; }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
     .btn-accion { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 10px 18px; border-radius: 10px; display: flex; align-items: center; gap: 8px; border: none; cursor: pointer; text-decoration: none; transition: transform .2s, box-shadow .2s; }
     .btn-accion svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -42,17 +67,7 @@
     .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
     .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
 
-    /* Banners de alerta */
-    .alerta-banner {
-        border-radius: 12px; padding: 14px 20px; margin-bottom: 16px;
-        display: flex; align-items: center; gap: 12px;
-        font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600;
-    }
-    .alerta-banner svg { width: 20px; height: 20px; flex-shrink: 0; }
-    .alerta-banner.vencido { background: #fff0f0; border: 1.5px solid #f5c6c6; color: #b71c1c; }
-    .alerta-banner.alerta  { background: #fff8e1; border: 1.5px solid #ffe082; color: #e65100; }
-
-    .tabla-wrap { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
+    .tabla-wrap { background: white; border-radius: 10px; border: 1px solid var(--borde); overflow: hidden; }
 
     #tabla_vehiculos { font-family: 'DM Sans', sans-serif; font-size: .875rem; border-collapse: collapse; width: 100%; }
     #tabla_vehiculos thead tr { background: var(--gris); border-bottom: 2px solid var(--borde); }
@@ -103,23 +118,18 @@
 {% block contenido %}
 <div class="container-fluid py-2">
 
-    <!-- Encabezado -->
+    <!-- Encabezado con alertas integradas y tooltip -->
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap">
-                <svg viewBox="0 0 24 24">
-                    <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/>
-                    <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/>
-                    <path d="M5 17H3v-6l2-5h12l2 5h1a1 1 0 0 1 1 1v4h-2"/>
-                    <path d="M9 17h6"/>
-                </svg>
-            </div>
+            <div class="header-icon-wrap" style="background:transparent; box-shadow:none;">
+         <img src="{% static 'imagenes/vehiculo.jpeg' %}" style="width:56px;height:56px;object-fit:contain;border-radius:12px;">
+        </div>
             <div>
                 <h1 class="header-titulo">{{ titulo|default:"Vehículos" }}</h1>
                 <div class="header-sub">
-                    Registro de vehículos del taller
-                    {% if total_vencidos %} &nbsp;·&nbsp; <span style="color:#ff6b6b;">{{ total_vencidos }} vencido{{ total_vencidos|pluralize }}</span>{% endif %}
-                    {% if total_alertas %} &nbsp;·&nbsp; <span style="color:#ffa726;">{{ total_alertas }} en alerta</span>{% endif %}
+                    <span>Registro de vehículos del taller</span>
+                    {% if total_vencidos %}<span class="badge-alerta badge-vencido" style="display:inline-flex;align-items:center;gap:5px;background:#fff0f0;color:#b71c1c;padding:4px 10px;border-radius:6px;font-size:.75rem;font-weight:700;margin-left:12px;cursor:pointer;"><span style="width:7px;height:7px;background:#d32f2f;border-radius:50%;"></span>{{ total_vencidos }} vencido{{ total_vencidos|pluralize }}</span>{% endif %}
+                    {% if total_alertas %}<span class="badge-alerta badge-alerta-km" style="display:inline-flex;align-items:center;gap:5px;background:#fff8e1;color:#b45309;padding:4px 10px;border-radius:6px;font-size:.75rem;font-weight:700;margin-left:8px;cursor:pointer;"><span style="width:7px;height:7px;background:#f59e0b;border-radius:50%;"></span>{{ total_alertas }} en alerta</span>{% endif %}
                 </div>
             </div>
         </div>
@@ -138,24 +148,6 @@
             </a>
         </div>
     </div>
-
-    <!-- Banners de alerta -->
-    {% if total_vencidos %}
-    <div class="alerta-banner vencido">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        <span>{{ total_vencidos }} vehículo{{ total_vencidos|pluralize }} ha{{ total_vencidos|pluralize:"n," }} superado el km de mantenimiento estimado. Se recomienda contactar al cliente.</span>
-    </div>
-    {% endif %}
-    {% if total_alertas %}
-    <div class="alerta-banner alerta">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-        </svg>
-        <span>{{ total_alertas }} vehículo{{ total_alertas|pluralize }} está{{ total_alertas|pluralize:"n," }} próximo{{ total_alertas|pluralize }} al mantenimiento según km estimados.</span>
-    </div>
-    {% endif %}
 
     <!-- Tabla -->
     <div class="tabla-wrap">
@@ -261,6 +253,10 @@
         </div>
     </div>
 </div>
+
+<!-- Tooltip flotante -->
+<div class="tooltip-flotante" id="tooltip"></div>
+
 {% endblock %}
 
 {% block js %}
@@ -282,6 +278,37 @@ $(document).ready(function () {
             "sSearch":       "Buscar:",
             "sLoadingRecords": "Cargando...",
             "oPaginate": { "sFirst": "«", "sLast": "»", "sNext": "›", "sPrevious": "‹" }
+        }
+    });
+
+    // Tooltip para badges
+    const tooltip = $('#tooltip');
+    const mensajes = {
+        'badge-vencido': 'Ha superado el km estimado para mantenimiento. Se recomienda contactar al cliente.',
+        'badge-alerta-km': 'Próximo al km estimado para mantenimiento. Será necesario agendar el servicio pronto.'
+    };
+
+    $(document).on('click', '.badge-alerta', function(e) {
+        const $badge = $(this);
+        const clase = $badge.attr('class').split(' ').find(c => c.startsWith('badge-'));
+        const mensaje = mensajes[clase];
+        
+        const rect = $badge[0].getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top - 10;
+        
+        tooltip.text(mensaje).addClass('mostrar').css({
+            left: (x - tooltip.outerWidth() / 2) + 'px',
+            top: (y - tooltip.outerHeight()) + 'px'
+        });
+        
+        setTimeout(() => tooltip.removeClass('mostrar'), 4000);
+    });
+
+    // Cerrar tooltip al hacer click fuera
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.badge-alerta').length) {
+            tooltip.removeClass('mostrar');
         }
     });
 });

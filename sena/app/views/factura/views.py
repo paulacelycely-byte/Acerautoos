@@ -31,27 +31,37 @@ class FacturaCreateView(CreateView):
 
     def form_valid(self, form):
         factura = form.save(commit=False)
-        tipo = factura.tipo
+        tipo    = factura.tipo
 
         if tipo == 'SERVICIO':
-            orden = factura.orden_servicio
-            subtotal = orden.servicio.precio_mano_obra
+            orden    = factura.orden_servicio
+            subtotal = Decimal('0')
+
+            # Sumar mano de obra de todos los servicios (ManyToMany)
+            for servicio in orden.servicios.all():
+                subtotal += servicio.precio_mano_obra
+
+            # Sumar productos usados en la orden
             for detalle in orden.productos_usados.select_related('producto').all():
                 subtotal += detalle.producto.precio * detalle.cantidad
-            factura.subtotal = subtotal
+
+            factura.total = subtotal
 
         elif tipo == 'PRODUCTO':
-            factura.subtotal = factura.producto.precio * factura.cantidad
-            factura.producto.stock -= factura.cantidad
-            factura.producto.save()
+            producto = form.cleaned_data.get('producto')
+            cantidad = form.cleaned_data.get('cantidad')
+            if producto and cantidad:
+                factura.total = producto.precio * cantidad
+                # Descontar stock sin disparar signals en loop
+                Producto.objects.filter(pk=producto.pk).update(
+                    stock=producto.stock - cantidad
+                )
 
-        factura.iva = factura.subtotal * Decimal('0.19')
-        factura.total = factura.subtotal + factura.iva
         factura.estado_pago = 'Pendiente'
         factura.save()
 
         messages.success(self.request, f"Factura {factura.numero_factura} creada correctamente.")
-        return super().form_valid(form)
+        return redirect(self.success_url)
 
 
 # ─── DETALLE ──────────────────────────────────────────────
@@ -71,6 +81,10 @@ class FacturaDeleteView(DeleteView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Eliminar Factura'
         return context
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Factura eliminada correctamente.')
+        return super().form_valid(form)
 
 
 # ─── PAGAR (POST) ─────────────────────────────────────────
@@ -119,7 +133,7 @@ class PagarFacturaView(View):
 
         messages.success(
             request,
-            f"Pago de {factura.get_metodo_pago_display()} registrado. "
+            f"Pago de {metodo} registrado. "
             f"Ingreso de ${factura.total:,.0f} guardado en Caja."
         )
         return redirect('app:listar_factura')
