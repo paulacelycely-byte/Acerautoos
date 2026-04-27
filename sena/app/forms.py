@@ -699,14 +699,15 @@ class ClienteForm(forms.ModelForm):
 # ══════════════════════════════════════════════════════════
 #  VEHÍCULO
 # ══════════════════════════════════════════════════════════
-
 class VehiculoForm(forms.ModelForm):
     class Meta:
         model  = Vehiculo
         fields = [
             'placa', 'modelo', 'marca', 'cliente',
             'km_ultimo_servicio',
-            'km_diarios_promedio',
+            'km_intervalo',
+            'intervalo_meses',
+            'tipo_uso',
             'km_alerta_anticipacion',
         ]
 
@@ -717,16 +718,31 @@ class VehiculoForm(forms.ModelForm):
         self.fields['km_ultimo_servicio'].required  = True
         self.fields['km_ultimo_servicio'].label     = "Km actuales del vehículo"
         self.fields['km_ultimo_servicio'].help_text = (
-            "Ingrese el kilometraje actual del vehículo. "
-            "El próximo mantenimiento se calculará automáticamente al registrar la primera orden de servicio."
+            "Ingrese el kilometraje actual del vehículo."
         )
-        self.fields['km_diarios_promedio'].required  = True
-        self.fields['km_diarios_promedio'].help_text = (
-            "Km promedio que recorre este vehículo por día. Ej: 30 uso bajo, 50 normal, 80 alto."
+
+        self.fields['km_intervalo'].required  = True
+        self.fields['km_intervalo'].label     = "Mantenimiento cada (km)"
+        self.fields['km_intervalo'].help_text = (
+            "Cada cuántos km hacer mantenimiento. Ej: 5000 para aceite."
         )
+
+        self.fields['intervalo_meses'].required  = True
+        self.fields['intervalo_meses'].label     = "Mantenimiento cada (meses)"
+        self.fields['intervalo_meses'].help_text = (
+            "Cada cuántos meses hacer mantenimiento. Ej: 3 meses."
+        )
+
+        self.fields['tipo_uso'].required  = True
+        self.fields['tipo_uso'].label     = "Tipo de uso del vehículo"
+        self.fields['tipo_uso'].help_text = (
+            "¿Cómo se usa este vehículo? Esto nos ayuda a estimar el kilometraje diario."
+        )
+
         self.fields['km_alerta_anticipacion'].required  = True
+        self.fields['km_alerta_anticipacion'].label     = "Avisar con (km) de anticipación"
         self.fields['km_alerta_anticipacion'].help_text = (
-            "Con cuántos km de anticipación avisar del próximo mantenimiento. Ej: 500 moto, 1000 carro, 2000 camión."
+            "Con cuántos km de anticipación avisar. Ej: 500 moto, 1000 carro."
         )
 
     def clean_placa(self):
@@ -756,13 +772,21 @@ class VehiculoForm(forms.ModelForm):
             raise forms.ValidationError("El kilometraje no puede superar 1.000.000 km.")
         return km
 
-    def clean_km_diarios_promedio(self):
-        km = self.cleaned_data.get('km_diarios_promedio')
+    def clean_km_intervalo(self):
+        km = self.cleaned_data.get('km_intervalo')
         if km is None or km <= 0:
-            raise forms.ValidationError("El promedio de km diarios debe ser mayor que 0.")
-        if km > 1000:
-            raise forms.ValidationError("El promedio de km diarios no puede superar 1.000 km.")
+            raise forms.ValidationError("El intervalo de km debe ser mayor que 0.")
+        if km > 100000:
+            raise forms.ValidationError("El intervalo no puede superar 100.000 km.")
         return km
+
+    def clean_intervalo_meses(self):
+        meses = self.cleaned_data.get('intervalo_meses')
+        if meses is None or meses <= 0:
+            raise forms.ValidationError("El intervalo de meses debe ser mayor que 0.")
+        if meses > 24:
+            raise forms.ValidationError("El intervalo no puede superar 24 meses.")
+        return meses
 
     def clean_km_alerta_anticipacion(self):
         km = self.cleaned_data.get('km_alerta_anticipacion')

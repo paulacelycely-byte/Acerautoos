@@ -245,33 +245,71 @@ class Cliente(models.Model):
 #  VEHICULO
 # ══════════════════════════════════════════════════════════
 class Vehiculo(models.Model):
+    TIPOS_USO = [
+        ('BAJO',   'Uso bajo (ciudad, poco uso)'),
+        ('NORMAL', 'Uso normal'),
+        ('ALTO',   'Uso alto (viajes frecuentes)'),
+        ('CARGA',  'Carga / Transporte'),
+    ]
+
     placa   = models.CharField(max_length=10, unique=True)
     modelo  = models.CharField(max_length=50)
     marca   = models.ForeignKey(Marca, on_delete=models.PROTECT, limit_choices_to={'categoria': 'AUTO', 'estado': True})
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+
+    # ── Kilometraje ──
     km_ultimo_servicio       = models.IntegerField(default=0)
     km_proximo_mantenimiento = models.IntegerField(null=True, blank=True)
-    km_diarios_promedio      = models.PositiveIntegerField(default=50)
-    km_alerta_anticipacion   = models.PositiveIntegerField(default=1000)
-    fecha_ultimo_servicio    = models.DateField(null=True, blank=True)
+    km_intervalo             = models.PositiveIntegerField(default=5000, help_text="Cada cuántos km hacer mantenimiento. Ej: 5000")
+
+    # ── Fechas ──
+    fecha_ultimo_servicio       = models.DateField(null=True, blank=True)
+    fecha_proximo_mantenimiento = models.DateField(null=True, blank=True)
+    intervalo_meses             = models.PositiveIntegerField(default=3, help_text="Cada cuántos meses hacer mantenimiento. Ej: 3")
+
+    # ── Tipo de uso (reemplaza km_diarios_promedio) ──
+    tipo_uso = models.CharField(max_length=10, choices=TIPOS_USO, default='NORMAL')
+
+    # ── Alerta ──
+    km_alerta_anticipacion = models.PositiveIntegerField(default=500, help_text="Con cuántos km de anticipación avisar")
+
+    def km_diarios(self):
+        """Retorna km diarios estimados según tipo de uso."""
+        return {'BAJO': 30, 'NORMAL': 50, 'ALTO': 80, 'CARGA': 120}.get(self.tipo_uso, 50)
 
     def km_estimados_hoy(self):
         if not self.fecha_ultimo_servicio:
             return self.km_ultimo_servicio
         dias = (timezone.now().date() - self.fecha_ultimo_servicio).days
-        return self.km_ultimo_servicio + (dias * self.km_diarios_promedio)
+        return self.km_ultimo_servicio + (dias * self.km_diarios())
 
     def km_restantes_estimados(self):
         if not self.km_proximo_mantenimiento:
             return None
         return self.km_proximo_mantenimiento - self.km_estimados_hoy()
 
+    def dias_restantes_mantenimiento(self):
+        if not self.fecha_proximo_mantenimiento:
+            return None
+        return (self.fecha_proximo_mantenimiento - timezone.now().date()).days
+
     def estado_mantenimiento(self):
-        if not self.km_proximo_mantenimiento:
-            return 'sin_datos'
-        restantes = self.km_restantes_estimados()
-        if restantes <= 0: return 'vencido'
-        elif restantes <= self.km_alerta_anticipacion: return 'alerta'
+        """Revisa km Y fecha — lo que llegue primero."""
+        km_rest  = self.km_restantes_estimados()
+        dias_rest = self.dias_restantes_mantenimiento()
+
+        vencido_km   = km_rest is not None and km_rest <= 0
+        vencido_fecha = dias_rest is not None and dias_rest <= 0
+
+        if vencido_km or vencido_fecha:
+            return 'vencido'
+
+        alerta_km   = km_rest is not None and km_rest <= self.km_alerta_anticipacion
+        alerta_fecha = dias_rest is not None and dias_rest <= 15  
+
+        if alerta_km or alerta_fecha:
+            return 'alerta'
+
         return 'ok'
 
     def __str__(self):
