@@ -43,23 +43,16 @@
 
     .nav-vdivider { width:1px; height:20px; background:rgba(255,255,255,.1); margin: 0 2px; flex-shrink:0; }
 
-    /* ── BOTÓN ICONO IMAGEN ── */
     .btn-icon-img {
       background: transparent; border: none;
       width: 34px; height: 34px; border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; transition: background .2s;
-      text-decoration: none; position: relative; flex-shrink: 0;
-      padding: 0;
+      text-decoration: none; position: relative; flex-shrink: 0; padding: 0;
     }
-    .btn-icon-img img {
-  width: 22px; height: 22px; object-fit: contain;
-  opacity: .75; transition: opacity .2s;
-  }
-  .btn-icon-img:hover { background: rgba(211,47,47,.12); }
-  .btn-icon-img:hover img { opacity: 1; } 
+    .btn-icon-img img { width: 22px; height: 22px; object-fit: contain; opacity: .75; transition: opacity .2s; }
     .btn-icon-img:hover { background: rgba(211,47,47,.12); }
-    .btn-icon-img:hover img { opacity: .9; }
+    .btn-icon-img:hover img { opacity: 1; }
     .btn-icon-img::after {
       content: attr(data-tip);
       position: absolute; top: calc(100% + 6px); left: 50%;
@@ -69,12 +62,10 @@
       padding: 3px 8px; border-radius: 5px;
       white-space: nowrap; pointer-events: none;
       opacity: 0; transition: opacity .15s;
-      border: 1px solid rgba(255,255,255,.08);
-      z-index: 9999;
+      border: 1px solid rgba(255,255,255,.08); z-index: 9999;
     }
     .btn-icon-img:hover::after { opacity: 1; }
 
-    /* ── BADGE NOTIFICACIONES ── */
     .notif-badge {
       position: absolute; top: 3px; right: 3px;
       min-width: 16px; height: 16px;
@@ -86,148 +77,42 @@
     }
     .notif-badge.hidden { display: none; }
 
-    /* ── DROPDOWN NOTIFICACIONES ── */
-    .notif-dropdown {
-      background: #111 !important;
-      border: 1px solid rgba(255,255,255,.08) !important;
-      border-radius: 14px !important;
-      width: 340px !important;
-      box-shadow: 0 20px 56px rgba(0,0,0,.8) !important;
-      padding: 0 !important;
-      overflow: hidden;
-      margin-top: 8px !important;
-    }
-
-    .notif-header {
-      padding: 12px 16px;
-      border-bottom: 1px solid rgba(255,255,255,.06);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .notif-header-title {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: .85rem; font-weight: 800;
-      letter-spacing: 1px; text-transform: uppercase;
-      color: rgba(255,255,255,.6);
-    }
-    .notif-header-count {
-      font-size: .68rem; font-weight: 700;
-      background: #d32f2f; color: white;
-      padding: 2px 7px; border-radius: 20px;
-    }
-
-    .notif-scroll {
-      max-height: 320px;
-      overflow-y: auto;
-    }
+    .notif-dropdown { background: #111 !important; border: 1px solid rgba(255,255,255,.08) !important; border-radius: 14px !important; width: 340px !important; box-shadow: 0 20px 56px rgba(0,0,0,.8) !important; padding: 0 !important; overflow: hidden; margin-top: 8px !important; }
+    .notif-header { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,.06); display: flex; align-items: center; justify-content: space-between; }
+    .notif-header-title { font-family: 'Barlow Condensed', sans-serif; font-size: .85rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,.6); }
+    .notif-header-count { font-size: .68rem; font-weight: 700; background: #d32f2f; color: white; padding: 2px 7px; border-radius: 20px; }
+    .notif-scroll { max-height: 320px; overflow-y: auto; }
     .notif-scroll::-webkit-scrollbar { width: 3px; }
     .notif-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 3px; }
-
-    .notif-item {
-      padding: 10px 16px;
-      border-bottom: 1px solid rgba(255,255,255,.04);
-      cursor: pointer;
-      transition: background .15s;
-      display: flex; align-items: flex-start; gap: 10px;
-      text-decoration: none;
-    }
+    .notif-item { padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,.04); cursor: pointer; transition: background .15s; display: flex; align-items: flex-start; gap: 10px; text-decoration: none; }
     .notif-item:hover { background: rgba(255,255,255,.03); }
-
-    .notif-dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      flex-shrink: 0; margin-top: 5px;
-    }
-    .dot-urgente     { background: #d32f2f; }
-    .dot-alerta      { background: #f59e0b; }
-    .dot-mantenimiento { background: #0284c7; }
-    .dot-recordatorio { background: #7c3aed; }
-    .dot-informacion { background: #16a34a; }
-    .dot-default     { background: #888; }
-
+    .notif-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .dot-urgente { background: #d32f2f; } .dot-alerta { background: #f59e0b; } .dot-mantenimiento { background: #0284c7; } .dot-recordatorio { background: #7c3aed; } .dot-informacion { background: #16a34a; } .dot-default { background: #888; }
     .notif-body { flex: 1; min-width: 0; }
-    .notif-tipo {
-      font-size: .62rem; font-weight: 800;
-      text-transform: uppercase; letter-spacing: .8px;
-      margin-bottom: 2px;
-    }
-    .tipo-urgente      { color: #e05252; }
-    .tipo-alerta       { color: #f59e0b; }
-    .tipo-mantenimiento { color: #38bdf8; }
-    .tipo-recordatorio { color: #a78bfa; }
-    .tipo-informacion  { color: #4ade80; }
-    .tipo-default      { color: #888; }
-
-    .notif-titulo {
-      font-size: .78rem; font-weight: 700;
-      color: rgba(255,255,255,.85);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      margin-bottom: 2px;
-    }
-    .notif-mensaje {
-      font-size: .7rem; color: rgba(255,255,255,.35);
-      line-height: 1.4;
-      display: -webkit-box; -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical; overflow: hidden;
-    }
-    .notif-fecha {
-      font-size: .62rem; color: rgba(255,255,255,.2);
-      margin-top: 3px;
-    }
-
-    .notif-empty {
-      padding: 28px 16px; text-align: center;
-      color: rgba(255,255,255,.2); font-size: .78rem;
-    }
-
-    .notif-footer {
-      padding: 10px 16px;
-      border-top: 1px solid rgba(255,255,255,.06);
-      text-align: center;
-    }
-    .notif-footer a {
-      font-size: .72rem; font-weight: 700;
-      color: #d32f2f !important; text-decoration: none;
-      letter-spacing: .5px; text-transform: uppercase;
-      transition: color .15s;
-    }
+    .notif-tipo { font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 2px; }
+    .tipo-urgente { color: #e05252; } .tipo-alerta { color: #f59e0b; } .tipo-mantenimiento { color: #38bdf8; } .tipo-recordatorio { color: #a78bfa; } .tipo-informacion { color: #4ade80; } .tipo-default { color: #888; }
+    .notif-titulo { font-size: .78rem; font-weight: 700; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+    .notif-mensaje { font-size: .7rem; color: rgba(255,255,255,.35); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .notif-fecha { font-size: .62rem; color: rgba(255,255,255,.2); margin-top: 3px; }
+    .notif-empty { padding: 28px 16px; text-align: center; color: rgba(255,255,255,.2); font-size: .78rem; }
+    .notif-footer { padding: 10px 16px; border-top: 1px solid rgba(255,255,255,.06); text-align: center; }
+    .notif-footer a { font-size: .72rem; font-weight: 700; color: #d32f2f !important; text-decoration: none; letter-spacing: .5px; text-transform: uppercase; transition: color .15s; }
     .notif-footer a:hover { color: #e05252 !important; }
 
-    /* ── USER PILL ── */
-    .user-pill {
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.09) !important;
-      border-radius: 10px !important;
-      padding: 5px 10px 5px 6px;
-      display: flex; align-items: center; gap: 9px;
-      transition: background .2s, border-color .2s; cursor: pointer;
-    }
-    .user-pill:hover, .user-pill:focus {
-      background: rgba(211,47,47,.1) !important;
-      border-color: rgba(211,47,47,.35) !important;
-      outline: none; box-shadow: none !important;
-    }
-    .user-pill-avatar {
-      width: 26px; height: 26px; border-radius: 7px; background: #d32f2f;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: .8rem; font-weight: 900; color: #fff; flex-shrink: 0;
-    }
+    .user-pill { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.09) !important; border-radius: 10px !important; padding: 5px 10px 5px 6px; display: flex; align-items: center; gap: 9px; transition: background .2s, border-color .2s; cursor: pointer; }
+    .user-pill:hover, .user-pill:focus { background: rgba(211,47,47,.1) !important; border-color: rgba(211,47,47,.35) !important; outline: none; box-shadow: none !important; }
+    .user-pill-avatar { width: 26px; height: 26px; border-radius: 7px; background: #d32f2f; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; font-weight: 900; color: #fff; flex-shrink: 0; }
     .user-pill-name { font-family: 'Barlow Condensed', sans-serif; font-size: .82rem; font-weight: 800; color: #fff; letter-spacing: .5px; text-transform: uppercase; line-height: 1; }
     .user-pill-role { font-size: .62rem; color: rgba(255,255,255,.3); margin-top: 2px; }
     .pill-arrow { color: rgba(255,255,255,.25); transition: transform .25s; flex-shrink: 0; }
     .pill-arrow svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
     .show > .user-pill .pill-arrow { transform: rotate(180deg); }
 
-    .user-dropdown-menu {
-      background: #141414 !important;
-      border: 1px solid rgba(255,255,255,.07) !important;
-      border-radius: 14px !important; min-width: 215px;
-      box-shadow: 0 20px 56px rgba(0,0,0,.75) !important;
-      padding: 0 !important; overflow: hidden; margin-top: 7px !important;
-    }
+    .user-dropdown-menu { background: #141414 !important; border: 1px solid rgba(255,255,255,.07) !important; border-radius: 14px !important; min-width: 215px; box-shadow: 0 20px 56px rgba(0,0,0,.75) !important; padding: 0 !important; overflow: hidden; margin-top: 7px !important; }
     .dd-header { padding: 13px 15px; border-bottom: 1px solid rgba(255,255,255,.05); display: flex; align-items: center; gap: 10px; }
     .dd-avatar { width: 38px; height: 38px; background: #d32f2f; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 900; color: #fff; flex-shrink: 0; }
     .dd-username { color: #fff; font-weight: 700; font-size: .88rem; line-height: 1.2; }
-    .dd-role     { color: rgba(255,255,255,.3); font-size: .7rem; margin-top: 2px; }
+    .dd-role { color: rgba(255,255,255,.3); font-size: .7rem; margin-top: 2px; }
     .user-dropdown-menu .dropdown-item { color: rgba(255,255,255,.55) !important; padding: 9px 15px; display: flex; align-items: center; gap: 10px; font-size: .8rem; transition: background .15s, color .15s; }
     .user-dropdown-menu .dropdown-item:hover { background: rgba(255,255,255,.04) !important; color: #fff !important; }
     .user-dropdown-menu .dropdown-item svg { width: 14px; height: 14px; stroke: rgba(255,255,255,.3); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
@@ -237,7 +122,7 @@
     .dd-logout:hover { background: rgba(211,47,47,.08) !important; color: #e05252 !important; }
     .dd-logout svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
 
-    .app-main-bg         { position:relative; flex:1; min-height:100vh; }
+    .app-main-bg { position:relative; flex:1; min-height:100vh; }
     .app-main-bg::before { content:''; position:fixed; inset:0; background-image:url("{% static 'imagenes/fondo2.jpg' %}"); background-size:cover; background-position:center; filter:brightness(0.65); z-index:0; }
     .app-main-bg > * { position:relative; z-index:1; }
 
@@ -248,6 +133,75 @@
     .field-label.required::after { content:' *'; color:#d32f2f; font-weight:800; font-size:.85rem; vertical-align:super; line-height:1; }
     .leyenda-obligatorio { font-size:.74rem; color:#888; margin-bottom:16px; display:flex; align-items:center; gap:4px; }
     .leyenda-obligatorio::before { content:'* '; color:#d32f2f; font-weight:800; font-size:.85rem; }
+
+    /* ══════════════════════════════════════
+       CHATBOT FLOTANTE
+    ══════════════════════════════════════ */
+    #chatbot-btn {
+      position: fixed; bottom: 28px; right: 28px;
+      width: 52px; height: 52px;
+      background: #d32f2f; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 9999;
+      box-shadow: 0 4px 20px rgba(211,47,47,.5);
+      transition: transform .2s, box-shadow .2s;
+    }
+    #chatbot-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(211,47,47,.65); }
+
+    #chatbot-box {
+      position: fixed; bottom: 92px; right: 28px;
+      width: 360px; height: 500px;
+      background: #0f0f0f;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 18px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.85);
+      display: none; flex-direction: column;
+      z-index: 9998; overflow: hidden;
+    }
+    #chatbot-box.abierto { display: flex; }
+
+    #chatbot-header {
+      background: linear-gradient(135deg, #1a0000, #110000);
+      border-bottom: 1px solid rgba(211,47,47,.2);
+      padding: 14px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    #chatbot-header-left { display: flex; align-items: center; gap: 10px; }
+    #chatbot-header-icon { width: 34px; height: 34px; border-radius: 9px; background: rgba(211,47,47,.2); border: 1px solid rgba(211,47,47,.3); display: flex; align-items: center; justify-content: center; }
+    #chatbot-header-icon svg { width: 16px; height: 16px; stroke: #d32f2f; fill: none; stroke-width: 2; stroke-linecap: round; }
+    #chatbot-title { font-family: 'Barlow Condensed', sans-serif; font-size: .95rem; font-weight: 800; color: white; letter-spacing: .5px; text-transform: uppercase; }
+    #chatbot-subtitle { font-size: .65rem; color: rgba(255,255,255,.3); margin-top: 1px; }
+    #chatbot-close { background: transparent; border: none; cursor: pointer; color: rgba(255,255,255,.3); padding: 4px; border-radius: 6px; transition: background .15s, color .15s; display: flex; align-items: center; justify-content: center; }
+    #chatbot-close:hover { background: rgba(255,255,255,.06); color: white; }
+    #chatbot-close svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+
+    #chatbot-mensajes { flex: 1; overflow-y: auto; padding: 14px 14px 8px; display: flex; flex-direction: column; gap: 10px; }
+    #chatbot-mensajes::-webkit-scrollbar { width: 3px; }
+    #chatbot-mensajes::-webkit-scrollbar-thumb { background: rgba(211,47,47,.3); border-radius: 3px; }
+
+    .chat-msg { max-width: 82%; display: flex; flex-direction: column; gap: 3px; }
+    .chat-msg.usuario { align-self: flex-end; align-items: flex-end; }
+    .chat-msg.bot     { align-self: flex-start; align-items: flex-start; }
+    .chat-burbuja { padding: 9px 13px; border-radius: 12px; font-size: .8rem; line-height: 1.5; word-break: break-word; }
+    .chat-msg.usuario .chat-burbuja { background: #d32f2f; color: white; border-bottom-right-radius: 4px; }
+    .chat-msg.bot     .chat-burbuja { background: rgba(255,255,255,.07); color: rgba(255,255,255,.85); border-bottom-left-radius: 4px; border: 1px solid rgba(255,255,255,.06); }
+    .chat-nombre { font-size: .6rem; color: rgba(255,255,255,.25); letter-spacing: .3px; }
+
+    .chat-typing { align-self: flex-start; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.06); padding: 10px 14px; border-radius: 12px; border-bottom-left-radius: 4px; display: flex; gap: 5px; align-items: center; }
+    .chat-typing span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.3); animation: typing-dot 1.2s infinite; }
+    .chat-typing span:nth-child(2) { animation-delay: .2s; }
+    .chat-typing span:nth-child(3) { animation-delay: .4s; }
+    @keyframes typing-dot { 0%,60%,100% { transform:translateY(0);opacity:.3; } 30% { transform:translateY(-5px);opacity:1; } }
+
+    #chatbot-input-area { padding: 10px 12px; border-top: 1px solid rgba(255,255,255,.06); display: flex; gap: 8px; align-items: flex-end; background: rgba(255,255,255,.02); flex-shrink: 0; }
+    #chatbot-input { flex: 1; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 9px 12px; color: white; font-size: .82rem; resize: none; outline: none; max-height: 100px; min-height: 38px; font-family: 'DM Sans', sans-serif; line-height: 1.4; transition: border-color .15s; }
+    #chatbot-input::placeholder { color: rgba(255,255,255,.25); }
+    #chatbot-input:focus { border-color: rgba(211,47,47,.4); }
+    #chatbot-send { width: 36px; height: 36px; border-radius: 10px; background: #d32f2f; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .15s, transform .15s; }
+    #chatbot-send:hover { background: #b71c1c; transform: scale(1.05); }
+    #chatbot-send:disabled { background: rgba(211,47,47,.3); cursor: not-allowed; transform: none; }
+    #chatbot-send svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
   </style>
 
   <div class="app-wrapper">
@@ -279,22 +233,17 @@
               <img src="{% static 'imagenes/notificaiones.jpeg' %}" alt="Notificaciones">
               <span class="notif-badge hidden" id="notif-badge-navbar">0</span>
             </button>
-
             <div class="dropdown-menu dropdown-menu-end notif-dropdown">
-
               <div class="notif-header">
                 <span class="notif-header-title">Notificaciones</span>
                 <span class="notif-header-count hidden" id="notif-count-label">0</span>
               </div>
-
               <div class="notif-scroll" id="notif-list-container">
                 <div class="notif-empty">Cargando...</div>
               </div>
-
               <div class="notif-footer">
                 <a href="{% url 'app:listar_notificacion' %}">Ver todas las notificaciones</a>
               </div>
-
             </div>
           </div>
 
@@ -306,31 +255,18 @@
                 {% if user.nombres %}{{ user.nombres|slice:':1'|upper }}{% else %}{{ user.username|slice:':1'|upper }}{% endif %}
               </div>
               <div class="user-pill-info d-none d-sm-block">
-                <div class="user-pill-name">
-                  {% if user.nombres %}{{ user.nombres }}{% else %}{{ user.username }}{% endif %}
-                </div>
-                <div class="user-pill-role">
-                  {% if user.cargo %}{{ user.get_cargo_display }}{% else %}Admin{% endif %}
-                </div>
+                <div class="user-pill-name">{% if user.nombres %}{{ user.nombres }}{% else %}{{ user.username }}{% endif %}</div>
+                <div class="user-pill-role">{% if user.cargo %}{{ user.get_cargo_display }}{% else %}Admin{% endif %}</div>
               </div>
-              <span class="pill-arrow">
-                <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-              </span>
+              <span class="pill-arrow"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
             </button>
-
             <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu">
               <li>
                 <div class="dd-header">
-                  <div class="dd-avatar">
-                    {% if user.nombres %}{{ user.nombres|slice:':1'|upper }}{% else %}{{ user.username|slice:':1'|upper }}{% endif %}
-                  </div>
+                  <div class="dd-avatar">{% if user.nombres %}{{ user.nombres|slice:':1'|upper }}{% else %}{{ user.username|slice:':1'|upper }}{% endif %}</div>
                   <div>
-                    <div class="dd-username">
-                      {% if user.nombres %}{{ user.nombres }} {{ user.apellidos }}{% else %}{{ user.username|capfirst }}{% endif %}
-                    </div>
-                    <div class="dd-role">
-                      {% if user.cargo %}{{ user.get_cargo_display }}{% else %}{{ user.email|default:"Administrador" }}{% endif %}
-                    </div>
+                    <div class="dd-username">{% if user.nombres %}{{ user.nombres }} {{ user.apellidos }}{% else %}{{ user.username|capfirst }}{% endif %}</div>
+                    <div class="dd-role">{% if user.cargo %}{{ user.get_cargo_display }}{% else %}{{ user.email|default:"Administrador" }}{% endif %}</div>
                   </div>
                 </div>
               </li>
@@ -369,6 +305,44 @@
     </div>
   </div>
 
+  <!-- ══ CHATBOT FLOTANTE ══ -->
+  <div id="chatbot-btn" onclick="toggleChat()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </div>
+
+  <div id="chatbot-box">
+    <div id="chatbot-header">
+      <div id="chatbot-header-left">
+        <div id="chatbot-header-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div>
+          <div id="chatbot-title">Asistente ACERAUTOS</div>
+          <div id="chatbot-subtitle">Powered by Mistral AI</div>
+        </div>
+      </div>
+      <button id="chatbot-close" onclick="toggleChat()">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div id="chatbot-mensajes">
+      <div class="chat-msg bot">
+        <div class="chat-nombre">Asistente</div>
+        <div class="chat-burbuja">Hola, soy el asistente de ACERAUTOS. ¿En qué te puedo ayudar hoy?</div>
+      </div>
+    </div>
+
+    <div id="chatbot-input-area">
+      <textarea id="chatbot-input" placeholder="Escribe tu mensaje..." rows="1"></textarea>
+      <button id="chatbot-send" onclick="enviarMensaje()">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+
 {% endblock %}
 
 
@@ -381,7 +355,6 @@
     var body    = document.body;
     var MINI    = 'sidebar-mini';
     var HIDDEN  = 'sidebar-hidden';
-    
     if (trigger) {
       trigger.addEventListener('click', function () {
         if (!body.classList.contains(MINI) && !body.classList.contains(HIDDEN)) {
@@ -393,35 +366,21 @@
         }
       });
     }
-    
     var saved = localStorage.getItem('sb_state');
     if (saved === 'mini')   body.classList.add(MINI);
     if (saved === 'hidden') body.classList.add(HIDDEN);
 
     // ── NOTIFICACIONES ──
-    const COLORES_DOT = {
-      'Urgente':       'dot-urgente',
-      'Alerta':        'dot-alerta',
-      'Mantenimiento': 'dot-mantenimiento',
-      'Recordatorio':  'dot-recordatorio',
-      'Informacion':   'dot-informacion',
-    };
-    const COLORES_TIPO = {
-      'Urgente':       'tipo-urgente',
-      'Alerta':        'tipo-alerta',
-      'Mantenimiento': 'tipo-mantenimiento',
-      'Recordatorio':  'tipo-recordatorio',
-      'Informacion':   'tipo-informacion',
-    };
+    const COLORES_DOT  = { 'Urgente':'dot-urgente','Alerta':'dot-alerta','Mantenimiento':'dot-mantenimiento','Recordatorio':'dot-recordatorio','Informacion':'dot-informacion' };
+    const COLORES_TIPO = { 'Urgente':'tipo-urgente','Alerta':'tipo-alerta','Mantenimiento':'tipo-mantenimiento','Recordatorio':'tipo-recordatorio','Informacion':'tipo-informacion' };
 
     function actualizarNotificaciones() {
       fetch("{% url 'app:notificaciones_no_leidas' %}")
         .then(r => r.json())
         .then(data => {
-          const badge     = document.getElementById('notif-badge-navbar');
+          const badge      = document.getElementById('notif-badge-navbar');
           const countLabel = document.getElementById('notif-count-label');
-          const container = document.getElementById('notif-list-container');
-
+          const container  = document.getElementById('notif-list-container');
           if (data.count > 0) {
             badge.innerText = data.count > 99 ? '99+' : data.count;
             badge.classList.remove('hidden');
@@ -431,53 +390,111 @@
             badge.classList.add('hidden');
             countLabel.classList.add('hidden');
           }
-
           if (data.results && data.results.length > 0) {
             container.innerHTML = data.results.map(n => {
               const dotClass  = COLORES_DOT[n.tipo]  || 'dot-default';
               const tipoClass = COLORES_TIPO[n.tipo] || 'tipo-default';
-              const fecha     = n.fecha || '';
-              const titulo    = n.titulo || (n.mensaje ? n.mensaje.substring(0, 50) : 'Sin título');
-              const mensaje   = n.mensaje || '';
-              return `
-                <a href="{% url 'app:listar_notificacion' %}" class="notif-item">
-                  <span class="notif-dot ${dotClass}"></span>
-                  <div class="notif-body">
-                    <div class="notif-tipo ${tipoClass}">${n.tipo}</div>
-                    <div class="notif-titulo">${titulo}</div>
-                    <div class="notif-mensaje">${mensaje}</div>
-                    ${fecha ? `<div class="notif-fecha">${fecha}</div>` : ''}
-                  </div>
-                </a>`;
+              const fecha = n.fecha || '';
+              const titulo  = n.titulo  || (n.mensaje ? n.mensaje.substring(0,50) : 'Sin título');
+              const mensaje = n.mensaje || '';
+              return `<a href="{% url 'app:listar_notificacion' %}" class="notif-item">
+                <span class="notif-dot ${dotClass}"></span>
+                <div class="notif-body">
+                  <div class="notif-tipo ${tipoClass}">${n.tipo}</div>
+                  <div class="notif-titulo">${titulo}</div>
+                  <div class="notif-mensaje">${mensaje}</div>
+                  ${fecha ? `<div class="notif-fecha">${fecha}</div>` : ''}
+                </div></a>`;
             }).join('');
           } else {
             container.innerHTML = '<div class="notif-empty">Sin notificaciones nuevas</div>';
           }
-        })
-        .catch(() => {});
+        }).catch(() => {});
     }
-
     actualizarNotificaciones();
     setInterval(actualizarNotificaciones, 30000);
 
     // ── SWEETALERT ──
     {% if messages %}
       {% for message in messages %}
-        Swal.fire({
-          icon: "{{ message.tags|default:'info' }}",
-          title: "{{ message|escapejs }}",
-          confirmButtonColor: '#d32f2f',
-          timer: 3000,
-          timerProgressBar: true
-        });
+        Swal.fire({ icon:"{{ message.tags|default:'info' }}", title:"{{ message|escapejs }}", confirmButtonColor:'#d32f2f', timer:3000, timerProgressBar:true });
       {% endfor %}
     {% endif %}
 
+    // ── CHATBOT: Enter para enviar ──
+    const inputChat = document.getElementById('chatbot-input');
+    if (inputChat) {
+      inputChat.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviarMensaje(); }
+      });
+      inputChat.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+      });
+    }
   });
   </script>
 
   <script>
-  // Script para marcar campos obligatorios
+  // ── CHATBOT FUNCIONES ──
+  function toggleChat() {
+    const box = document.getElementById('chatbot-box');
+    box.classList.toggle('abierto');
+    if (box.classList.contains('abierto')) document.getElementById('chatbot-input').focus();
+  }
+
+  function agregarMensaje(texto, tipo) {
+    const c = document.getElementById('chatbot-mensajes');
+    const d = document.createElement('div');
+    d.className = 'chat-msg ' + tipo;
+    d.innerHTML = `<div class="chat-nombre">${tipo === 'usuario' ? 'Tú' : 'Asistente'}</div><div class="chat-burbuja">${texto}</div>`;
+    c.appendChild(d);
+    c.scrollTop = c.scrollHeight;
+  }
+
+  function mostrarTyping() {
+    const c = document.getElementById('chatbot-mensajes');
+    const d = document.createElement('div');
+    d.id = 'chat-typing'; d.className = 'chat-typing';
+    d.innerHTML = '<span></span><span></span><span></span>';
+    c.appendChild(d); c.scrollTop = c.scrollHeight;
+  }
+
+  function quitarTyping() { const t = document.getElementById('chat-typing'); if (t) t.remove(); }
+
+  async function enviarMensaje() {
+    const input = document.getElementById('chatbot-input');
+    const btn   = document.getElementById('chatbot-send');
+    const texto = input.value.trim();
+    if (!texto) return;
+    agregarMensaje(texto, 'usuario');
+    input.value = ''; input.style.height = 'auto';
+    btn.disabled = true; mostrarTyping();
+    try {
+      const resp = await fetch("{% url 'app:chatbot' %}", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+        body: JSON.stringify({ mensaje: texto })
+      });
+      const data = await resp.json();
+      quitarTyping();
+      agregarMensaje(data.respuesta || data.error || 'Sin respuesta', 'bot');
+    } catch(e) {
+      quitarTyping();
+      agregarMensaje('Error al conectar con el asistente.', 'bot');
+    } finally {
+      btn.disabled = false; input.focus();
+    }
+  }
+
+  function getCookie(name) {
+    let val = null;
+    document.cookie.split(';').forEach(c => { const [k,v] = c.trim().split('='); if (k===name) val = decodeURIComponent(v); });
+    return val;
+  }
+  </script>
+
+  <script>
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('input, select, textarea').forEach(function(campo) {
       if (!campo.required) return;
@@ -492,10 +509,8 @@
   </script>
 
   <script>
-  // Script de Validación Dinámica de Formularios
   document.addEventListener('DOMContentLoaded', function () {
     function contenedorDe(input) { return input.closest('.col-md-6') || input.closest('.mb-4') || input.closest('.form-group') || input.parentNode; }
-    
     function mostrarError(input, mensaje) {
       limpiarError(input); input.classList.add('is-invalid');
       var div = document.createElement('div');
@@ -503,58 +518,42 @@
       div.innerHTML = '⚠ <strong>' + mensaje + '</strong>';
       contenedorDe(input).appendChild(div);
     }
-    
     function mostrarOk(input) { limpiarError(input); input.classList.remove('is-invalid'); input.classList.add('is-valid'); }
-    
-    function limpiarError(input) { 
-        input.classList.remove('is-invalid','is-valid'); 
-        var cont = contenedorDe(input);
-        if(cont) {
-            cont.querySelectorAll('[data-live-error]').forEach(function(el){ el.remove(); }); 
-        }
+    function limpiarError(input) {
+      input.classList.remove('is-invalid','is-valid');
+      var cont = contenedorDe(input);
+      if(cont) { cont.querySelectorAll('[data-live-error]').forEach(function(el){ el.remove(); }); }
     }
-    
     function esVacio(val) { return !val || val.trim() === '' || val === '--'; }
-    
-    function labelDe(input) { 
-        if (input.labels && input.labels[0]) return input.labels[0].innerText.trim().replace('*','').trim(); 
-        var labelFromAttr = input.getAttribute('aria-label');
-        if(labelFromAttr) return labelFromAttr;
-        return input.name || 'campo'; 
+    function labelDe(input) {
+      if (input.labels && input.labels[0]) return input.labels[0].innerText.trim().replace('*','').trim();
+      var labelFromAttr = input.getAttribute('aria-label');
+      if(labelFromAttr) return labelFromAttr;
+      return input.name || 'campo';
     }
-
     function validarCampo(input) {
       var name = (input.name || '').toLowerCase(), val = input.value, tipo = input.type, label = labelDe(input);
       if (!name || name === 'csrfmiddlewaretoken') return;
       if (tipo === 'hidden' || tipo === 'submit' || tipo === 'file') return;
-      
       if (tipo === 'select-one') { if (esVacio(val)) mostrarError(input, 'Seleccione una opción para "' + label + '".'); else mostrarOk(input); return; }
       if (tipo === 'date' || tipo === 'datetime-local') { if (!esVacio(val)) mostrarOk(input); return; }
-      
       if (name === 'telefono' && tipo === 'hidden') return;
-      
       var opcionales = ['email','correo','direccion','observacion','descripcion','logo','comprobante','indicativo','numero_telefono'];
       var esOpcional = opcionales.some(function(op){ return name.includes(op); });
-      
       if (esOpcional && esVacio(val)) { limpiarError(input); return; }
       if (!esOpcional && esVacio(val)) { mostrarError(input, 'El campo "' + label + '" es obligatorio.'); return; }
-      
-      // Reglas específicas
       if (name.includes('nombre') || name.includes('apellido')) {
         if (!/^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s\-]+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite letras e espacios.'); return; }
         if (val.trim().length < 2) { mostrarError(input, '"' + label + '" debe tener al menos 2 caracteres.'); return; }
       }
-      
       if (name.includes('cedula') || name === 'numero_documento') {
         if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
         var len = val.trim().length; if (len < 8 || len > 14) { mostrarError(input, '"' + label + '" debe tener entre 8 y 14 dígitos.'); return; }
       }
-      
       if (name === 'nit') {
         if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
         var lenNit = val.trim().length; if (lenNit < 9 || lenNit > 10) { mostrarError(input, '"' + label + '" debe tener 9 o 10 dígitos.'); return; }
       }
-      
       if (name === 'numero_telefono') {
         if (!esVacio(val)) {
           if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
@@ -562,36 +561,29 @@
         }
         mostrarOk(input); return;
       }
-      
       if (name.includes('email') || name.includes('correo')) {
         if (!esVacio(val) && !/^[\w.\+\-]+@[\w\-]+\.[a-zA-Z]{2,}$/.test(val.trim())) { mostrarError(input, '"' + label + '" no tiene formato válido.'); return; }
       }
-      
       if (name.includes('placa')) {
         var placa = val.trim().toUpperCase().replace(/\s/g,'');
         if (!/^[A-Z]{3}[0-9]{3}$/.test(placa) && !/^[A-Z]{3}[0-9]{2}[A-Z]{1}$/.test(placa)) { mostrarError(input, 'Placa inválida. Use ABC123 o ABC12D.'); return; }
       }
-      
       if (name === 'modelo') {
         if (!/^\d{4}$/.test(val.trim())) { mostrarError(input, 'El año debe tener 4 dígitos. Ej: 2019'); return; }
         var anio = parseInt(val.trim()), actual = new Date().getFullYear();
         if (anio < 1900 || anio > actual + 1) { mostrarError(input, 'El año debe estar entre 1900 y ' + (actual + 1) + '.'); return; }
       }
-      
       if (name === 'codigo') {
         if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
         if (val.trim().length < 3) { mostrarError(input, '"' + label + '" debe tener al menos 3 dígitos.'); return; }
       }
-      
       if (name.includes('precio') || name.includes('monto') || name.includes('total')) {
         var num = parseFloat(val); if (isNaN(num) || num <= 0) { mostrarError(input, '"' + label + '" debe ser mayor a 0.'); return; }
         if (num > 999999999) { mostrarError(input, '"' + label + '" es demasiado alto.'); return; }
       }
-      
       if (name.includes('stock')) { var numStock = parseInt(val); if (isNaN(numStock) || numStock < 0) { mostrarError(input, '"' + label + '" no puede ser negativo.'); return; } }
       if (name === 'cantidad') { var numCant = parseInt(val); if (isNaN(numCant) || numCant <= 0) { mostrarError(input, '"' + label + '" debe ser mayor a 0.'); return; } if (numCant > 10000) { mostrarError(input, '"' + label + '" no puede superar 10.000.'); return; } }
       if (name.includes('km')) { var numKm = parseInt(val); if (isNaN(numKm) || numKm < 0) { mostrarError(input, '"' + label + '" no puede ser negativo.'); return; } if (numKm > 1000000) { mostrarError(input, '"' + label + '" máx. 1.000.000 km.'); return; } }
-      
       if (name === 'password') {
         if (val.length < 8) { mostrarError(input, 'Mínimo 8 caracteres.'); return; }
         if (!/[A-Z]/.test(val)) { mostrarError(input, 'Debe incluir una mayúscula.'); return; }
@@ -599,15 +591,12 @@
         if (!/[0-9]/.test(val)) { mostrarError(input, 'Debe incluir un número.'); return; }
         if (!/[!@#$%\^&*()\-_=+\[\]{};\':"\\|,.<>\/?]/.test(val)) { mostrarError(input, 'Debe incluir un carácter especial.'); return; }
       }
-      
       if (name.includes('confirmacion') || name.includes('password2')) {
         var passField = document.querySelector('input[name="password"]');
         if (passField && val !== passField.value) { mostrarError(input, 'Las contraseñas no coinciden.'); return; }
       }
-      
       mostrarOk(input);
     }
-
     document.querySelectorAll('form input, form select, form textarea').forEach(function(input) {
       if (input.type === 'hidden' || input.type === 'submit' || input.name === 'csrfmiddlewaretoken') return;
       input.addEventListener('input',  function(){ validarCampo(this); });

@@ -18,6 +18,8 @@ from .views.CompatibilidadProducto import views as comp
 from .views.factura                import views as factura
 from .views.backup                 import views as backup
 from app                           import reportes as rep
+from .views.chatbot import views as chatbot
+
 
 app_name = 'app'
 
@@ -149,4 +151,9 @@ urlpatterns = [
     # ── BACKUP
     path('backup/',            backup.backup,           name='backup'),
     path('backup/restaurar/',  backup.restaurar_datos,  name='restaurar_datos'),
+    
+    # ── CHATBOT
+    path('chatbot/', chatbot.chatbot_responder, name='chatbot'),
+    
+ 
 ]
