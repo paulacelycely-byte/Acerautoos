@@ -1055,6 +1055,7 @@ class NotificacionForm(forms.ModelForm):
         ('Urgente',      'Urgente'),
         ('Informacion',  'Información'),
     ]
+    
     tipo = forms.ChoiceField(
         choices=TIPOS_NOTIFICACION,
         label="Tipo de Notificación",
@@ -1063,15 +1064,43 @@ class NotificacionForm(forms.ModelForm):
 
     class Meta:
         model  = Notificacion
-        fields = ['tipo', 'titulo', 'vehiculo', 'mensaje', 'leido']
+        fields = ['tipo', 'titulo', 'vehiculo', 'mensaje', 'leido', 'fecha']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Configuración de campos existentes
         self.fields['vehiculo'].required    = False
         self.fields['vehiculo'].empty_label = "-- Sin vehículo asociado --"
         self.fields['titulo'].required      = False
         self.fields['titulo'].help_text     = "Opcional. Resumen corto de la notificación."
         self.fields['leido'].initial        = False
+        
+        # OBTENER AÑO ACTUAL PARA LA VALIDACIÓN VISUAL
+        anio_actual = timezone.now().year
+        
+        # CONFIGURACIÓN DEL WIDGET DE FECHA
+        if 'fecha' in self.fields:
+            self.fields['fecha'].widget = forms.DateInput(
+                attrs={
+                    'type': 'date', 
+                    'class': 'form-control',
+                    'id': 'id_fecha',
+                    # Bloquea visualmente la selección de días futuros en el calendario
+                    'max': f"{anio_actual}-12-31" 
+                }
+            )
+
+    # VALIDADOR DE FECHA (Lógica de servidor)
+    def clean_fecha(self):
+        fecha = self.cleaned_data.get('fecha')
+        if fecha:
+            anio_actual = timezone.now().year
+            if fecha.year > anio_actual:
+                raise forms.ValidationError(
+                    f"No se pueden registrar notificaciones para el año {fecha.year}. "
+                    f"El año máximo permitido es {anio_actual}."
+                )
+        return fecha
 
     def clean_tipo(self):
         tipo = self.cleaned_data.get('tipo')
@@ -1089,13 +1118,12 @@ class NotificacionForm(forms.ModelForm):
         return titulo
 
     def clean_mensaje(self):
-        msg = self.cleaned_data['mensaje'].strip()
-        if len(msg) < 10:
+        mensaje = self.cleaned_data.get('mensaje', '').strip()
+        if len(mensaje) < 10:
             raise forms.ValidationError("El mensaje es demasiado corto (mínimo 10 caracteres).")
-        if len(msg) > 500:
+        if len(mensaje) > 500:
             raise forms.ValidationError("El mensaje no puede superar 500 caracteres.")
-        return msg
-
+        return mensaje
 
 # ══════════════════════════════════════════════════════════
 #  FACTURA

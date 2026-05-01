@@ -4,332 +4,267 @@
 {% block css %}
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-    :root {
-        --rojo:#d32f2f; --rojo2:#b71c1c; --carbon:#1a1a1a;
-        --gris:#f2f2f0; --borde:#e0ddd8; --texto:#2a2a2a; --muted:#888;
-    }
+:root{
+  --rojo:#d32f2f; --rojo2:#b71c1c; --carbon:#0f0f10;
+  --gris:#f3f3f1; --borde:#e6e2dc; --texto:#2a2a2a; --muted:#8a8a8a;
+}
 
-    /* HEADER */
-    .taller-header { position:relative; background:var(--carbon); border-radius:16px; padding:28px 32px; margin-bottom:28px; overflow:hidden; display:flex; align-items:center; justify-content:space-between; }
-    .taller-header::after { content:''; position:absolute; left:0; top:0; width:5px; height:100%; background:var(--rojo); border-radius:16px 0 0 16px; }
-    .header-left { display:flex; align-items:center; gap:18px; position:relative; }
-    .header-icon-wrap { width:56px; height:56px; background:var(--rojo); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:white; box-shadow:0 0 0 4px rgba(211,47,47,.25); flex-shrink:0; }
-    .header-titulo { font-family:'Barlow Condensed',sans-serif; font-size:2rem; font-weight:800; color:white; letter-spacing:1px; text-transform:uppercase; line-height:1; margin:0; }
-    .header-sub { font-family:'DM Sans',sans-serif; font-size:.78rem; color:rgba(255,255,255,.45); margin-top:4px; }
-    .header-actions { display:flex; align-items:center; gap:10px; position:relative; }
-    .badge-no-leidas { background:var(--rojo); color:white; font-family:'DM Sans',sans-serif; font-size:.7rem; font-weight:700; padding:3px 8px; border-radius:20px; margin-left:8px; vertical-align:middle; }
+/* ===== HEADER (TU DISEÑO ORIGINAL) ===== */
+.taller-header{
+  position:relative; overflow:hidden;
+  background:linear-gradient(180deg,#111 0%, #1a1a1a 100%);
+  border-radius:16px; padding:26px 28px; margin-bottom:16px;
+  display:flex; align-items:center; justify-content:space-between;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+.taller-header::after{
+  content:""; position:absolute; left:0; top:0; width:6px; height:100%;
+  background:var(--rojo); border-radius:16px 0 0 16px;
+}
+.header-icon{
+  width:54px; height:54px; border-radius:12px; background:var(--rojo);
+  display:flex; align-items:center; justify-content:center; color:#fff;
+  box-shadow:0 0 0 4px rgba(211,47,47,.25);
+}
+.header-title{
+  font-family:'Barlow Condensed',sans-serif; font-size:28px; font-weight:800;
+  color:#fff; letter-spacing:.5px; line-height:1;
+}
 
-    .btn-accion { font-family:'DM Sans',sans-serif; font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; padding:10px 18px; border-radius:10px; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; text-decoration:none; transition:transform .2s, box-shadow .2s; }
-    .btn-accion:hover { transform:translateY(-2px); }
-    .btn-nuevo { background:var(--rojo); color:white !important; box-shadow:0 4px 16px rgba(211,47,47,.4); }
-    .btn-nuevo:hover { box-shadow:0 6px 20px rgba(211,47,47,.5); color:white !important; }
-    .btn-todas { background:rgba(255,255,255,.1); color:white !important; border:1px solid rgba(255,255,255,.2) !important; }
-    .btn-todas:hover { background:rgba(255,255,255,.18); color:white !important; }
+/* ===== STATS (TU DISEÑO ORIGINAL) ===== */
+.stats{display:flex; gap:12px; margin:14px 0;}
+.stat{
+  background:#fff; border:1.5px solid var(--borde); border-radius:12px;
+  padding:14px 16px; min-width:120px; display:flex; flex-direction:column;
+}
+.stat-num{ font-family:'Barlow Condensed'; font-size:26px; font-weight:800; line-height:1; }
+.stat-label{ font-size:.7rem; color:var(--muted); text-transform:uppercase; }
 
-    /* FILTROS */
-    .filtros-bar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
-    .filtro-btn { font-family:'DM Sans',sans-serif; font-size:.75rem; font-weight:700; padding:7px 16px; border-radius:8px; border:1.5px solid var(--borde); background:white; color:var(--muted); cursor:pointer; transition:.2s; text-transform:uppercase; letter-spacing:.5px; }
-    .filtro-btn:hover { border-color:var(--carbon); color:var(--carbon); }
-    .filtro-btn.activo { background:var(--carbon); border-color:var(--carbon); color:white; }
-    .filtro-busqueda { margin-left:auto; position:relative; }
-    .filtro-busqueda input { font-family:'DM Sans',sans-serif; font-size:.82rem; padding:8px 14px 8px 36px; border:1.5px solid var(--borde); border-radius:10px; outline:none; transition:border-color .2s; width:220px; }
-    .filtro-busqueda input:focus { border-color:var(--rojo); }
-    .filtro-busqueda i { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#bbb; font-size:.8rem; }
+/* ===== PANEL DE FILTROS REFORZADO ===== */
+.panel-filtros {
+    background: #fff;
+    border: 1.5px solid var(--borde);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+.fila-filtros {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+.fila-calendario {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--gris);
+}
 
-    /* GRID NOTIFICACIONES */
-    .notif-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:16px; }
+/* Selectores iguales */
+.select-custom {
+    font-family: 'DM Sans';
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--borde);
+    background: #fff;
+    min-width: 180px;
+    outline: none;
+    cursor: pointer;
+}
+.select-custom:focus { border-color: var(--rojo); }
 
-    /* TARJETA */
-    .notif-card {
-        background:white; border-radius:14px; border:1.5px solid var(--borde);
-        overflow:hidden; transition:transform .2s, box-shadow .2s;
-        display:flex; flex-direction:column;
-    }
-    .notif-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,.08); }
-    .notif-card.no-leida { border-color:#ffd54f; background:#fffdf0; }
-    .notif-card.no-leida:hover { box-shadow:0 8px 24px rgba(255,213,79,.2); }
+.chip {
+  font-family:'DM Sans'; font-size:.75rem; font-weight:700;
+  padding:8px 16px; border-radius:10px; border:1.5px solid var(--borde);
+  background:#fff; cursor:pointer;
+}
+.chip.active { background:#111; color:#fff; }
 
-    .notif-card-top { padding:16px 18px 12px; display:flex; align-items:flex-start; gap:12px; }
-    .notif-card-icon { width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
-    .icon-Mantenimiento { background:#e3f2fd; color:#1565c0; }
-    .icon-Alerta        { background:#ffebee; color:#c62828; }
-    .icon-Recordatorio  { background:#f3e5f5; color:#6a1b9a; }
-    .icon-Urgente       { background:#fff3e0; color:#e65100; }
-    .icon-Informacion   { background:#e8f5e9; color:#2e7d32; }
+.buscador-input {
+  padding:10px 12px 10px 38px; border:1.5px solid var(--borde); border-radius:10px; width:300px;
+}
 
-    .notif-card-info { flex:1; min-width:0; }
-    .notif-card-header-row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; }
-    .badge-tipo { font-family:'DM Sans',sans-serif; font-size:.65rem; font-weight:800; padding:3px 9px; border-radius:6px; letter-spacing:.5px; text-transform:uppercase; }
-    .tipo-Mantenimiento { background:#e3f2fd; color:#1565c0; }
-    .tipo-Alerta        { background:#ffebee; color:#c62828; }
-    .tipo-Recordatorio  { background:#f3e5f5; color:#6a1b9a; }
-    .tipo-Urgente       { background:#fff3e0; color:#e65100; }
-    .tipo-Informacion   { background:#e8f5e9; color:#2e7d32; }
+/* ===== TABLA CON ICONOS ===== */
+.tipo-ico{
+  width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:.9rem;
+}
+.ico-alerta{background:#ef5350;}
+.ico-mant{background:#42a5f5;}
+.ico-urg{background:#fb8c00;}
+.ico-info{background:#64b5f6;}
 
-    .badge-origen { font-family:'DM Sans',sans-serif; font-size:.62rem; font-weight:700; padding:2px 7px; border-radius:5px; }
-    .origen-SISTEMA { background:#e3f2fd; color:#1565c0; }
-    .origen-ADMIN   { background:#f3e5f5; color:#6a1b9a; }
-
-    .notif-titulo { font-family:'DM Sans',sans-serif; font-size:.9rem; font-weight:700; color:var(--carbon); line-height:1.3; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .notif-fecha  { font-size:.7rem; color:var(--muted); }
-
-    .notif-card-body { padding:0 18px 14px; }
-    .notif-mensaje { font-family:'DM Sans',sans-serif; font-size:.8rem; color:#555; line-height:1.6; white-space:pre-line; }
-
-    .notif-vehiculo { display:flex; align-items:center; gap:6px; margin-top:10px; padding:8px 12px; background:var(--gris); border-radius:8px; font-size:.75rem; color:var(--muted); font-family:'DM Sans',sans-serif; }
-    .notif-vehiculo i { color:var(--rojo); }
-    .notif-vehiculo strong { color:var(--carbon); }
-
-    .notif-card-footer { padding:10px 18px; border-top:1px solid var(--borde); display:flex; align-items:center; justify-content:space-between; background:var(--gris); }
-    .badge-leido { font-family:'DM Sans',sans-serif; font-size:.7rem; font-weight:700; padding:4px 10px; border-radius:7px; display:inline-flex; align-items:center; gap:5px; }
-    .leido-si { background:#e8f5e9; color:#2e7d32; border:1px solid #c8e6c9; }
-    .leido-no { background:#fff3e0; color:#e65100; border:1px solid #ffe0b2; }
-
-    .acciones { display:flex; gap:6px; }
-    .btn-fila { width:30px; height:30px; border-radius:7px; display:inline-flex; align-items:center; justify-content:center; border:none; cursor:pointer; transition:.2s; font-size:.75rem; text-decoration:none; }
-    .btn-fila:hover { transform:translateY(-2px); }
-    .btn-edit  { background:#f39c12; color:white; }
-    .btn-del   { background:var(--rojo); color:white; }
-    .btn-leida { background:#27ae60; color:white; }
-
-    /* Vacío */
-    .notif-empty-state { text-align:center; padding:60px 20px; }
-    .notif-empty-state i { font-size:3rem; color:#ddd; margin-bottom:16px; }
-    .notif-empty-state p { font-family:'DM Sans',sans-serif; font-size:.9rem; color:var(--muted); }
-
-    /* Stats bar */
-    .stats-bar { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
-    .stat-chip { display:flex; align-items:center; gap:8px; padding:10px 16px; border-radius:10px; background:white; border:1.5px solid var(--borde); font-family:'DM Sans',sans-serif; }
-    .stat-chip-num { font-size:1.2rem; font-weight:800; font-family:'Barlow Condensed',sans-serif; line-height:1; }
-    .stat-chip-label { font-size:.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
-    .stat-chip.urgente { border-color:#ffe0b2; background:#fff8f0; }
-    .stat-chip.urgente .stat-chip-num { color:#e65100; }
-    .stat-chip.no-leidas { border-color:#ffd54f; background:#fffdf0; }
-    .stat-chip.no-leidas .stat-chip-num { color:#f57f17; }
-    .stat-chip.total .stat-chip-num { color:var(--carbon); }
+.badge-tipo{ font-size:.65rem; font-weight:800; padding:3px 9px; border-radius:8px; }
+.tipo-Alerta{background:#ffebee; color:#c62828;}
+.tipo-Mantenimiento{background:#e3f2fd; color:#1565c0;}
+.tipo-Urgente{background:#fff3e0; color:#e65100;}
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container-fluid py-2">
 
-    <div class="taller-header">
-        <div class="header-left">
-            <div class="header-icon-wrap"><i class="fas fa-bell"></i></div>
-            <div>
-                <h1 class="header-titulo">
-                    {{ titulo|default:"Notificaciones" }}
-                    {% if no_leidas > 0 %}<span class="badge-no-leidas">{{ no_leidas }}</span>{% endif %}
-                </h1>
-                <div class="header-sub">Alertas y recordatorios del taller</div>
-            </div>
+  <!-- HEADER -->
+  <div class="taller-header">
+    <div class="header-left d-flex align-items-center gap-3">
+      <div class="header-icon"><i class="fas fa-bell"></i></div>
+      <div>
+        <div class="header-title">HISTORIAL DE NOTIFICACIONES</div>
+        <div style="color:rgba(255,255,255,0.5); font-size:0.8rem; font-family:'DM Sans';">Alertas y mantenimientos del sistema</div>
+      </div>
+    </div>
+    <a href="{{ crear_url }}" class="btn-primary" style="background:var(--rojo); color:#fff; padding:10px 20px; border-radius:10px; font-weight:800; text-decoration:none; box-shadow:0 5px 15px rgba(211,47,47,0.3);">
+        <i class="fas fa-plus"></i> NUEVA NOTIFICACIÓN
+    </a>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">{{ object_list|length }}</div>
+      <div class="stat-label">Total</div>
+    </div>
+    <div class="stat" style="background:#fffaf0; border-color:#ffe0b2;">
+      <div class="stat-num" style="color:#f57f17;">{{ no_leidas }}</div>
+      <div class="stat-label">Sin leer</div>
+    </div>
+  </div>
+
+  <!-- PANEL DE FILTROS -->
+  <div class="panel-filtros">
+    <div class="fila-filtros">
+        <div id="filtros-chips" class="d-flex gap-2">
+            <button class="chip active" data-tipo="TODAS">TODAS</button>
+            <button class="chip" data-tipo="Mantenimiento">MANTENIMIENTO</button>
+            <button class="chip" data-tipo="Alerta">ALERTA</button>
+            <button class="chip" data-tipo="Urgente">URGENTE</button>
         </div>
-        <div class="header-actions">
-            {% if no_leidas > 0 %}
-            <button class="btn-accion btn-todas" id="btn-marcar-todas">
-                <i class="fas fa-check-double"></i> Marcar todas leídas
-            </button>
-            {% endif %}
-            <a href="{{ crear_url }}" class="btn-accion btn-nuevo">
-                <i class="fas fa-plus"></i> Nueva Notificación
-            </a>
+        <div style="position:relative;">
+            <i class="fas fa-search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#bbb;"></i>
+            <input type="text" id="buscador-input" class="buscador-input" placeholder="Buscar por placa o título...">
         </div>
     </div>
 
-    <!-- Stats -->
-    <div class="stats-bar">
-        <div class="stat-chip total">
-            <div>
-                <div class="stat-chip-num">{{ object_list|length }}</div>
-                <div class="stat-chip-label">Total</div>
-            </div>
+    <div class="fila-calendario">
+        <div class="grupo-filtro">
+            <span class="label-filtro"><i class="fas fa-calendar"></i> AÑO:</span>
+            <select id="filtro-año" class="select-custom">
+                <option value="TODOS">TODOS LOS AÑOS</option>
+                <!-- Generados por JS -->
+            </select>
         </div>
-        <div class="stat-chip no-leidas">
-            <div>
-                <div class="stat-chip-num">{{ no_leidas }}</div>
-                <div class="stat-chip-label">Sin leer</div>
-            </div>
-        </div>
-        <div class="stat-chip urgente">
-            <div>
-                <div class="stat-chip-num">{{ object_list|length }}</div>
-                <div class="stat-chip-label">Urgentes</div>
-            </div>
+        <div class="grupo-filtro">
+            <span class="label-filtro"><i class="fas fa-calendar-alt"></i> MES:</span>
+            <select id="filtro-mes" class="select-custom">
+                <option value="TODOS">TODOS LOS MESES</option>
+                <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+                <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+                <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+                <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+            </select>
         </div>
     </div>
+  </div>
 
-    <!-- Filtros -->
-    <div class="filtros-bar">
-        <button class="filtro-btn activo" data-filtro="todas">Todas</button>
-        <button class="filtro-btn" data-filtro="Mantenimiento">🔧 Mantenimiento</button>
-        <button class="filtro-btn" data-filtro="Alerta">⚠️ Alerta</button>
-        <button class="filtro-btn" data-filtro="Urgente">🔴 Urgente</button>
-        <button class="filtro-btn" data-filtro="Recordatorio">🕐 Recordatorio</button>
-        <button class="filtro-btn" data-filtro="Informacion">ℹ️ Información</button>
-        <div class="filtro-busqueda">
-            <i class="fas fa-search"></i>
-            <input type="text" id="buscador" placeholder="Buscar notificación...">
-        </div>
-    </div>
-
-    <!-- Grid -->
-    <div class="notif-grid" id="notif-grid">
+  <!-- TABLA -->
+  <div style="background:#fff; border-radius:14px; border:1.5px solid var(--borde); overflow:hidden;">
+    <table class="table mb-0" style="font-family:'DM Sans';">
+      <thead style="background:var(--gris);">
+        <tr>
+          <th style="font-size:0.7rem; font-weight:800; color:#777; text-transform:uppercase;">Tipo</th>
+          <th style="font-size:0.7rem; font-weight:800; color:#777; text-transform:uppercase;">Notificación</th>
+          <th style="font-size:0.7rem; font-weight:800; color:#777; text-transform:uppercase;">Vehículo</th>
+          <th style="font-size:0.7rem; font-weight:800; color:#777; text-transform:uppercase;">Fecha</th>
+          <th style="font-size:0.7rem; font-weight:800; color:#777; text-transform:uppercase;">Estado</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-body">
         {% for n in object_list %}
-        {% with iconos="fa-wrench,fa-exclamation-triangle,fa-clock,fa-fire,fa-info-circle" %}
-        <div class="notif-card {% if not n.leido %}no-leida{% endif %}"
-             id="card-{{ n.id }}"
-             data-tipo="{{ n.tipo }}"
-             data-texto="{{ n.titulo|lower }} {{ n.mensaje|lower }}">
-
-            <div class="notif-card-top">
-                <div class="notif-card-icon icon-{{ n.tipo }}">
-                    {% if n.tipo == 'Mantenimiento' %}<i class="fas fa-wrench"></i>
-                    {% elif n.tipo == 'Alerta' %}<i class="fas fa-exclamation-triangle"></i>
-                    {% elif n.tipo == 'Recordatorio' %}<i class="fas fa-clock"></i>
+        <tr data-tipo="{{ n.tipo }}" data-mes="{{ n.fecha|date:'n' }}" data-año="{{ n.fecha|date:'Y' }}"
+            data-titulo="{{ n.titulo|lower }}" data-vehiculo="{{ n.vehiculo.placa|lower }}">
+          <td style="vertical-align:middle;">
+            <div class="d-flex align-items-center gap-2">
+                <div class="tipo-ico ico-{{ n.tipo|lower|slice:':4' }}">
+                    {% if n.tipo == 'Alerta' %}<i class="fas fa-exclamation"></i>
+                    {% elif n.tipo == 'Mantenimiento' %}<i class="fas fa-wrench"></i>
                     {% elif n.tipo == 'Urgente' %}<i class="fas fa-fire"></i>
-                    {% else %}<i class="fas fa-info-circle"></i>{% endif %}
+                    {% else %}<i class="fas fa-info"></i>{% endif %}
                 </div>
-                <div class="notif-card-info">
-                    <div class="notif-card-header-row">
-                        <span class="badge-tipo tipo-{{ n.tipo }}">{{ n.tipo }}</span>
-                        <span class="badge-origen origen-{{ n.origen }}">{{ n.get_origen_display }}</span>
-                    </div>
-                    <div class="notif-titulo">{{ n.titulo|default:n.tipo }}</div>
-                    <div class="notif-fecha"><i class="fas fa-calendar-alt" style="margin-right:4px;"></i>{{ n.fecha|date:"d/m/Y H:i" }}</div>
-                </div>
+                <span class="badge-tipo tipo-{{ n.tipo }}">{{ n.tipo|upper }}</span>
             </div>
-
-            <div class="notif-card-body">
-                <div class="notif-mensaje">{{ n.mensaje }}</div>
-                {% if n.vehiculo %}
-                <div class="notif-vehiculo">
-                    <i class="fas fa-car"></i>
-                    <span><strong>{{ n.vehiculo.placa }}</strong> — {{ n.vehiculo.marca }} {{ n.vehiculo.modelo }} · {{ n.vehiculo.cliente }}</span>
-                </div>
-                {% endif %}
-            </div>
-
-            <div class="notif-card-footer">
-                <span class="badge-leido {% if n.leido %}leido-si{% else %}leido-no{% endif %}" id="badge-leido-{{ n.id }}">
-                    {% if n.leido %}<i class="fas fa-check-circle"></i> Leído
-                    {% else %}<i class="fas fa-circle"></i> Sin leer{% endif %}
-                </span>
-                <div class="acciones">
-                    {% if not n.leido %}
-                    <button class="btn-fila btn-leida btn-marcar-leida"
-                            data-id="{{ n.id }}"
-                            data-url="{% url 'app:marcar_notificacion_leida' n.id %}"
-                            title="Marcar como leída">
-                        <i class="fas fa-check"></i>
-                    </button>
-                    {% endif %}
-                    <a href="{% url 'app:editar_notificacion' n.id %}" class="btn-fila btn-edit" title="Editar"><i class="fas fa-pen"></i></a>
-                    <a href="{% url 'app:eliminar_notificacion' n.id %}" class="btn-fila btn-del" title="Eliminar"><i class="fas fa-trash-alt"></i></a>
-                </div>
-            </div>
-
-        </div>
-        {% endwith %}
-        {% empty %}
-        <div class="notif-empty-state" style="grid-column:1/-1;">
-            <i class="fas fa-bell-slash"></i>
-            <p>No hay notificaciones registradas.</p>
-        </div>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-weight:700; color:#222;">{{ n.titulo }}</div>
+            <div style="font-size:0.75rem; color:#888;">{{ n.mensaje }}</div>
+          </td>
+          <td style="vertical-align:middle; font-weight:700;">{{ n.vehiculo.placa }}</td>
+          <td style="vertical-align:middle;">{{ n.fecha|date:"d/m/Y" }}</td>
+          <td style="vertical-align:middle;">
+            <span style="font-size:0.7rem; font-weight:800; padding:5px 12px; border-radius:20px; {% if n.leido %}background:#e8f5e9; color:#2e7d32;{% else %}background:#fff3e0; color:#e65100;{% endif %}">
+                {% if n.leido %}LEÍDO{% else %}SIN LEER{% endif %}
+            </span>
+          </td>
+        </tr>
         {% endfor %}
-    </div>
-
+      </tbody>
+    </table>
+  </div>
 </div>
-{% endblock %}
 
-{% block js %}
 <script>
-// ── Filtros por tipo ──
-document.querySelectorAll('.filtro-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('activo'));
-        this.classList.add('activo');
-        filtrar();
-    });
-});
+(function () {
+  const tbody = document.getElementById('tabla-body');
+  const buscador = document.getElementById('buscador-input');
+  const fMes = document.getElementById('filtro-mes');
+  const fAño = document.getElementById('filtro-año');
+  const fChips = document.getElementById('filtros-chips');
 
-document.getElementById('buscador').addEventListener('input', filtrar);
+  let tipoAct = 'TODAS';
 
-function filtrar() {
-    var tipo    = document.querySelector('.filtro-btn.activo').dataset.filtro;
-    var buscar  = document.getElementById('buscador').value.toLowerCase();
-    var cards   = document.querySelectorAll('.notif-card');
-    var visibles = 0;
-
-    cards.forEach(card => {
-        var matchTipo  = tipo === 'todas' || card.dataset.tipo === tipo;
-        var matchTexto = !buscar || card.dataset.texto.includes(buscar);
-        var mostrar    = matchTipo && matchTexto;
-        card.style.display = mostrar ? '' : 'none';
-        if (mostrar) visibles++;
-    });
-
-    // Mostrar estado vacío si no hay resultados
-    var emptyEl = document.getElementById('empty-filtro');
-    if (!emptyEl) {
-        emptyEl = document.createElement('div');
-        emptyEl.id = 'empty-filtro';
-        emptyEl.className = 'notif-empty-state';
-        emptyEl.style.gridColumn = '1/-1';
-        emptyEl.innerHTML = '<i class="fas fa-search"></i><p>No hay notificaciones que coincidan con el filtro.</p>';
-        document.getElementById('notif-grid').appendChild(emptyEl);
+  // CARGAR AÑOS PARA PRUEBAS (2024 al 2030)
+  function cargarAños() {
+    for (let i = 2024; i <= 2030; i++) {
+        let opt = document.createElement('option');
+        opt.value = i; opt.textContent = i;
+        if(i === 2026) opt.selected = false; // Puedes pre-seleccionar uno si quieres
+        fAño.appendChild(opt);
     }
-    emptyEl.style.display = visibles === 0 ? '' : 'none';
-}
+  }
 
-// ── Marcar una como leída ──
-$(document).on('click', '.btn-marcar-leida', function() {
-    var btn = $(this), id = btn.data('id'), url = btn.data('url');
-    $.ajax({
-        url: url, method: 'POST',
-        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
-        success: function(res) {
-            if (res.ok) {
-                $('#badge-leido-' + id).removeClass('leido-no').addClass('leido-si')
-                    .html('<i class="fas fa-check-circle"></i> Leído');
-                $('#card-' + id).removeClass('no-leida');
-                btn.remove();
-                Swal.fire({ icon:'success', title:'Marcada como leída', showConfirmButton:false, timer:1200 });
-            }
-        },
-        error: function() {
-            Swal.fire({ icon:'error', title:'Error al procesar', showConfirmButton:false, timer:1500 });
-        }
+  function filtrar() {
+    const q = buscador.value.toLowerCase().trim();
+    const m = fMes.value;
+    const a = fAño.value;
+    const filas = Array.from(tbody.querySelectorAll('tr'));
+
+    filas.forEach(f => {
+      const mT = tipoAct === 'TODAS' || f.dataset.tipo === tipoAct;
+      const mM = m === 'TODOS' || f.dataset.mes === m;
+      const mA = a === 'TODOS' || f.dataset.año === a;
+      const mQ = !q || f.dataset.titulo.includes(q) || f.dataset.vehiculo.includes(q);
+
+      f.style.display = (mT && mM && mA && mQ) ? '' : 'none';
     });
-});
+  }
 
-// ── Marcar todas ──
-$('#btn-marcar-todas').on('click', function() {
-    Swal.fire({
-        title:'¿Marcar todas como leídas?',
-        text:'Todas las notificaciones pendientes quedarán marcadas.',
-        icon:'question', showCancelButton:true,
-        confirmButtonText:'Sí, marcar todas', cancelButtonText:'Cancelar',
-        confirmButtonColor:'#27ae60', cancelButtonColor:'#6c757d',
-    }).then(function(result) {
-        if (result.isConfirmed) {
-            $.ajax({
-                url:'{% url "app:marcar_todas_leidas" %}', method:'POST',
-                headers:{ 'X-CSRFToken':'{{ csrf_token }}' },
-                success: function(res) {
-                    if (res.ok) {
-                        Swal.fire({ icon:'success', title:res.mensaje, showConfirmButton:false, timer:1500 })
-                            .then(() => location.reload());
-                    }
-                }
-            });
-        }
-    });
-});
+  fChips.addEventListener('click', (e) => {
+    if (e.target.classList.contains('chip')) {
+        fChips.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        e.target.classList.add('active');
+        tipoAct = e.target.dataset.tipo;
+        filtrar();
+    }
+  });
 
-{% if messages %}
-    {% for message in messages %}
-    Swal.fire({ icon:"{{ message.tags }}", title:"{{ message|escapejs }}", showConfirmButton:false, timer:2000 });
-    {% endfor %}
-{% endif %}
+  buscador.addEventListener('input', filtrar);
+  fMes.addEventListener('change', filtrar);
+  fAño.addEventListener('change', filtrar);
+  
+  cargarAños();
+})();
 </script>
 {% endblock %}

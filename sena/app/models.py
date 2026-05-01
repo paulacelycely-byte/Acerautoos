@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
 
 # ══════════════════════════════════════════════════════════
 #  USUARIO SISTEMA
@@ -322,16 +323,40 @@ class Vehiculo(models.Model):
 # ══════════════════════════════════════════════════════════
 #  NOTIFICACION
 # ══════════════════════════════════════════════════════════
+def validar_no_futuro(value):
+    anio_actual = timezone.now().year
+    if value.year > anio_actual:
+        raise ValidationError(
+            f"No se permiten notificaciones para años futuros. El año máximo permitido es {anio_actual}."
+        )
+
 class Notificacion(models.Model):
-    TIPOS = [('Alerta', 'Alerta'), ('Recordatorio', 'Recordatorio'), ('Mantenimiento', 'Mantenimiento'), ('Urgente', 'Urgente'), ('Informacion', 'Información')]
-    ORIGENES = [('SISTEMA', 'Automática del sistema'), ('ADMIN', 'Creada por administrador')]
+    TIPOS = [
+        ('Alerta', 'Alerta'), 
+        ('Recordatorio', 'Recordatorio'), 
+        ('Mantenimiento', 'Mantenimiento'), 
+        ('Urgente', 'Urgente'), 
+        ('Informacion', 'Información')
+    ]
+    ORIGENES = [
+        ('SISTEMA', 'Automática del sistema'), 
+        ('ADMIN', 'Creada por administrador')
+    ]
+    
     tipo     = models.CharField(max_length=50, choices=TIPOS)
     origen   = models.CharField(max_length=10, choices=ORIGENES, default='ADMIN')
     titulo   = models.CharField(max_length=150, blank=True)
     vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE, null=True, blank=True)
     mensaje  = models.TextField()
     leido    = models.BooleanField(default=False)
-    fecha    = models.DateTimeField(auto_now_add=True)
+    
+    # 2. Aplicamos DateField con el validador personalizado
+    # Esto permite que sea editable en el formulario y bloquea años futuros
+    fecha    = models.DateField(
+        default=timezone.now, 
+        validators=[validar_no_futuro],
+        help_text="Seleccione la fecha de la notificación (no mayor al año actual)."
+    )
 
     def __str__(self):
         return f"[{self.get_origen_display()}] {self.tipo} — {self.titulo or self.mensaje[:40]}"
@@ -339,7 +364,6 @@ class Notificacion(models.Model):
     class Meta:
         db_table = 'notificacion'
         ordering = ['-fecha']
-
 
 # ══════════════════════════════════════════════════════════
 #  ORDEN DE SERVICIO
