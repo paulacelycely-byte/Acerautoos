@@ -5,11 +5,23 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from app.models import Vehiculo, Notificacion
 from app.forms import VehiculoForm
 
+# ── MIXIN DE PROTECCIÓN PARA ADMINISTRADORES ─────────────────
+class SoloAdminMixin(UserPassesTestMixin):
+    def test_func(self):
+        # Solo permite el acceso si el usuario es ADMIN o superusuario
+        return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
 
+    def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos de administrador para realizar esta acción.")
+        return redirect('app:listar_vehiculos')
+
+
+# ── FUNCIONES DE CÁLCULO Y ALERTAS (Lógica original completa) ──
 def _calcular_mantenimiento(vehiculo):
     """
     Calcula y asigna km_proximo_mantenimiento y fecha_proximo_mantenimiento
@@ -81,8 +93,8 @@ def generar_alertas_km():
                 )
 
 
-# ── 1. LISTADO ──────────────────────────────────────────────
-class VehiculoListView(ListView):
+# ── 1. LISTADO (Acceso para Mecánicos y Admins) ──────────────
+class VehiculoListView(LoginRequiredMixin, ListView):
     model = Vehiculo
     template_name = 'vehiculo/listar.html'
     context_object_name = 'vehiculos'
@@ -110,8 +122,8 @@ class VehiculoListView(ListView):
         return context
 
 
-# ── 2. CREAR ────────────────────────────────────────────────
-class VehiculoCreateView(CreateView):
+# ── 2. CREAR (Protegido - Solo Admin) ────────────────────────
+class VehiculoCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
     model = Vehiculo
     form_class = VehiculoForm
     template_name = 'vehiculo/crear.html'
@@ -133,14 +145,14 @@ class VehiculoCreateView(CreateView):
 
         self.object = vehiculo
         next_param = self.request.POST.get('next', '')
-        messages.success(self.request, f'Vehículo {vehiculo.placa} registrado con éxito.')
+        messages.success(self.request, f'Vehículo {vehiculo.placa} registrado con éxito en Acerautos.')
         if next_param == 'orden':
             return redirect(reverse_lazy('app:orden_servicio_create'))
         return redirect(self.success_url)
 
 
-# ── 3. EDITAR ───────────────────────────────────────────────
-class VehiculoUpdateView(UpdateView):
+# ── 3. EDITAR (Protegido - Solo Admin) ───────────────────────
+class VehiculoUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
     model = Vehiculo
     form_class = VehiculoForm
     template_name = 'vehiculo/crear.html'
@@ -168,14 +180,14 @@ class VehiculoUpdateView(UpdateView):
         return redirect(self.success_url)
 
 
-# ── 4. ELIMINAR ─────────────────────────────────────────────
-class VehiculoDeleteView(DeleteView):
+# ── 4. ELIMINAR (Protegido - Solo Admin) ─────────────────────
+class VehiculoDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
     model = Vehiculo
     template_name = 'vehiculo/eliminar.html'
     success_url = reverse_lazy('app:listar_vehiculos')
 
     def form_valid(self, form):
-        messages.success(self.request, 'El vehículo ha sido eliminado del sistema.')
+        messages.success(self.request, 'El vehículo ha sido eliminado del sistema de Acerautos.')
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

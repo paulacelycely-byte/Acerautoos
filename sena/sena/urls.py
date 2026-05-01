@@ -8,7 +8,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('principal/', include('app.urls', namespace='app')),
     path('', include('login.urls', namespace='login')),
-    path('usuario/', include('usuario.urls', namespace='usuario')),
 
     # ── Recuperación de contraseña ──
     path('password-reset/',
@@ -26,7 +25,7 @@ urlpatterns = [
     path('password-reset-confirm/<uidb64>/<token>/',
          auth_views.PasswordResetConfirmView.as_view(
              template_name='registration/password_reset_confirm.html',
-             post_reset_login=False,  # ← esto evita el login automático
+             post_reset_login=False,  
          ),
          name='password_reset_confirm'),
 

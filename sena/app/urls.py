@@ -34,6 +34,7 @@ urlpatterns = [
     path('usuarios/crear/',             usr.UsuarioCreateView.as_view(), name='crear_usuario'),
     path('usuarios/editar/<int:pk>/',   usr.UsuarioUpdateView.as_view(), name='editar_usuario'),
     path('usuarios/eliminar/<int:pk>/', usr.UsuarioDeleteView.as_view(), name='eliminar_usuario'),
+    path('usuarios/cambiar-estado/<int:pk>/', usr.CambiarEstadoUsuarioView.as_view(), name='cambiar_estado_usuario'),
 
     # ── EMPLEADOS
     path('empleados/listar/',            emp.EmpleadoListView.as_view(),   name='listar_empleado'),
