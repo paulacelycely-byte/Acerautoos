@@ -2,14 +2,29 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # ← Mixins para seguridad
+from django.shortcuts import redirect # ← Necesario para la redirección de permisos
 
-# IMPORTACIÓN ABSOLUTA (Soluciona el error de la imagen 1)
+# IMPORTACIÓN ABSOLUTA
 from app.models import Proveedor
 from app.forms import ProveedorForm
 
-class ProveedorListView(ListView):
+# ── MIXIN DE PROTECCIÓN ───────────────────────────────────
+class SoloAdminMixin(UserPassesTestMixin):
+    def test_func(self):
+        # Solo permite el acceso si el cargo es ADMIN o es superusuario
+        return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos de administrador para gestionar proveedores.")
+        return redirect('app:dashboard')
+
+
+# ================================
+# LISTAR (Solo Admin)
+# ================================
+class ProveedorListView(LoginRequiredMixin, SoloAdminMixin, ListView):
     model = Proveedor
-    # AJUSTADO A TU CARPETA SINGULAR (Soluciona el error de las imágenes 2 y 3)
     template_name = 'Proveedor/listar.html' 
     context_object_name = 'object_list'
 
@@ -20,7 +35,11 @@ class ProveedorListView(ListView):
         context['listar_url'] = reverse_lazy('app:listar_proveedores')
         return context
 
-class ProveedorCreateView(SuccessMessageMixin, CreateView):
+
+# ================================
+# CREAR (Solo Admin)
+# ================================
+class ProveedorCreateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, CreateView):
     model = Proveedor
     form_class = ProveedorForm
     template_name = 'Proveedor/crear.html'
@@ -34,7 +53,11 @@ class ProveedorCreateView(SuccessMessageMixin, CreateView):
         context['action'] = 'add'
         return context
 
-class ProveedorUpdateView(SuccessMessageMixin, UpdateView):
+
+# ================================
+# EDITAR (Solo Admin)
+# ================================
+class ProveedorUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, UpdateView):
     model = Proveedor
     form_class = ProveedorForm
     template_name = 'Proveedor/crear.html' 
@@ -48,7 +71,11 @@ class ProveedorUpdateView(SuccessMessageMixin, UpdateView):
         context['action'] = 'edit'
         return context
 
-class ProveedorDeleteView(DeleteView):
+
+# ================================
+# ELIMINAR (Solo Admin)
+# ================================
+class ProveedorDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
     model = Proveedor
     template_name = 'Proveedor/eliminar.html'
     success_url = reverse_lazy('app:listar_proveedores')

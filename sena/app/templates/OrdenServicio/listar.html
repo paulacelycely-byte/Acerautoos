@@ -274,10 +274,12 @@
                 Excel
             </a>
 
+            {% if request.user.is_superuser or request.user.cargo == 'ADMIN' %}
             <a href="{% url 'app:orden_servicio_create' %}" class="btn-accion btn-nuevo">
                 <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 Nueva Orden
             </a>
+            {% endif %}
 
         </div>
     </div>
@@ -295,7 +297,7 @@
                         <th class="text-center">Estado</th>
                         <th class="text-center">Productos</th>
                         <th>Fecha</th>
-                        <th class="text-center">Acciones</th>
+                        {% if request.user.is_superuser or request.user.cargo == 'ADMIN' %}<th class="text-center">Acciones</th>{% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -359,6 +361,7 @@
                             <div class="fecha-hora">{{ o.fecha|date:"H:i" }}</div>
                         </td>
 
+                        {% if request.user.is_superuser or request.user.cargo == 'ADMIN' %}
                         <td class="text-center">
 
                             <!-- Botón ver -->
@@ -388,6 +391,7 @@
                             </a>
 
                         </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>

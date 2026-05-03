@@ -12,8 +12,7 @@ class UsuarioSistema(AbstractUser):
     CARGOS = [
         ('ADMIN',         'Administrador'),
         ('MECANICO',      'Mecánico'),
-        ('RECEPCIONISTA', 'Recepcionista'),
-        ('GERENTE',       'Gerente'),
+
     ]
     TIPOS_DOC = [
         ('CC',  'Cédula de Ciudadanía'),

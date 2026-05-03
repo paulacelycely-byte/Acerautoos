@@ -18,6 +18,8 @@ from .views.CompatibilidadProducto import views as comp
 from .views.factura                import views as factura
 from .views.backup                 import views as backup
 from app                           import reportes as rep
+from .views.chatbot import views as chatbot
+
 
 app_name = 'app'
 
@@ -32,6 +34,7 @@ urlpatterns = [
     path('usuarios/crear/',             usr.UsuarioCreateView.as_view(), name='crear_usuario'),
     path('usuarios/editar/<int:pk>/',   usr.UsuarioUpdateView.as_view(), name='editar_usuario'),
     path('usuarios/eliminar/<int:pk>/', usr.UsuarioDeleteView.as_view(), name='eliminar_usuario'),
+    path('usuarios/cambiar-estado/<int:pk>/', usr.CambiarEstadoUsuarioView.as_view(), name='cambiar_estado_usuario'),
 
     # ── EMPLEADOS
     path('empleados/listar/',            emp.EmpleadoListView.as_view(),   name='listar_empleado'),
@@ -149,4 +152,9 @@ urlpatterns = [
     # ── BACKUP
     path('backup/',            backup.backup,           name='backup'),
     path('backup/restaurar/',  backup.restaurar_datos,  name='restaurar_datos'),
+    
+    # ── CHATBOT
+    path('chatbot/', chatbot.chatbot_responder, name='chatbot'),
+    
+ 
 ]
