@@ -2,23 +2,23 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # Importamos los protectores
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin 
 from app.models import Cliente
 from app.forms import ClienteForm
 
 # MIXIN PERSONALIZADO PARA ADMINISTRADORES
-# Esto evita repetir código en cada vista
 class SoloAdminMixin(UserPassesTestMixin):
     def test_func(self):
         # Solo permite el paso si el cargo es ADMIN o es superusuario
         return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
 
     def handle_no_permission(self):
-        messages.error(self.request, "No tienes permisos para realizar esta acción.")
-        return redirect('app:listar_clientes')
+        messages.error(self.request, "No tienes permisos para acceder al módulo de clientes.")
+        # Redirigimos al dashboard o inicio para evitar un bucle si se intenta entrar a la lista
+        return redirect('app:dashboard') 
 
-# 1. LISTADO DE CLIENTES (Acceso para todos los logueados)
-class ClienteListView(LoginRequiredMixin, ListView):
+# 1. LISTADO DE CLIENTES (Restringido para mecánicos)
+class ClienteListView(LoginRequiredMixin, SoloAdminMixin, ListView):
     model = Cliente
     template_name = 'cliente/listar.html'
     context_object_name = 'clientes'
