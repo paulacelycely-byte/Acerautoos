@@ -183,7 +183,7 @@
     .km-val {
         font-family: 'DM Sans', sans-serif;
         font-size: .85rem; font-weight: 600;
-        color: var(--texto);
+        color: var(--carbon);
     }
 
     /* ── Fecha ── */
@@ -325,7 +325,7 @@
                         </td>
 
                         <td class="text-center">
-                            <span class="km-val">{{ o.km_actual|floatformat:"0" }} km</span>
+                            <small class="km-val d-block">{{ o.km_actual|floatformat:"0" }} km</small>
                         </td>
 
                         <td class="text-center">

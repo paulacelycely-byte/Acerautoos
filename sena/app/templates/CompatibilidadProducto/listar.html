@@ -20,7 +20,7 @@
     }
     .taller-header::before {
         content: ''; position: absolute; top: 0; right: 0; width: 260px; height: 100%;
-        background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
+        background: repeating-linear-gradient(-55deg,  rgba(0, 0, 0, 0.03) 14px);
     }
     .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
     .header-icon-wrap {
@@ -88,13 +88,8 @@
 
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap">
-                <svg viewBox="0 0 24 24">
-                    <polyline points="17 1 21 5 17 9"/>
-                    <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
-                    <polyline points="7 23 3 19 7 15"/>
-                    <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
-                </svg>
+            <div class="header">
+             <img src="{% static 'imagenes/compatibilidaad.jpeg' %}" style="width: 80px;">
             </div>
             <div>
                 <h1 class="header-titulo">Compatibilidad de Productos</h1>
@@ -119,6 +114,7 @@
                         <th>Marca Vehículo</th>
                         <th>Tipo de Servicio</th>
                         <th class="text-center">Stock</th>
+                        <th class="text-center">Opciones</th>
                         
                     </tr>
                 </thead>
