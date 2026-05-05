@@ -239,7 +239,8 @@
                             <div class="uso-grid" id="uso-grid">
                                 <label class="uso-card" data-val="BAJO">
                                     <input type="radio" name="tipo_uso" value="BAJO" {% if form.tipo_uso.value == 'BAJO' %}checked{% endif %}>
-                                    <div class="uso-icon">🏙️</div>
+                                    <img src="{% static 'imagenes/ciudadvehiculo.jpeg' %}" alt="Uso bajo"
+                                    style="width:25px; height:25px; object-fit:contain; border-radius:12px;">
                                     <div>
                                         <div class="uso-titulo">Uso bajo</div>
                                         <div class="uso-desc">Ciudad, poco uso · ~30 km/día</div>
@@ -247,7 +248,8 @@
                                 </label>
                                 <label class="uso-card" data-val="NORMAL">
                                     <input type="radio" name="tipo_uso" value="NORMAL" {% if form.tipo_uso.value == 'NORMAL' or not form.tipo_uso.value %}checked{% endif %}>
-                                    <div class="uso-icon">🚗</div>
+                                    <img src="{% static 'imagenes/vehiculoo.jpeg' %}" alt="Uso bajo"
+                                    style="width:25px; height:25px; object-fit:contain; border-radius:12px;">
                                     <div>
                                         <div class="uso-titulo">Uso normal</div>
                                         <div class="uso-desc">Uso diario estándar · ~50 km/día</div>
@@ -255,7 +257,8 @@
                                 </label>
                                 <label class="uso-card" data-val="ALTO">
                                     <input type="radio" name="tipo_uso" value="ALTO" {% if form.tipo_uso.value == 'ALTO' %}checked{% endif %}>
-                                    <div class="uso-icon">🛣️</div>
+                                    <img src="{% static 'imagenes/viajevehiculo.jpeg' %}" alt="Uso bajo"
+                                    style="width:25px; height:25px; object-fit:contain; border-radius:12px;">
                                     <div>
                                         <div class="uso-titulo">Uso alto</div>
                                         <div class="uso-desc">Viajes frecuentes · ~80 km/día</div>
@@ -263,7 +266,8 @@
                                 </label>
                                 <label class="uso-card" data-val="CARGA">
                                     <input type="radio" name="tipo_uso" value="CARGA" {% if form.tipo_uso.value == 'CARGA' %}checked{% endif %}>
-                                    <div class="uso-icon">🚛</div>
+                                    <img src="{% static 'imagenes/carga.jpeg' %}" alt="Uso bajo"
+                                    style="width:25px; height:25px; object-fit:contain; border-radius:12px;">
                                     <div>
                                         <div class="uso-titulo">Carga / Transporte</div>
                                         <div class="uso-desc">Uso intensivo · ~120 km/día</div>
