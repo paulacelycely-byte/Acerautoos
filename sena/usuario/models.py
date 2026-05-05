@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 
+from sena.settings import AUTH_USER_MODEL
+
 ROLES = (
     ('administrador', 'Administrador'),
     ('empleado', 'Empleado'),

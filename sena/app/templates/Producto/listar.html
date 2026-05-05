@@ -1,7 +1,7 @@
 {% extends 'body.html' %}
 {% load static %}
 {% load humanize %}
- 
+
 {% block css %}
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
@@ -10,11 +10,10 @@
         --texto:#2a2a2a;--muted:#888;--verde:#2e7d32;--verde-bg:#e8f5e9;
         --amarillo:#f57c00;--amarillo-bg:#fff8e1;
     }
-    .taller-header{position:relative;background:var(--carbon);border-radius:16px;padding:28px 32px;margin-bottom:16px;overflow:hidden;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
-    .taller-header::before{content:'';position:absolute;top:0;right:0;width:260px;height:100%;background:repeating-linear-gradient(-55deg,transparent,transparent 14px,rgba(255,255,255,.03) 14px,rgba(255,255,255,.03) 28px);}
+    .taller-header{position:relative;background:var(--carbon);border-radius:10px;padding:28px 32px;margin-bottom:16px;overflow:hidden;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
     .header-left{display:flex;align-items:center;gap:18px;position:relative;}
-    .header-icon-wrap{width:56px;height:56px;background:var(--rojo);border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px rgba(211,47,47,.25);flex-shrink:0;}
-    .header-icon-wrap svg{width:28px;height:28px;stroke:white;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+    .header-icon-wrap{width:56px;height:56px;background:transparent;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:none;flex-shrink:0;}
+    .header-icon-wrap img{width:56px;height:56px;object-fit:contain;border-radius:12px;}
     .header-titulo{font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:800;color:white;letter-spacing:1px;text-transform:uppercase;line-height:1;margin:0;}
     .header-sub{font-family:'DM Sans',sans-serif;font-size:.78rem;color:rgba(255,255,255,.45);margin-top:4px;}
     .header-actions{display:flex;align-items:center;gap:10px;position:relative;flex-wrap:wrap;}
@@ -31,7 +30,7 @@
     .vista-btn.activo{background:var(--rojo);color:white;}
     .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
     .stat-card{border-radius:16px;border:none;padding:22px 24px;display:flex;align-items:center;gap:18px;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden;cursor:pointer;}
-    .stat-card::after{content:'';position:absolute;bottom:-18px;right:-18px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.08);}
+
     .stat-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.18);}
     .stat-card.total-card{background:var(--carbon);}
     .stat-card.activo-card{background:#2e7d32;}
@@ -179,15 +178,15 @@
     .modal-btn-del svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 </style>
 {% endblock %}
- 
+
 {% block contenido %}
 <div class="container-fluid py-2">
- 
+
     <!-- HEADER -->
     <div class="taller-header">
         <div class="header-left">
             <div class="header-icon-wrap">
-                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                <img src="{% static 'imagenes/product.jpeg' %}" alt="Productos">
             </div>
             <div>
                 <h1 class="header-titulo">Inventario de Productos</h1>
@@ -216,27 +215,35 @@
             {% endif %}
         </div>
     </div>
- 
+
     <!-- STATS -->
     <div class="stats-grid">
         <div class="stat-card total-card">
-            <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+            <div class="stat-icon" style="background:transparent;">
+                <img src="{% static 'imagenes/Producti.jpeg' %}" style="width:50px;height:50px;object-fit:contain;border-radius:12px;">
+            </div>
             <div><div class="stat-num">{{ total_productos }}</div><div class="stat-lbl">Total Productos</div></div>
         </div>
         <div class="stat-card activo-card">
-            <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <div class="stat-icon" style="background:transparent;">
+                <img src="{% static 'imagenes/productu.jpeg' %}" style="width:50px;height:50px;object-fit:contain;border-radius:12px;">
+            </div>
             <div><div class="stat-num">{{ activos }}</div><div class="stat-lbl">Activos</div></div>
         </div>
         <div class="stat-card bajo-card">
-            <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div class="stat-icon" style="background:transparent;">
+                <img src="{% static 'imagenes/stock bajo.jpeg' %}" style="width:50px;height:50px;object-fit:contain;border-radius:12px;">
+            </div>
             <div><div class="stat-num">{{ stock_bajo }}</div><div class="stat-lbl">Stock Bajo</div></div>
         </div>
         <div class="stat-card sin-card">
-            <div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+            <div class="stat-icon" style="background:transparent;">
+                <img src="{% static 'imagenes/sin stock.jpeg' %}" style="width:50px;height:50px;object-fit:contain;border-radius:12px;">
+            </div>
             <div><div class="stat-num">{{ sin_stock }}</div><div class="stat-lbl">Sin Stock</div></div>
         </div>
     </div>
- 
+
     <!-- FILTROS catálogo -->
     <div class="filtros-bar" id="barra-filtros" style="display:none;">
         <button class="filtro-tab activo" data-filtro="todos" onclick="filtrarCatalogo('todos', this)">
@@ -256,7 +263,7 @@
             <input type="text" class="busq-input" id="busq-catalogo" placeholder="Buscar producto..." oninput="buscarCatalogo(this.value)">
         </div>
     </div>
- 
+
     <!-- VISTA TABLA -->
     <div id="vista-tabla">
         <div class="tabla-wrap">
@@ -335,7 +342,7 @@
             </table>
         </div>
     </div>
- 
+
     <!-- VISTA CATÁLOGO -->
     <div id="vista-catalogo">
         <div class="catalogo-grid" id="grid-catalogo">
@@ -382,7 +389,7 @@
             {% endfor %}
         </div>
     </div>
- 
+
     <!-- MODAL -->
     <div class="modal-prod-overlay" id="modal-overlay" onclick="cerrarModalOverlay(event)">
         <div class="modal-prod-box" id="modal-box">
@@ -418,17 +425,16 @@
     </div>
 </div>
 {% endblock %}
- 
+
 {% block js %}
 <script>
-// Pasar el rol del usuario al JS para controlar botones en el modal
 const USER_PUEDE_EDITAR = {% if request.user.is_superuser or request.user.cargo == 'ADMIN' %}true{% else %}false{% endif %};
- 
+
 document.addEventListener('DOMContentLoaded', function() {
     var modal = document.getElementById('modal-overlay');
     if (modal) document.body.appendChild(modal);
 });
- 
+
 $(document).ready(function () {
     var filas = $('#tabla_productos tbody tr').length;
     var esVacia = filas === 1 && $('#tabla_productos tbody tr td[colspan]').length > 0;
@@ -448,7 +454,7 @@ $(document).ready(function () {
         });
     }
 });
- 
+
 let vistaActual = 'tabla';
 function cambiarVista(modo) {
     vistaActual = modo;
@@ -465,7 +471,7 @@ function cambiarVista(modo) {
         btnT.classList.remove('activo'); btnC.classList.add('activo');
     }
 }
- 
+
 function filtrarCatalogo(tipo, btn) {
     document.querySelectorAll('.filtro-tab').forEach(b => b.classList.remove('activo'));
     btn.classList.add('activo');
@@ -473,14 +479,14 @@ function filtrarCatalogo(tipo, btn) {
         c.style.display = (tipo === 'todos' || c.dataset.stockStatus === tipo) ? 'flex' : 'none';
     });
 }
- 
+
 function buscarCatalogo(q) {
     const t = q.toLowerCase();
     document.querySelectorAll('.prod-card').forEach(c => {
         c.style.display = (c.dataset.nombre.includes(t) || c.dataset.marca.includes(t)) ? 'flex' : 'none';
     });
 }
- 
+
 function abrirModal(d) {
     const side = document.getElementById('modal-img-side');
     side.innerHTML = '';
@@ -497,7 +503,7 @@ function abrirModal(d) {
     estadoBadge.className = 'modal-estado-badge ' + (d.estado ? 'activo' : 'inactivo');
     estadoBadge.textContent = d.estado ? 'Activo' : 'Inactivo';
     side.appendChild(estadoBadge);
- 
+
     document.getElementById('modal-codigo').textContent      = d.codigo;
     document.getElementById('modal-unidad').textContent      = d.unidad;
     document.getElementById('modal-nombre').textContent      = d.nombre;
@@ -507,23 +513,22 @@ function abrirModal(d) {
     document.getElementById('modal-stock-min-info').textContent = d.stockMin + ' ' + d.unidad;
     document.getElementById('modal-estado-info').textContent = d.estado ? 'Activo' : 'Inactivo';
     document.getElementById('modal-stock-num').textContent   = d.stock;
- 
+
     const s = d.stockStatus;
     const badge = document.getElementById('modal-stock-badge');
     badge.className = 'modal-stock-badge ' + s;
     badge.textContent = s === 'ok' ? 'Stock OK' : s === 'bajo' ? 'Stock Bajo' : 'Sin Stock';
- 
+
     const pct  = d.stockMin > 0 ? Math.min((d.stock / d.stockMin) * 100, 100) : 100;
     const fill = document.getElementById('modal-bar-fill');
     fill.className = 'modal-bar-fill ' + s;
     fill.style.width = (s === 'sin' ? 100 : pct) + '%';
- 
+
     const descEl = document.getElementById('modal-desc');
     descEl.innerHTML = (d.descripcion && d.descripcion.trim())
         ? '<div class="modal-desc-text">' + d.descripcion + '</div>'
         : '<div class="modal-desc-empty">Sin descripción registrada.</div>';
- 
-    // Botones del modal según el rol
+
     const footer = document.getElementById('modal-footer-btns');
     if (USER_PUEDE_EDITAR) {
         footer.innerHTML = `
@@ -538,11 +543,11 @@ function abrirModal(d) {
     } else {
         footer.innerHTML = '<span class="badge-solo-lectura" style="margin:auto;">Solo puedes consultar este producto</span>';
     }
- 
+
     document.getElementById('modal-overlay').classList.add('abierto');
     document.body.style.overflow = 'hidden';
 }
- 
+
 function cerrarModal() {
     document.getElementById('modal-overlay').classList.remove('abierto');
     document.body.style.overflow = '';
