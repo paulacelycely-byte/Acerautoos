@@ -5,12 +5,15 @@ from django.shortcuts import redirect
 
 from app.models import Empleado
 from app.forms import EmpleadoForm
+# --- IMPORTAMOS EL MIXIN DE SEGURIDAD ---
+from app.mixins import AdminRequeridoMixin
 
 
-class EmpleadoListView(ListView):
+class EmpleadoListView(AdminRequeridoMixin, ListView): # <--- Candado puesto
     model = Empleado
     template_name = 'Empleado/listar.html'
     context_object_name = 'object_list'
+    login_url = 'login:login'
 
     def get_queryset(self):
         return Empleado.objects.all().order_by('nombres')
@@ -22,11 +25,12 @@ class EmpleadoListView(ListView):
         return context
 
 
-class EmpleadoCreateView(CreateView):
+class EmpleadoCreateView(AdminRequeridoMixin, CreateView): # <--- Candado puesto
     model = Empleado
     form_class = EmpleadoForm
     template_name = 'Empleado/crear_empleado.html'
     success_url = reverse_lazy('app:listar_empleado')
+    login_url = 'login:login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -45,11 +49,12 @@ class EmpleadoCreateView(CreateView):
         return redirect(self.success_url)
 
 
-class EmpleadoUpdateView(UpdateView):
+class EmpleadoUpdateView(AdminRequeridoMixin, UpdateView): # <--- Candado puesto
     model = Empleado
     form_class = EmpleadoForm
     template_name = 'Empleado/crear_empleado.html'
     success_url = reverse_lazy('app:listar_empleado')
+    login_url = 'login:login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -68,10 +73,11 @@ class EmpleadoUpdateView(UpdateView):
         return redirect(self.success_url)
 
 
-class EmpleadoDeleteView(DeleteView):
+class EmpleadoDeleteView(AdminRequeridoMixin, DeleteView): # <--- Candado puesto
     model = Empleado
     template_name = 'Empleado/eliminar.html'
     success_url = reverse_lazy('app:listar_empleado')
+    login_url = 'login:login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

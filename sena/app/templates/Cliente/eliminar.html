@@ -1,5 +1,5 @@
 {% extends 'body.html' %}
-
+{% load static %}
 {% block css %}
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -21,7 +21,7 @@
 
     .delete-card {
         background: white;
-        border-radius: 20px;
+        border-radius: 10px;
         border: 1px solid var(--borde);
         overflow: hidden;
         width: 100%;
@@ -37,15 +37,7 @@
         text-align: center;
         overflow: hidden;
     }
-    .delete-card-top::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: repeating-linear-gradient(
-            -55deg, transparent, transparent 14px,
-            rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px
-        );
-    }
+    
 
     /* ── Icono SVG papelera — sin animación ── */
     .delete-icon {
@@ -197,16 +189,10 @@
 <div class="delete-wrap animate__animated animate__fadeIn">
     <div class="delete-card">
 
-        <!-- Top oscuro -->
         <div class="delete-card-top">
-            <div class="delete-icon">
-                <svg viewBox="0 0 24 24">
-                    <polyline points="3 6 5 6 21 6"/>
-                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                    <path d="M10 11v6M14 11v6"/>
-                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-                </svg>
-            </div>
+            <div class="delete-icon" style="background:transparent; border:none;">
+        <img src="{% static 'imagenes/eliminar.jpeg' %}" style="width:72px;height:72px;object-fit:contain;">
+        </div>
             <h2>Confirmar Eliminación</h2>
             <p>Esta acción no se puede deshacer</p>
         </div>

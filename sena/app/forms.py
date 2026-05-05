@@ -699,14 +699,15 @@ class ClienteForm(forms.ModelForm):
 # ══════════════════════════════════════════════════════════
 #  VEHÍCULO
 # ══════════════════════════════════════════════════════════
-
 class VehiculoForm(forms.ModelForm):
     class Meta:
         model  = Vehiculo
         fields = [
             'placa', 'modelo', 'marca', 'cliente',
             'km_ultimo_servicio',
-            'km_diarios_promedio',
+            'km_intervalo',
+            'intervalo_meses',
+            'tipo_uso',
             'km_alerta_anticipacion',
         ]
 
@@ -717,16 +718,31 @@ class VehiculoForm(forms.ModelForm):
         self.fields['km_ultimo_servicio'].required  = True
         self.fields['km_ultimo_servicio'].label     = "Km actuales del vehículo"
         self.fields['km_ultimo_servicio'].help_text = (
-            "Ingrese el kilometraje actual del vehículo. "
-            "El próximo mantenimiento se calculará automáticamente al registrar la primera orden de servicio."
+            "Ingrese el kilometraje actual del vehículo."
         )
-        self.fields['km_diarios_promedio'].required  = True
-        self.fields['km_diarios_promedio'].help_text = (
-            "Km promedio que recorre este vehículo por día. Ej: 30 uso bajo, 50 normal, 80 alto."
+
+        self.fields['km_intervalo'].required  = True
+        self.fields['km_intervalo'].label     = "Mantenimiento cada (km)"
+        self.fields['km_intervalo'].help_text = (
+            "Cada cuántos km hacer mantenimiento. Ej: 5000 para aceite."
         )
+
+        self.fields['intervalo_meses'].required  = True
+        self.fields['intervalo_meses'].label     = "Mantenimiento cada (meses)"
+        self.fields['intervalo_meses'].help_text = (
+            "Cada cuántos meses hacer mantenimiento. Ej: 3 meses."
+        )
+
+        self.fields['tipo_uso'].required  = True
+        self.fields['tipo_uso'].label     = "Tipo de uso del vehículo"
+        self.fields['tipo_uso'].help_text = (
+            "¿Cómo se usa este vehículo? Esto nos ayuda a estimar el kilometraje diario."
+        )
+
         self.fields['km_alerta_anticipacion'].required  = True
+        self.fields['km_alerta_anticipacion'].label     = "Avisar con (km) de anticipación"
         self.fields['km_alerta_anticipacion'].help_text = (
-            "Con cuántos km de anticipación avisar del próximo mantenimiento. Ej: 500 moto, 1000 carro, 2000 camión."
+            "Con cuántos km de anticipación avisar. Ej: 500 moto, 1000 carro."
         )
 
     def clean_placa(self):
@@ -756,13 +772,21 @@ class VehiculoForm(forms.ModelForm):
             raise forms.ValidationError("El kilometraje no puede superar 1.000.000 km.")
         return km
 
-    def clean_km_diarios_promedio(self):
-        km = self.cleaned_data.get('km_diarios_promedio')
+    def clean_km_intervalo(self):
+        km = self.cleaned_data.get('km_intervalo')
         if km is None or km <= 0:
-            raise forms.ValidationError("El promedio de km diarios debe ser mayor que 0.")
-        if km > 1000:
-            raise forms.ValidationError("El promedio de km diarios no puede superar 1.000 km.")
+            raise forms.ValidationError("El intervalo de km debe ser mayor que 0.")
+        if km > 100000:
+            raise forms.ValidationError("El intervalo no puede superar 100.000 km.")
         return km
+
+    def clean_intervalo_meses(self):
+        meses = self.cleaned_data.get('intervalo_meses')
+        if meses is None or meses <= 0:
+            raise forms.ValidationError("El intervalo de meses debe ser mayor que 0.")
+        if meses > 24:
+            raise forms.ValidationError("El intervalo no puede superar 24 meses.")
+        return meses
 
     def clean_km_alerta_anticipacion(self):
         km = self.cleaned_data.get('km_alerta_anticipacion')
@@ -867,14 +891,19 @@ class OrdenServicioForm(forms.ModelForm):
         fecha = self.cleaned_data.get('fecha')
         if not fecha:
             return timezone.now()
+
+    # Al editar, si la fecha no cambió, dejarla pasar sin validar
+        if self.instance.pk and self.instance.fecha == fecha:
+            return fecha
+
         if fecha > timezone.now():
             raise forms.ValidationError("La fecha de la orden no puede ser una fecha futura.")
         limite = timezone.now() - timezone.timedelta(days=30)
         if fecha < limite:
             raise forms.ValidationError(
-                "La fecha de la orden no puede ser anterior a 30 días. "
-                "Si necesita registrar una orden antigua, contacte al administrador."
-            )
+            "La fecha de la orden no puede ser anterior a 30 días. "
+            "Si necesita registrar una orden antigua, contacte al administrador."
+        )
         return fecha
 
     def clean_estado(self):
@@ -1026,6 +1055,7 @@ class NotificacionForm(forms.ModelForm):
         ('Urgente',      'Urgente'),
         ('Informacion',  'Información'),
     ]
+    
     tipo = forms.ChoiceField(
         choices=TIPOS_NOTIFICACION,
         label="Tipo de Notificación",
@@ -1034,15 +1064,43 @@ class NotificacionForm(forms.ModelForm):
 
     class Meta:
         model  = Notificacion
-        fields = ['tipo', 'titulo', 'vehiculo', 'mensaje', 'leido']
+        fields = ['tipo', 'titulo', 'vehiculo', 'mensaje', 'leido', 'fecha']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Configuración de campos existentes
         self.fields['vehiculo'].required    = False
         self.fields['vehiculo'].empty_label = "-- Sin vehículo asociado --"
         self.fields['titulo'].required      = False
         self.fields['titulo'].help_text     = "Opcional. Resumen corto de la notificación."
         self.fields['leido'].initial        = False
+        
+        # OBTENER AÑO ACTUAL PARA LA VALIDACIÓN VISUAL
+        anio_actual = timezone.now().year
+        
+        # CONFIGURACIÓN DEL WIDGET DE FECHA
+        if 'fecha' in self.fields:
+            self.fields['fecha'].widget = forms.DateInput(
+                attrs={
+                    'type': 'date', 
+                    'class': 'form-control',
+                    'id': 'id_fecha',
+                    # Bloquea visualmente la selección de días futuros en el calendario
+                    'max': f"{anio_actual}-12-31" 
+                }
+            )
+
+    # VALIDADOR DE FECHA (Lógica de servidor)
+    def clean_fecha(self):
+        fecha = self.cleaned_data.get('fecha')
+        if fecha:
+            anio_actual = timezone.now().year
+            if fecha.year > anio_actual:
+                raise forms.ValidationError(
+                    f"No se pueden registrar notificaciones para el año {fecha.year}. "
+                    f"El año máximo permitido es {anio_actual}."
+                )
+        return fecha
 
     def clean_tipo(self):
         tipo = self.cleaned_data.get('tipo')
@@ -1060,13 +1118,12 @@ class NotificacionForm(forms.ModelForm):
         return titulo
 
     def clean_mensaje(self):
-        msg = self.cleaned_data['mensaje'].strip()
-        if len(msg) < 10:
+        mensaje = self.cleaned_data.get('mensaje', '').strip()
+        if len(mensaje) < 10:
             raise forms.ValidationError("El mensaje es demasiado corto (mínimo 10 caracteres).")
-        if len(msg) > 500:
+        if len(mensaje) > 500:
             raise forms.ValidationError("El mensaje no puede superar 500 caracteres.")
-        return msg
-
+        return mensaje
 
 # ══════════════════════════════════════════════════════════
 #  FACTURA
@@ -1075,14 +1132,25 @@ class NotificacionForm(forms.ModelForm):
 class FacturaForm(forms.ModelForm):
     class Meta:
         model  = Factura
-        fields = ['tipo', 'numero_factura', 'orden_servicio', 'producto', 'cantidad']
+        fields = ['tipo', 'numero_factura', 'orden_servicio']
         widgets = {
             'tipo'           : forms.Select(attrs={'class': 'form-control', 'id': 'id_tipo'}),
             'numero_factura' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: FAC-0001'}),
             'orden_servicio' : forms.Select(attrs={'class': 'form-control', 'id': 'id_orden_servicio'}),
-            'producto'       : forms.Select(attrs={'class': 'form-control', 'id': 'id_producto'}),
-            'cantidad'       : forms.NumberInput(attrs={'class': 'form-control', 'min': '1', 'id': 'id_cantidad'}),
         }
+
+    # Campos extra para venta de producto (no están en el modelo, son solo para el form)
+    producto = forms.ModelChoiceField(
+        queryset      = Producto.objects.filter(estado=True, stock__gt=0),
+        required      = False,
+        empty_label   = "-- Seleccione un Producto --",
+        widget        = forms.Select(attrs={'class': 'form-control', 'id': 'id_producto'})
+    )
+    cantidad = forms.IntegerField(
+        required = False,
+        min_value = 1,
+        widget   = forms.NumberInput(attrs={'class': 'form-control', 'min': '1', 'id': 'id_cantidad'})
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1094,10 +1162,6 @@ class FacturaForm(forms.ModelForm):
         )
         self.fields['orden_servicio'].empty_label = "-- Seleccione una Orden --"
         self.fields['orden_servicio'].required    = False
-        self.fields['producto'].queryset          = Producto.objects.filter(estado=True, stock__gt=0)
-        self.fields['producto'].empty_label       = "-- Seleccione un Producto --"
-        self.fields['producto'].required          = False
-        self.fields['cantidad'].required          = False
 
     def clean(self):
         cleaned  = super().clean()
@@ -1134,7 +1198,6 @@ class FacturaForm(forms.ModelForm):
             if qs.exists():
                 self.add_error('numero_factura', "Ya existe una factura con este número.")
         return cleaned
-
 
 # ══════════════════════════════════════════════════════════
 #  FACTURA — PAGAR

@@ -13,7 +13,6 @@
         --carbon: #1a1a1a; --gris: #f2f2f0; --borde: #e0ddd8; --texto: #2a2a2a; --muted: #888;
     }
     .taller-header { position:relative; background:var(--carbon); border-radius:16px; padding:28px 32px; margin-bottom:28px; overflow:hidden; display:flex; align-items:center; justify-content:space-between; }
-    .taller-header::before { content:''; position:absolute; top:0; right:0; width:260px; height:100%; background:repeating-linear-gradient(-55deg,transparent,transparent 14px,rgba(255,255,255,.03) 14px,rgba(255,255,255,.03) 28px); }
     .header-left { display:flex; align-items:center; gap:18px; position:relative; }
     .header-icon-wrap { width:56px; height:56px; background:var(--acento); border-radius:12px; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 4px var(--acento-glow); flex-shrink:0; }
     .header-icon-wrap svg { width:28px; height:28px; stroke:white; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
@@ -57,12 +56,9 @@
 
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap">
-                {% if es_editar %}
-                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                {% else %}
-                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                {% endif %}
+                
+            <div class="header-icon-wrap" style="background:transparent;box-shadow:none;">
+                <img src="{% static 'imagenes/nuevomecanic.jpeg' %}" style="width:56px;height:56px;object-fit:contain;border-radius:12px;">
             </div>
             <div>
                 <h1 class="header-titulo">{{ titulo }}</h1>

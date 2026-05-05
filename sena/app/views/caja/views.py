@@ -1,22 +1,19 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.db.models import Sum
 
 from app.models import Caja
 from app.forms import CajaForm
+# --- IMPORTAMOS EL MIXIN DE SEGURIDAD ---
+from app.mixins import AdminRequeridoMixin
 
-
-class CajaListView(ListView):
+class CajaListView(AdminRequeridoMixin, ListView): # <--- Candado puesto
     model = Caja
     template_name = 'Caja/listar.html'
     context_object_name = 'object_list'
-
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+    login_url = 'login:login'
 
     def get_queryset(self):
         return Caja.objects.all().order_by('-fecha')
@@ -35,11 +32,12 @@ class CajaListView(ListView):
         return context
 
 
-class CajaCreateView(CreateView):
+class CajaCreateView(AdminRequeridoMixin, CreateView): # <--- Candado puesto
     model = Caja
     form_class = CajaForm
     template_name = 'Caja/crear.html'
     success_url = reverse_lazy('app:caja_listar')
+    login_url = 'login:login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -52,14 +50,12 @@ class CajaCreateView(CreateView):
         return super().form_valid(form)
 
 
-class CajaUpdateView(UpdateView):
+class CajaUpdateView(AdminRequeridoMixin, UpdateView): # <--- Candado puesto
     model = Caja
     form_class = CajaForm
     template_name = 'Caja/crear.html'
     success_url = reverse_lazy('app:caja_listar')
-
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+    login_url = 'login:login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -72,13 +68,11 @@ class CajaUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class CajaDeleteView(DeleteView):
+class CajaDeleteView(AdminRequeridoMixin, DeleteView): # <--- Candado puesto
     model = Caja
     template_name = 'Caja/eliminar.html'
     success_url = reverse_lazy('app:caja_listar')
-
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+    login_url = 'login:login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

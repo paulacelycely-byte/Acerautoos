@@ -5,13 +5,25 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.views import View
 from django.http import JsonResponse
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # Mixins de seguridad
 
 from app.models import OrdenServicio, DetalleOrdenProducto, Vehiculo, Producto, CompatibilidadProducto
 from app.forms import OrdenServicioForm
 
 
+# ── MIXIN DE PROTECCIÓN ───────────────────────────────────
+class SoloAdminMixin(UserPassesTestMixin):
+    def test_func(self):
+        # Solo permite el paso si el cargo es ADMIN o es superusuario
+        return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos de administrador para modificar órdenes.")
+        return redirect('app:orden_servicio_list')
+
+
 # ══════════════════════════════════════════════════════════
-#  UTILIDADES
+#  UTILIDADES (Lógica original completa)
 # ══════════════════════════════════════════════════════════
 
 def _verificar_compat(producto, marca_id, servicio_id=None):
@@ -50,42 +62,30 @@ def _guardar_productos(request, orden):
 
 
 def _hay_incompatibles(request, marca_id, servicio_ids):
-    """
-    Solo bloquea si el producto tiene reglas de compatibilidad definidas
-    Y no es compatible con ninguno de los servicios de la orden.
-    Si no tiene reglas (neutral) o es compatible con al menos uno, lo deja pasar.
-    """
     for pid in request.POST.getlist('producto_ids[]'):
         try:
             prod = Producto.objects.get(pk=pid, estado=True)
-
-            # Sin reglas configuradas = neutral, no bloquear
             total_reglas = CompatibilidadProducto.objects.filter(producto=prod).count()
             if total_reglas == 0:
                 continue
-
-            # Verificar si es compatible con AL MENOS un servicio de la orden
             es_compatible = False
             for sid in servicio_ids:
                 status, _ = _verificar_compat(prod, marca_id, sid)
                 if status in ('ok', 'neutral'):
                     es_compatible = True
                     break
-
-            # Si no encontró compatibilidad con ningún servicio, bloquear
             if not es_compatible:
                 return True
-
         except Producto.DoesNotExist:
             continue
     return False
 
 
 # ══════════════════════════════════════════════════════════
-#  LISTAR
+#  LISTAR (Mecánicos y Admin pueden ver)
 # ══════════════════════════════════════════════════════════
 
-class OrdenServicioListView(ListView):
+class OrdenServicioListView(LoginRequiredMixin, ListView):
     model = OrdenServicio
     template_name = 'OrdenServicio/listar.html'
     context_object_name = 'ordenes'
@@ -112,15 +112,15 @@ class OrdenServicioListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Órdenes de Servicio'
+        context['titulo'] = 'Órdenes de Servicio - Acerautos'
         return context
 
 
 # ══════════════════════════════════════════════════════════
-#  DETALLE
+#  DETALLE (Mecánicos y Admin pueden ver)
 # ══════════════════════════════════════════════════════════
 
-class OrdenServicioDetailView(View):
+class OrdenServicioDetailView(LoginRequiredMixin, View):
     def get(self, request, pk):
         orden    = get_object_or_404(OrdenServicio, pk=pk)
         detalles = DetalleOrdenProducto.objects.filter(orden=orden).select_related('producto')
@@ -147,10 +147,10 @@ class OrdenServicioDetailView(View):
 
 
 # ══════════════════════════════════════════════════════════
-#  AJAX — KM VEHÍCULO
+#  AJAX (Protegidos por Login)
 # ══════════════════════════════════════════════════════════
 
-class VehiculoKmView(View):
+class VehiculoKmView(LoginRequiredMixin, View):
     def get(self, request, pk):
         try:
             v = Vehiculo.objects.select_related('marca').get(pk=pk)
@@ -164,11 +164,7 @@ class VehiculoKmView(View):
             return JsonResponse({'km': 0}, status=404)
 
 
-# ══════════════════════════════════════════════════════════
-#  AJAX — VERIFICAR COMPATIBILIDAD
-# ══════════════════════════════════════════════════════════
-
-class VerificarCompatibilidadView(View):
+class VerificarCompatibilidadView(LoginRequiredMixin, View):
     def get(self, request):
         producto_id = request.GET.get('producto')
         marca_id    = request.GET.get('marca')
@@ -188,11 +184,7 @@ class VerificarCompatibilidadView(View):
             return JsonResponse({'compatible': False, 'tiene_reglas': True,  'mensaje': mensaje})
 
 
-# ══════════════════════════════════════════════════════════
-#  AJAX — PRODUCTOS COMPATIBLES
-# ══════════════════════════════════════════════════════════
-
-class ProductosCompatiblesView(View):
+class ProductosCompatiblesView(LoginRequiredMixin, View):
     def get(self, request):
         marca_id    = request.GET.get('marca')
         servicio_id = request.GET.get('servicio')
@@ -219,10 +211,10 @@ class ProductosCompatiblesView(View):
 
 
 # ══════════════════════════════════════════════════════════
-#  CREAR ORDEN
+#  CREAR ORDEN (Solo Admin)
 # ══════════════════════════════════════════════════════════
 
-class OrdenServicioCreateView(CreateView):
+class OrdenServicioCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
     model         = OrdenServicio
     form_class    = OrdenServicioForm
     template_name = 'OrdenServicio/crear.html'
@@ -238,41 +230,34 @@ class OrdenServicioCreateView(CreateView):
 
     def form_valid(self, form):
         orden = form.save(commit=False)
-
         if orden.vehiculo and orden.km_actual and orden.km_actual > (orden.vehiculo.km_ultimo_servicio or 0):
             orden.vehiculo.km_ultimo_servicio = orden.km_actual
             orden.vehiculo.save(update_fields=['km_ultimo_servicio'])
-
         orden.save()
         form.save_m2m()
-
         servicio_ids = list(orden.servicios.values_list('id', flat=True))
-
         if _hay_incompatibles(self.request, orden.vehiculo.marca_id, servicio_ids):
             messages.error(
                 self.request,
-                '⚠ No se puede guardar: hay productos incompatibles con la marca de este vehículo. '
-                'Retira o reemplaza los productos marcados en amarillo.'
+                '⚠ No se puede guardar: hay productos incompatibles con la marca. '
+                'Retira o reemplaza los productos marcados.'
             )
             orden.delete()
             return self.form_invalid(form)
-
         _guardar_productos(self.request, orden)
-
         messages.success(self.request, 'Orden de servicio creada correctamente.')
         return redirect(self.success_url)
 
     def form_invalid(self, form):
-        print("ERRORES FORM ORDEN:", form.errors)
         messages.error(self.request, form.errors)
         return super().form_invalid(form)
 
 
 # ══════════════════════════════════════════════════════════
-#  EDITAR ORDEN
+#  EDITAR ORDEN (Solo Admin)
 # ══════════════════════════════════════════════════════════
 
-class OrdenServicioUpdateView(UpdateView):
+class OrdenServicioUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
     model         = OrdenServicio
     form_class    = OrdenServicioForm
     template_name = 'OrdenServicio/crear.html'
@@ -288,40 +273,29 @@ class OrdenServicioUpdateView(UpdateView):
 
     def form_valid(self, form):
         orden = form.save(commit=False)
-
         if orden.vehiculo and orden.km_actual and orden.km_actual > (orden.vehiculo.km_ultimo_servicio or 0):
             orden.vehiculo.km_ultimo_servicio = orden.km_actual
             orden.vehiculo.save(update_fields=['km_ultimo_servicio'])
-
         orden.save()
         form.save_m2m()
-
         servicio_ids = list(orden.servicios.values_list('id', flat=True))
-
         if _hay_incompatibles(self.request, orden.vehiculo.marca_id, servicio_ids):
             messages.error(
                 self.request,
-                '⚠ No se puede guardar: hay productos incompatibles con la marca de este vehículo. '
-                'Retira o reemplaza los productos marcados en amarillo.'
+                '⚠ No se puede guardar: hay productos incompatibles con la marca.'
             )
             return self.form_invalid(form)
-
         orden.productos_usados.all().delete()
         _guardar_productos(self.request, orden)
-
         messages.success(self.request, 'Orden de servicio actualizada correctamente.')
         return redirect(self.success_url)
 
-    def form_invalid(self, form):
-        print("ERRORES FORM ORDEN:", form.errors)
-        return super().form_invalid(form)
-
 
 # ══════════════════════════════════════════════════════════
-#  ELIMINAR ORDEN
+#  ELIMINAR ORDEN (Solo Admin)
 # ══════════════════════════════════════════════════════════
 
-class OrdenServicioDeleteView(View):
+class OrdenServicioDeleteView(LoginRequiredMixin, SoloAdminMixin, View):
     def get(self, request, pk):
         orden = get_object_or_404(OrdenServicio, pk=pk)
         return render(request, 'OrdenServicio/eliminar.html', {

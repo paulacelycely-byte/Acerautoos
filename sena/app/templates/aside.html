@@ -118,6 +118,21 @@
 .sb-item:hover .sb-icon,
 .sb-item.active .sb-icon { stroke: #d32f2f; }
 
+/* ══ IMAGEN ICONO ══ */
+.sb-img-icon {
+    min-width: 20px; width: 20px; height: 20px;
+    flex-shrink: 0;
+    object-fit: contain;
+    opacity: .55;
+    transition: opacity .2s, transform .2s;
+    border-radius: 3px;
+}
+.sb-item:hover .sb-img-icon,
+.sb-item.active .sb-img-icon {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
 .sb-item-text {
     font-size: .82rem; font-weight: 500;
     transition: opacity .3s; flex: 1;
@@ -210,7 +225,6 @@ body.sidebar-mini .sb-item::after {
 }
 body.sidebar-mini .sb-item:hover::after { opacity: 1; }
 
-/* Fix: limpiar tooltip huérfano si el mouse sale del sidebar */
 body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
     opacity: 0 !important;
     pointer-events: none;
@@ -222,7 +236,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
     <!-- Brand -->
     <a href="{% url 'app:dashboard' %}" class="sb-brand">
         <div class="sb-logo">
-            <img src="{% static 'imagenes/logo empresa.jpeg' %}" alt="Logo">
+            <img src="{% static 'imagenes/logoempresa.jpeg' %}" alt="Logo">
         </div>
         <div>
             <div class="sb-brand-name">Acer<em>autos</em></div>
@@ -258,9 +272,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:listar_clientes' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_clientes' %}active{% endif %}"
            data-tip="Clientes">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-            </svg>
+            <img src="{% static 'imagenes/logo_usurio.jpeg' %}" class="sb-img-icon" alt="Clientes">
             <span class="sb-item-text">Clientes</span>
             <span class="sb-step">P1</span>
         </a>
@@ -268,11 +280,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:listar_vehiculos' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_vehiculos' %}active{% endif %}"
            data-tip="Vehículos">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/>
-                <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/>
-                <path d="M5 17H3v-6l2-5h12l2 5h1a1 1 0 0 1 1 1v4h-2"/><path d="M9 17h6"/>
-            </svg>
+            <img src="{% static 'imagenes/carro.jpeg' %}" class="sb-img-icon" alt="Vehículos">
             <span class="sb-item-text">Vehículos</span>
             <span class="sb-step">P2</span>
         </a>
@@ -280,11 +288,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:orden_servicio_list' %}"
            class="sb-item {% if request.resolver_match.url_name == 'orden_servicio_list' %}active{% endif %}"
            data-tip="Órdenes">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/>
-            </svg>
+            <img src="{% static 'imagenes/orden.jpeg' %}" class="sb-img-icon" alt="Órdenes">
             <span class="sb-item-text">Órdenes de Servicio</span>
             <span class="sb-step">P3</span>
         </a>
@@ -292,9 +296,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:tipo_servicio_list' %}"
            class="sb-item {% if request.resolver_match.url_name == 'tipo_servicio_list' %}active{% endif %}"
            data-tip="Tipos Servicio">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <path d="M12 2C6 9 4 13.5 4 16a8 8 0 0 0 16 0c0-2.5-2-7-8-14z"/>
-            </svg>
+            <img src="{% static 'imagenes/servicios.jpeg' %}" class="sb-img-icon" alt="Tipos Servicio">
             <span class="sb-item-text">Tipos de Servicio</span>
             <span class="sb-step">P4</span>
         </a>
@@ -309,12 +311,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:detalle_orden_list' %}"
            class="sb-item {% if request.resolver_match.url_name == 'detalle_orden_list' %}active{% endif %}"
            data-tip="Detalles Orden">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
-                <line x1="8" y1="18" x2="21" y2="18"/>
-                <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/>
-                <line x1="3" y1="18" x2="3.01" y2="18"/>
-            </svg>
+            <img src="{% static 'imagenes/orden.jpeg' %}" class="sb-img-icon" alt="Detalles">
             <span class="sb-item-text">Detalles de Orden</span>
             <span class="sb-step">P5</span>
         </a>
@@ -322,13 +319,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:listar_compatibilidad' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_compatibilidad' %}active{% endif %}"
            data-tip="Compatibilidad">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <polyline points="16 3 21 3 21 8"/>
-                <line x1="4" y1="20" x2="21" y2="3"/>
-                <polyline points="21 16 21 21 16 21"/>
-                <line x1="15" y1="15" x2="21" y2="21"/>
-                <polyline points="4 4 9 4 9 9"/>
-            </svg>
+            <img src="{% static 'imagenes/compatibilidad.jpeg' %}" class="sb-img-icon" alt="Compatibilidad">
             <span class="sb-item-text">Compatibilidad</span>
             <span class="sb-step">P6</span>
         </a>
@@ -336,11 +327,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:listar_producto' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_producto' %}active{% endif %}"
            data-tip="Productos">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-                <line x1="12" y1="22.08" x2="12" y2="12"/>
-            </svg>
+            <img src="{% static 'imagenes/productos.jpeg' %}" class="sb-img-icon" alt="Productos">
             <span class="sb-item-text">Productos</span>
             <span class="sb-step">P7</span>
         </a>
@@ -348,10 +335,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:listar_marca' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_marca' %}active{% endif %}"
            data-tip="Marcas">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-                <line x1="7" y1="7" x2="7.01" y2="7"/>
-            </svg>
+            <img src="{% static 'imagenes/marcas.jpeg' %}" class="sb-img-icon" alt="Marcas">
             <span class="sb-item-text">Marcas</span>
             <span class="sb-step">P8</span>
         </a>
@@ -366,12 +350,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:listar_proveedores' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_proveedores' %}active{% endif %}"
            data-tip="Proveedores">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <rect x="1" y="3" width="15" height="13" rx="1"/>
-                <path d="M16 8h4l3 5v3h-7V8z"/>
-                <circle cx="5.5" cy="18.5" r="2.5"/>
-                <circle cx="18.5" cy="18.5" r="2.5"/>
-            </svg>
+            <img src="{% static 'imagenes/proveedor.jpeg' %}" class="sb-img-icon" alt="Proveedores">
             <span class="sb-item-text">Proveedores</span>
             <span class="sb-step">P9</span>
         </a>
@@ -379,10 +358,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:lista_compras' %}"
            class="sb-item {% if request.resolver_match.url_name == 'lista_compras' %}active{% endif %}"
            data-tip="Compras">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-            </svg>
+            <img src="{% static 'imagenes/compras.jpeg' %}" class="sb-img-icon" alt="Compras">
             <span class="sb-item-text">Compras</span>
             <span class="sb-step">P10</span>
         </a>
@@ -397,11 +373,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:caja_listar' %}"
            class="sb-item {% if request.resolver_match.url_name == 'caja_listar' %}active{% endif %}"
            data-tip="Caja">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <rect x="2" y="5" width="20" height="14" rx="2"/>
-                <line x1="2" y1="10" x2="22" y2="10"/>
-                <line x1="6" y1="15" x2="10" y2="15"/>
-            </svg>
+            <img src="{% static 'imagenes/caja.jpeg' %}" class="sb-img-icon" alt="Caja">
             <span class="sb-item-text">Caja</span>
             <span class="sb-step">P11</span>
         </a>
@@ -409,12 +381,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:listar_factura' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_factura' %}active{% endif %}"
            data-tip="Facturación">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="12" y1="18" x2="12" y2="12"/>
-                <line x1="9" y1="15" x2="15" y2="15"/>
-            </svg>
+            <img src="{% static 'imagenes/factura.jpeg' %}" class="sb-img-icon" alt="Facturación">
             <span class="sb-item-text">Facturación</span>
             <span class="sb-step">P12</span>
         </a>
@@ -429,26 +396,16 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:listar_empleado' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_empleado' %}active{% endif %}"
            data-tip="Empleados">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
+            <img src="{% static 'imagenes/empleados.jpeg' %}" class="sb-img-icon" alt="Empleados">
             <span class="sb-item-text">Empleados</span>
         </a>
 
         <a href="{% url 'app:listar_usuario' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_usuario' %}active{% endif %}"
            data-tip="Usuarios">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <rect x="3" y="11" width="18" height="11" rx="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
+            <img src="{% static 'imagenes/usurios.jpeg' %}" class="sb-img-icon" alt="Usuarios">
             <span class="sb-item-text">Usuarios</span>
         </a>
-
-        {# Notificaciones removidas del aside — ahora están en la navbar superior #}
 
     </div>
 
@@ -483,7 +440,6 @@ document.addEventListener('DOMContentLoaded', function () {
     sidebar.addEventListener('mouseleave', function () {
         sidebar.querySelectorAll('.sb-item').forEach(function(item) {
             item.blur();
-            
             item.style.pointerEvents = 'none';
             setTimeout(function(){ item.style.pointerEvents = ''; }, 50);
         });

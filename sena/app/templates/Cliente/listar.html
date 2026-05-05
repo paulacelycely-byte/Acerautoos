@@ -18,7 +18,7 @@
     .taller-header {
         position: relative;
         background: var(--carbon);
-        border-radius: 16px;
+        border-radius: 10px;
         padding: 28px 32px;
         margin-bottom: 28px;
         overflow: hidden;
@@ -27,19 +27,7 @@
         justify-content: space-between;
     }
 
-    .taller-header::before {
-        content: '';
-        position: absolute;
-        top: 0; right: 0;
-        width: 260px; height: 100%;
-        background: repeating-linear-gradient(
-            -55deg,
-            transparent,
-            transparent 14px,
-            rgba(255,255,255,.03) 14px,
-            rgba(255,255,255,.03) 28px
-        );
-    }
+    
 
     .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
 
@@ -72,7 +60,7 @@
     .header-sub {
         font-family: 'DM Sans', sans-serif;
         font-size: .78rem; color: rgba(255,255,255,.45);
-        margin-top: 4px; letter-spacing: .5px;
+        margin-top: 15px; letter-spacing: .5px;
     }
 
     .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
@@ -102,7 +90,7 @@
     /* ── Tabla ── */
     .tabla-wrap {
         background: white;
-        border-radius: 16px;
+        border-radius: 10px;
         border: 1px solid var(--borde);
         overflow: hidden;
     }
@@ -232,12 +220,8 @@
     <div class="taller-header">
         <div class="header-left">
 
-            <!-- SVG silueta simple -->
-            <div class="header-icon-wrap">
-                <svg viewBox="0 0 24 24">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                </svg>
+            <div class="header-icon-wrap" style="background:transparent; box-shadow:none;">
+            <img src="{% static 'imagenes/clientess.jpeg' %}" style="width:56px;height:56px;object-fit:contain;border-radius:12px;">
             </div>
 
             <div>
@@ -281,7 +265,7 @@
                         <th>N° Documento</th>
                         <th>Teléfono</th>
                         <th>Email</th>
-                        <th class="text-center">Acciones</th>
+                       
                     </tr>
                 </thead>
                 <tbody>

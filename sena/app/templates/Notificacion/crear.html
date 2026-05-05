@@ -6,262 +6,152 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
     :root {
-        --rojo:   #d32f2f;
-        --rojo2:  #b71c1c;
-        --carbon: #1a1a1a;
-        --gris:   #f2f2f0;
-        --borde:  #e0ddd8;
-        --texto:  #2a2a2a;
-        --muted:  #888;
+        --rojo: #d32f2f; --rojo2: #b71c1c;
+        --carbon: #1a1a1a; --gris: #f2f2f0; --borde: #e0ddd8; --texto: #2a2a2a; --muted: #888;
     }
+    .taller-header { position:relative; background:var(--carbon); border-radius:16px; padding:28px 32px; margin-bottom:28px; overflow:hidden; display:flex; align-items:center; justify-content:space-between; }
+    .taller-header::after { content:''; position:absolute; left:0; top:0; width:5px; height:100%; background:var(--rojo); border-radius:16px 0 0 16px; }
+    .header-left { display:flex; align-items:center; gap:18px; position:relative; }
+    .header-icon-wrap { width:56px; height:56px; background:var(--rojo); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:white; box-shadow:0 0 0 4px rgba(211,47,47,.25); flex-shrink:0; }
+    .header-titulo { font-family:'Barlow Condensed',sans-serif; font-size:2rem; font-weight:800; color:white; letter-spacing:1px; text-transform:uppercase; line-height:1; margin:0; }
+    .header-sub { font-family:'DM Sans',sans-serif; font-size:.78rem; color:rgba(255,255,255,.45); margin-top:4px; }
 
-    /* ── HEADER ── */
-    .taller-header {
-        position: relative; background: var(--carbon);
-        border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
-        overflow: hidden; display: flex; align-items: center; justify-content: space-between;
-    }
-    .taller-header::before {
-        content: ''; position: absolute; top: 0; right: 0; width: 260px; height: 100%;
-        background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
-    }
-    .taller-header::after {
-        content: ''; position: absolute; left: 0; top: 0;
-        width: 5px; height: 100%; background: var(--rojo); border-radius: 16px 0 0 16px;
-    }
-    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
-    .header-icon-wrap {
-        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.4rem; color: white; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
-    }
-    .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800;
-        color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
-    }
-    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
+    .form-card { background:white; border-radius:16px; border:1px solid var(--borde); overflow:hidden; }
+    .form-card-header { background:var(--carbon); padding:16px 28px; display:flex; align-items:center; gap:12px; }
+    .form-card-header i { color:var(--rojo); font-size:1rem; }
+    .form-card-header span { font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; color:white; text-transform:uppercase; letter-spacing:1px; }
+    .form-card-body { padding:32px 28px; }
+    .campo-label { font-family:'DM Sans',sans-serif; font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:8px; }
 
-    /* ── TARJETA ── */
-    .form-card { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
-    .form-card-header {
-        background: var(--carbon); padding: 16px 28px;
-        display: flex; align-items: center; gap: 12px;
-    }
-    .form-card-header i   { color: var(--rojo); font-size: 1rem; }
-    .form-card-header span {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700;
-        color: white; text-transform: uppercase; letter-spacing: 1px;
-    }
-    .form-card-body { padding: 32px 28px; }
-
-    /* ── LABELS ── */
-    .campo-label {
-        font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px;
-    }
-
-    /* ── INPUT-GROUP estilo usuarios ── */
-    .input-group .input-icon {
-        width: 44px; background: var(--gris); border: 1.5px solid var(--borde);
-        border-right: none; border-radius: 10px 0 0 10px;
-        display: flex; align-items: center; justify-content: center;
-        color: var(--muted); font-size: .9rem; flex-shrink: 0;
-    }
-    .input-group .input-icon.error { border-color: var(--rojo); color: var(--rojo); background: #fff8f8; }
-    .input-group .form-control,
-    .input-group .form-select {
-        border: 1.5px solid var(--borde) !important;
-        border-radius: 0 10px 10px 0 !important;
-        font-family: 'DM Sans', sans-serif; font-size: .88rem; color: var(--texto);
-        padding: 10px 14px; background: white; box-shadow: none !important; transition: border-color .2s;
-    }
-    .input-group .form-control:focus,
-    .input-group .form-select:focus {
-        border-color: var(--rojo) !important;
-        box-shadow: 0 0 0 3px rgba(211,47,47,.08) !important;
-    }
-    /* textarea dentro de input-group */
-    .input-group textarea.form-control {
-        border-radius: 0 10px 10px 0 !important;
-        resize: none; height: 100px;
-    }
-    /* input-icon alineado arriba para textarea */
-    .input-group .input-icon.top { align-items: flex-start; padding-top: 12px; }
-
-    /* ── Botones tipo ── */
+    /* Tipo pills */
+    .tipo-grid { display:flex; flex-wrap:wrap; gap:8px; }
     .tipo-btn {
-        display: inline-flex; align-items: center; gap: 8px;
-        padding: 10px 18px; border-radius: 10px;
-        border: 2px solid var(--borde); background: var(--gris);
-        font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: .82rem;
-        color: var(--muted); cursor: pointer; transition: all .25s;
-        text-transform: uppercase; letter-spacing: .5px; margin: 4px 4px 4px 0;
-        user-select: none;
+        display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:10px;
+        border:2px solid var(--borde); background:var(--gris);
+        font-family:'DM Sans',sans-serif; font-weight:700; font-size:.82rem;
+        color:var(--muted); cursor:pointer; transition:all .2s; user-select:none;
     }
-    .tipo-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); border-color: var(--carbon); color: var(--carbon); background: white; }
-    .tipo-btn.activo-Mantenimiento { background: #e3f2fd; border-color: #1565c0; color: #1565c0; }
-    .tipo-btn.activo-Alerta        { background: #ffebee; border-color: #c62828; color: #c62828; }
-    .tipo-btn.activo-Recordatorio  { background: #f3e5f5; border-color: #6a1b9a; color: #6a1b9a; }
-    .tipo-btn.activo-Urgente       { background: #fff3e0; border-color: #e65100; color: #e65100; }
-    .tipo-btn.activo-Informacion   { background: #e8f5e9; border-color: #2e7d32; color: #2e7d32; }
+    .tipo-btn:hover { border-color:var(--carbon); color:var(--carbon); background:white; transform:translateY(-2px); }
+    .tipo-btn.activo-Mantenimiento { background:#e3f2fd; border-color:#1565c0; color:#1565c0; box-shadow:0 4px 12px rgba(21,101,192,.15); }
+    .tipo-btn.activo-Alerta { background:#ffebee; border-color:#c62828; color:#c62828; box-shadow:0 4px 12px rgba(198,40,40,.15); }
+    .tipo-btn.activo-Recordatorio { background:#f3e5f5; border-color:#6a1b9a; color:#6a1b9a; box-shadow:0 4px 12px rgba(106,27,154,.15); }
+    .tipo-btn.activo-Urgente { background:#fff3e0; border-color:#e65100; color:#e65100; box-shadow:0 4px 12px rgba(230,81,0,.15); }
+    .tipo-btn.activo-Informacion { background:#e8f5e9; border-color:#2e7d32; color:#2e7d32; box-shadow:0 4px 12px rgba(46,125,50,.15); }
 
-    /* ── Switch leído ── */
-    .switch-wrap {
-        display: flex; align-items: center; gap: 14px;
-        padding: 14px 18px; border: 1.5px solid var(--borde);
-        border-radius: 12px; background: var(--gris);
-        cursor: pointer; user-select: none;
+    /* Campos */
+    .field-wrap { position:relative; }
+    .field-wrap .field-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#bbb; font-size:.85rem; pointer-events:none; transition:color .2s; }
+    .field-wrap .field-icon.top { top:14px; transform:none; }
+    .field-wrap input, .field-wrap select, .field-wrap textarea {
+        width:100%; padding:11px 14px 11px 40px;
+        border:1.5px solid var(--borde); border-radius:10px;
+        font-family:'DM Sans',sans-serif; font-size:.88rem; color:var(--texto);
+        background:var(--gris); outline:none; transition:border-color .2s, box-shadow .2s, background .2s;
+        -webkit-appearance:none; appearance:none;
     }
-    .switch-toggle { position: relative; width: 54px; height: 28px; flex-shrink: 0; }
-    .switch-toggle input { display: none; }
-    .switch-track { position: absolute; inset: 0; background: #ccc; border-radius: 28px; transition: background .3s; }
-    .switch-thumb { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; background: white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,.2); transition: transform .3s; }
-    .switch-toggle input:checked ~ .switch-track { background: var(--rojo); }
-    .switch-toggle input:checked ~ .switch-thumb { transform: translateX(26px); }
-    .switch-label {
-        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .5px; transition: color .3s;
+    .field-wrap textarea { resize:vertical; min-height:110px; }
+    .field-wrap input:focus, .field-wrap select:focus, .field-wrap textarea:focus {
+        border-color:var(--rojo); background:white; box-shadow:0 0 0 3px rgba(211,47,47,.08);
     }
+    .field-wrap:focus-within .field-icon { color:var(--rojo); }
 
-    /* ── Error ── */
-    .caja-error {
-        font-family: 'DM Sans', sans-serif; font-size: .76rem; font-weight: 600;
-        background: #fff8f8; border: 1px solid #fdd; border-left: 4px solid var(--rojo);
-        border-radius: 8px; padding: 8px 12px; margin-top: 6px; color: var(--rojo);
-        display: flex; align-items: center; gap: 6px;
-    }
+    /* Switch */
+    .switch-wrap { display:flex; align-items:center; gap:14px; padding:13px 18px; border:1.5px solid var(--borde); border-radius:12px; background:var(--gris); cursor:pointer; user-select:none; transition:border-color .2s; }
+    .switch-wrap:hover { border-color:#ccc; }
+    .switch-toggle { position:relative; width:54px; height:28px; flex-shrink:0; }
+    .switch-toggle input { display:none; }
+    .switch-track { position:absolute; inset:0; background:#ccc; border-radius:28px; transition:background .3s; }
+    .switch-thumb { position:absolute; top:3px; left:3px; width:22px; height:22px; background:white; border-radius:50%; box-shadow:0 2px 4px rgba(0,0,0,.2); transition:transform .3s; }
+    .switch-toggle input:checked ~ .switch-track { background:var(--rojo); }
+    .switch-toggle input:checked ~ .switch-thumb { transform:translateX(26px); }
+    .switch-label { font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; transition:color .3s; }
 
-    /* ── FOOTER ── */
-    .form-card-footer {
-        background: var(--gris); border-top: 1px solid var(--borde);
-        padding: 20px 28px; display: flex; justify-content: flex-end; gap: 10px;
-    }
-    .btn-cancelar {
-        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .5px; padding: 11px 24px;
-        border-radius: 10px; border: 1.5px solid var(--borde);
-        background: white; color: var(--muted); cursor: pointer; transition: .2s;
-        text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
-    }
-    .btn-cancelar:hover { color: var(--carbon); border-color: var(--carbon); }
-    .btn-guardar {
-        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .5px; padding: 11px 28px;
-        border-radius: 10px; border: none; background: var(--rojo); color: white;
-        box-shadow: 0 4px 14px rgba(211,47,47,.35); cursor: pointer; transition: .2s;
-        display: flex; align-items: center; gap: 8px;
-    }
-    .btn-guardar:hover { background: var(--rojo2); transform: translateY(-1px); }
+    /* Footer */
+    .form-card-footer { background:var(--gris); border-top:1px solid var(--borde); padding:20px 28px; display:flex; justify-content:flex-end; gap:10px; }
+    .btn-cancelar { font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding:11px 24px; border-radius:10px; border:1.5px solid var(--borde); background:white; color:var(--muted); cursor:pointer; transition:.2s; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+    .btn-guardar { font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding:11px 28px; border-radius:10px; border:none; background:var(--rojo); color:white; box-shadow:0 4px 14px rgba(211,47,47,.35); cursor:pointer; transition:.2s; display:flex; align-items:center; gap:8px; }
 </style>
 {% endblock %}
 
 {% block contenido %}
-<div class="container py-2 animate__animated animate__fadeIn">
+<div class="container py-2 animate__animated animate__fadeIn" style="max-width:860px;">
 
-    <!-- Encabezado -->
     <div class="taller-header">
         <div class="header-left">
             <div class="header-icon-wrap"><i class="fas fa-bell"></i></div>
             <div>
                 <h1 class="header-titulo">{{ titulo|default:"Nueva Notificación" }}</h1>
-                <div class="header-sub">
-                    {% if object %}Edita los datos de la notificación{% else %}Registra una nueva notificación en el sistema{% endif %}
-                </div>
+                <div class="header-sub">Establece la fecha y detalles de la notificación para el seguimiento anual.</div>
             </div>
         </div>
     </div>
 
     <form method="post" id="formNotificacion">
         {% csrf_token %}
-
-        {# Campo tipo oculto — lo llena el JS #}
         <input type="hidden" name="tipo" id="campo-tipo" value="{{ form.tipo.value|default:'' }}">
-
-        {# Campo leido real de Django — oculto, el switch visual lo sincroniza #}
         <div style="display:none;">{{ form.leido }}</div>
 
         <div class="form-card">
-
             <div class="form-card-header">
-                <i class="fas fa-bell"></i>
-                <span>Información de la Notificación</span>
+                <i class="fas fa-edit"></i>
+                <span>Configuración de Alerta</span>
             </div>
 
             <div class="form-card-body">
                 <div class="row g-4">
 
-                    <!-- Tipo: botones visuales -->
-                    <div class="col-md-12">
+                    <!-- Tipo -->
+                    <div class="col-12">
                         <div class="campo-label">Tipo de Notificación</div>
-                        <div>
-                            <button type="button" class="tipo-btn" data-tipo="Mantenimiento" onclick="seleccionarTipo(this)">
-                                <i class="fas fa-wrench"></i> Mantenimiento
-                            </button>
-                            <button type="button" class="tipo-btn" data-tipo="Alerta" onclick="seleccionarTipo(this)">
-                                <i class="fas fa-exclamation-triangle"></i> Alerta
-                            </button>
-                            <button type="button" class="tipo-btn" data-tipo="Recordatorio" onclick="seleccionarTipo(this)">
-                                <i class="fas fa-clock"></i> Recordatorio
-                            </button>
-                            <button type="button" class="tipo-btn" data-tipo="Urgente" onclick="seleccionarTipo(this)">
-                                <i class="fas fa-fire"></i> Urgente
-                            </button>
-                            <button type="button" class="tipo-btn" data-tipo="Informacion" onclick="seleccionarTipo(this)">
-                                <i class="fas fa-info-circle"></i> Información
-                            </button>
+                        <div class="tipo-grid">
+                            <button type="button" class="tipo-btn" data-tipo="Mantenimiento" onclick="seleccionarTipo(this)"><i class="fas fa-wrench"></i> Mantenimiento</button>
+                            <button type="button" class="tipo-btn" data-tipo="Alerta" onclick="seleccionarTipo(this)"><i class="fas fa-exclamation-triangle"></i> Alerta</button>
+                            <button type="button" class="tipo-btn" data-tipo="Recordatorio" onclick="seleccionarTipo(this)"><i class="fas fa-clock"></i> Recordatorio</button>
+                            <button type="button" class="tipo-btn" data-tipo="Urgente" onclick="seleccionarTipo(this)"><i class="fas fa-fire"></i> Urgente</button>
+                            <button type="button" class="tipo-btn" data-tipo="Informacion" onclick="seleccionarTipo(this)"><i class="fas fa-info-circle"></i> Información</button>
                         </div>
-                        {% if form.tipo.errors %}
-                            <div class="caja-error mt-2">
-                                <i class="fas fa-exclamation-circle"></i> {{ form.tipo.errors.0 }}
-                            </div>
-                        {% endif %}
                     </div>
 
                     <!-- Título -->
-                    <div class="col-md-6">
-                        <div class="campo-label">{{ form.titulo.label }}</div>
-                        <div class="input-group">
-                            <div class="input-icon {% if form.titulo.errors %}error{% endif %}">
-                                <i class="fas fa-heading"></i>
-                            </div>
-                            {{ form.titulo|add_class:'form-control shadow-none'|attr:'autocomplete:off' }}
+                    <div class="col-md-8">
+                        <div class="campo-label">Título de la Notificación</div>
+                        <div class="field-wrap">
+                            <i class="fas fa-heading field-icon"></i>
+                            {{ form.titulo|add_class:'form-control'|attr:'placeholder:Ej: Cambio de Aceite'|attr:'id:id_titulo' }}
                         </div>
-                        {% if form.titulo.errors %}
-                            <div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ form.titulo.errors.0 }}</div>
-                        {% endif %}
+                    </div>
+
+                    <!-- Fecha (CLAVE PARA EL FILTRO) -->
+                    <div class="col-md-4">
+                        <div class="campo-label">Fecha del Evento</div>
+                        <div class="field-wrap">
+                            <i class="fas fa-calendar-alt field-icon"></i>
+                            {% render_field form.fecha type="date" class="form-control" id="id_fecha" %}
+                        </div>
+                        <small style="font-size: 0.65rem; color: var(--muted);">Esta fecha determinará el <b>Mes y Año</b> en la lista.</small>
                     </div>
 
                     <!-- Vehículo -->
-                    <div class="col-md-6">
-                        <div class="campo-label">{{ form.vehiculo.label }}</div>
-                        <div class="input-group">
-                            <div class="input-icon {% if form.vehiculo.errors %}error{% endif %}">
-                                <i class="fas fa-car"></i>
-                            </div>
-                            {{ form.vehiculo|add_class:'form-control shadow-none' }}
+                    <div class="col-md-12">
+                        <div class="campo-label">Vehículo Asociado</div>
+                        <div class="field-wrap">
+                            <i class="fas fa-car field-icon"></i>
+                            {{ form.vehiculo|add_class:'form-control'|attr:'id:id_vehiculo' }}
                         </div>
-                        {% if form.vehiculo.errors %}
-                            <div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ form.vehiculo.errors.0 }}</div>
-                        {% endif %}
                     </div>
 
                     <!-- Mensaje -->
-                    <div class="col-md-12">
-                        <div class="campo-label">{{ form.mensaje.label }}</div>
-                        <div class="input-group">
-                            <div class="input-icon top {% if form.mensaje.errors %}error{% endif %}">
-                                <i class="fas fa-comment-dots"></i>
-                            </div>
-                            {{ form.mensaje|add_class:'form-control shadow-none'|attr:'rows:4' }}
+                    <div class="col-12">
+                        <div class="campo-label">Mensaje Detallado</div>
+                        <div class="field-wrap">
+                            <i class="fas fa-comment-dots field-icon top"></i>
+                            {{ form.mensaje|add_class:'form-control'|attr:'rows:3'|attr:'id:id_mensaje' }}
                         </div>
-                        {% if form.mensaje.errors %}
-                            <div class="caja-error"><i class="fas fa-exclamation-circle"></i> {{ form.mensaje.errors.0 }}</div>
-                        {% endif %}
                     </div>
 
                     <!-- Switch leído -->
                     <div class="col-md-6">
-                        <div class="campo-label">Estado de Lectura</div>
+                        <div class="campo-label">Estado Inicial</div>
                         <div class="switch-wrap" onclick="toggleLeido()">
                             <label class="switch-toggle mb-0" style="pointer-events:none;">
                                 <input type="checkbox" id="switch-visual-leido">
@@ -271,19 +161,17 @@
                             <span id="label-leido" class="switch-label" style="color:#c62828;">📭 No Leído</span>
                         </div>
                     </div>
-
                 </div>
             </div>
 
             <div class="form-card-footer">
                 <button type="button" class="btn-cancelar" id="btnCancelar">
-                    <i class="fas fa-times"></i> Descartar
+                    <i class="fas fa-times"></i> Cancelar
                 </button>
                 <button type="submit" class="btn-guardar">
-                    <i class="fas fa-save"></i> Guardar Notificación
+                    <i class="fas fa-save"></i> Guardar y Sincronizar
                 </button>
             </div>
-
         </div>
     </form>
 </div>
@@ -291,93 +179,50 @@
 
 {% block js %}
 <script>
-    // ── Restaurar tipo si hubo error de validación ──
-    var tipoActual = document.getElementById('campo-tipo').value;
-    if (tipoActual) {
-        document.querySelectorAll('.tipo-btn').forEach(function(btn) {
-            if (btn.dataset.tipo === tipoActual) {
-                btn.classList.add('activo-' + tipoActual);
-            }
-        });
-    }
+    // Inicialización de fecha actual si está vacío
+    window.onload = function() {
+        const fechaInput = document.getElementById('id_fecha');
+        if (!fechaInput.value) {
+            const now = new Date();
+            const day = ("0" + now.getDate()).slice(-2);
+            const month = ("0" + (now.getMonth() + 1)).slice(-2);
+            fechaInput.value = now.getFullYear() + "-" + month + "-" + day;
+        }
+    };
 
     function seleccionarTipo(btn) {
-        document.querySelectorAll('.tipo-btn').forEach(function(b) {
-            b.className = 'tipo-btn';
-        });
+        document.querySelectorAll('.tipo-btn').forEach(b => b.className = 'tipo-btn');
         var tipo = btn.dataset.tipo;
         btn.classList.add('activo-' + tipo);
         document.getElementById('campo-tipo').value = tipo;
     }
 
-    // ── Switch leído ──
     function actualizarLeido() {
         var visual = document.getElementById('switch-visual-leido');
-        var real   = document.getElementById('id_leido');
-        var label  = document.getElementById('label-leido');
-        real.checked = visual.checked;
-        if (visual.checked) {
-            label.textContent = '📬 Leído';
-            label.style.color = '#2e7d32';
-        } else {
-            label.textContent = '📭 No Leído';
-            label.style.color = '#c62828';
-        }
+        var real = document.getElementById('id_leido');
+        var label = document.getElementById('label-leido');
+        if(real) real.checked = visual.checked;
+        label.textContent = visual.checked ? '📬 Leído' : '📭 No Leído';
+        label.style.color = visual.checked ? '#2e7d32' : '#c62828';
     }
 
     function toggleLeido() {
-        var visual = document.getElementById('switch-visual-leido');
-        visual.checked = !visual.checked;
+        var v = document.getElementById('switch-visual-leido');
+        v.checked = !v.checked;
         actualizarLeido();
     }
 
-    // Inicializar al editar
-    var realCb = document.getElementById('id_leido');
-    if (realCb && realCb.checked) {
-        document.getElementById('switch-visual-leido').checked = true;
-    }
-    actualizarLeido();
-
-    // ── SweetAlert ──
-    var hayErrores = {{ form.errors|yesno:"true,false" }};
-
     $(function () {
-
         $('#btnCancelar').on('click', function() {
-            Swal.fire({
-                title: '¿Cancelar Registro?',
-                text: 'Se perderán los datos ingresados.',
-                icon: 'warning', showCancelButton: true,
-                confirmButtonText: 'Sí, salir', cancelButtonText: 'Seguir aquí',
-                confirmButtonColor: '#d32f2f', cancelButtonColor: '#1a1a1a',
-            }).then((result) => {
-                if (result.isConfirmed) window.location.href = '{{ listar_url }}';
-            });
+            window.location.href = '{{ listar_url }}';
         });
 
         $('#formNotificacion').on('submit', function(e) {
             if (!document.getElementById('campo-tipo').value) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Seleccione un tipo de notificación',
-                    confirmButtonColor: '#d32f2f'
-                });
-                e.preventDefault(); return;
+                Swal.fire({ icon:'warning', title:'Seleccione un tipo', confirmButtonColor:'#d32f2f' });
+                e.preventDefault();
             }
-            if (hayErrores) return;
-            e.preventDefault();
-            var formulario = this;
-            Swal.fire({
-                title: '¿Guardar Notificación?',
-                text: 'La notificación será registrada en el sistema.',
-                icon: 'question', showCancelButton: true,
-                confirmButtonText: 'Guardar', cancelButtonText: 'Revisar',
-                confirmButtonColor: '#d32f2f', cancelButtonColor: '#1a1a1a',
-            }).then((result) => {
-                if (result.isConfirmed) { formulario.submit(); }
-            });
         });
-
     });
 </script>
 {% endblock %}

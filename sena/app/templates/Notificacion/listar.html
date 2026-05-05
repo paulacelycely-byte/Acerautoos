@@ -4,347 +4,267 @@
 {% block css %}
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-    :root {
-        --rojo:   #d32f2f;
-        --rojo2:  #b71c1c;
-        --carbon: #1a1a1a;
-        --gris:   #f2f2f0;
-        --borde:  #e0ddd8;
-        --texto:  #2a2a2a;
-        --muted:  #888;
-    }
+:root{
+  --rojo:#d32f2f; --rojo2:#b71c1c; --carbon:#0f0f10;
+  --gris:#f3f3f1; --borde:#e6e2dc; --texto:#2a2a2a; --muted:#8a8a8a;
+}
 
-    /* ── HEADER ── */
-    .taller-header {
-        position: relative; background: var(--carbon);
-        border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
-        overflow: hidden; display: flex; align-items: center; justify-content: space-between;
-    }
-    .taller-header::before {
-        content: ''; position: absolute; top: 0; right: 0; width: 260px; height: 100%;
-        background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
-    }
-    .taller-header::after {
-        content: ''; position: absolute; left: 0; top: 0;
-        width: 5px; height: 100%; background: var(--rojo); border-radius: 16px 0 0 16px;
-    }
-    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
-    .header-icon-wrap {
-        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.4rem; color: white; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
-    }
-    .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800;
-        color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
-    }
-    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
-    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
-    .btn-accion {
-        font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px; padding: 10px 18px; border-radius: 10px;
-        display: flex; align-items: center; gap: 8px; border: none; cursor: pointer;
-        text-decoration: none; transition: transform .2s, box-shadow .2s;
-    }
-    .btn-accion:hover { transform: translateY(-2px); }
-    .btn-nuevo  { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
-    .btn-nuevo:hover  { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
-    .btn-todas  { background: rgba(255,255,255,.1); color: white !important; border: 1px solid rgba(255,255,255,.2) !important; }
-    .btn-todas:hover  { background: rgba(255,255,255,.18); color: white !important; }
+/* ===== HEADER (TU DISEÑO ORIGINAL) ===== */
+.taller-header{
+  position:relative; overflow:hidden;
+  background:linear-gradient(180deg,#111 0%, #1a1a1a 100%);
+  border-radius:16px; padding:26px 28px; margin-bottom:16px;
+  display:flex; align-items:center; justify-content:space-between;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+.taller-header::after{
+  content:""; position:absolute; left:0; top:0; width:6px; height:100%;
+  background:var(--rojo); border-radius:16px 0 0 16px;
+}
+.header-icon{
+  width:54px; height:54px; border-radius:12px; background:var(--rojo);
+  display:flex; align-items:center; justify-content:center; color:#fff;
+  box-shadow:0 0 0 4px rgba(211,47,47,.25);
+}
+.header-title{
+  font-family:'Barlow Condensed',sans-serif; font-size:28px; font-weight:800;
+  color:#fff; letter-spacing:.5px; line-height:1;
+}
 
-    /* Badge contador no leídas en el título */
-    .badge-no-leidas {
-        background: var(--rojo); color: white;
-        font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700;
-        padding: 3px 8px; border-radius: 20px; margin-left: 8px;
-        vertical-align: middle;
-    }
+/* ===== STATS (TU DISEÑO ORIGINAL) ===== */
+.stats{display:flex; gap:12px; margin:14px 0;}
+.stat{
+  background:#fff; border:1.5px solid var(--borde); border-radius:12px;
+  padding:14px 16px; min-width:120px; display:flex; flex-direction:column;
+}
+.stat-num{ font-family:'Barlow Condensed'; font-size:26px; font-weight:800; line-height:1; }
+.stat-label{ font-size:.7rem; color:var(--muted); text-transform:uppercase; }
 
-    /* ── TABLA ── */
-    .tabla-wrap { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
-    #tabla_notificaciones {
-        font-family: 'DM Sans', sans-serif; font-size: .875rem;
-        border-collapse: collapse; width: 100%;
-    }
-    #tabla_notificaciones thead tr { background: var(--gris); border-bottom: 2px solid var(--borde); }
-    #tabla_notificaciones thead th {
-        font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 14px 16px; border: none;
-    }
-    #tabla_notificaciones tbody tr { border-bottom: 1px solid var(--borde); transition: background .15s; }
-    #tabla_notificaciones tbody tr:hover { background: #fafaf8; }
-    #tabla_notificaciones tbody tr:last-child { border-bottom: none; }
-    #tabla_notificaciones tbody td { padding: 13px 16px; color: var(--texto) !important; vertical-align: middle; border: none; }
+/* ===== PANEL DE FILTROS REFORZADO ===== */
+.panel-filtros {
+    background: #fff;
+    border: 1.5px solid var(--borde);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+.fila-filtros {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+.fila-calendario {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--gris);
+}
 
-    /* Fila no leída: fondo levemente amarillo */
-    #tabla_notificaciones tbody tr.no-leida { background: #fffbf0; }
-    #tabla_notificaciones tbody tr.no-leida:hover { background: #fff8e1; }
+/* Selectores iguales */
+.select-custom {
+    font-family: 'DM Sans';
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--borde);
+    background: #fff;
+    min-width: 180px;
+    outline: none;
+    cursor: pointer;
+}
+.select-custom:focus { border-color: var(--rojo); }
 
-    /* Avatar mensaje */
-    .noti-avatar {
-        width: 38px; height: 38px; background: var(--carbon); color: white;
-        border-radius: 10px; display: flex; align-items: center; justify-content: center;
-        font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 800; flex-shrink: 0;
-    }
-    .noti-mensaje { font-weight: 600; color: var(--carbon); font-size: .9rem; }
-    .noti-titulo  { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+.chip {
+  font-family:'DM Sans'; font-size:.75rem; font-weight:700;
+  padding:8px 16px; border-radius:10px; border:1.5px solid var(--borde);
+  background:#fff; cursor:pointer;
+}
+.chip.active { background:#111; color:#fff; }
 
-    /* Badges tipo */
-    .badge-tipo {
-        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
-        padding: 4px 10px; border-radius: 7px; letter-spacing: .3px; display: inline-block;
-    }
-    .tipo-Mantenimiento { background: #e3f2fd; color: #1565c0; }
-    .tipo-Alerta        { background: #ffebee; color: #c62828; }
-    .tipo-Recordatorio  { background: #f3e5f5; color: #6a1b9a; }
-    .tipo-Urgente       { background: #fff3e0; color: #e65100; }
-    .tipo-Informacion   { background: #e8f5e9; color: #2e7d32; }
+.buscador-input {
+  padding:10px 12px 10px 38px; border:1.5px solid var(--borde); border-radius:10px; width:300px;
+}
 
-    /* Badge origen */
-    .badge-origen {
-        font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700;
-        padding: 3px 8px; border-radius: 6px; display: inline-block;
-    }
-    .origen-SISTEMA { background: #e3f2fd; color: #1565c0; }
-    .origen-ADMIN   { background: #f3e5f5; color: #6a1b9a; }
+/* ===== TABLA CON ICONOS ===== */
+.tipo-ico{
+  width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:.9rem;
+}
+.ico-alerta{background:#ef5350;}
+.ico-mant{background:#42a5f5;}
+.ico-urg{background:#fb8c00;}
+.ico-info{background:#64b5f6;}
 
-    /* Badge leído */
-    .badge-leido {
-        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
-        padding: 4px 10px; border-radius: 7px; display: inline-flex; align-items: center; gap: 5px;
-    }
-    .leido-si  { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
-    .leido-no  { background: var(--gris); color: var(--muted); border: 1px solid var(--borde); }
-
-    /* Botones fila */
-    .btn-fila {
-        width: 32px; height: 32px; border-radius: 8px;
-        display: inline-flex; align-items: center; justify-content: center;
-        border: none; cursor: pointer; transition: .2s; font-size: .8rem; text-decoration: none;
-    }
-    .btn-fila:hover { transform: translateY(-2px); }
-    .btn-edit   { background: #f39c12; color: white; }
-    .btn-del    { background: var(--rojo); color: white; }
-    .btn-leida  { background: #27ae60; color: white; }
-
-    /* DataTables overrides */
-    .dataTables_wrapper { padding: 16px 20px; }
-    .dataTables_filter input {
-        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
-        padding: 6px 12px !important; font-family: 'DM Sans', sans-serif !important;
-        font-size: .85rem !important; outline: none !important; transition: border-color .2s;
-    }
-    .dataTables_filter input:focus { border-color: var(--rojo) !important; }
-    .dataTables_filter label, .dataTables_length label,
-    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
-    .dataTables_length select {
-        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
-        padding: 4px 8px !important; appearance: none !important;
-        background-image: none !important; background: white !important;
-    }
-    .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
-    .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
-    .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
-    .paginate_button.disabled { display: inline-block !important; opacity: .4; }
-    .dataTables_paginate { display: block !important; }
+.badge-tipo{ font-size:.65rem; font-weight:800; padding:3px 9px; border-radius:8px; }
+.tipo-Alerta{background:#ffebee; color:#c62828;}
+.tipo-Mantenimiento{background:#e3f2fd; color:#1565c0;}
+.tipo-Urgente{background:#fff3e0; color:#e65100;}
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="container-fluid py-2">
 
-    <div class="taller-header">
-        <div class="header-left">
-            <div class="header-icon-wrap"><i class="fas fa-bell"></i></div>
-            <div>
-                <h1 class="header-titulo">
-                    {{ titulo|default:"Notificaciones" }}
-                    {% if no_leidas > 0 %}
-                        <span class="badge-no-leidas">{{ no_leidas }}</span>
-                    {% endif %}
-                </h1>
-                <div class="header-sub">Alertas y recordatorios del taller</div>
+  <!-- HEADER -->
+  <div class="taller-header">
+    <div class="header-left d-flex align-items-center gap-3">
+      <div class="header-icon"><i class="fas fa-bell"></i></div>
+      <div>
+        <div class="header-title">HISTORIAL DE NOTIFICACIONES</div>
+        <div style="color:rgba(255,255,255,0.5); font-size:0.8rem; font-family:'DM Sans';">Alertas y mantenimientos del sistema</div>
+      </div>
+    </div>
+    <a href="{{ crear_url }}" class="btn-primary" style="background:var(--rojo); color:#fff; padding:10px 20px; border-radius:10px; font-weight:800; text-decoration:none; box-shadow:0 5px 15px rgba(211,47,47,0.3);">
+        <i class="fas fa-plus"></i> NUEVA NOTIFICACIÓN
+    </a>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">{{ object_list|length }}</div>
+      <div class="stat-label">Total</div>
+    </div>
+    <div class="stat" style="background:#fffaf0; border-color:#ffe0b2;">
+      <div class="stat-num" style="color:#f57f17;">{{ no_leidas }}</div>
+      <div class="stat-label">Sin leer</div>
+    </div>
+  </div>
+
+  <!-- PANEL DE FILTROS -->
+  <div class="panel-filtros">
+    <div class="fila-filtros">
+        <div id="filtros-chips" class="d-flex gap-2">
+            <button class="chip active" data-tipo="TODAS">TODAS</button>
+            <button class="chip" data-tipo="Mantenimiento">MANTENIMIENTO</button>
+            <button class="chip" data-tipo="Alerta">ALERTA</button>
+            <button class="chip" data-tipo="Urgente">URGENTE</button>
+        </div>
+        <div style="position:relative;">
+            <i class="fas fa-search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#bbb;"></i>
+            <input type="text" id="buscador-input" class="buscador-input" placeholder="Buscar por placa o título...">
+        </div>
+    </div>
+
+    <div class="fila-calendario">
+        <div class="grupo-filtro">
+            <span class="label-filtro"><i class="fas fa-calendar"></i> AÑO:</span>
+            <select id="filtro-año" class="select-custom">
+                <option value="TODOS">TODOS LOS AÑOS</option>
+                <!-- Generados por JS -->
+            </select>
+        </div>
+        <div class="grupo-filtro">
+            <span class="label-filtro"><i class="fas fa-calendar-alt"></i> MES:</span>
+            <select id="filtro-mes" class="select-custom">
+                <option value="TODOS">TODOS LOS MESES</option>
+                <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+                <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+                <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+                <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+            </select>
+        </div>
+    </div>
+  </div>
+
+  <!-- TABLA -->
+  <div style="background:#fff; border-radius:14px; border:1.5px solid var(--borde); overflow:hidden;">
+    <table class="table mb-0" style="font-family:'DM Sans';">
+      <thead style="background:var(--gris);">
+        <tr>
+          <th style="font-size:0.7rem; font-weight:800; color:#777; text-transform:uppercase;">Tipo</th>
+          <th style="font-size:0.7rem; font-weight:800; color:#777; text-transform:uppercase;">Notificación</th>
+          <th style="font-size:0.7rem; font-weight:800; color:#777; text-transform:uppercase;">Vehículo</th>
+          <th style="font-size:0.7rem; font-weight:800; color:#777; text-transform:uppercase;">Fecha</th>
+          <th style="font-size:0.7rem; font-weight:800; color:#777; text-transform:uppercase;">Estado</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-body">
+        {% for n in object_list %}
+        <tr data-tipo="{{ n.tipo }}" data-mes="{{ n.fecha|date:'n' }}" data-año="{{ n.fecha|date:'Y' }}"
+            data-titulo="{{ n.titulo|lower }}" data-vehiculo="{{ n.vehiculo.placa|lower }}">
+          <td style="vertical-align:middle;">
+            <div class="d-flex align-items-center gap-2">
+                <div class="tipo-ico ico-{{ n.tipo|lower|slice:':4' }}">
+                    {% if n.tipo == 'Alerta' %}<i class="fas fa-exclamation"></i>
+                    {% elif n.tipo == 'Mantenimiento' %}<i class="fas fa-wrench"></i>
+                    {% elif n.tipo == 'Urgente' %}<i class="fas fa-fire"></i>
+                    {% else %}<i class="fas fa-info"></i>{% endif %}
+                </div>
+                <span class="badge-tipo tipo-{{ n.tipo }}">{{ n.tipo|upper }}</span>
             </div>
-        </div>
-        <div class="header-actions">
-            {% if no_leidas > 0 %}
-            <button class="btn-accion btn-todas" id="btn-marcar-todas">
-                <i class="fas fa-check-double"></i> Marcar todas leídas
-            </button>
-            {% endif %}
-            <a href="{{ crear_url }}" class="btn-accion btn-nuevo">
-                <i class="fas fa-plus"></i> Nueva Notificación
-            </a>
-        </div>
-    </div>
-
-    <div class="tabla-wrap">
-        <div class="table-responsive">
-            <table id="tabla_notificaciones" style="width:100%">
-                <thead>
-                    <tr>
-                        <th class="text-center">#</th>
-                        <th>Mensaje</th>
-                        <th class="text-center">Tipo</th>
-                        <th class="text-center">Origen</th>
-                        <th>Vehículo</th>
-                        <th class="text-center">Fecha</th>
-                        <th class="text-center">Leído</th>
-                        <th class="text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for n in object_list %}
-                    <tr class="{% if not n.leido %}no-leida{% endif %}" id="fila-{{ n.id }}">
-                        <td class="text-center" style="font-weight:700; color:var(--muted); font-size:.8rem;">{{ forloop.counter }}</td>
-                        <td>
-                            <div class="d-flex align-items-center" style="gap:10px;">
-                                <div class="noti-avatar">{{ n.tipo|first|upper }}</div>
-                                <div>
-                                    {% if n.titulo %}
-                                        <div class="noti-mensaje">{{ n.titulo }}</div>
-                                        <div class="noti-titulo">{{ n.mensaje|truncatechars:60 }}</div>
-                                    {% else %}
-                                        <div class="noti-mensaje">{{ n.mensaje|truncatechars:80 }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </td>
-                        <td class="text-center">
-                            <span class="badge-tipo tipo-{{ n.tipo }}">{{ n.tipo }}</span>
-                        </td>
-                        <td class="text-center">
-                            <span class="badge-origen origen-{{ n.origen }}">{{ n.get_origen_display }}</span>
-                        </td>
-                        <td style="color:var(--muted); font-size:.85rem;">
-                            {% if n.vehiculo %}{{ n.vehiculo }}{% else %}<span style="color:#ccc;">—</span>{% endif %}
-                        </td>
-                        <td class="text-center" style="color:var(--muted); font-size:.82rem;">{{ n.fecha|date:"d/m/Y H:i" }}</td>
-                        <td class="text-center" id="badge-leido-{{ n.id }}">
-                            {% if n.leido %}
-                                <span class="badge-leido leido-si"><i class="fas fa-check-circle"></i> Leído</span>
-                            {% else %}
-                                <span class="badge-leido leido-no"><i class="fas fa-circle"></i> No leído</span>
-                            {% endif %}
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex justify-content-center" style="gap:6px;">
-                                {% if not n.leido %}
-                                <button class="btn-fila btn-leida btn-marcar-leida"
-                                        data-id="{{ n.id }}"
-                                        data-url="{% url 'app:marcar_notificacion_leida' n.id %}"
-                                        title="Marcar como leída">
-                                    <i class="fas fa-check"></i>
-                                </button>
-                                {% endif %}
-                                <a href="{% url 'app:editar_notificacion' n.id %}" class="btn-fila btn-edit" title="Editar">
-                                    <i class="fas fa-pen"></i>
-                                </a>
-                                <a href="{% url 'app:eliminar_notificacion' n.id %}" class="btn-fila btn-del" title="Eliminar">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-</div>
-{% endblock %}
-
-{% block js %}
-<script>
-$(document).ready(function () {
-
-    var tabla = $('#tabla_notificaciones').DataTable({
-        responsive: true,
-        autoWidth: false,
-        pageLength: 10,
-        order: [[5, 'desc']],
-        pagingType: "full_numbers",
-        columnDefs: [{ orderable: false, targets: [0, 7] }],
-        language: {
-            "sProcessing":     "Procesando...",
-            "sLengthMenu":     "Mostrar _MENU_ registros",
-            "sZeroRecords":    "No se encontraron resultados",
-            "sEmptyTable":     "No hay notificaciones registradas",
-            "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
-            "sInfoEmpty":      "Mostrando 0 a 0 de 0 registros",
-            "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
-            "sSearch":         "Buscar:",
-            "sLoadingRecords": "Cargando...",
-            "oPaginate": { "sFirst": "«", "sLast": "»", "sNext": "›", "sPrevious": "‹" }
-        }
-    });
-
-    // ── Marcar UNA como leída ──────────────────────────
-    $(document).on('click', '.btn-marcar-leida', function () {
-        var btn = $(this);
-        var id  = btn.data('id');
-        var url = btn.data('url');
-
-        $.ajax({
-            url: url,
-            method: 'POST',
-            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
-            success: function (res) {
-                if (res.ok) {
-                    $('#badge-leido-' + id).html(
-                        '<span class="badge-leido leido-si"><i class="fas fa-check-circle"></i> Leído</span>'
-                    );
-                    $('#fila-' + id).removeClass('no-leida');
-                    btn.remove();
-                    Swal.fire({ icon: 'success', title: 'Marcada como leída', showConfirmButton: false, timer: 1200 });
-                }
-            },
-            error: function () {
-                Swal.fire({ icon: 'error', title: 'Error al procesar', showConfirmButton: false, timer: 1500 });
-            }
-        });
-    });
-
-    // ── Marcar TODAS como leídas ──────────────────────
-    $('#btn-marcar-todas').on('click', function () {
-        Swal.fire({
-            title: '¿Marcar todas como leídas?',
-            text: 'Todas las notificaciones pendientes quedarán marcadas.',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Sí, marcar todas',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#27ae60',
-            cancelButtonColor: '#6c757d',
-        }).then(function (result) {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '{% url "app:marcar_todas_leidas" %}',
-                    method: 'POST',
-                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
-                    success: function (res) {
-                        if (res.ok) {
-                            Swal.fire({
-                                icon: 'success', title: res.mensaje,
-                                showConfirmButton: false, timer: 1500
-                            }).then(function () { location.reload(); });
-                        }
-                    },
-                    error: function () {
-                        Swal.fire({ icon: 'error', title: 'Error al procesar', showConfirmButton: false, timer: 1500 });
-                    }
-                });
-            }
-        });
-    });
-
-    {% if messages %}
-        {% for message in messages %}
-        Swal.fire({ icon: "{{ message.tags }}", title: "{{ message|escapejs }}", showConfirmButton: false, timer: 2000 });
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-weight:700; color:#222;">{{ n.titulo }}</div>
+            <div style="font-size:0.75rem; color:#888;">{{ n.mensaje }}</div>
+          </td>
+          <td style="vertical-align:middle; font-weight:700;">{{ n.vehiculo.placa }}</td>
+          <td style="vertical-align:middle;">{{ n.fecha|date:"d/m/Y" }}</td>
+          <td style="vertical-align:middle;">
+            <span style="font-size:0.7rem; font-weight:800; padding:5px 12px; border-radius:20px; {% if n.leido %}background:#e8f5e9; color:#2e7d32;{% else %}background:#fff3e0; color:#e65100;{% endif %}">
+                {% if n.leido %}LEÍDO{% else %}SIN LEER{% endif %}
+            </span>
+          </td>
+        </tr>
         {% endfor %}
-    {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
 
-});
+<script>
+(function () {
+  const tbody = document.getElementById('tabla-body');
+  const buscador = document.getElementById('buscador-input');
+  const fMes = document.getElementById('filtro-mes');
+  const fAño = document.getElementById('filtro-año');
+  const fChips = document.getElementById('filtros-chips');
+
+  let tipoAct = 'TODAS';
+
+  // CARGAR AÑOS PARA PRUEBAS (2024 al 2030)
+  function cargarAños() {
+    for (let i = 2024; i <= 2030; i++) {
+        let opt = document.createElement('option');
+        opt.value = i; opt.textContent = i;
+        if(i === 2026) opt.selected = false; // Puedes pre-seleccionar uno si quieres
+        fAño.appendChild(opt);
+    }
+  }
+
+  function filtrar() {
+    const q = buscador.value.toLowerCase().trim();
+    const m = fMes.value;
+    const a = fAño.value;
+    const filas = Array.from(tbody.querySelectorAll('tr'));
+
+    filas.forEach(f => {
+      const mT = tipoAct === 'TODAS' || f.dataset.tipo === tipoAct;
+      const mM = m === 'TODOS' || f.dataset.mes === m;
+      const mA = a === 'TODOS' || f.dataset.año === a;
+      const mQ = !q || f.dataset.titulo.includes(q) || f.dataset.vehiculo.includes(q);
+
+      f.style.display = (mT && mM && mA && mQ) ? '' : 'none';
+    });
+  }
+
+  fChips.addEventListener('click', (e) => {
+    if (e.target.classList.contains('chip')) {
+        fChips.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        e.target.classList.add('active');
+        tipoAct = e.target.dataset.tipo;
+        filtrar();
+    }
+  });
+
+  buscador.addEventListener('input', filtrar);
+  fMes.addEventListener('change', filtrar);
+  fAño.addEventListener('change', filtrar);
+  
+  cargarAños();
+})();
 </script>
 {% endblock %}

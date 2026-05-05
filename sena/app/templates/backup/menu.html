@@ -14,32 +14,26 @@
         --muted:  #888;
     }
 
-    /* ── HEADER ── */
     .taller-header {
-        position: relative; background: var(--carbon);
-        border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
-        overflow: hidden; display: flex; align-items: center; justify-content: space-between;
-    }
-    .taller-header::before {
-        content: ''; position: absolute; top: 0; right: 0; width: 260px; height: 100%;
-        background: repeating-linear-gradient(-55deg, transparent, transparent 14px,
-            rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
-    }
-    .taller-header::after {
-        content: ''; position: absolute; left: 0; top: 0;
-        width: 5px; height: 100%; background: var(--rojo); border-radius: 16px 0 0 16px;
+        position: relative;
+        background: var(--carbon); border-radius: 10px; padding: 28px 32px;
+        margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between;
+        overflow: hidden;
     }
     .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
     .header-icon-wrap {
-        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
+        width: 56px; height: 56px; background: transparent; border-radius: 12px;
         display: flex; align-items: center; justify-content: center;
-        font-size: 1.4rem; color: white; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
+        box-shadow: none; flex-shrink: 0;
+    }
+    .header-icon-wrap img {
+        width: 56px; height: 56px; object-fit: contain; border-radius: 12px;
     }
     .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800;
+        font-family: "Barlow Condensed", sans-serif; font-size: 2rem; font-weight: 800;
         color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
     }
-    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
+    .header-sub { font-family: "DM Sans", sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; letter-spacing: .5px; }
 
     /* ── ESTADO CONEXIÓN ── */
     .estado-card {
@@ -145,7 +139,9 @@
     <!-- Header -->
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap"><i class="fas fa-database"></i></div>
+            <div class="header-icon-wrap">
+                <img src="{% static 'imagenes/db.jpeg' %}" alt="Backup">
+            </div>
             <div>
                 <h1 class="header-titulo">{{ titulo }}</h1>
                 <div class="header-sub">Respaldo y restauración de la base de datos MySQL</div>
@@ -168,7 +164,6 @@
         </div>
     </div>
 
-    <!-- Acciones -->
     <div class="acciones-grid">
 
         <!-- Descargar backup -->
@@ -258,15 +253,15 @@
 
 {% if db_conectada %}
 <script>
-    const zonaC       = document.getElementById('zona-carga');
+    const zonaC        = document.getElementById('zona-carga');
     const archivoInput = document.getElementById('archivo-respaldo');
 
     zonaC.addEventListener('click', () => archivoInput.click());
 
     zonaC.addEventListener('dragover', (e) => {
         e.preventDefault();
-        zonaC.style.borderColor  = '#16a34a';
-        zonaC.style.background   = '#f0fdf4';
+        zonaC.style.borderColor = '#16a34a';
+        zonaC.style.background  = '#f0fdf4';
     });
     zonaC.addEventListener('dragleave', () => {
         zonaC.style.borderColor = '';
@@ -287,12 +282,10 @@
             Swal.fire({ icon: 'warning', title: 'Archivo inválido', text: 'Selecciona un archivo .sql', confirmButtonColor: '#d32f2f' });
             return;
         }
-
         if (archivo.size === 0) {
             Swal.fire({ icon: 'warning', title: 'Archivo vacío', text: 'El archivo .sql está vacío, selecciona un respaldo válido.', confirmButtonColor: '#d32f2f' });
             return;
         }
-
         Swal.fire({
             title: '¿Restaurar base de datos?',
             text: 'Esto reemplazará TODOS los datos actuales. Se creará un backup de seguridad automático antes de restaurar.',
@@ -305,7 +298,6 @@
         }).then((result) => {
             if (!result.isConfirmed) return;
 
-            // Mostrar cargando
             const textoOriginal = zonaC.innerHTML;
             zonaC.innerHTML = '<i class="fas fa-spinner fa-spin" style="color:#2563eb;"></i><p><strong>Restaurando...</strong></p><p>Por favor espera</p>';
 

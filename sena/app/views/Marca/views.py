@@ -7,15 +7,27 @@ from django.views import View
 from django.db.models import ProtectedError
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # ← Mixins añadidos
 
 from app.models import Marca
 from app.forms import MarcaForm
 
 
+# ── MIXIN DE PROTECCIÓN ───────────────────────────────────
+class SoloAdminMixin(UserPassesTestMixin):
+    def test_func(self):
+        # Solo permite el acceso si el cargo es ADMIN o es superusuario
+        return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos de administrador para gestionar las marcas.")
+        return redirect('app:dashboard') # Redirige al dashboard para evitar bucles
+
+
 # ================================
-# LISTAR
+# LISTAR (Protegido para mecánicos)
 # ================================
-class MarcaListView(ListView):
+class MarcaListView(LoginRequiredMixin, SoloAdminMixin, ListView):
     model = Marca
     template_name = 'Marca/listar.html'
     context_object_name = 'object_list'
@@ -25,16 +37,16 @@ class MarcaListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo']    = 'Listado de Marca'
+        context['titulo']    = 'Listado de Marcas'
         context['crear_url'] = reverse_lazy('app:crear_marca')
         context['listar_url']= reverse_lazy('app:listar_marca')
         return context
 
 
 # ================================
-# CREAR
+# CREAR (Solo Admin)
 # ================================
-class MarcaCreateView(SuccessMessageMixin, CreateView):
+class MarcaCreateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, CreateView):
     model = Marca
     form_class = MarcaForm
     template_name = 'Marca/crear.html'
@@ -66,9 +78,9 @@ class MarcaCreateView(SuccessMessageMixin, CreateView):
 
 
 # ================================
-# EDITAR
+# EDITAR (Solo Admin)
 # ================================
-class MarcaUpdateView(SuccessMessageMixin, UpdateView):
+class MarcaUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, UpdateView):
     model = Marca
     form_class = MarcaForm
     template_name = 'Marca/crear.html'
@@ -100,9 +112,9 @@ class MarcaUpdateView(SuccessMessageMixin, UpdateView):
 
 
 # ================================
-# ELIMINAR / DESACTIVAR
+# ELIMINAR / DESACTIVAR (Solo Admin)
 # ================================
-class MarcaDeleteView(View):
+class MarcaDeleteView(LoginRequiredMixin, SoloAdminMixin, View):
     def get(self, request, pk):
         marca = get_object_or_404(Marca, pk=pk)
         return render(request, 'Marca/eliminar.html', {
@@ -139,6 +151,11 @@ class MarcaDeleteView(View):
 # ================================
 @require_POST
 def crear_marca_ajax(request):
+    # Nota: AJAX se mantiene sin SoloAdminMixin porque se usa al registrar vehículos, 
+    # pero requiere Login para mayor seguridad.
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Sesión expirada.'})
+
     nombre = request.POST.get('nombre', '').strip()
     pais   = request.POST.get('pais_origen', '').strip()
     desc   = request.POST.get('descripcion', '').strip()

@@ -8,13 +8,15 @@ from decimal import Decimal
 
 from app.models import Factura, OrdenServicio, Producto, Caja
 from app.forms import FacturaForm
-
+# --- IMPORTANTE: IMPORTAR EL MIXIN ---
+from app.mixins import AdminRequeridoMixin 
 
 # ─── LISTAR ───────────────────────────────────────────────
-class FacturaListView(ListView):
+class FacturaListView(AdminRequeridoMixin, ListView): # <--- Candado puesto
     model = Factura
     template_name = 'factura/listar.html'
     context_object_name = 'factura'
+    login_url = 'login:login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -23,62 +25,73 @@ class FacturaListView(ListView):
 
 
 # ─── CREAR ────────────────────────────────────────────────
-class FacturaCreateView(CreateView):
+class FacturaCreateView(AdminRequeridoMixin, CreateView): # <--- Candado puesto
     model = Factura
     form_class = FacturaForm
     template_name = 'factura/crear.html'
     success_url = reverse_lazy('app:listar_factura')
+    login_url = 'login:login'
 
     def form_valid(self, form):
         factura = form.save(commit=False)
-        tipo = factura.tipo
+        tipo    = factura.tipo
 
         if tipo == 'SERVICIO':
-            orden = factura.orden_servicio
-            subtotal = orden.servicio.precio_mano_obra
+            orden    = factura.orden_servicio
+            subtotal = Decimal('0')
+            for servicio in orden.servicios.all():
+                subtotal += servicio.precio_mano_obra
             for detalle in orden.productos_usados.select_related('producto').all():
                 subtotal += detalle.producto.precio * detalle.cantidad
-            factura.subtotal = subtotal
+            factura.total = subtotal
 
         elif tipo == 'PRODUCTO':
-            factura.subtotal = factura.producto.precio * factura.cantidad
-            factura.producto.stock -= factura.cantidad
-            factura.producto.save()
+            producto = form.cleaned_data.get('producto')
+            cantidad = form.cleaned_data.get('cantidad')
+            if producto and cantidad:
+                factura.total = producto.precio * cantidad
+                Producto.objects.filter(pk=producto.pk).update(
+                    stock=producto.stock - cantidad
+                )
 
-        factura.iva = factura.subtotal * Decimal('0.19')
-        factura.total = factura.subtotal + factura.iva
         factura.estado_pago = 'Pendiente'
         factura.save()
-
         messages.success(self.request, f"Factura {factura.numero_factura} creada correctamente.")
-        return super().form_valid(form)
+        return redirect(self.success_url)
 
 
 # ─── DETALLE ──────────────────────────────────────────────
-class FacturaDetailView(DetailView):
+class FacturaDetailView(AdminRequeridoMixin, DetailView): # <--- Candado puesto
     model = Factura
     template_name = 'factura/detalle.html'
     context_object_name = 'factura'
+    login_url = 'login:login'
 
 
 # ─── ELIMINAR ─────────────────────────────────────────────
-class FacturaDeleteView(DeleteView):
+class FacturaDeleteView(AdminRequeridoMixin, DeleteView): # <--- Candado puesto
     model = Factura
     template_name = 'factura/eliminar.html'
     success_url = reverse_lazy('app:listar_factura')
+    login_url = 'login:login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Eliminar Factura'
         return context
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Factura eliminada correctamente.')
+        return super().form_valid(form)
+
 
 # ─── PAGAR (POST) ─────────────────────────────────────────
-class PagarFacturaView(View):
+class PagarFacturaView(AdminRequeridoMixin, View): # <--- Candado puesto
+    login_url = 'login:login'
+
     def post(self, request, pk):
         factura = get_object_or_404(Factura, pk=pk)
         metodo  = request.POST.get('metodo_pago', '').strip()
-
         metodos_validos = [m[0] for m in Factura.METODOS_PAGO]
 
         if not metodo or metodo not in metodos_validos:
@@ -89,13 +102,11 @@ class PagarFacturaView(View):
             messages.warning(request, "Esta factura ya fue pagada.")
             return redirect('app:listar_factura')
 
-        # 1. Actualizar factura
         factura.metodo_pago = metodo
         factura.estado_pago = 'Pagada'
         factura.fecha_pago  = timezone.now()
         factura.save()
 
-        # 2. Crear ingreso en Caja (solo si no existe ya)
         ya_existe = Caja.objects.filter(
             descripcion__icontains=factura.numero_factura,
             tipo='INGRESO'
@@ -110,16 +121,11 @@ class PagarFacturaView(View):
                 metodo_pago = metodo,
             )
 
-        # 3. Si es de servicio, marcar la orden como Terminada
         if factura.tipo == 'SERVICIO' and factura.orden_servicio:
             orden = factura.orden_servicio
             if orden.estado != 'Terminado':
                 orden.estado = 'Terminado'
                 orden.save()
 
-        messages.success(
-            request,
-            f"Pago de {factura.get_metodo_pago_display()} registrado. "
-            f"Ingreso de ${factura.total:,.0f} guardado en Caja."
-        )
+        messages.success(request, f"Pago registrado correctamente.")
         return redirect('app:listar_factura')

@@ -3,13 +3,27 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.db.models import ProtectedError
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # Importamos los seguros
+
 from app.models import TipoServicio
 from app.forms import TipoServicioForm
 
+# ── MIXIN DE PROTECCIÓN ───────────────────────────────────
+class SoloAdminMixin(UserPassesTestMixin):
+    def test_func(self):
+        # Permite acceso si el cargo es ADMIN o superusuario
+        return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
 
-class TipoServicioListView(ListView):
+    def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos de administrador para gestionar los servicios.")
+        return redirect('app:tipo_servicio_list')
+
+
+# 1. LISTADO (Acceso para Mecánicos y Admins)
+class TipoServicioListView(LoginRequiredMixin, ListView):
     model = TipoServicio
     template_name = 'TipoServicio/listar.html'
+    context_object_name = 'servicios' # Agregué el nombre del objeto para el template
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -18,7 +32,8 @@ class TipoServicioListView(ListView):
         return context
 
 
-class TipoServicioCreateView(CreateView):
+# 2. CREAR (Protegido - Solo Admin)
+class TipoServicioCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
     model         = TipoServicio
     form_class    = TipoServicioForm
     template_name = 'TipoServicio/crear.html'
@@ -28,13 +43,13 @@ class TipoServicioCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         context['titulo']     = 'Crear Tipo de Servicio'
         context['listar_url'] = reverse_lazy('app:tipo_servicio_list')
-        context['es_editar']  = False  # ← rojo
+        context['es_editar']  = False  
         context['next']       = self.request.GET.get('next', '')
         return context
 
     def form_valid(self, form):
-        form.save()  # ← guardar siempre primero
-        messages.success(self.request, 'Tipo de servicio creado exitosamente.')
+        form.save()  
+        messages.success(self.request, 'Tipo de servicio creado exitosamente en Acerautos.')
         next_param = self.request.POST.get('next', '')
         if next_param == 'orden':
             return redirect(reverse_lazy('app:orden_servicio_create'))
@@ -45,7 +60,8 @@ class TipoServicioCreateView(CreateView):
         return super().form_invalid(form)
 
 
-class TipoServicioUpdateView(UpdateView):
+# 3. EDITAR (Protegido - Solo Admin)
+class TipoServicioUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
     model         = TipoServicio
     form_class    = TipoServicioForm
     template_name = 'TipoServicio/crear.html'
@@ -55,12 +71,12 @@ class TipoServicioUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['titulo']     = 'Editar Tipo de Servicio'
         context['listar_url'] = reverse_lazy('app:tipo_servicio_list')
-        context['es_editar']  = True   # ← azul
+        context['es_editar']  = True   
         context['next']       = self.request.GET.get('next', '')
         return context
 
     def form_valid(self, form):
-        form.save()  # ← guardar siempre primero
+        form.save()  
         messages.success(self.request, 'Tipo de servicio actualizado exitosamente.')
         next_param = self.request.POST.get('next', '')
         if next_param == 'orden':
@@ -72,7 +88,8 @@ class TipoServicioUpdateView(UpdateView):
         return super().form_invalid(form)
 
 
-class TipoServicioDeleteView(DeleteView):
+# 4. ELIMINAR (Protegido - Solo Admin)
+class TipoServicioDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
     model         = TipoServicio
     template_name = 'TipoServicio/eliminar.html'
     success_url   = reverse_lazy('app:tipo_servicio_list')
