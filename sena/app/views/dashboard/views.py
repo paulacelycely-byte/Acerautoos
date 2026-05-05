@@ -1,6 +1,8 @@
 from django.views.generic import TemplateView
 from django.db.models import F
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 from app.models import Cliente, Vehiculo, Factura, Producto, Proveedor, Notificacion
 
@@ -59,19 +61,43 @@ def _verificar_mantenimientos():
                 )
 
 
+@method_decorator(login_required, name='dispatch')
 class DashboardView(TemplateView):
-    template_name = 'dashboard/dashboard.html'
+    """Dashboard principal — cambia según el rol del usuario"""
+    
+    def get_template_names(self):
+        """Retorna el template según el cargo del usuario"""
+        user = self.request.user
+        
+        # MECÁNICO — Dashboard simplificado
+        if user.cargo == 'MECANICO':
+            return ['dashboard/dashboard_mecanico.html']
+        
+        # ADMIN — Dashboard completo
+        return ['dashboard/dashboard.html']
 
     def get_context_data(self, **kwargs):
         _verificar_mantenimientos()
 
         context = super().get_context_data(**kwargs)
+        user = self.request.user
+        
+        # ── DATOS BÁSICOS PARA TODOS ──
         context['titulo']               = 'Panel de Control'
-        context['cant_vehiculos']       = Vehiculo.objects.count()
-        context['cant_facturas']        = Factura.objects.count()
-        context['cant_clientes']        = Cliente.objects.count()
-        context['cant_productos']       = Producto.objects.count()
-        context['cant_proveedores']     = Proveedor.objects.count()
-        context['stock_bajo']           = Producto.objects.filter(stock__lte=F('stock_minimo')).count()
         context['total_notificaciones'] = Notificacion.objects.filter(leido=False).count()
+
+        # ── SOLO PARA ADMIN ──
+        if user.cargo == 'ADMIN':
+            context['cant_vehiculos']       = Vehiculo.objects.count()
+            context['cant_facturas']        = Factura.objects.count()
+            context['cant_clientes']        = Cliente.objects.count()
+            context['cant_productos']       = Producto.objects.count()
+            context['cant_proveedores']     = Proveedor.objects.count()
+            context['stock_bajo']           = Producto.objects.filter(stock__lte=F('stock_minimo')).count()
+        
+        # ── SOLO PARA MECÁNICO ──
+        if user.cargo == 'MECANICO':
+            context['cant_vehiculos']       = Vehiculo.objects.count()
+            context['ordenes_pendientes']   = Notificacion.objects.filter(tipo='Mantenimiento', leido=False).count()
+
         return context

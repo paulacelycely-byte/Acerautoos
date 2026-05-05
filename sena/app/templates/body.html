@@ -134,9 +134,6 @@
     .leyenda-obligatorio { font-size:.74rem; color:#888; margin-bottom:16px; display:flex; align-items:center; gap:4px; }
     .leyenda-obligatorio::before { content:'* '; color:#d32f2f; font-weight:800; font-size:.85rem; }
 
-    /* ══════════════════════════════════════
-       CHATBOT FLOTANTE
-    ══════════════════════════════════════ */
     #chatbot-btn {
       position: fixed; bottom: 28px; right: 28px;
       width: 52px; height: 52px;
@@ -220,6 +217,7 @@
 
         <div class="d-flex align-items-center gap-2">
 
+          {% if user.cargo == 'ADMIN' %}
           <a href="{% url 'app:backup' %}" class="btn-icon-img" data-tip="Backup BD">
             <img src="{% static 'imagenes/basededatos.jpeg' %}" alt="Backup">
           </a>
@@ -248,6 +246,7 @@
           </div>
 
           <div class="nav-vdivider"></div>
+          {% endif %}
 
           <div class="dropdown">
             <button class="user-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -276,12 +275,14 @@
                   Mi Perfil
                 </a>
               </li>
+              {% if user.cargo == 'ADMIN' %}
               <li>
                 <a class="dropdown-item" href="{% url 'app:listar_usuario' %}">
                   <svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M2 20c0-3.5 3.1-6 7-6"/><circle cx="17" cy="7" r="3"/><path d="M22 20c0-3.5-3.1-6-7-6s-7 2.5-7 6"/></svg>
                   Administrar Usuarios
                 </a>
               </li>
+              {% endif %}
               <li><hr class="dropdown-divider"></li>
               <li>
                 <form method="post" action="{% url 'login:logout' %}">
@@ -305,7 +306,6 @@
     </div>
   </div>
 
-  <!-- ══ CHATBOT FLOTANTE ══ -->
   <div id="chatbot-btn" onclick="toggleChat()">
     <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -345,12 +345,10 @@
 
 {% endblock %}
 
-
 {% block js_base %}
   <script>
   document.addEventListener('DOMContentLoaded', function () {
 
-    // ── SIDEBAR ──
     var trigger = document.getElementById('sidebar-trigger');
     var body    = document.body;
     var MINI    = 'sidebar-mini';
@@ -370,7 +368,6 @@
     if (saved === 'mini')   body.classList.add(MINI);
     if (saved === 'hidden') body.classList.add(HIDDEN);
 
-    // ── NOTIFICACIONES ──
     const COLORES_DOT  = { 'Urgente':'dot-urgente','Alerta':'dot-alerta','Mantenimiento':'dot-mantenimiento','Recordatorio':'dot-recordatorio','Informacion':'dot-informacion' };
     const COLORES_TIPO = { 'Urgente':'tipo-urgente','Alerta':'tipo-alerta','Mantenimiento':'tipo-mantenimiento','Recordatorio':'tipo-recordatorio','Informacion':'tipo-informacion' };
 
@@ -414,14 +411,12 @@
     actualizarNotificaciones();
     setInterval(actualizarNotificaciones, 30000);
 
-    // ── SWEETALERT ──
     {% if messages %}
       {% for message in messages %}
         Swal.fire({ icon:"{{ message.tags|default:'info' }}", title:"{{ message|escapejs }}", confirmButtonColor:'#d32f2f', timer:3000, timerProgressBar:true });
       {% endfor %}
     {% endif %}
 
-    // ── CHATBOT: Enter para enviar ──
     const inputChat = document.getElementById('chatbot-input');
     if (inputChat) {
       inputChat.addEventListener('keydown', function(e) {
@@ -436,7 +431,6 @@
   </script>
 
   <script>
-  // ── CHATBOT FUNCIONES ──
   function toggleChat() {
     const box = document.getElementById('chatbot-box');
     box.classList.toggle('abierto');
@@ -605,7 +599,11 @@
     });
   });
   </script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  {% block js %}{% endblock %}
+{% block js %}{% endblock %}
 
 {% endblock %}

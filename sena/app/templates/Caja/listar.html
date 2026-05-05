@@ -6,153 +6,218 @@
 <style>
     :root {
         --rojo:   #d32f2f;
-        --rojo2:  #b71c1c;
         --carbon: #1a1a1a;
         --gris:   #f2f2f0;
         --borde:  #e0ddd8;
         --texto:  #2a2a2a;
         --muted:  #888;
+        --verde:  #16a34a;
     }
 
-    /* ── HEADER ── */
     .taller-header {
-        position: relative; background: var(--carbon);
-        border-radius: 16px; padding: 28px 32px; margin-bottom: 20px;
-        overflow: hidden; display: flex; align-items: center; justify-content: space-between;
+        position: relative;
+        background: var(--carbon);
+        border-radius: 10px;
+        padding: 28px 32px;
+        margin-bottom: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
-    .taller-header::before {
-        content: ''; position: absolute; top: 0; right: 0; width: 260px; height: 100%;
-        background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
-    }
-    .taller-header::after {
-        content: ''; position: absolute; left: 0; top: 0;
-        width: 5px; height: 100%; background: var(--rojo); border-radius: 16px 0 0 16px;
-    }
-    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
+
+    .header-left { display: flex; align-items: center; gap: 18px; }
+
     .header-icon-wrap {
-        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
+        width: 56px; height: 56px;
+        background: var(--rojo);
+        border-radius: 12px;
         display: flex; align-items: center; justify-content: center;
-        font-size: 1.4rem; color: white; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
+        box-shadow: 0 0 0 4px rgba(211,47,47,.25);
+        flex-shrink: 0;
     }
+    .header-icon-wrap svg {
+        width: 28px; height: 28px;
+        stroke: white; fill: none;
+        stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+    }
+
     .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800;
-        color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 2rem; font-weight: 800;
+        color: white; letter-spacing: 1px;
+        text-transform: uppercase; line-height: 1; margin: 0;
     }
-    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
-    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
+    .header-sub {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem; color: rgba(255,255,255,.45);
+        margin-top: 5px; letter-spacing: .5px;
+    }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+
     .btn-accion {
-        font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px; padding: 10px 18px; border-radius: 10px;
-        display: flex; align-items: center; gap: 8px; border: none; cursor: pointer;
-        text-decoration: none; transition: transform .2s, box-shadow .2s;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px;
+        padding: 10px 18px; border-radius: 10px;
+        display: flex; align-items: center; gap: 8px;
+        border: none; cursor: pointer; text-decoration: none;
+        transition: transform .2s, box-shadow .2s;
     }
     .btn-accion:hover { transform: translateY(-2px); }
+    .btn-accion svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .btn-pdf   { background: #c0392b; color: white !important; }
     .btn-excel { background: #1e7e45; color: white !important; }
     .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
     .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
 
-    /* ── RESUMEN ── */
-    .resumen-wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+    /* RESUMEN */
+    .resumen-wrap {
+        display: grid; grid-template-columns: repeat(3,1fr);
+        gap: 12px; margin-bottom: 20px;
+    }
     .resumen-card {
-        background: white; border-radius: 14px; border: 1px solid var(--borde);
-        padding: 20px 22px; display: flex; align-items: center; justify-content: space-between;
-        overflow: hidden; position: relative;
+        background: white; border-radius: 10px;
+        border: 1px solid var(--borde);
+        padding: 20px 22px;
+        display: flex; align-items: center; gap: 16px;
+        transition: all .2s ease-out;
     }
-    .resumen-card::before {
-        content: ''; position: absolute; left: 0; top: 0;
-        width: 5px; height: 100%; border-radius: 14px 0 0 14px;
+    .resumen-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+    .resumen-icon-wrap {
+        width: 46px; height: 46px; border-radius: 10px;
+        flex-shrink: 0; display: flex; align-items: center; justify-content: center;
     }
-    .resumen-ingreso::before { background: #27ae60; }
-    .resumen-egreso::before  { background: var(--rojo); }
-    .resumen-saldo::before   { background: var(--carbon); }
+    .icon-ingreso { background: #dcfce7; color: var(--verde); }
+    .icon-egreso  { background: #fee2e2; color: var(--rojo); }
+    .icon-saldo   { background: var(--gris); color: var(--carbon); }
     .resumen-label {
-        font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 4px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .68rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1px;
+        color: var(--muted); margin-bottom: 3px;
     }
     .resumen-valor {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 1.9rem; font-weight: 800; line-height: 1;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 1.7rem; font-weight: 800; line-height: 1;
     }
-    .resumen-ingreso .resumen-valor { color: #27ae60; }
-    .resumen-egreso  .resumen-valor { color: var(--rojo); }
-    .resumen-saldo   .resumen-valor { color: var(--carbon); }
-    .resumen-saldo   .resumen-valor.negativo { color: var(--rojo); }
-    .resumen-sub { font-family: 'DM Sans', sans-serif; font-size: .72rem; color: var(--muted); margin-top: 3px; }
-    .resumen-icon { font-size: 2rem; opacity: .1; }
-    .resumen-ingreso .resumen-icon { color: #27ae60; }
-    .resumen-egreso  .resumen-icon { color: var(--rojo); }
-    .resumen-saldo   .resumen-icon { color: var(--carbon); }
+    .val-ingreso { color: var(--verde); }
+    .val-egreso  { color: var(--rojo); }
+    .val-saldo   { color: var(--carbon); }
+    .val-saldo.negativo { color: var(--rojo); }
 
-    /* ── FILTRO ── */
+    /* FILTRO */
     .filtro-wrap {
-        background: white; border-radius: 14px; border: 1px solid var(--borde);
-        padding: 18px 22px; margin-bottom: 20px;
+        background: white; border-radius: 10px;
+        border: 1px solid var(--borde);
+        padding: 16px 20px; margin-bottom: 16px;
     }
     .filtro-label {
-        font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 5px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .68rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1px;
+        color: var(--muted); margin-bottom: 5px;
     }
     .filtro-wrap input[type="date"] {
-        border: 1.5px solid var(--borde); border-radius: 9px;
-        padding: 7px 12px; font-family: 'DM Sans', sans-serif; font-size: .85rem;
-        color: var(--texto); outline: none; transition: border-color .2s;
+        border: 1.5px solid var(--borde); border-radius: 8px;
+        padding: 7px 12px; font-family: 'DM Sans', sans-serif;
+        font-size: .85rem; color: var(--texto); outline: none;
+        transition: border-color .2s; background: var(--gris);
     }
-    .filtro-wrap input[type="date"]:focus { border-color: var(--rojo); }
+    .filtro-wrap input[type="date"]:focus { border-color: var(--rojo); background: white; }
     .btn-filtrar {
         font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .5px; padding: 8px 18px;
-        border-radius: 9px; border: none; background: var(--carbon); color: white; cursor: pointer; transition: .2s;
+        text-transform: uppercase; letter-spacing: .5px;
+        padding: 8px 18px; border-radius: 8px; border: none;
+        background: var(--carbon); color: white; cursor: pointer; transition: .2s;
     }
     .btn-filtrar:hover { background: #333; }
     .btn-limpiar {
         font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .5px; padding: 8px 18px;
-        border-radius: 9px; border: 1.5px solid var(--borde); background: white; color: var(--muted); cursor: pointer; transition: .2s;
+        text-transform: uppercase; letter-spacing: .5px;
+        padding: 8px 18px; border-radius: 8px;
+        border: 1.5px solid var(--borde); background: white;
+        color: var(--muted); cursor: pointer; transition: .2s;
     }
     .btn-limpiar:hover { border-color: var(--carbon); color: var(--carbon); }
     .btn-rango {
-        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 600;
-        padding: 5px 12px; border-radius: 7px; border: 1.5px solid var(--borde);
-        background: white; color: var(--muted); cursor: pointer; transition: .2s;
+        font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 600;
+        padding: 5px 12px; border-radius: 6px;
+        border: 1.5px solid var(--borde); background: white;
+        color: var(--muted); cursor: pointer; transition: .2s;
     }
     .btn-rango:hover, .btn-rango.active { background: var(--carbon); color: white; border-color: var(--carbon); }
 
-    /* ── TABLA ── */
-    .tabla-wrap { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
+    /* TABLA */
+    .tabla-wrap {
+        background: white; border-radius: 10px;
+        border: 1px solid var(--borde); overflow: hidden;
+    }
+
     #tabla_caja {
-        font-family: 'DM Sans', sans-serif; font-size: .875rem;
-        border-collapse: collapse; width: 100%;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .875rem; border-collapse: collapse; width: 100%;
     }
-    #tabla_caja thead tr { background: var(--gris); border-bottom: 2px solid var(--borde); }
+    #tabla_caja thead tr {
+        background: var(--gris); border-bottom: 2px solid var(--borde);
+    }
     #tabla_caja thead th {
-        font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 14px 16px; border: none;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: .78rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1.2px;
+        color: var(--muted); padding: 14px 16px; border: none;
     }
-    #tabla_caja tbody tr { border-bottom: 1px solid var(--borde); transition: background .15s; }
+    #tabla_caja tbody tr {
+        border-bottom: 1px solid var(--borde); transition: background .15s;
+    }
     #tabla_caja tbody tr:hover { background: #fafaf8; }
     #tabla_caja tbody tr:last-child { border-bottom: none; }
-    #tabla_caja tbody td { padding: 13px 16px; color: var(--texto) !important; vertical-align: middle; border: none; }
-
-    .tipo-avatar {
-        width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
-        display: flex; align-items: center; justify-content: center;
-        font-family: 'Barlow Condensed', sans-serif; font-size: .95rem; font-weight: 800; color: white;
+    #tabla_caja tbody td {
+        padding: 13px 16px; color: var(--texto);
+        vertical-align: middle; border: none;
     }
-    .tipo-ingreso { background: #27ae60; }
-    .tipo-egreso  { background: var(--rojo); }
-    .tipo-texto-ingreso { font-weight: 700; color: #27ae60; }
-    .tipo-texto-egreso  { font-weight: 700; color: var(--rojo); }
-    .monto-ingreso { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 800; color: #27ae60; }
-    .monto-egreso  { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--rojo); }
 
-    /* DataTables overrides */
+    .movimiento-avatar {
+        width: 38px; height: 38px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 1.15rem; font-weight: 900;
+        flex-shrink: 0; color: white;
+    }
+    .movimiento-avatar.ingreso { background: var(--verde); }
+    .movimiento-avatar.egreso  { background: var(--rojo); }
+
+    .badge-tipo {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .68rem; font-weight: 700;
+        padding: 3px 9px; border-radius: 5px;
+        text-transform: uppercase; letter-spacing: .5px;
+        display: inline-block;
+    }
+    .badge-ingreso { background: #dcfce7; color: var(--verde); border: 1px solid #bbf7d0; }
+    .badge-egreso  { background: #fee2e2; color: var(--rojo); border: 1px solid #fecaca; }
+
+    .badge-cat {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .68rem; font-weight: 600;
+        background: var(--gris); color: var(--muted);
+        border: 1px solid var(--borde); border-radius: 5px;
+        padding: 2px 8px; text-transform: capitalize; display: inline-block;
+    }
+
+    .monto-ingreso { font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 800; color: var(--verde); }
+    .monto-egreso  { font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 800; color: var(--rojo); }
+
+    /* DATATABLES */
     .dataTables_wrapper { padding: 16px 20px; }
     .dataTables_filter input {
         border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
-        padding: 6px 12px !important; font-family: 'DM Sans', sans-serif !important; font-size: .85rem !important; outline: none !important;
+        padding: 6px 12px !important; font-family: 'DM Sans', sans-serif !important;
+        font-size: .85rem !important; outline: none !important; transition: border-color .2s;
     }
     .dataTables_filter input:focus { border-color: var(--rojo) !important; }
-    .dataTables_filter label, .dataTables_length label,
+    .dataTables_filter label,
+    .dataTables_length label,
     .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
     .dataTables_length select {
         border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
@@ -160,6 +225,7 @@
     }
     .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
     .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
+    .paginate_button.current a, .paginate_button.current a:hover { color: white !important; }
     .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
     .paginate_button.disabled { display: inline-block !important; opacity: .4; }
     .dataTables_paginate { display: block !important; }
@@ -172,76 +238,84 @@
     <!-- HEADER -->
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap"><i class="fas fa-cash-register"></i></div>
+            <div class="header-icon-wrap">
+                <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><rect x="1" y="9" width="22" height="3"/><path d="M5 14h1M11 14h1"/></svg>
+            </div>
             <div>
                 <h1 class="header-titulo">{{ titulo|default:"Gestión de Caja" }}</h1>
-                <div class="header-sub" id="saldo-rango-label">Todo el historial</div>
+                <div class="header-sub">Registro de movimientos de caja</div>
             </div>
         </div>
         <div class="header-actions">
             <a href="{% url 'app:reporte_caja_pdf' %}" class="btn-accion btn-pdf">
-                <i class="fas fa-file-pdf"></i> PDF
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+                PDF
             </a>
             <a href="{% url 'app:reporte_caja_excel' %}" class="btn-accion btn-excel">
-                <i class="fas fa-file-excel"></i> Excel
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+                Excel
             </a>
             <a href="{{ crear_url }}" class="btn-accion btn-nuevo">
-                <i class="fas fa-plus"></i> Nuevo Movimiento
+                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nuevo Movimiento
             </a>
         </div>
     </div>
 
     <!-- RESUMEN -->
     <div class="resumen-wrap">
-        <div class="resumen-card resumen-ingreso">
-            <div>
-                <div class="resumen-label"><i class="fas fa-arrow-up me-1"></i> Total Ingresos</div>
-                <div class="resumen-valor" id="total-ingresos">${{ total_ingresos|floatformat:0 }}</div>
-                <div class="resumen-sub">Entradas de dinero</div>
+        <div class="resumen-card">
+            <div class="resumen-icon-wrap icon-ingreso">
+                <svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
             </div>
-            <i class="fas fa-plus-circle resumen-icon"></i>
+            <div>
+                <div class="resumen-label">Total Ingresos</div>
+                <div class="resumen-valor val-ingreso" id="total-ingresos">${{ total_ingresos|floatformat:0 }}</div>
+            </div>
         </div>
-        <div class="resumen-card resumen-egreso">
-            <div>
-                <div class="resumen-label"><i class="fas fa-arrow-down me-1"></i> Total Egresos</div>
-                <div class="resumen-valor" id="total-egresos">${{ total_egresos|floatformat:0 }}</div>
-                <div class="resumen-sub">Salidas de dinero</div>
+        <div class="resumen-card">
+            <div class="resumen-icon-wrap icon-egreso">
+                <svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
             </div>
-            <i class="fas fa-minus-circle resumen-icon"></i>
+            <div>
+                <div class="resumen-label">Total Egresos</div>
+                <div class="resumen-valor val-egreso" id="total-egresos">${{ total_egresos|floatformat:0 }}</div>
+            </div>
         </div>
-        <div class="resumen-card resumen-saldo">
-            <div>
-                <div class="resumen-label"><i class="fas fa-balance-scale me-1"></i> Saldo en Caja</div>
-                <div class="resumen-valor {% if saldo_caja < 0 %}negativo{% endif %}" id="saldo-caja">${{ saldo_caja|floatformat:0 }}</div>
-                <div class="resumen-sub">Balance actual</div>
+        <div class="resumen-card">
+            <div class="resumen-icon-wrap icon-saldo">
+                <svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
             </div>
-            <i class="fas fa-cash-register resumen-icon"></i>
+            <div>
+                <div class="resumen-label">Saldo en Caja</div>
+                <div class="resumen-valor val-saldo {% if saldo_caja < 0 %}negativo{% endif %}" id="saldo-caja">${{ saldo_caja|floatformat:0 }}</div>
+            </div>
         </div>
     </div>
 
-    <!-- FILTRO POR FECHAS -->
+    <!-- FILTRO -->
     <div class="filtro-wrap">
         <div class="d-flex align-items-end flex-wrap" style="gap:12px;">
             <div>
-                <div class="filtro-label"><i class="fas fa-calendar-alt me-1"></i> Desde</div>
-                <input type="date" id="fechaDesde" style="min-width:160px;">
+                <div class="filtro-label">Desde</div>
+                <input type="date" id="fechaDesde">
             </div>
             <div>
-                <div class="filtro-label"><i class="fas fa-calendar-alt me-1"></i> Hasta</div>
-                <input type="date" id="fechaHasta" style="min-width:160px;">
+                <div class="filtro-label">Hasta</div>
+                <input type="date" id="fechaHasta">
             </div>
             <div class="d-flex" style="gap:8px;">
-                <button class="btn-filtrar" onclick="aplicarFiltro()"><i class="fas fa-search me-1"></i> Filtrar</button>
-                <button class="btn-limpiar" onclick="limpiarFiltro()"><i class="fas fa-times me-1"></i> Limpiar</button>
+                <button class="btn-filtrar" onclick="aplicarFiltro()">Filtrar</button>
+                <button class="btn-limpiar" onclick="limpiarFiltro()">Limpiar</button>
             </div>
         </div>
         <div class="mt-3 d-flex flex-wrap" style="gap:8px; align-items:center;">
-            <span style="font-family:'DM Sans',sans-serif; font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted);">Rangos rápidos:</span>
-            <button class="btn-rango" onclick="setRango(15, this)">Últimos 15 días</button>
-            <button class="btn-rango" onclick="setRango(30, this)">Últimos 30 días</button>
+            <span style="font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Rápido:</span>
+            <button class="btn-rango" onclick="setRango(15,this)">15 días</button>
+            <button class="btn-rango" onclick="setRango(30,this)">30 días</button>
             <button class="btn-rango" onclick="setRangoMes(this)">Este mes</button>
             <button class="btn-rango" onclick="setRangoMesAnterior(this)">Mes anterior</button>
-            <button class="btn-rango" onclick="setRango(90, this)">Últimos 3 meses</button>
+            <button class="btn-rango" onclick="setRango(90,this)">3 meses</button>
         </div>
     </div>
 
@@ -251,40 +325,37 @@
             <table id="tabla_caja" style="width:100%">
                 <thead>
                     <tr>
-                        <th class="text-center">#</th>
+                        <th class="text-center">ID</th>
                         <th>Movimiento</th>
-                        <th>Pago</th>
+                        <th>Descripción</th>
+                        <th>Monto</th>
                         <th>Fecha</th>
+                        <th>Método Pago</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for c in object_list %}
                     <tr data-fecha="{{ c.fecha|date:'Y-m-d' }}" data-tipo="{{ c.tipo }}" data-monto="{{ c.monto }}">
-                        <td class="text-center" style="font-weight:700; color:var(--muted); font-size:.8rem;">{{ forloop.counter }}</td>
+                        <td class="text-center" style="font-weight:700;color:var(--muted);font-size:.8rem;">{{ forloop.counter }}</td>
                         <td>
-                            <div class="d-flex align-items-center" style="gap:12px;">
-                                <div class="tipo-avatar {% if c.tipo == 'INGRESO' %}tipo-ingreso{% else %}tipo-egreso{% endif %}">
+                            <div class="d-flex align-items-center" style="gap:10px;">
+                                <div class="movimiento-avatar {% if c.tipo == 'INGRESO' %}ingreso{% else %}egreso{% endif %}">
                                     {{ c.tipo|first|upper }}
                                 </div>
-                                <div>
-                                    <div class="{% if c.tipo == 'INGRESO' %}tipo-texto-ingreso{% else %}tipo-texto-egreso{% endif %}">{{ c.tipo }}</div>
-                                    <div style="font-size:.82rem; color:var(--texto); font-weight:500; margin-top:2px;">{{ c.descripcion }}</div>
-                                    <div style="font-size:.74rem; color:var(--muted); margin-top:1px;"><i class="fas fa-tag me-1"></i>{{ c.categoria }}</div>
+                                <div class="d-flex align-items-center" style="gap:6px;">
+                                    <span class="badge-tipo {% if c.tipo == 'INGRESO' %}badge-ingreso{% else %}badge-egreso{% endif %}">{{ c.tipo }}</span>
+                                    <span class="badge-cat">{{ c.categoria }}</span>
                                 </div>
                             </div>
                         </td>
+                        <td style="font-weight:500;">{{ c.descripcion }}</td>
                         <td>
                             <span class="{% if c.tipo == 'INGRESO' %}monto-ingreso{% else %}monto-egreso{% endif %}">
-                                {% if c.tipo == 'INGRESO' %}+{% else %}-{% endif %}${{ c.monto|floatformat:0 }}
+                                {% if c.tipo == 'INGRESO' %}+{% else %}−{% endif %}${{ c.monto|floatformat:0 }}
                             </span>
-                            <div style="font-size:.74rem; color:var(--muted); margin-top:3px;"><i class="fas fa-wallet me-1"></i>{{ c.metodo_pago }}</div>
                         </td>
-                        <td style="color:var(--muted); font-size:.82rem;">
-                            <!-- Fecha visible -->
-                            {{ c.fecha|date:"d/m/Y H:i" }}
-                            <!-- Fecha oculta para ordenar correctamente -->
-                            <span style="display:none;">{{ c.fecha|date:"Y-m-d H:i" }}</span>
-                        </td>
+                        <td style="color:var(--muted);font-size:.82rem;font-weight:600;">{{ c.fecha|date:"d/m/Y H:i" }}</td>
+                        <td style="color:var(--muted);font-size:.8rem;text-transform:capitalize;">{{ c.metodo_pago }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -299,82 +370,70 @@
 <script>
 var totalIngresosOriginal = {{ total_ingresos }};
 var totalEgresosOriginal  = {{ total_egresos }};
-var saldoOriginal         = {{ saldo_caja }};
+var tabla;
 
-// ── DataTable — columna 3 (fecha) descendente ──
-var tabla = $('#tabla_caja').DataTable({
-    responsive: true,
-    autoWidth: false,
-    pageLength: 10,
-    order: [[3, 'desc']],   // ← CORREGIDO: columna 3 = Fecha
-    pagingType: "full_numbers",
-    columnDefs: [
-        { orderable: false, targets: [0] }
-    ],
-    language: {
-        "sProcessing":   "Procesando...",
-        "sLengthMenu":   "Mostrar _MENU_ registros",
-        "sZeroRecords":  "No se encontraron resultados",
-        "sEmptyTable":   "No hay movimientos registrados",
-        "sInfo":         "Mostrando _START_ a _END_ de _TOTAL_ registros",
-        "sInfoEmpty":    "Mostrando 0 a 0 de 0 registros",
-        "sInfoFiltered": "(filtrado de _MAX_ registros totales)",
-        "sSearch":       "Buscar:",
-        "oPaginate": { "sFirst": "«", "sLast": "»", "sNext": "›", "sPrevious": "‹" }
-    }
+$(document).ready(function () {
+    tabla = $('#tabla_caja').DataTable({
+        responsive: true,
+        autoWidth: false,
+        pageLength: 10,
+        order: [[0, "asc"]],
+        pagingType: "full_numbers",
+        columnDefs: [{ orderable: false, targets: [1, 3] }],
+        language: {
+            "sLengthMenu":   "Mostrar _MENU_ registros",
+            "sZeroRecords":  "No se encontraron resultados",
+            "sEmptyTable":   "Ningún dato disponible",
+            "sInfo":         "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "sInfoEmpty":    "Mostrando 0 a 0 de 0 registros",
+            "sInfoFiltered": "(filtrado de _MAX_ registros totales)",
+            "sSearch":       "Buscar:",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": { "sFirst": "«", "sLast": "»", "sNext": "›", "sPrevious": "‹" }
+        }
+    });
+
+    setRango(15, $('.btn-rango').first()[0]);
 });
 
-// ── Filtro por fechas ──
 function aplicarFiltro() {
     var desde = $('#fechaDesde').val();
     var hasta = $('#fechaHasta').val();
-
     if (!desde || !hasta) {
-        Swal.fire({
-            icon: 'warning', title: 'Fechas incompletas',
-            text: 'Selecciona ambas fechas para filtrar.',
-            confirmButtonColor: '#d32f2f'
-        });
+        Swal.fire({ icon: 'warning', title: 'Fechas incompletas', text: 'Selecciona ambas fechas.', confirmButtonColor: '#d32f2f' });
         return;
     }
-
-    // Limpiar filtros anteriores y aplicar nuevo
-    $.fn.dataTable.ext.search = [];
+    $.fn.dataTable.ext.search.pop();
     $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
         var fecha = $(tabla.row(dataIndex).node()).data('fecha');
         return fecha >= desde && fecha <= hasta;
     });
-
     tabla.draw();
     recalcularResumen(desde, hasta);
-    $('#saldo-rango-label').text(formatFecha(desde) + ' — ' + formatFecha(hasta));
 }
 
 function limpiarFiltro() {
     $('#fechaDesde').val('');
     $('#fechaHasta').val('');
-    $.fn.dataTable.ext.search = [];
-    tabla.draw();
     $('.btn-rango').removeClass('active');
+    $.fn.dataTable.ext.search.pop();
+    tabla.draw();
     $('#total-ingresos').text('$' + formatNum(totalIngresosOriginal));
     $('#total-egresos').text('$' + formatNum(totalEgresosOriginal));
     var saldo = totalIngresosOriginal - totalEgresosOriginal;
     $('#saldo-caja').text('$' + formatNum(saldo));
     $('#saldo-caja').toggleClass('negativo', saldo < 0);
-    $('#saldo-rango-label').text('Todo el historial');
 }
 
 function recalcularResumen(desde, hasta) {
     var ingresos = 0, egresos = 0;
-    // Recorre TODAS las filas (no solo las visibles)
-    tabla.rows().every(function() {
-        var nodo  = $(this.node());
-        var fecha = nodo.data('fecha');
-        var tipo  = String(nodo.data('tipo'));
-        var monto = parseFloat(nodo.data('monto')) || 0;
+    $('#tabla_caja tbody tr').each(function() {
+        var fecha = $(this).data('fecha');
+        var tipo  = String($(this).data('tipo'));
+        var monto = parseFloat($(this).data('monto')) || 0;
         if (fecha >= desde && fecha <= hasta) {
             if (tipo === 'INGRESO') ingresos += monto;
-            else                    egresos  += monto;
+            else egresos += monto;
         }
     });
     var saldo = ingresos - egresos;
@@ -384,7 +443,6 @@ function recalcularResumen(desde, hasta) {
     $('#saldo-caja').toggleClass('negativo', saldo < 0);
 }
 
-// ── Rangos rápidos ──
 function setRango(dias, btn) {
     var hoy = new Date(), desde = new Date();
     desde.setDate(hoy.getDate() - (dias - 1));
@@ -394,6 +452,7 @@ function setRango(dias, btn) {
     $(btn).addClass('active');
     aplicarFiltro();
 }
+
 function setRangoMes(btn) {
     var hoy = new Date(), desde = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
     $('#fechaDesde').val(toISO(desde));
@@ -402,8 +461,9 @@ function setRangoMes(btn) {
     $(btn).addClass('active');
     aplicarFiltro();
 }
+
 function setRangoMesAnterior(btn) {
-    var hoy   = new Date();
+    var hoy = new Date();
     var desde = new Date(hoy.getFullYear(), hoy.getMonth() - 1, 1);
     var hasta = new Date(hoy.getFullYear(), hoy.getMonth(), 0);
     $('#fechaDesde').val(toISO(desde));
@@ -413,14 +473,7 @@ function setRangoMesAnterior(btn) {
     aplicarFiltro();
 }
 
-// ── Helpers ──
-function toISO(d)        { return d.toISOString().split('T')[0]; }
-function formatFecha(iso){ var p = iso.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
-function formatNum(n)    { return parseFloat(n).toLocaleString('es-CO', {minimumFractionDigits:0, maximumFractionDigits:0}); }
-
-// Al cargar, mostrar últimos 15 días por defecto
-$(document).ready(function() {
-    setRango(15, $('.btn-rango').first()[0]);
-});
+function toISO(d) { return d.toISOString().split('T')[0]; }
+function formatNum(n) { return parseFloat(n).toLocaleString('es-CO', {minimumFractionDigits:0, maximumFractionDigits:0}); }
 </script>
 {% endblock %}

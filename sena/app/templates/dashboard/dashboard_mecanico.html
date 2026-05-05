@@ -1,0 +1,338 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block css %}
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap');
+
+:root { --red: #d31414; --border: rgba(255,255,255,0.09); }
+
+.dash-wrapper {
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(37,36,36,0.78), rgba(40,40,40,0.85)),
+    url("{% static 'imagenes/fondo2.jpg' %}") center/cover no-repeat fixed;
+}
+
+.dash-head {
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.2rem 2rem;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(8px);
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  gap: 16px;
+}
+
+.dash-head-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2.2rem; 
+  font-weight: 900; 
+  letter-spacing: 2px;
+  color: #fff; 
+  text-transform: uppercase; 
+  line-height: 1; 
+  margin: 0;
+}
+
+.dash-head-title span { 
+  color: var(--red); 
+}
+
+.dash-head-sub { 
+  font-size: 0.78rem; 
+  color: rgba(255,255,255,0.4); 
+  margin: 4px 0 0; 
+}
+
+.dash-user-simple { 
+  text-align: right; 
+  flex-shrink: 0; 
+}
+
+.dash-user-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.15rem; 
+  font-weight: 800; 
+  color: #fff;
+  text-transform: uppercase; 
+  letter-spacing: 1px; 
+  line-height: 1;
+}
+
+.dash-user-role { 
+  font-size: 0.72rem; 
+  color: rgba(255,255,255,0.35); 
+  margin-top: 3px; 
+}
+
+.badge-active {
+  background: rgba(16,185,129,0.15); 
+  border: 1px solid rgba(16,185,129,0.35);
+  color: #10b981; 
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.62rem; 
+  letter-spacing: 2px; 
+  font-weight: 700;
+  padding: 3px 10px; 
+  border-radius: 50px; 
+  display: inline-block; 
+  margin-top: 5px;
+}
+
+.sdiv { 
+  display: flex; 
+  align-items: center; 
+  gap: 14px; 
+  margin: 1.8rem 0 1rem; 
+}
+
+.sdiv-num { 
+  font-family: 'Barlow Condensed', sans-serif; 
+  font-size: 2rem; 
+  font-weight: 900; 
+  color: var(--red); 
+  line-height: 1; 
+}
+
+.sdiv-label { 
+  font-family: 'Barlow Condensed', sans-serif; 
+  font-size: 0.78rem; 
+  font-weight: 800; 
+  letter-spacing: 3px; 
+  text-transform: uppercase; 
+  color: rgba(255,255,255,0.85); 
+  text-shadow: 0 1px 8px rgba(0,0,0,0.9); 
+}
+
+.sdiv-line { 
+  flex: 1; 
+  height: 1px; 
+  background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.03)); 
+}
+
+.dc {
+  display: block; 
+  text-decoration: none; 
+  position: relative;
+  border-radius: 14px; 
+  overflow: hidden; 
+  height: 150px;
+  background: rgba(22,22,22,0.92); 
+  backdrop-filter: blur(12px);
+  border: 2px solid color-mix(in srgb, var(--accent, #c30a0a) 45%, transparent);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; 
+  cursor: pointer;
+}
+
+.dc:hover {
+  transform: translateY(-5px) scale(1.015);
+  border-color: color-mix(in srgb, var(--accent, #c30a0a) 90%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent, #c30a0a) 30%, transparent), 0 0 22px color-mix(in srgb, var(--accent, #c30a0a) 28%, transparent), 0 18px 40px rgba(0,0,0,0.6);
+  text-decoration: none;
+}
+
+.dc-corner { 
+  position: absolute; 
+  top: 0; 
+  right: 0; 
+  width: 52px; 
+  height: 52px; 
+  border-top: 2px solid var(--accent, #d32f2f); 
+  border-right: 2px solid var(--accent, #d32f2f); 
+  border-radius: 0 14px 0 0; 
+  opacity: 0.35; 
+  transition: opacity .25s, width .25s, height .25s; 
+  z-index: 1; 
+}
+
+.dc:hover .dc-corner { 
+  opacity: 0.85; 
+  width: 62px; 
+  height: 62px; 
+}
+
+.dc-bg-icon { 
+  position: absolute; 
+  right: 14px; 
+  bottom: 12px; 
+  width: 54px; 
+  height: 54px; 
+  opacity: 0.50; 
+  pointer-events: none; 
+  transition: opacity .25s, transform .25s; 
+  z-index: 1; 
+  filter: drop-shadow(0 0 4px rgba(255,255,255,0.1)); 
+}
+
+.dc:hover .dc-bg-icon { 
+  opacity: 0.75; 
+  transform: scale(1.1) rotate(-5deg); 
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.2)); 
+}
+
+.dc-inner { 
+  position: relative; 
+  z-index: 2; 
+  height: 100%; 
+  padding: 1rem 1.2rem 1rem 1.5rem; 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: space-between; 
+}
+
+.dc-step { 
+  font-family: 'Barlow Condensed', sans-serif; 
+  font-size: 0.6rem; 
+  font-weight: 800; 
+  letter-spacing: 2px; 
+  color: color-mix(in srgb, var(--accent, #d32f2f) 100%, white 20%); 
+  text-transform: uppercase; 
+}
+
+.dc-title { 
+  font-family: 'Barlow Condensed', sans-serif; 
+  font-size: 1.45rem; 
+  font-weight: 800; 
+  letter-spacing: 0.5px; 
+  color: #fff; 
+  margin: 0; 
+  line-height: 1.1; 
+  text-transform: uppercase; 
+}
+
+.dc-sub { 
+  font-size: 0.72rem; 
+  color: rgba(255,255,255,0.45); 
+  margin: 3px 0 0; 
+}
+
+.dc-cta { 
+  font-family: 'Barlow Condensed', sans-serif; 
+  font-size: 0.72rem; 
+  font-weight: 700; 
+  letter-spacing: 1.5px; 
+  color: color-mix(in srgb, var(--accent, #d32f2f) 100%, white 20%); 
+  text-transform: uppercase; 
+  transition: letter-spacing .2s; 
+}
+
+.dc:hover .dc-cta { 
+  letter-spacing: 2.5px; 
+}
+</style>
+{% endblock %}
+
+{% block contenido %}
+
+<div class="dash-wrapper">
+<div class="container-fluid py-3 px-4">
+
+  <!-- ── CABECERA ── -->
+  <div class="dash-head mb-3">
+    <div>
+      <h1 class="dash-head-title">ACER<span>AUTOS</span></h1>
+      <p class="dash-head-sub">TALLER ESPECIALISTA EN CAMBIO DE ACEITE &nbsp;·&nbsp; {% now "l, d F Y" %}</p>
+    </div>
+    <div class="dash-user-simple d-none d-md-block">
+      <div class="dash-user-name">{% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}</div>
+      <div class="dash-user-role">{{ user.get_cargo_display }}</div>
+      <div class="badge-active">● ACTIVO</div>
+    </div>
+  </div>
+
+  <!-- ── MÓDULOS DEL MECÁNICO ── -->
+  <div class="sdiv">
+    <span class="sdiv-num">01</span>
+    <span class="sdiv-label">Consultar Vehículos y Órdenes</span>
+    <div class="sdiv-line"></div>
+  </div>
+
+  <div class="row g-3">
+    <!-- VEHÍCULOS -->
+    <div class="col-xl-4 col-md-6">
+      <a href="{% url 'app:listar_vehiculos' %}" class="dc" style="--accent:#3b82f6;">
+        <div class="dc-corner"></div>
+        <img class="dc-bg-icon" src="{% static 'imagenes/carro.jpeg' %}" alt="Vehículos" style="object-fit:contain;">
+        <div class="dc-inner">
+          <span class="dc-step">MÓDULO 01</span>
+          <div>
+            <h4 class="dc-title">Vehículos</h4>
+            <p class="dc-sub">Vehículos en servicio</p>
+          </div>
+          <span class="dc-cta">Ver →</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- ÓRDENES DE SERVICIO -->
+    <div class="col-xl-4 col-md-6">
+      <a href="{% url 'app:orden_servicio_list' %}" class="dc" style="--accent:#3b82f6;">
+        <div class="dc-corner"></div>
+        <img class="dc-bg-icon" src="{% static 'imagenes/servicios.jpeg' %}" alt="Órdenes" style="object-fit:contain;">
+        <div class="dc-inner">
+          <span class="dc-step">MÓDULO 02</span>
+          <div>
+            <h4 class="dc-title">Órdenes de Servicio</h4>
+            <p class="dc-sub">Órdenes asignadas</p>
+          </div>
+          <span class="dc-cta">Ver →</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- TIPOS DE SERVICIO -->
+    <div class="col-xl-4 col-md-6">
+      <a href="{% url 'app:tipo_servicio_list' %}" class="dc" style="--accent:#3b82f6;">
+        <div class="dc-corner"></div>
+        <img class="dc-bg-icon" src="{% static 'imagenes/tipo_servicio.jpeg' %}" alt="Servicios" style="object-fit:contain;">
+        <div class="dc-inner">
+          <span class="dc-step">MÓDULO 03</span>
+          <div>
+            <h4 class="dc-title">Tipos de Servicio</h4>
+            <p class="dc-sub">Catálogo de servicios</p>
+          </div>
+          <span class="dc-cta">Ver →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── NOTIFICACIONES ── -->
+  <div class="sdiv">
+    <span class="sdiv-num">02</span>
+    <span class="sdiv-label">Alertas y Notificaciones</span>
+    <div class="sdiv-line"></div>
+  </div>
+
+  <div class="row g-3">
+    <!-- NOTIFICACIONES -->
+    <div class="col-xl-12 col-md-12">
+      <a href="{% url 'app:listar_notificacion' %}" class="dc" style="--accent:#f59e0b;">
+        <div class="dc-corner"></div>
+        <img class="dc-bg-icon" src="{% static 'imagenes/notificaiones.jpeg' %}" alt="Notificaciones" style="object-fit:contain;">
+        <div class="dc-inner">
+          <span class="dc-step">ALERTAS</span>
+          <div>
+            <h4 class="dc-title">Notificaciones</h4>
+            <p class="dc-sub">Alertas de mantenimiento y cambios de aceite pendientes</p>
+          </div>
+          <span class="dc-cta">Ver Notificaciones →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div style="height:2rem;"></div>
+</div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+console.log('Dashboard Mecánico cargado correctamente');
+</script>
+{% endblock %}

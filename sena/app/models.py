@@ -47,8 +47,7 @@ class Empleado(models.Model):
     CARGOS = [
         ('ADMIN',         'Administrador'),
         ('MECANICO',      'Mecánico'),
-        ('RECEPCIONISTA', 'Recepcionista'),
-        ('GERENTE',       'Gerente'),
+       
     ]
     TIPOS_DOC = [
         ('CC',  'Cédula de Ciudadanía'),

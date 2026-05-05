@@ -269,6 +269,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
             <span class="sb-section-label">Recepción</span>
         </div>
 
+        {% if user.cargo == 'ADMIN' %}
         <a href="{% url 'app:listar_clientes' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_clientes' %}active{% endif %}"
            data-tip="Clientes">
@@ -276,13 +277,14 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
             <span class="sb-item-text">Clientes</span>
             <span class="sb-step">P1</span>
         </a>
+        {% endif %}
 
         <a href="{% url 'app:listar_vehiculos' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_vehiculos' %}active{% endif %}"
            data-tip="Vehículos">
             <img src="{% static 'imagenes/carro.jpeg' %}" class="sb-img-icon" alt="Vehículos">
             <span class="sb-item-text">Vehículos</span>
-            <span class="sb-step">P2</span>
+            <span class="sb-step">{% if user.cargo == 'MECANICO' %}M1{% else %}P2{% endif %}</span>
         </a>
 
         <a href="{% url 'app:orden_servicio_list' %}"
@@ -290,7 +292,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
            data-tip="Órdenes">
             <img src="{% static 'imagenes/orden.jpeg' %}" class="sb-img-icon" alt="Órdenes">
             <span class="sb-item-text">Órdenes de Servicio</span>
-            <span class="sb-step">P3</span>
+            <span class="sb-step">{% if user.cargo == 'MECANICO' %}M2{% else %}P3{% endif %}</span>
         </a>
 
         <a href="{% url 'app:tipo_servicio_list' %}"
@@ -298,10 +300,11 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
            data-tip="Tipos Servicio">
             <img src="{% static 'imagenes/servicios.jpeg' %}" class="sb-img-icon" alt="Tipos Servicio">
             <span class="sb-item-text">Tipos de Servicio</span>
-            <span class="sb-step">P4</span>
+            <span class="sb-step">{% if user.cargo == 'MECANICO' %}M3{% else %}P4{% endif %}</span>
         </a>
 
-        <!-- 02 Ejecución -->
+        <!-- 02 Ejecución — SOLO ADMIN -->
+        {% if user.cargo == 'ADMIN' %}
         <div class="sb-section">
             <span class="sb-section-num">02</span>
             <div class="sb-section-line"></div>
@@ -340,7 +343,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
             <span class="sb-step">P8</span>
         </a>
 
-        <!-- 03 Abastecimiento -->
+        <!-- 03 Abastecimiento — SOLO ADMIN -->
         <div class="sb-section">
             <span class="sb-section-num">03</span>
             <div class="sb-section-line"></div>
@@ -363,7 +366,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
             <span class="sb-step">P10</span>
         </a>
 
-        <!-- 04 Cobro -->
+        <!-- 04 Cobro — SOLO ADMIN -->
         <div class="sb-section">
             <span class="sb-section-num">04</span>
             <div class="sb-section-line"></div>
@@ -386,7 +389,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
             <span class="sb-step">P12</span>
         </a>
 
-        <!-- 05 Sistema -->
+        <!-- 05 Sistema — SOLO ADMIN -->
         <div class="sb-section">
             <span class="sb-section-num">05</span>
             <div class="sb-section-line"></div>
@@ -406,6 +409,23 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
             <img src="{% static 'imagenes/usurios.jpeg' %}" class="sb-img-icon" alt="Usuarios">
             <span class="sb-item-text">Usuarios</span>
         </a>
+        {% endif %}
+
+        <!-- Notificaciones - SOLO MECANICO -->
+        {% if user.cargo == 'MECANICO' %}
+        <div class="sb-section">
+            <span class="sb-section-num">02</span>
+            <div class="sb-section-line"></div>
+            <span class="sb-section-label">Alertas</span>
+        </div>
+
+        <a href="{% url 'app:listar_notificacion' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_notificacion' %}active{% endif %}"
+           data-tip="Notificaciones">
+            <img src="{% static 'imagenes/notificaiones.jpeg' %}" class="sb-img-icon" alt="Notificaciones">
+            <span class="sb-item-text">Notificaciones</span>
+        </a>
+        {% endif %}
 
     </div>
 

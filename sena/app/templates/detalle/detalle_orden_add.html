@@ -17,8 +17,8 @@
         --muted:  #888;
     }
 
-    .taller-header { position:relative; background:var(--carbon); border-radius:16px; padding:28px 32px; margin-bottom:28px; overflow:hidden; display:flex; align-items:center; justify-content:space-between; }
-    .taller-header::before { content:''; position:absolute; top:0; right:0; width:260px; height:100%; background:repeating-linear-gradient(-55deg,transparent,transparent 14px,rgba(255,255,255,.03) 14px,rgba(255,255,255,.03) 28px); }
+    .taller-header { position:relative; background:var(--carbon); border-radius:10px; padding:28px 32px; margin-bottom:28px; overflow:hidden; display:flex; align-items:center; justify-content:space-between; }
+    
     .header-left { display:flex; align-items:center; gap:18px; position:relative; }
     .header-icon-wrap { width:56px; height:56px; background:var(--acento); border-radius:12px; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 4px var(--acento-glow); flex-shrink:0; }
     .header-icon-wrap svg { width:28px; height:28px; stroke:white; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
@@ -26,7 +26,7 @@
     .header-sub { font-family:'DM Sans',sans-serif; font-size:.78rem; color:rgba(255,255,255,.45); margin-top:4px; }
     .header-badge { font-family:'Barlow Condensed',sans-serif; font-size:.8rem; font-weight:700; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:1px; }
 
-    .form-card { background:white; border-radius:16px; border:1px solid var(--borde); overflow:hidden; margin-bottom:24px; }
+    .form-card { background:white; border-radius:10px; border:1px solid var(--borde); overflow:hidden; margin-bottom:24px; }
     .form-card-header { background:var(--carbon); padding:14px 24px; display:flex; align-items:center; gap:10px; }
     .form-card-header svg { width:16px; height:16px; stroke:var(--acento); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
     .form-card-header span { font-family:'Barlow Condensed',sans-serif; font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,.7); }
@@ -61,13 +61,10 @@
 
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap">
-                {% if form.instance.pk %}
-                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                {% else %}
-                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/><line x1="19" y1="5" x2="19" y2="11"/><line x1="16" y1="8" x2="22" y2="8"/></svg>
-                {% endif %}
-            </div>
+            <div class="header-icon-wrap" style="background:transparent; box-shadow:none;">
+        <img src="{% static 'imagenes/nose.jpeg' %}" 
+         style="width:100%; height:100%; object-fit:contain; border-radius:8px;">
+        </div>
             <div>
                 <h1 class="header-titulo">
                     {% if form.instance.pk %}Editar Detalle{% else %}Agregar Producto{% endif %}

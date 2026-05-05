@@ -123,8 +123,8 @@ urlpatterns = [
     # ── NOTIFICACIONES 
     path('notificaciones/listar/',                notif.NotificacionListView.as_view(),   name='listar_notificacion'),
     path('notificaciones/crear/',                 notif.NotificacionCreateView.as_view(), name='crear_notificacion'),
-    path('notificaciones/editar/<int:pk>/',       notif.NotificacionUpdateView.as_view(), name='editar_notificacion'),
-    path('notificaciones/eliminar/<int:pk>/',     notif.NotificacionDeleteView.as_view(), name='eliminar_notificacion'),
+    #path('notificaciones/editar/<int:pk>/',       notif.NotificacionUpdateView.as_view(), name='editar_notificacion'),
+    #path('notificaciones/eliminar/<int:pk>/',     notif.NotificacionDeleteView.as_view(), name='eliminar_notificacion'),
     path('notificaciones/marcar-leida/<int:pk>/', notif.MarcarLeidaView.as_view(),        name='marcar_notificacion_leida'),
     path('notificaciones/marcar-todas-leidas/',   notif.MarcarTodasLeidasView.as_view(),  name='marcar_todas_leidas'),
     path('notificaciones/no-leidas/',             notif.notificaciones_no_leidas,         name='notificaciones_no_leidas'),
