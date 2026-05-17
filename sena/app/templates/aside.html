@@ -254,12 +254,12 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
 
         <a href="{% url 'app:dashboard' %}"
            class="sb-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
-           data-tip="Dashboard">
+           data-tip="Panel de control">
             <svg class="sb-icon" viewBox="0 0 24 24">
                 <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
                 <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
             </svg>
-            <span class="sb-item-text">Dashboard</span>
+            <span class="sb-item-text">Panel de control</span>
         </a>
 
         <!-- 01 Recepción -->
@@ -273,7 +273,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:listar_clientes' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_clientes' %}active{% endif %}"
            data-tip="Clientes">
-            <img src="{% static 'imagenes/logo_usurio.jpeg' %}" class="sb-img-icon" alt="Clientes">
+            <img src="{% static 'imagenes/usurioss.jpeg' %}" class="sb-img-icon" alt="Clientes">
             <span class="sb-item-text">Clientes</span>
             <span class="sb-step">P1</span>
         </a>
@@ -297,9 +297,9 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
 
         <a href="{% url 'app:tipo_servicio_list' %}"
            class="sb-item {% if request.resolver_match.url_name == 'tipo_servicio_list' %}active{% endif %}"
-           data-tip="Tipos Servicio">
+           data-tip="Servicios">
             <img src="{% static 'imagenes/servicios.jpeg' %}" class="sb-img-icon" alt="Tipos Servicio">
-            <span class="sb-item-text">Tipos de Servicio</span>
+            <span class="sb-item-text">ervicios</span>
             <span class="sb-step">{% if user.cargo == 'MECANICO' %}M3{% else %}P4{% endif %}</span>
         </a>
 

@@ -697,53 +697,61 @@ class ClienteForm(forms.ModelForm):
 
 
 # ══════════════════════════════════════════════════════════
-#  VEHÍCULO
+#  VEHÍCULO - FORM SIMPLIFICADO
 # ══════════════════════════════════════════════════════════
 class VehiculoForm(forms.ModelForm):
     class Meta:
         model  = Vehiculo
         fields = [
-            'placa', 'modelo', 'marca', 'cliente',
+            'placa', 
+            'modelo', 
+            'marca', 
+            'cliente',
             'km_ultimo_servicio',
-            'km_intervalo',
-            'intervalo_meses',
             'tipo_uso',
-            'km_alerta_anticipacion',
+            'fecha_proximo_mantenimiento',
         ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['marca'].queryset = Marca.objects.filter(categoria='AUTO', estado=True)
 
-        self.fields['km_ultimo_servicio'].required  = True
-        self.fields['km_ultimo_servicio'].label     = "Km actuales del vehículo"
-        self.fields['km_ultimo_servicio'].help_text = (
-            "Ingrese el kilometraje actual del vehículo."
-        )
+        # ══════════════════════════════════════════════════════════
+        # BÁSICOS DEL VEHÍCULO
+        # ══════════════════════════════════════════════════════════
+        self.fields['placa'].label = "Placa del Vehículo"
+        self.fields['placa'].help_text = "Ej: ABC123 o ABC12D"
+        self.fields['placa'].widget.attrs.update({'placeholder': 'ABC123'})
 
-        self.fields['km_intervalo'].required  = True
-        self.fields['km_intervalo'].label     = "Mantenimiento cada (km)"
-        self.fields['km_intervalo'].help_text = (
-            "Cada cuántos km hacer mantenimiento. Ej: 5000 para aceite."
-        )
+        self.fields['marca'].label = "Marca"
+        self.fields['marca'].help_text = "Selecciona la marca del vehículo"
 
-        self.fields['intervalo_meses'].required  = True
-        self.fields['intervalo_meses'].label     = "Mantenimiento cada (meses)"
-        self.fields['intervalo_meses'].help_text = (
-            "Cada cuántos meses hacer mantenimiento. Ej: 3 meses."
-        )
+        self.fields['modelo'].label = "Año del Vehículo"
+        self.fields['modelo'].help_text = "Ej: 2020"
+        self.fields['modelo'].widget.attrs.update({'placeholder': '2020'})
 
-        self.fields['tipo_uso'].required  = True
-        self.fields['tipo_uso'].label     = "Tipo de uso del vehículo"
-        self.fields['tipo_uso'].help_text = (
-            "¿Cómo se usa este vehículo? Esto nos ayuda a estimar el kilometraje diario."
-        )
+        self.fields['cliente'].label = "Propietario"
+        self.fields['cliente'].help_text = "¿A quién le pertenece este vehículo?"
 
-        self.fields['km_alerta_anticipacion'].required  = True
-        self.fields['km_alerta_anticipacion'].label     = "Avisar con (km) de anticipación"
-        self.fields['km_alerta_anticipacion'].help_text = (
-            "Con cuántos km de anticipación avisar. Ej: 500 moto, 1000 carro."
-        )
+        # ══════════════════════════════════════════════════════════
+        # ESTADO ACTUAL
+        # ══════════════════════════════════════════════════════════
+        self.fields['km_ultimo_servicio'].required = True
+        self.fields['km_ultimo_servicio'].label = "¿Cuántos km tiene el vehículo ahora?"
+        self.fields['km_ultimo_servicio'].help_text = "Ingresa el kilometraje actual del odómetro"
+        self.fields['km_ultimo_servicio'].widget.attrs.update({'placeholder': '0'})
+
+        self.fields['tipo_uso'].required = True
+        self.fields['tipo_uso'].label = "¿Cómo se usa este vehículo?"
+        self.fields['tipo_uso'].help_text = "Esto ayuda a calcular cuándo hará falta el próximo mantenimiento"
+
+        # ══════════════════════════════════════════════════════════
+        # PRÓXIMO MANTENIMIENTO
+        # ══════════════════════════════════════════════════════════
+        self.fields['fecha_proximo_mantenimiento'].required = True
+        self.fields['fecha_proximo_mantenimiento'].label = "¿Cuándo hacer el próximo cambio de aceite?"
+        self.fields['fecha_proximo_mantenimiento'].help_text = "Selecciona la fecha estimada del próximo mantenimiento"
+        self.fields['fecha_proximo_mantenimiento'].widget = forms.DateInput(attrs={'type': 'date'})
 
     def clean_placa(self):
         placa = val_placa_colombiana(self.cleaned_data['placa'])
@@ -772,39 +780,45 @@ class VehiculoForm(forms.ModelForm):
             raise forms.ValidationError("El kilometraje no puede superar 1.000.000 km.")
         return km
 
-    def clean_km_intervalo(self):
-        km = self.cleaned_data.get('km_intervalo')
-        if km is None or km <= 0:
-            raise forms.ValidationError("El intervalo de km debe ser mayor que 0.")
-        if km > 100000:
-            raise forms.ValidationError("El intervalo no puede superar 100.000 km.")
-        return km
-
-    def clean_intervalo_meses(self):
-        meses = self.cleaned_data.get('intervalo_meses')
-        if meses is None or meses <= 0:
-            raise forms.ValidationError("El intervalo de meses debe ser mayor que 0.")
-        if meses > 24:
-            raise forms.ValidationError("El intervalo no puede superar 24 meses.")
-        return meses
-
-    def clean_km_alerta_anticipacion(self):
-        km = self.cleaned_data.get('km_alerta_anticipacion')
-        if km is None or km <= 0:
-            raise forms.ValidationError("Los km de anticipación deben ser mayor que 0.")
-        if km > 10000:
-            raise forms.ValidationError("Los km de anticipación no pueden superar 10.000 km.")
-        return km
-
+    def clean_fecha_proximo_mantenimiento(self):
+        fecha = self.cleaned_data.get('fecha_proximo_mantenimiento')
+        if fecha is None:
+            raise forms.ValidationError("Debes seleccionar una fecha de mantenimiento.")
+        
+        hoy = date.today()
+        if fecha < hoy:
+            raise forms.ValidationError("La fecha no puede ser anterior a hoy.")
+        
+        return fecha
 
 # ══════════════════════════════════════════════════════════
-#  TIPO DE SERVICIO
+#  TIPO DE SERVICIO - FORM ACTUALIZADO
 # ══════════════════════════════════════════════════════════
-
 class TipoServicioForm(forms.ModelForm):
     class Meta:
         model  = TipoServicio
-        fields = '__all__'
+        fields = ['nombre', 'descripcion', 'precio_mano_obra', 'estado']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['nombre'].label = "Nombre del Servicio"
+        self.fields['nombre'].help_text = "Ej: Cambio de aceite y filtro"
+        self.fields['nombre'].widget.attrs.update({'placeholder': 'Ej: Cambio de aceite y filtro'})
+
+        self.fields['descripcion'].label = "Descripción (Opcional)"
+        self.fields['descripcion'].help_text = "Breve descripción de qué incluye este servicio"
+        self.fields['descripcion'].widget = forms.Textarea(attrs={
+            'placeholder': 'Ej: Cambio de aceite sintético 5W-30, filtro y inspección',
+            'rows': 3
+        })
+
+        self.fields['precio_mano_obra'].label = "Precio de Mano de Obra"
+        self.fields['precio_mano_obra'].help_text = "Ej: 35000"
+        self.fields['precio_mano_obra'].widget.attrs.update({'placeholder': '35000'})
+
+        self.fields['estado'].label = "¿Está disponible?"
+        self.fields['estado'].help_text = "Marca para activar este servicio"
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre'].strip()
@@ -825,15 +839,6 @@ class TipoServicioForm(forms.ModelForm):
             raise forms.ValidationError("El precio de mano de obra es demasiado alto.")
         return precio
 
-    def clean_intervalo_km(self):
-        km = self.cleaned_data.get('intervalo_km', 0)
-        if km < 0:
-            raise forms.ValidationError("El intervalo de km no puede ser negativo.")
-        if km > 100000:
-            raise forms.ValidationError("El intervalo de km es demasiado alto (máx. 100.000 km).")
-        return km
-
-
 # ══════════════════════════════════════════════════════════
 #  ORDEN DE SERVICIO
 # ══════════════════════════════════════════════════════════
@@ -849,6 +854,7 @@ class OrdenServicioForm(forms.ModelForm):
 
     class Meta:
         model  = OrdenServicio
+        # fecha removida de fields — la asigna el servidor directamente
         fields = ['empleado', 'vehiculo', 'servicios', 'fecha', 'km_actual', 'estado']
 
     def __init__(self, *args, **kwargs):
@@ -856,7 +862,7 @@ class OrdenServicioForm(forms.ModelForm):
         self.fields['empleado'].queryset    = Empleado.objects.filter(activo=True)
         self.fields['empleado'].required    = False
         self.fields['empleado'].empty_label = "-- Sin asignar --"
-        self.fields['servicios'].queryset = TipoServicio.objects.all().order_by('nombre')
+        self.fields['servicios'].queryset   = TipoServicio.objects.all().order_by('nombre')
 
     def clean_servicios(self):
         servicios = self.cleaned_data.get('servicios')
@@ -876,41 +882,29 @@ class OrdenServicioForm(forms.ModelForm):
             raise forms.ValidationError("El kilometraje debe ser mayor que 0. Ingrese el km actual del vehículo.")
         if km > 1000000:
             raise forms.ValidationError("El kilometraje ingresado es demasiado alto (máx. 1.000.000 km).")
+
         vehiculo = self.cleaned_data.get('vehiculo') or (
             self.instance.vehiculo if self.instance and self.instance.pk else None
         )
-        if vehiculo and km < vehiculo.km_ultimo_servicio:
+
+        # Protección backend estricta: no permitir km menor al registrado
+        if vehiculo and vehiculo.km_ultimo_servicio and km < vehiculo.km_ultimo_servicio:
             raise forms.ValidationError(
-                f"El km ingresado ({km:,}) es menor al último registrado "
-                f"para este vehículo ({vehiculo.km_ultimo_servicio:,} km). "
-                "Verifique el odómetro."
+                f"El km ingresado ({km:,}) no puede ser menor al registrado "
+                f"para este vehículo ({vehiculo.km_ultimo_servicio:,} km)."
             )
         return km
 
-    def clean_fecha(self):
-        fecha = self.cleaned_data.get('fecha')
-        if not fecha:
-            return timezone.now()
-
-    # Al editar, si la fecha no cambió, dejarla pasar sin validar
-        if self.instance.pk and self.instance.fecha == fecha:
-            return fecha
-
-        if fecha > timezone.now():
-            raise forms.ValidationError("La fecha de la orden no puede ser una fecha futura.")
-        limite = timezone.now() - timezone.timedelta(days=30)
-        if fecha < limite:
-            raise forms.ValidationError(
-            "La fecha de la orden no puede ser anterior a 30 días. "
-            "Si necesita registrar una orden antigua, contacte al administrador."
-        )
-        return fecha
-
     def clean_estado(self):
-        estado          = self.cleaned_data.get('estado')
+        estado = self.cleaned_data.get('estado')
         estados_validos = [e[0] for e in OrdenServicio.ESTADOS]
         if estado not in estados_validos:
             raise forms.ValidationError(f"Estado no válido. Opciones permitidas: {', '.join(estados_validos)}.")
+
+        # Bloquear cualquier cambio si la orden ya está Terminada
+        if self.instance.pk and self.instance.estado == 'Terminado':
+            raise forms.ValidationError("Esta orden ya está terminada y no puede modificarse.")
+
         return estado
 
     def clean(self):
@@ -918,22 +912,26 @@ class OrdenServicioForm(forms.ModelForm):
         vehiculo = cleaned.get('vehiculo')
         estado   = cleaned.get('estado')
 
+        # Bloquear edición completa si la orden ya está Terminada
+        if self.instance.pk and self.instance.estado == 'Terminado':
+            raise forms.ValidationError("Esta orden ya está terminada y no puede modificarse.")
+
         if not self.instance.pk and estado == 'Terminado':
             self.add_error('estado', "No puede crear una orden con estado 'Terminado'. Inicie con 'Pendiente' o 'En Proceso'.")
 
         if vehiculo and not self.instance.pk:
-            orden_activa = OrdenServicio.objects.filter(
+            orden_activa = OrdenServicio.objects.select_related('vehiculo').filter(
                 vehiculo=vehiculo,
                 estado__in=['Pendiente', 'En Proceso']
-            ).exists()
+            ).first()
             if orden_activa:
                 self.add_error(
                     'vehiculo',
-                    f"El vehículo con placa '{vehiculo.placa}' ya tiene una orden activa "
-                    "(Pendiente o En Proceso). Finalícela antes de crear una nueva."
+                    f"El vehículo '{vehiculo.placa}' tiene una orden activa "
+                    f"(#{orden_activa.pk} - {orden_activa.estado}). "
+                    "Finalícela antes de crear una nueva."
                 )
         return cleaned
-
 
 # ══════════════════════════════════════════════════════════
 #  DETALLE ORDEN PRODUCTO

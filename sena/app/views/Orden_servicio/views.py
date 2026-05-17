@@ -5,26 +5,21 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.views import View
 from django.http import JsonResponse
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # Mixins de seguridad
+from django.utils import timezone
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from app.models import OrdenServicio, DetalleOrdenProducto, Vehiculo, Producto, CompatibilidadProducto
 from app.forms import OrdenServicioForm
 
 
-# ── MIXIN DE PROTECCIÓN ───────────────────────────────────
 class SoloAdminMixin(UserPassesTestMixin):
     def test_func(self):
-        # Solo permite el paso si el cargo es ADMIN o es superusuario
         return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
 
     def handle_no_permission(self):
         messages.error(self.request, "No tienes permisos de administrador para modificar órdenes.")
         return redirect('app:orden_servicio_list')
 
-
-# ══════════════════════════════════════════════════════════
-#  UTILIDADES (Lógica original completa)
-# ══════════════════════════════════════════════════════════
 
 def _verificar_compat(producto, marca_id, servicio_id=None):
     total = CompatibilidadProducto.objects.filter(producto=producto).count()
@@ -66,8 +61,11 @@ def _hay_incompatibles(request, marca_id, servicio_ids):
         try:
             prod = Producto.objects.get(pk=pid, estado=True)
             total_reglas = CompatibilidadProducto.objects.filter(producto=prod).count()
+            
             if total_reglas == 0:
-                continue
+                return True
+            
+           
             es_compatible = False
             for sid in servicio_ids:
                 status, _ = _verificar_compat(prod, marca_id, sid)
@@ -80,9 +78,8 @@ def _hay_incompatibles(request, marca_id, servicio_ids):
             continue
     return False
 
-
 # ══════════════════════════════════════════════════════════
-#  LISTAR (Mecánicos y Admin pueden ver)
+#  LISTAR
 # ══════════════════════════════════════════════════════════
 
 class OrdenServicioListView(LoginRequiredMixin, ListView):
@@ -93,7 +90,7 @@ class OrdenServicioListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         qs = super().get_queryset().prefetch_related(
             'servicios',
-            'productos_usados__producto__compatibilidadproducto_set'
+            'productos_usados__producto'
         )
         for orden in qs:
             marca_id     = orden.vehiculo.marca_id
@@ -112,12 +109,42 @@ class OrdenServicioListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Órdenes de Servicio - Acerautos'
+        context['titulo'] = 'Órdenes de Servicio '
         return context
 
 
 # ══════════════════════════════════════════════════════════
-#  DETALLE (Mecánicos y Admin pueden ver)
+#  CAMBIAR ESTADO
+# ══════════════════════════════════════════════════════════
+
+class CambiarEstadoOrdenView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        orden = get_object_or_404(OrdenServicio, pk=pk)
+
+        if orden.estado == 'Terminado':
+            messages.error(request, f'La orden #{orden.pk} ya está terminada y no puede modificarse.')
+            return redirect('app:orden_servicio_list')
+
+        nuevo_estado = request.POST.get('estado')
+        flujo = ['Pendiente', 'En Proceso', 'Terminado']
+
+        if nuevo_estado in flujo:
+            idx_actual = flujo.index(orden.estado)
+            idx_nuevo  = flujo.index(nuevo_estado)
+            if idx_nuevo == idx_actual + 1:
+                orden.estado = nuevo_estado
+                orden.save(update_fields=['estado'])
+                messages.success(request, f'Orden #{orden.pk} → {nuevo_estado}')
+            else:
+                messages.error(request, 'Cambio de estado no permitido.')
+        else:
+            messages.error(request, 'Estado inválido.')
+
+        return redirect('app:orden_servicio_list')
+
+
+# ══════════════════════════════════════════════════════════
+#  DETALLE
 # ══════════════════════════════════════════════════════════
 
 class OrdenServicioDetailView(LoginRequiredMixin, View):
@@ -147,7 +174,7 @@ class OrdenServicioDetailView(LoginRequiredMixin, View):
 
 
 # ══════════════════════════════════════════════════════════
-#  AJAX (Protegidos por Login)
+#  AJAX
 # ══════════════════════════════════════════════════════════
 
 class VehiculoKmView(LoginRequiredMixin, View):
@@ -177,7 +204,7 @@ class VerificarCompatibilidadView(LoginRequiredMixin, View):
             return JsonResponse({'compatible': None, 'tiene_reglas': False, 'mensaje': ''})
         status, mensaje = _verificar_compat(producto, marca_id, servicio_id)
         if status == 'neutral':
-            return JsonResponse({'compatible': None,  'tiene_reglas': False, 'mensaje': ''})
+            return JsonResponse({'compatible': False,  'tiene_reglas': False, 'mensaje': ''})
         elif status == 'ok':
             return JsonResponse({'compatible': True,  'tiene_reglas': True,  'mensaje': mensaje})
         else:
@@ -211,7 +238,7 @@ class ProductosCompatiblesView(LoginRequiredMixin, View):
 
 
 # ══════════════════════════════════════════════════════════
-#  CREAR ORDEN (Solo Admin)
+#  CREAR — fecha forzada por el servidor
 # ══════════════════════════════════════════════════════════
 
 class OrdenServicioCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
@@ -230,18 +257,22 @@ class OrdenServicioCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
 
     def form_valid(self, form):
         orden = form.save(commit=False)
-        if orden.vehiculo and orden.km_actual and orden.km_actual > (orden.vehiculo.km_ultimo_servicio or 0):
-            orden.vehiculo.km_ultimo_servicio = orden.km_actual
-            orden.vehiculo.save(update_fields=['km_ultimo_servicio'])
+        # Fecha siempre la pone el servidor — nadie la puede manipular
+        orden.fecha = timezone.now()
+        # Km: usar el del vehículo si no viene uno mayor
+        if orden.vehiculo:
+            km_vehiculo = orden.vehiculo.km_ultimo_servicio or 0
+            # Si alguien manipuló el km desde consola y mandó uno menor, lo corregimos
+            if orden.km_actual < km_vehiculo:
+                orden.km_actual = km_vehiculo
+            elif orden.km_actual > km_vehiculo:
+                orden.vehiculo.km_ultimo_servicio = orden.km_actual
+                orden.vehiculo.save(update_fields=['km_ultimo_servicio'])
         orden.save()
         form.save_m2m()
         servicio_ids = list(orden.servicios.values_list('id', flat=True))
         if _hay_incompatibles(self.request, orden.vehiculo.marca_id, servicio_ids):
-            messages.error(
-                self.request,
-                '⚠ No se puede guardar: hay productos incompatibles con la marca. '
-                'Retira o reemplaza los productos marcados.'
-            )
+            messages.error(self.request, '⚠ No se puede guardar: hay productos incompatibles con la marca.')
             orden.delete()
             return self.form_invalid(form)
         _guardar_productos(self.request, orden)
@@ -254,7 +285,7 @@ class OrdenServicioCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
 
 
 # ══════════════════════════════════════════════════════════
-#  EDITAR ORDEN (Solo Admin)
+#  EDITAR — bloqueado si Terminada, fecha y km protegidos
 # ══════════════════════════════════════════════════════════
 
 class OrdenServicioUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
@@ -262,6 +293,13 @@ class OrdenServicioUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
     form_class    = OrdenServicioForm
     template_name = 'OrdenServicio/crear.html'
     success_url   = reverse_lazy('app:orden_servicio_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        orden = get_object_or_404(OrdenServicio, pk=kwargs['pk'])
+        if orden.estado == 'Terminado':
+            messages.error(request, f'La orden #{orden.pk} ya está terminada y no puede editarse.')
+            return redirect('app:orden_servicio_list')
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -273,17 +311,21 @@ class OrdenServicioUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
 
     def form_valid(self, form):
         orden = form.save(commit=False)
-        if orden.vehiculo and orden.km_actual and orden.km_actual > (orden.vehiculo.km_ultimo_servicio or 0):
-            orden.vehiculo.km_ultimo_servicio = orden.km_actual
-            orden.vehiculo.save(update_fields=['km_ultimo_servicio'])
+        # Fecha: conservar la original, no permitir cambios
+        orden.fecha = self.get_object().fecha
+        # Km: proteger contra manipulación desde consola
+        if orden.vehiculo:
+            km_vehiculo = orden.vehiculo.km_ultimo_servicio or 0
+            if orden.km_actual < km_vehiculo:
+                orden.km_actual = km_vehiculo
+            elif orden.km_actual > km_vehiculo:
+                orden.vehiculo.km_ultimo_servicio = orden.km_actual
+                orden.vehiculo.save(update_fields=['km_ultimo_servicio'])
         orden.save()
         form.save_m2m()
         servicio_ids = list(orden.servicios.values_list('id', flat=True))
         if _hay_incompatibles(self.request, orden.vehiculo.marca_id, servicio_ids):
-            messages.error(
-                self.request,
-                '⚠ No se puede guardar: hay productos incompatibles con la marca.'
-            )
+            messages.error(self.request, '⚠ No se puede guardar: hay productos incompatibles con la marca.')
             return self.form_invalid(form)
         orden.productos_usados.all().delete()
         _guardar_productos(self.request, orden)
@@ -292,7 +334,7 @@ class OrdenServicioUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
 
 
 # ══════════════════════════════════════════════════════════
-#  ELIMINAR ORDEN (Solo Admin)
+#  ELIMINAR
 # ══════════════════════════════════════════════════════════
 
 class OrdenServicioDeleteView(LoginRequiredMixin, SoloAdminMixin, View):

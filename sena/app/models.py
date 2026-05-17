@@ -191,19 +191,25 @@ class Producto(models.Model):
 
 
 # ══════════════════════════════════════════════════════════
-#  TIPO SERVICIO
+#  TIPO SERVICIO 
 # ══════════════════════════════════════════════════════════
 class TipoServicio(models.Model):
-    nombre           = models.CharField(max_length=100)
-    precio_mano_obra = models.DecimalField(max_digits=12, decimal_places=2)
-    intervalo_km     = models.PositiveIntegerField(default=0, help_text="Ej: 5000 para aceite.")
+    nombre           = models.CharField(max_length=100, unique=True)
+    descripcion      = models.TextField(blank=True, null=True, help_text="Descripción breve del servicio")
+    precio_mano_obra = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    estado           = models.BooleanField(default=True, help_text="¿Está disponible?")
+    
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.nombre
+        return f"{self.nombre} - ${self.precio_mano_obra:,.0f}"
 
     class Meta:
         db_table = 'tipo_servicio'
-
+        ordering = ['nombre']
+        verbose_name = "Tipo de Servicio"
+        verbose_name_plural = "Tipos de Servicio"
 
 # ══════════════════════════════════════════════════════════
 #  COMPATIBILIDAD PRODUCTO
@@ -211,7 +217,7 @@ class TipoServicio(models.Model):
 class CompatibilidadProducto(models.Model):
     producto       = models.ForeignKey(Producto, on_delete=models.CASCADE, limit_choices_to={'estado': True})
     marca_vehiculo = models.ForeignKey(Marca, on_delete=models.CASCADE, limit_choices_to={'categoria': 'AUTO', 'estado': True})
-    tipo_servicio  = models.ForeignKey(TipoServicio, on_delete=models.CASCADE, null=True, blank=True)
+    tipo_servicio  = models.ForeignKey(TipoServicio, on_delete=models.CASCADE, null=True, blank=True)  # ← Mantén null=True
 
     def __str__(self):
         srv = f" — {self.tipo_servicio.nombre}" if self.tipo_servicio else ""
@@ -220,7 +226,6 @@ class CompatibilidadProducto(models.Model):
     class Meta:
         db_table        = 'compatibilidad_producto'
         unique_together = ('producto', 'marca_vehiculo', 'tipo_servicio')
-
 
 # ══════════════════════════════════════════════════════════
 #  CLIENTE
@@ -241,14 +246,14 @@ class Cliente(models.Model):
 
 
 # ══════════════════════════════════════════════════════════
-#  VEHICULO
+#  VEHÍCULO 
 # ══════════════════════════════════════════════════════════
 class Vehiculo(models.Model):
     TIPOS_USO = [
         ('BAJO',   'Uso bajo (ciudad, poco uso)'),
-        ('NORMAL', 'Uso normal'),
+        ('NORMAL', 'Uso normal (estándar)'),
         ('ALTO',   'Uso alto (viajes frecuentes)'),
-        ('CARGA',  'Carga / Transporte'),
+        ('CARGA',  'Carga / Transporte (intensivo)'),
     ]
 
     placa   = models.CharField(max_length=10, unique=True)
@@ -257,58 +262,60 @@ class Vehiculo(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
 
     # ── Kilometraje ──
-    km_ultimo_servicio       = models.IntegerField(default=0)
-    km_proximo_mantenimiento = models.IntegerField(null=True, blank=True)
-    km_intervalo             = models.PositiveIntegerField(default=5000, help_text="Cada cuántos km hacer mantenimiento. Ej: 5000")
+    km_ultimo_servicio = models.IntegerField(default=0, help_text="Km actuales del vehículo")
+    km_proximo_mantenimiento = models.IntegerField(default=5000, help_text="A qué km debe volver")
+    km_alerta_anticipacion = models.IntegerField(default=500, help_text="Km antes para avisar")
 
-    # ── Fechas ──
-    fecha_ultimo_servicio       = models.DateField(null=True, blank=True)
-    fecha_proximo_mantenimiento = models.DateField(null=True, blank=True)
-    intervalo_meses             = models.PositiveIntegerField(default=3, help_text="Cada cuántos meses hacer mantenimiento. Ej: 3")
+    # ── Fecha de próximo mantenimiento ──
+    fecha_proximo_mantenimiento = models.DateField(null=True, blank=True, help_text="Cuándo volver a hacer mantenimiento")
 
-    # ── Tipo de uso (reemplaza km_diarios_promedio) ──
-    tipo_uso = models.CharField(max_length=10, choices=TIPOS_USO, default='NORMAL')
+    # ── Tipo de uso ──
+    tipo_uso = models.CharField(max_length=10, choices=TIPOS_USO, default='NORMAL', help_text="Intensidad de uso del vehículo")
 
-    # ── Alerta ──
-    km_alerta_anticipacion = models.PositiveIntegerField(default=500, help_text="Con cuántos km de anticipación avisar")
+    # Fechas de control
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion = models.DateTimeField(auto_now=True)
 
     def km_diarios(self):
         """Retorna km diarios estimados según tipo de uso."""
-        return {'BAJO': 30, 'NORMAL': 50, 'ALTO': 80, 'CARGA': 120}.get(self.tipo_uso, 50)
+        estimados = {'BAJO': 30, 'NORMAL': 50, 'ALTO': 80, 'CARGA': 120}
+        return estimados.get(self.tipo_uso, 50)
 
     def km_estimados_hoy(self):
-        if not self.fecha_ultimo_servicio:
+        """Calcula km estimados hoy basado en último servicio."""
+        if not self.fecha_proximo_mantenimiento:
             return self.km_ultimo_servicio
-        dias = (timezone.now().date() - self.fecha_ultimo_servicio).days
+        dias = (timezone.now().date() - self.fecha_proximo_mantenimiento).days
+        if dias < 0:
+            dias = 0
         return self.km_ultimo_servicio + (dias * self.km_diarios())
 
     def km_restantes_estimados(self):
-        if not self.km_proximo_mantenimiento:
+        """Calcula cuántos KM le quedan basados en los días que faltan."""
+        dias = self.dias_restantes_mantenimiento()
+        if dias is None:
             return None
-        return self.km_proximo_mantenimiento - self.km_estimados_hoy()
+        return dias * self.km_diarios()
 
     def dias_restantes_mantenimiento(self):
+        """Cuántos días faltan para el próximo mantenimiento."""
         if not self.fecha_proximo_mantenimiento:
             return None
         return (self.fecha_proximo_mantenimiento - timezone.now().date()).days
 
     def estado_mantenimiento(self):
-        """Revisa km Y fecha — lo que llegue primero."""
-        km_rest  = self.km_restantes_estimados()
+        """Retorna: 'vencido', 'alerta', 'ok' o 'sin_datos'."""
         dias_rest = self.dias_restantes_mantenimiento()
-
-        vencido_km   = km_rest is not None and km_rest <= 0
-        vencido_fecha = dias_rest is not None and dias_rest <= 0
-
-        if vencido_km or vencido_fecha:
+        
+        if dias_rest is None:
+            return 'sin_datos'
+        
+        if dias_rest <= 0:
             return 'vencido'
-
-        alerta_km   = km_rest is not None and km_rest <= self.km_alerta_anticipacion
-        alerta_fecha = dias_rest is not None and dias_rest <= 15  
-
-        if alerta_km or alerta_fecha:
+        
+        if dias_rest <= 15:
             return 'alerta'
-
+        
         return 'ok'
 
     def __str__(self):
@@ -316,7 +323,7 @@ class Vehiculo(models.Model):
 
     class Meta:
         db_table = 'vehiculo'
-
+        ordering = ['-fecha_actualizacion']
 
 # ══════════════════════════════════════════════════════════
 #  NOTIFICACION
@@ -383,12 +390,7 @@ class OrdenServicio(models.Model):
         veh = self.vehiculo
         if self.km_actual >= veh.km_ultimo_servicio:
             veh.km_ultimo_servicio = self.km_actual
-            veh.fecha_ultimo_servicio = self.fecha.date()
-        servs = self.servicios.filter(intervalo_km__gt=0)
-        if servs.exists():
-            menor = servs.order_by('intervalo_km').first().intervalo_km
-            veh.km_proximo_mantenimiento = veh.km_ultimo_servicio + menor
-        veh.save(update_fields=['km_ultimo_servicio', 'km_proximo_mantenimiento', 'fecha_ultimo_servicio'])
+        veh.save(update_fields=['km_ultimo_servicio'])
 
     def __str__(self):
         return f"Orden #{self.id} — {self.vehiculo.placa}"
@@ -398,7 +400,7 @@ class OrdenServicio(models.Model):
 
 
 # ══════════════════════════════════════════════════════════
-#  COMPRA (Sin lógica de stock, delegada a signals)
+#  COMPRA 
 # ══════════════════════════════════════════════════════════
 class Compra(models.Model):
     METODOS = [('Efectivo', 'Efectivo'), ('Transferencia', 'Transferencia'), ('Credito', 'Crédito')]
@@ -426,7 +428,7 @@ class Compra(models.Model):
 
 
 # ══════════════════════════════════════════════════════════
-#  DETALLE ORDEN (Sin lógica de stock, delegada a signals)
+#  DETALLE PRODUCTO ORDEN DE SERVICIO
 # ══════════════════════════════════════════════════════════
 class DetalleOrdenProducto(models.Model):
     orden    = models.ForeignKey(OrdenServicio, on_delete=models.CASCADE, related_name='productos_usados')
@@ -434,9 +436,15 @@ class DetalleOrdenProducto(models.Model):
     cantidad = models.PositiveIntegerField(default=1)
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            if self.producto.stock < self.cantidad:
-                raise ValidationError(f"Stock insuficiente para '{self.producto.nombre}'.")
+       
+        if self.producto.stock < self.cantidad:
+            raise ValidationError(f"Stock insuficiente para '{self.producto.nombre}'.")
+        
+        
+        if not self.pk:  
+            self.producto.stock -= self.cantidad
+            self.producto.save(update_fields=['stock'])
+        
         super().save(*args, **kwargs)
 
     class Meta:

@@ -30,25 +30,19 @@
     .vista-btn.activo{background:var(--rojo);color:white;}
     .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
     .stat-card{border-radius:16px;border:none;padding:22px 24px;display:flex;align-items:center;gap:18px;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden;cursor:pointer;}
-
     .stat-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.18);}
+    .stat-card.activa-filtro{outline:3px solid white;outline-offset:2px;}
     .stat-card.total-card{background:var(--carbon);}
     .stat-card.activo-card{background:#2e7d32;}
     .stat-card.bajo-card{background:#e65100;}
     .stat-card.sin-card{background:var(--rojo);}
     .stat-icon{width:50px;height:50px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.15);}
-    .stat-icon svg{width:24px;height:24px;stroke:white;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
     .stat-num{font-family:'Bebas Neue','Barlow Condensed',sans-serif;font-size:2.8rem;font-weight:400;color:white;line-height:1;letter-spacing:1px;}
     .stat-lbl{font-family:'DM Sans',sans-serif;font-size:.63rem;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,.6);margin-top:2px;}
     @media(max-width:768px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
     .precio-val{font-family:'Space Grotesk',sans-serif;font-size:.95rem;font-weight:700;color:var(--carbon);letter-spacing:-.3px;}
     .stock-num-val{font-family:'Space Grotesk',sans-serif;font-size:.95rem;font-weight:700;color:var(--carbon);min-width:28px;}
-    .filtros-bar{background:white;border-radius:14px;border:1px solid var(--borde);padding:10px 14px;margin-bottom:20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;box-shadow:0 1px 4px rgba(0,0,0,.05);}
-    .filtro-tab{font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;padding:6px 14px;border-radius:100px;border:1.5px solid var(--borde);background:white;color:var(--muted);cursor:pointer;transition:all .18s;display:inline-flex;align-items:center;gap:5px;}
-    .filtro-tab svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-    .filtro-tab:hover{border-color:var(--rojo);color:var(--rojo);background:#fff5f5;}
-    .filtro-tab.activo{background:var(--rojo);color:white;border-color:var(--rojo);}
-    .busq-wrap{margin-left:auto;position:relative;display:flex;align-items:center;}
+    .busq-wrap{position:relative;display:flex;align-items:center;}
     .busq-input{font-family:'DM Sans',sans-serif;font-size:.83rem;padding:8px 16px 8px 38px;border:1.5px solid var(--borde);border-radius:100px;outline:none;transition:.18s;width:230px;background:white;color:var(--texto);line-height:1;}
     .busq-input::placeholder{color:var(--muted);}
     .busq-input:focus{border-color:var(--rojo);box-shadow:0 0 0 3px rgba(211,47,47,.08);}
@@ -57,6 +51,7 @@
     #vista-tabla{display:block;}
     #vista-catalogo{display:none;}
     .tabla-wrap{background:white;border-radius:16px;border:1px solid var(--borde);overflow:hidden;}
+    .tabla-topbar{display:flex;justify-content:flex-end;align-items:center;padding:14px 20px 0 20px;}
     #tabla_productos{font-family:'DM Sans',sans-serif;font-size:.875rem;border-collapse:collapse;width:100%;}
     #tabla_productos thead tr{background:var(--gris);border-bottom:2px solid var(--borde);}
     #tabla_productos thead th{font-family:'Barlow Condensed',sans-serif;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);padding:14px 16px;border:none;}
@@ -88,8 +83,7 @@
     .btn-ver{background:var(--carbon);margin-right:4px;}
     .badge-solo-lectura{font-size:.68rem;font-weight:600;padding:3px 10px;border-radius:6px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;}
     .dataTables_wrapper{padding:16px 20px;}
-    .dataTables_filter input{border:1.5px solid var(--borde)!important;border-radius:8px!important;padding:6px 12px!important;font-family:'DM Sans',sans-serif!important;font-size:.85rem!important;outline:none!important;}
-    .dataTables_filter input:focus{border-color:var(--rojo)!important;}
+    .dataTables_filter{display:none!important;}
     .dataTables_filter label,.dataTables_length label,.dataTables_info{font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--muted);}
     .dataTables_length select{border:1.5px solid var(--borde)!important;border-radius:8px!important;padding:4px 8px!important;appearance:none!important;background:white!important;}
     .page-item.active .page-link{background:var(--rojo)!important;border-color:var(--rojo)!important;color:white!important;font-weight:700!important;}
@@ -218,25 +212,25 @@
 
     <!-- STATS -->
     <div class="stats-grid">
-        <div class="stat-card total-card">
+        <div class="stat-card total-card activa-filtro" id="stat-todos" onclick="filtrarPorStat('todos', this)" title="Ver todos">
             <div class="stat-icon" style="background:transparent;">
                 <img src="{% static 'imagenes/Producti.jpeg' %}" style="width:50px;height:50px;object-fit:contain;border-radius:12px;">
             </div>
             <div><div class="stat-num">{{ total_productos }}</div><div class="stat-lbl">Total Productos</div></div>
         </div>
-        <div class="stat-card activo-card">
+        <div class="stat-card activo-card" id="stat-activo" onclick="filtrarPorStat('activo', this)" title="Ver activos">
             <div class="stat-icon" style="background:transparent;">
                 <img src="{% static 'imagenes/productu.jpeg' %}" style="width:50px;height:50px;object-fit:contain;border-radius:12px;">
             </div>
             <div><div class="stat-num">{{ activos }}</div><div class="stat-lbl">Activos</div></div>
         </div>
-        <div class="stat-card bajo-card">
+        <div class="stat-card bajo-card" id="stat-bajo" onclick="filtrarPorStat('bajo', this)" title="Ver stock bajo">
             <div class="stat-icon" style="background:transparent;">
                 <img src="{% static 'imagenes/stock bajo.jpeg' %}" style="width:50px;height:50px;object-fit:contain;border-radius:12px;">
             </div>
             <div><div class="stat-num">{{ stock_bajo }}</div><div class="stat-lbl">Stock Bajo</div></div>
         </div>
-        <div class="stat-card sin-card">
+        <div class="stat-card sin-card" id="stat-sin" onclick="filtrarPorStat('sin', this)" title="Ver sin stock">
             <div class="stat-icon" style="background:transparent;">
                 <img src="{% static 'imagenes/sin stock.jpeg' %}" style="width:50px;height:50px;object-fit:contain;border-radius:12px;">
             </div>
@@ -244,29 +238,16 @@
         </div>
     </div>
 
-    <!-- FILTROS catálogo -->
-    <div class="filtros-bar" id="barra-filtros" style="display:none;">
-        <button class="filtro-tab activo" data-filtro="todos" onclick="filtrarCatalogo('todos', this)">
-            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Todos
-        </button>
-        <button class="filtro-tab" data-filtro="ok" onclick="filtrarCatalogo('ok', this)">
-            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Stock OK
-        </button>
-        <button class="filtro-tab" data-filtro="bajo" onclick="filtrarCatalogo('bajo', this)">
-            <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg> Stock Bajo
-        </button>
-        <button class="filtro-tab" data-filtro="sin" onclick="filtrarCatalogo('sin', this)">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Sin Stock
-        </button>
-        <div class="busq-wrap">
-            <span class="busq-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-            <input type="text" class="busq-input" id="busq-catalogo" placeholder="Buscar producto..." oninput="buscarCatalogo(this.value)">
-        </div>
-    </div>
-
     <!-- VISTA TABLA -->
     <div id="vista-tabla">
         <div class="tabla-wrap">
+            <!-- BÚSQUEDA DENTRO DE LA TABLA -->
+            <div class="tabla-topbar">
+                <div class="busq-wrap">
+                    <span class="busq-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+                    <input type="text" class="busq-input" id="busq-global" placeholder="Buscar producto..." oninput="buscarGlobal(this.value)">
+                </div>
+            </div>
             <table id="tabla_productos" style="width:100%">
                 <thead>
                     <tr>
@@ -281,7 +262,7 @@
                 </thead>
                 <tbody>
                     {% for p in productos %}
-                    <tr>
+                    <tr data-stock-status="{{ p.stock_status }}" data-estado="{% if p.estado %}activo{% else %}inactivo{% endif %}">
                         <td class="text-center" style="font-weight:700;color:var(--muted);font-size:.8rem;">{{ forloop.counter }}</td>
                         <td>
                             <div class="d-flex align-items-center" style="gap:10px;">
@@ -345,9 +326,16 @@
 
     <!-- VISTA CATÁLOGO -->
     <div id="vista-catalogo">
+        <!-- búsqueda para catálogo -->
+        <div style="display:flex;justify-content:flex-end;margin-bottom:14px;">
+            <div class="busq-wrap">
+                <span class="busq-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+                <input type="text" class="busq-input" id="busq-catalogo-ext" placeholder="Buscar producto..." oninput="buscarGlobal(this.value)">
+            </div>
+        </div>
         <div class="catalogo-grid" id="grid-catalogo">
             {% for p in productos %}
-            <div class="prod-card" data-nombre="{{ p.nombre|lower }}" data-marca="{{ p.marca.nombre|lower }}" data-stock-status="{{ p.stock_status }}">
+            <div class="prod-card" data-nombre="{{ p.nombre|lower }}" data-marca="{{ p.marca.nombre|lower }}" data-stock-status="{{ p.stock_status }}" data-estado="{% if p.estado %}activo{% else %}inactivo{% endif %}">
                 <div class="card-img-wrap">
                     {% if p.imagen %}<img src="{{ p.imagen.url }}" alt="{{ p.nombre }}">
                     {% elif p.marca.logo %}<img src="{{ p.marca.logo.url }}" alt="{{ p.marca.nombre }}">
@@ -430,6 +418,10 @@
 <script>
 const USER_PUEDE_EDITAR = {% if request.user.is_superuser or request.user.cargo == 'ADMIN' %}true{% else %}false{% endif %};
 
+let dtTable = null;
+let filtroActual = 'todos';
+let vistaActual = 'tabla';
+
 document.addEventListener('DOMContentLoaded', function() {
     var modal = document.getElementById('modal-overlay');
     if (modal) document.body.appendChild(modal);
@@ -439,7 +431,7 @@ $(document).ready(function () {
     var filas = $('#tabla_productos tbody tr').length;
     var esVacia = filas === 1 && $('#tabla_productos tbody tr td[colspan]').length > 0;
     if (!esVacia) {
-        $('#tabla_productos').DataTable({
+        dtTable = $('#tabla_productos').DataTable({
             responsive: false, autoWidth: false, destroy: true, stateSave: false,
             scrollX: true, pageLength: 10, order: [[1, 'asc']], pagingType: "full_numbers",
             columnDefs: [{ orderable: false, targets: [0, 6] }],
@@ -448,43 +440,73 @@ $(document).ready(function () {
                 "sZeroRecords":"No se encontraron resultados","sEmptyTable":"Ningún dato disponible",
                 "sInfo":"Mostrando _START_ a _END_ de _TOTAL_ registros",
                 "sInfoEmpty":"Mostrando 0 a 0 de 0 registros","sInfoFiltered":"(filtrado de _MAX_ registros totales)",
-                "sSearch":"Buscar:","sLoadingRecords":"Cargando...",
+                "sSearch":"","sLoadingRecords":"Cargando...",
                 "oPaginate":{"sFirst":"«","sLast":"»","sNext":"›","sPrevious":"‹"}
             }
         });
     }
 });
 
-let vistaActual = 'tabla';
+function filtrarPorStat(tipo, el) {
+    filtroActual = tipo;
+    document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('activa-filtro'));
+    el.classList.add('activa-filtro');
+    document.getElementById('busq-global').value = '';
+    const ext = document.getElementById('busq-catalogo-ext');
+    if (ext) ext.value = '';
+    if (vistaActual === 'tabla') _filtrarTabla(tipo, '');
+    else _filtrarCatalogo(tipo, '');
+}
+
+function buscarGlobal(q) {
+    if (vistaActual === 'tabla') _filtrarTabla(filtroActual, q);
+    else _filtrarCatalogo(filtroActual, q);
+}
+
+function _filtrarTabla(tipo, busq) {
+    const t = busq.toLowerCase();
+    $('#tabla_productos tbody tr').each(function() {
+        const fila = $(this);
+        const status = fila.data('stock-status');
+        const estado = fila.data('estado');
+        const texto  = fila.text().toLowerCase();
+        let pasaFiltro = tipo === 'todos' ? true
+            : tipo === 'activo' ? (status === 'ok' && estado === 'activo')
+            : tipo === 'bajo'   ? status === 'bajo'
+            : status === 'sin';
+        fila.toggle(pasaFiltro && (t === '' || texto.includes(t)));
+    });
+    if (dtTable) dtTable.draw();
+}
+
+function _filtrarCatalogo(tipo, busq) {
+    const t = busq.toLowerCase();
+    document.querySelectorAll('.prod-card').forEach(c => {
+        const status = c.dataset.stockStatus;
+        const estado = c.dataset.estado;
+        let pasaFiltro = tipo === 'todos' ? true
+            : tipo === 'activo' ? (status === 'ok' && estado === 'activo')
+            : tipo === 'bajo'   ? status === 'bajo'
+            : status === 'sin';
+        const pasaBusq = t === '' || c.dataset.nombre.includes(t) || c.dataset.marca.includes(t);
+        c.style.display = (pasaFiltro && pasaBusq) ? 'flex' : 'none';
+    });
+}
+
 function cambiarVista(modo) {
     vistaActual = modo;
     const tabla = document.getElementById('vista-tabla');
     const cat   = document.getElementById('vista-catalogo');
-    const fil   = document.getElementById('barra-filtros');
     const btnT  = document.getElementById('btn-tabla');
     const btnC  = document.getElementById('btn-catalogo');
     if (modo === 'tabla') {
-        tabla.style.display='block'; cat.style.display='none'; fil.style.display='none';
+        tabla.style.display='block'; cat.style.display='none';
         btnT.classList.add('activo'); btnC.classList.remove('activo');
     } else {
-        tabla.style.display='none'; cat.style.display='block'; fil.style.display='flex';
+        tabla.style.display='none'; cat.style.display='block';
         btnT.classList.remove('activo'); btnC.classList.add('activo');
+        _filtrarCatalogo(filtroActual, '');
     }
-}
-
-function filtrarCatalogo(tipo, btn) {
-    document.querySelectorAll('.filtro-tab').forEach(b => b.classList.remove('activo'));
-    btn.classList.add('activo');
-    document.querySelectorAll('.prod-card').forEach(c => {
-        c.style.display = (tipo === 'todos' || c.dataset.stockStatus === tipo) ? 'flex' : 'none';
-    });
-}
-
-function buscarCatalogo(q) {
-    const t = q.toLowerCase();
-    document.querySelectorAll('.prod-card').forEach(c => {
-        c.style.display = (c.dataset.nombre.includes(t) || c.dataset.marca.includes(t)) ? 'flex' : 'none';
-    });
 }
 
 function abrirModal(d) {
@@ -503,47 +525,39 @@ function abrirModal(d) {
     estadoBadge.className = 'modal-estado-badge ' + (d.estado ? 'activo' : 'inactivo');
     estadoBadge.textContent = d.estado ? 'Activo' : 'Inactivo';
     side.appendChild(estadoBadge);
-
-    document.getElementById('modal-codigo').textContent      = d.codigo;
-    document.getElementById('modal-unidad').textContent      = d.unidad;
-    document.getElementById('modal-nombre').textContent      = d.nombre;
-    document.getElementById('modal-marca').textContent       = d.proveedor ? d.marca + ' · ' + d.proveedor : d.marca;
-    document.getElementById('modal-precio').textContent      = '$' + d.precio;
-    document.getElementById('modal-unidad-info').textContent = d.unidad;
+    document.getElementById('modal-codigo').textContent         = d.codigo;
+    document.getElementById('modal-unidad').textContent         = d.unidad;
+    document.getElementById('modal-nombre').textContent         = d.nombre;
+    document.getElementById('modal-marca').textContent          = d.proveedor ? d.marca + ' · ' + d.proveedor : d.marca;
+    document.getElementById('modal-precio').textContent         = '$' + d.precio;
+    document.getElementById('modal-unidad-info').textContent    = d.unidad;
     document.getElementById('modal-stock-min-info').textContent = d.stockMin + ' ' + d.unidad;
-    document.getElementById('modal-estado-info').textContent = d.estado ? 'Activo' : 'Inactivo';
-    document.getElementById('modal-stock-num').textContent   = d.stock;
-
+    document.getElementById('modal-estado-info').textContent    = d.estado ? 'Activo' : 'Inactivo';
+    document.getElementById('modal-stock-num').textContent      = d.stock;
     const s = d.stockStatus;
     const badge = document.getElementById('modal-stock-badge');
     badge.className = 'modal-stock-badge ' + s;
     badge.textContent = s === 'ok' ? 'Stock OK' : s === 'bajo' ? 'Stock Bajo' : 'Sin Stock';
-
     const pct  = d.stockMin > 0 ? Math.min((d.stock / d.stockMin) * 100, 100) : 100;
     const fill = document.getElementById('modal-bar-fill');
     fill.className = 'modal-bar-fill ' + s;
     fill.style.width = (s === 'sin' ? 100 : pct) + '%';
-
     const descEl = document.getElementById('modal-desc');
     descEl.innerHTML = (d.descripcion && d.descripcion.trim())
         ? '<div class="modal-desc-text">' + d.descripcion + '</div>'
         : '<div class="modal-desc-empty">Sin descripción registrada.</div>';
-
     const footer = document.getElementById('modal-footer-btns');
     if (USER_PUEDE_EDITAR) {
         footer.innerHTML = `
             <a href="${d.editUrl}" class="modal-btn-edit">
-                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                Editar
+                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Editar
             </a>
             <a href="${d.delUrl}" class="modal-btn-del">
-                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-                Eliminar
+                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>Eliminar
             </a>`;
     } else {
         footer.innerHTML = '<span class="badge-solo-lectura" style="margin:auto;">Solo puedes consultar este producto</span>';
     }
-
     document.getElementById('modal-overlay').classList.add('abierto');
     document.body.style.overflow = 'hidden';
 }

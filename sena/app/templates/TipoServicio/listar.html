@@ -15,21 +15,21 @@
     }
 
     .taller-header { position:relative; background:var(--carbon); border-radius:10px; padding:28px 32px; margin-bottom:28px; overflow:hidden; display:flex; align-items:center; justify-content:space-between; }
-
     .header-left { display:flex; align-items:center; gap:18px; position:relative; }
     .header-icon-wrap { width:56px; height:56px; background:var(--rojo); border-radius:12px; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 4px rgba(211,47,47,.25); flex-shrink:0; }
-    .header-icon-wrap svg { width:28px; height:28px; stroke:white; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+    .header-icon-wrap img { width:56px; height:56px; border-radius:12px; object-fit:contain; }
     .header-titulo { font-family:'Barlow Condensed',sans-serif; font-size:2rem; font-weight:800; color:white; letter-spacing:1px; text-transform:uppercase; line-height:1; margin:0; }
-    .header-sub { font-family:'DM Sans',sans-serif; font-size:.78rem; color:rgba(255,255,255,.45); margin-top:4px; }
+    .header-sub { font-family:'DM Sans',sans-serif; font-size:.78rem; color:rgba(255,255,255,.45); margin-top:5px; display:flex; align-items:center; flex-wrap:wrap; gap:12px; }
+    .badge-stat { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.1); color:rgba(255,255,255,.8); padding:5px 12px; border-radius:7px; font-family:'DM Sans',sans-serif; font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
+    .badge-stat span { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+    .badge-total span { background:#d32f2f; }
+    .badge-activos span { background:#16a34a; }
     .header-actions { display:flex; align-items:center; gap:10px; position:relative; }
     .btn-accion { font-family:'DM Sans',sans-serif; font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; padding:10px 18px; border-radius:10px; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; text-decoration:none; transition:transform .2s, box-shadow .2s; }
     .btn-accion svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
     .btn-accion:hover { transform:translateY(-2px); }
     .btn-nuevo { background:var(--rojo); color:white !important; box-shadow:0 4px 16px rgba(211,47,47,.4); }
     .btn-nuevo:hover { box-shadow:0 6px 20px rgba(211,47,47,.5); color:white !important; }
-
-    .info-banner { background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:12px; padding:14px 20px; margin-bottom:16px; display:flex; align-items:flex-start; gap:12px; font-family:'DM Sans',sans-serif; font-size:.83rem; color:#1e40af; }
-    .info-banner svg { width:18px; height:18px; flex-shrink:0; margin-top:1px; stroke:#3b82f6; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 
     .tabla-wrap { background:white; border-radius:10px; border:1px solid var(--borde); overflow:hidden; }
     #tabla_servicios { font-family:'DM Sans',sans-serif; font-size:.875rem; border-collapse:collapse; width:100%; }
@@ -42,18 +42,20 @@
 
     .servicio-avatar { width:38px; height:38px; background:var(--carbon); color:white; border-radius:10px; display:flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:800; flex-shrink:0; }
     .servicio-nombre { font-weight:600; color:var(--carbon); font-size:.9rem; }
+    .servicio-desc { font-size:.75rem; color:var(--muted); margin-top:2px; }
     .precio-box { font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; color:var(--carbon); }
 
-    .km-badge { font-family:'DM Sans',sans-serif; font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.6px; border-radius:6px; padding:4px 10px; display:inline-flex; align-items:center; gap:5px; }
-    .km-badge svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-    .km-badge.con-km { background:#dcfce7; color:#16a34a; border:1px solid #bbf7d0; }
-    .km-badge.sin-km { background:var(--gris); color:var(--muted); border:1px solid var(--borde); }
-    .km-sub { font-size:.68rem; color:var(--muted); display:block; margin-top:2px; }
+    .estado-badge { font-family:'DM Sans',sans-serif; font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.6px; border-radius:6px; padding:4px 10px; display:inline-flex; align-items:center; gap:5px; }
+    .estado-badge svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .estado-activo { background:#dcfce7; color:#16a34a; border:1px solid #bbf7d0; }
+    .estado-inactivo { background:var(--gris); color:var(--muted); border:1px solid var(--borde); }
 
-    .btn-fila { width:32px; height:32px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; border:none; cursor:pointer; transition:transform .2s, box-shadow .2s; text-decoration:none; }
+    /* ── BOTONES DE FILA CORREGIDOS ── */
+    .acciones-wrap { display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; }
+    .btn-fila { width:36px; height:36px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; border:none; cursor:pointer; transition:transform .2s, box-shadow .2s; text-decoration:none; flex-shrink:0; }
     .btn-fila svg { width:14px; height:14px; stroke:white; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; pointer-events:none; }
     .btn-fila:hover { transform:translateY(-2px); box-shadow:0 4px 10px rgba(0,0,0,.2); }
-    .btn-edit { background:#1565c0; margin:0 4px; }
+    .btn-edit { background:#1565c0; }
     .btn-del  { background:var(--rojo); }
 
     .dataTables_wrapper { padding:16px 20px; }
@@ -75,11 +77,27 @@
     <div class="taller-header">
         <div class="header-left">
             <div class="header-icon-wrap" style="background:transparent; box-shadow:none;">
-    <img src="{% static 'imagenes/tipo_servi.jpeg' %}" style="width:56px; height:56px; object-fit:contain; border-radius:12px;">
-</div>
+                <img src="{% static 'imagenes/tipo_servi.jpeg' %}" alt="Tipo de Servicio">
+            </div>
             <div>
-                <h1 class="header-titulo">Tipos de Servicio</h1>
-                <div class="header-sub">Catálogo de servicios del taller · {{ object_list|length }} servicio{{ object_list|length|pluralize }}</div>
+                <h1 class="header-titulo">Servicios</h1>
+                <div class="header-sub">
+                    <span>Catálogo de servicios del taller</span>
+                    {% if object_list|length %}
+                        <span class="badge-stat badge-total">
+                            <span></span>
+                            {{ object_list|length }} servicio{{ object_list|length|pluralize }}
+                        </span>
+                        {% with activos=object_list|dictsort:"estado"|length %}
+                            {% if activos %}
+                            <span class="badge-stat badge-activos">
+                                <span></span>
+                                {{ activos }} activo{{ activos|pluralize }}
+                            </span>
+                            {% endif %}
+                        {% endwith %}
+                    {% endif %}
+                </div>
             </div>
         </div>
         <div class="header-actions">
@@ -92,15 +110,6 @@
         </div>
     </div>
 
-    <div class="info-banner">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <span>
-            El <strong>intervalo de km</strong> indica cada cuántos kilómetros se repite el servicio.
-            Al registrar una orden, se calcula automáticamente: <em>km actuales + intervalo = próximo mantenimiento</em> y se activan las alertas.
-            Si el intervalo es <strong>0</strong>, no se generan alertas (reparaciones puntuales).
-        </span>
-    </div>
-
     <div class="tabla-wrap">
         <div class="table-responsive">
             <table id="tabla_servicios" style="width:100%">
@@ -108,8 +117,8 @@
                     <tr>
                         <th class="text-center">#</th>
                         <th>Servicio</th>
-                        <th class="text-center">Precio Mano de Obra</th>
-                        <th class="text-center">Intervalo Km</th>
+                        <th class="text-center">Precio</th>
+                        <th class="text-center">Estado</th>
                         {% if request.user.is_superuser or request.user.cargo == 'ADMIN' %}<th class="text-center">Acciones</th>{% endif %}
                     </tr>
                 </thead>
@@ -120,37 +129,46 @@
                         <td>
                             <div class="d-flex align-items-center" style="gap:10px;">
                                 <div class="servicio-avatar">{{ servicio.nombre|first|upper }}</div>
-                                <span class="servicio-nombre">{{ servicio.nombre }}</span>
+                                <div>
+                                    <div class="servicio-nombre">{{ servicio.nombre }}</div>
+                                    {% if servicio.descripcion %}<div class="servicio-desc">{{ servicio.descripcion|truncatewords:8 }}</div>{% endif %}
+                                </div>
                             </div>
                         </td>
                         <td class="text-center">
-                            <span class="precio-box">$ {{ servicio.precio_mano_obra|floatformat:0 }}</span>
+                            <span class="precio-box">${{ servicio.precio_mano_obra|floatformat:0 }}</span>
                         </td>
                         <td class="text-center">
-                            {% if servicio.intervalo_km and servicio.intervalo_km > 0 %}
-                                <span class="km-badge con-km">
-                                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-                                    Cada {{ servicio.intervalo_km|floatformat:0 }} km
+                            {% if servicio.estado %}
+                                <span class="estado-badge estado-activo">
+                                    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Activo
                                 </span>
-                                <span class="km-sub">Genera alerta automática</span>
                             {% else %}
-                                <span class="km-badge sin-km">
+                                <span class="estado-badge estado-inactivo">
                                     <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                                    Sin intervalo
+                                    Inactivo
                                 </span>
-                                <span class="km-sub">No genera alerta</span>
                             {% endif %}
                         </td>
                         {% if request.user.is_superuser or request.user.cargo == 'ADMIN' %}
                         <td class="text-center">
-                            <a href="{% url 'app:tipo_servicio_update' servicio.id %}" class="btn-fila btn-edit" title="Editar">
-                                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                            </a>
-                            <a href="{% url 'app:tipo_servicio_delete' servicio.id %}" class="btn-fila btn-del" title="Eliminar">
-                                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                            </a>
+                            <div class="acciones-wrap">
+                                <a href="{% url 'app:tipo_servicio_update' servicio.id %}" class="btn-fila btn-edit" title="Editar">
+                                    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                </a>
+                                <a href="{% url 'app:tipo_servicio_delete' servicio.id %}" class="btn-fila btn-del" title="Eliminar">
+                                    <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                </a>
+                            </div>
                         </td>
                         {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center" style="padding:40px 20px; color:var(--muted);">
+                            <p style="font-size:.9rem; margin:0;">No hay servicios registrados aún</p>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

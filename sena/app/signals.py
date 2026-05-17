@@ -3,7 +3,6 @@ from django.dispatch import receiver
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 from django.utils import timezone
-from dateutil.relativedelta import relativedelta
 from .models import Producto, Notificacion, DetalleOrdenProducto, Compra, Vehiculo, OrdenServicio
 
 CORREO_ADMIN = 'acerautos09@gmail.com'
@@ -103,30 +102,6 @@ SVG_MANT    = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" strok
 
 
 # ══════════════════════════════════════════════════════════
-#  UTILIDAD — Actualizar próximo mantenimiento del vehículo
-# ══════════════════════════════════════════════════════════
-def actualizar_proximo_mantenimiento(vehiculo):
-    """Calcula y guarda km y fecha del próximo mantenimiento."""
-    campos = []
-
-    # Por km
-    if vehiculo.km_intervalo:
-        vehiculo.km_proximo_mantenimiento = vehiculo.km_ultimo_servicio + vehiculo.km_intervalo
-        campos.append('km_proximo_mantenimiento')
-
-    # Por fecha
-    if vehiculo.fecha_ultimo_servicio and vehiculo.intervalo_meses:
-        vehiculo.fecha_proximo_mantenimiento = (
-            vehiculo.fecha_ultimo_servicio +
-            relativedelta(months=vehiculo.intervalo_meses)
-        )
-        campos.append('fecha_proximo_mantenimiento')
-
-    if campos:
-        vehiculo.save(update_fields=campos)
-
-
-# ══════════════════════════════════════════════════════════
 #  1. ALERTA DE STOCK BAJO
 # ══════════════════════════════════════════════════════════
 @receiver(post_save, sender=Producto)
@@ -174,14 +149,38 @@ def verificar_stock_bajo(sender, instance, **kwargs):
 
 
 # ══════════════════════════════════════════════════════════
-#  2. DESCONTAR STOCK AL AGREGAR DETALLE DE ORDEN
+#  2. VERIFICAR STOCK BAJO AL USAR PRODUCTO EN ORDEN
 # ══════════════════════════════════════════════════════════
 @receiver(post_save, sender=DetalleOrdenProducto)
-def descontar_stock_venta(sender, instance, created, **kwargs):
+def verificar_stock_bajo_despues_uso(sender, instance, created, **kwargs):
+    """
+    Cuando se usa un producto en una orden, verifica si quedó bajo stock.
+    El descuento ya se hace en DetalleOrdenProducto.save()
+    """
     if created:
-        Producto.objects.filter(pk=instance.producto.pk).update(
-            stock=instance.producto.stock - instance.cantidad
-        )
+        producto = instance.producto
+        
+        # Solo notificar si quedó bajo stock
+        if producto.stock <= producto.stock_minimo:
+            nivel  = "CRITICO" if producto.stock == 0 else "BAJO"
+            titulo = f"Stock {nivel} — {producto.nombre}"
+            
+            # Evitar notificaciones duplicadas
+            existe = Notificacion.objects.filter(
+                titulo=titulo,
+                leido=False
+            ).exists()
+
+            if not existe:
+                Notificacion.objects.create(
+                    tipo    = 'Alerta',
+                    origen  = 'SISTEMA',
+                    titulo  = titulo,
+                    mensaje = (
+                        f"Stock {nivel}: '{producto.nombre}' tiene {producto.stock} unidades. "
+                        f"Minimo: {producto.stock_minimo}."
+                    ),
+                )
 
 
 # ══════════════════════════════════════════════════════════
@@ -200,20 +199,16 @@ def devolver_stock_cancelacion(sender, instance, **kwargs):
 @receiver(post_save, sender=OrdenServicio)
 def alerta_mantenimiento_vehiculo(sender, instance, **kwargs):
     vehiculo = instance.vehiculo
-
-    # Actualizar próximo mantenimiento con los nuevos campos
-    actualizar_proximo_mantenimiento(vehiculo)
     vehiculo.refresh_from_db()
 
-    km_rest   = vehiculo.km_restantes_estimados()
     dias_rest = vehiculo.dias_restantes_mantenimiento()
 
-    # ── Vencido por km o por fecha ──
-    vencido_km    = km_rest is not None and km_rest <= 0
-    vencido_fecha = dias_rest is not None and dias_rest <= 0
+    # Sin fecha configurada, no hay nada que verificar
+    if dias_rest is None:
+        return
 
-    if vencido_km or vencido_fecha:
-        razon  = "km vencidos" if vencido_km else "fecha vencida"
+    # ── Vencido ──
+    if dias_rest <= 0:
         titulo = f"Mantenimiento VENCIDO — {vehiculo.placa}"
         existe = Notificacion.objects.filter(titulo=titulo, leido=False).exists()
         if not existe:
@@ -224,18 +219,16 @@ def alerta_mantenimiento_vehiculo(sender, instance, **kwargs):
                 vehiculo = vehiculo,
                 mensaje  = (
                     f"El vehiculo {vehiculo.placa} ({vehiculo.marca.nombre} {vehiculo.modelo}) "
-                    f"tiene el mantenimiento VENCIDO por {razon}. "
-                    f"Km actuales estimados: {vehiculo.km_estimados_hoy():,}."
+                    f"tiene el mantenimiento VENCIDO. "
+                    f"Fecha programada: {vehiculo.fecha_proximo_mantenimiento}."
                 ),
             )
             filas = (
                 _fila("Vehiculo",         vehiculo.placa)
                 + _fila("Marca / Modelo", f"{vehiculo.marca.nombre} {vehiculo.modelo}")
                 + _fila("Cliente",        str(vehiculo.cliente))
-                + _fila("Km actuales",    f"{vehiculo.km_estimados_hoy():,} km")
-                + _fila("Km programado",  f"{vehiculo.km_proximo_mantenimiento:,} km" if vehiculo.km_proximo_mantenimiento else "—")
-                + _fila("Fecha prog.",    str(vehiculo.fecha_proximo_mantenimiento) if vehiculo.fecha_proximo_mantenimiento else "—")
-                + _fila("Motivo",         razon, ultimo=True)
+                + _fila("Km actuales",    f"{vehiculo.km_ultimo_servicio:,} km")
+                + _fila("Fecha prog.",    str(vehiculo.fecha_proximo_mantenimiento), ultimo=True)
             )
             pie = """
             <p style="margin:20px 0 0;padding:14px 16px;background:#fff5f5;
@@ -247,17 +240,13 @@ def alerta_mantenimiento_vehiculo(sender, instance, **kwargs):
             html = _html_base("#b71c1c", SVG_CRITICO, f"Mantenimiento VENCIDO — {vehiculo.placa}", filas, pie)
             enviar_correo_html(
                 subject     = f"Mantenimiento VENCIDO — {vehiculo.placa}",
-                texto_plano = f"El vehiculo {vehiculo.placa} tiene mantenimiento vencido por {razon}.",
+                texto_plano = f"El vehiculo {vehiculo.placa} tiene mantenimiento vencido.",
                 html        = html,
             )
         return
 
-    # ── Próximo por km o por fecha ──
-    alerta_km    = km_rest is not None and km_rest <= vehiculo.km_alerta_anticipacion
-    alerta_fecha = dias_rest is not None and dias_rest <= 15
-
-    if alerta_km or alerta_fecha:
-        razon  = f"~{km_rest:,} km restantes" if alerta_km else f"{dias_rest} días restantes"
+    # ── Próximo (15 días de anticipación) ──
+    if dias_rest <= 15:
         titulo = f"Mantenimiento proximo — {vehiculo.placa}"
         existe = Notificacion.objects.filter(titulo=titulo, leido=False).exists()
         if not existe:
@@ -268,17 +257,16 @@ def alerta_mantenimiento_vehiculo(sender, instance, **kwargs):
                 vehiculo = vehiculo,
                 mensaje  = (
                     f"El vehiculo {vehiculo.placa} tiene su mantenimiento proximo. "
-                    f"{razon}."
+                    f"Faltan {dias_rest} dias (fecha: {vehiculo.fecha_proximo_mantenimiento})."
                 ),
             )
             filas = (
                 _fila("Vehiculo",         vehiculo.placa)
                 + _fila("Marca / Modelo", f"{vehiculo.marca.nombre} {vehiculo.modelo}")
                 + _fila("Cliente",        str(vehiculo.cliente))
-                + _fila("Km actuales",    f"{vehiculo.km_estimados_hoy():,} km")
-                + _fila("Km programado",  f"{vehiculo.km_proximo_mantenimiento:,} km" if vehiculo.km_proximo_mantenimiento else "—")
-                + _fila("Fecha prog.",    str(vehiculo.fecha_proximo_mantenimiento) if vehiculo.fecha_proximo_mantenimiento else "—")
-                + _fila("Alerta",         razon, ultimo=True)
+                + _fila("Km actuales",    f"{vehiculo.km_ultimo_servicio:,} km")
+                + _fila("Fecha prog.",    str(vehiculo.fecha_proximo_mantenimiento))
+                + _fila("Dias restantes", str(dias_rest), ultimo=True)
             )
             pie = """
             <p style="margin:20px 0 0;padding:14px 16px;background:#fff8e1;
@@ -290,6 +278,6 @@ def alerta_mantenimiento_vehiculo(sender, instance, **kwargs):
             html = _html_base("#e67e22", SVG_MANT, f"Mantenimiento proximo — {vehiculo.placa}", filas, pie)
             enviar_correo_html(
                 subject     = f"Mantenimiento proximo — {vehiculo.placa}",
-                texto_plano = f"El vehiculo {vehiculo.placa} tiene mantenimiento proximo: {razon}.",
+                texto_plano = f"El vehiculo {vehiculo.placa} tiene mantenimiento proximo: {dias_rest} dias.",
                 html        = html,
             )

@@ -94,6 +94,7 @@ urlpatterns = [
     path('orden_servicio/vehiculo-km/<int:pk>/',     orden.VehiculoKmView.as_view(),              name='vehiculo_km'),
     path('orden_servicio/verificar-compatibilidad/', orden.VerificarCompatibilidadView.as_view(), name='verificar_compatibilidad'),
     path('orden_servicio/productos-compatibles/',     orden.ProductosCompatiblesView.as_view(),    name='productos_compatibles'),
+    path('orden_servicio/<int:pk>/cambiar-estado/',  orden.CambiarEstadoOrdenView.as_view(),      name='cambiar_estado_orden'),
 
     # ── DETALLES DE ORDEN
     path('detalles/',                 detalles.DetalleOrdenListView.as_view(),   name='detalle_orden_list'),

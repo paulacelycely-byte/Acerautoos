@@ -531,10 +531,7 @@
                         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Agregar Producto
                     </button>
-                    <a href="{% url 'app:crear_producto' %}?next=orden" class="btn-prod-nuevo">
-                        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
-                        Nuevo Producto
-                    </a>
+                    
                 </div>
 
                 <div id="productos-hidden"></div>
@@ -673,10 +670,18 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(function(data) {
                 if (data.km !== undefined && data.km > 0 && !ES_EDITAR) {
                     campoKm.value = data.km;
+                    campoKm.setAttribute('readonly', true);
+                    campoKm.style.background = '#f1f5f9';
+                    campoKm.style.color = '#888';
+                    campoKm.style.cursor = 'not-allowed';
                     badgeKm.classList.add('visible'); kmHint.classList.add('visible');
                     kmHintTexto.textContent = 'Km traídos del registro (' + data.km.toLocaleString('es-CO') + ' km).';
                 } else {
                     badgeKm.classList.remove('visible'); kmHint.classList.remove('visible');
+                    campoKm.removeAttribute('readonly');
+                    campoKm.style.background = '';
+                    campoKm.style.color = '';
+                    campoKm.style.cursor = '';
                 }
                 marcaVehiculo = data.marca_id || null;
                 actualizarInfoStrip(data.placa, data.marca_nombre);
@@ -691,7 +696,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if (campoKm) {
         campoKm.addEventListener('input', function () {
-            badgeKm.classList.remove('visible'); kmHint.classList.remove('visible');
+            if (!campoKm.hasAttribute('readonly')) {
+                badgeKm.classList.remove('visible'); kmHint.classList.remove('visible');
+            }
         });
     }
 
