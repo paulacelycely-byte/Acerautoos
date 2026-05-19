@@ -15,30 +15,43 @@
     }
 
     .taller-header {
-        position: relative; background: var(--carbon);
-        border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
-        overflow: hidden; display: flex; align-items: center; justify-content: space-between;
+        background: var(--carbon);
+        border-radius: 16px;
+        padding: 28px 32px;
+        margin-bottom: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        /* Sin ::before ni ::after — sin línea roja ni rayado */
     }
-    .taller-header::before {
-        content: ''; position: absolute; top: 0; right: 0; width: 260px; height: 100%;
-        background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
-    }
-    .taller-header::after {
-        content: ''; position: absolute; left: 0; top: 0;
-        width: 5px; height: 100%; background: var(--rojo); border-radius: 16px 0 0 16px;
-    }
-    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
+
+    .header-left { display: flex; align-items: center; gap: 18px; }
+
     .header-icon-wrap {
-        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.4rem; color: white; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
+        width: 58px;
+        height: 58px;
+        background: transparent;   /* sin fondo rojo */
+        border-radius: 0;
+        box-shadow: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        overflow: hidden;
     }
+
+    .header-icon-wrap img {
+        width: 58px;
+        height: 58px;
+        object-fit: contain;
+    }
+
     .header-titulo {
         font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800;
         color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
     }
     .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
-    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
     .btn-accion {
         font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
         text-transform: uppercase; letter-spacing: .8px; padding: 10px 18px; border-radius: 10px;
@@ -117,12 +130,18 @@
 
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap"><i class="fas fa-truck"></i></div>
+
+            <!-- ICONO: imagen sin fondo, directo sobre el negro -->
+            <div class="header-icon-wrap">
+                <img src="{% static 'imagenes/proveedores.jpeg' %}" alt="Proveedores">
+            </div>
+
             <div>
                 <h1 class="header-titulo">{{ titulo|default:"Proveedores" }}</h1>
                 <div class="header-sub">Directorio de proveedores del taller</div>
             </div>
         </div>
+
         <div class="header-actions">
             <a href="{% url 'app:reporte_proveedores_pdf' %}" class="btn-accion btn-pdf">
                 <i class="fas fa-file-pdf"></i> PDF
