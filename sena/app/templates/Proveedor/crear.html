@@ -19,14 +19,7 @@
         border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
         overflow: hidden; display: flex; align-items: center; justify-content: space-between;
     }
-    .taller-header::before {
-        content: ''; position: absolute; top: 0; right: 0; width: 260px; height: 100%;
-        background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
-    }
-    .taller-header::after {
-        content: ''; position: absolute; left: 0; top: 0;
-        width: 5px; height: 100%; background: var(--rojo); border-radius: 16px 0 0 16px;
-    }
+
     .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
     .header-icon-wrap {
         width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
@@ -114,8 +107,8 @@
 
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap">
-                <i class="fas {% if 'editar' in request.path %}fa-edit{% else %}fa-truck{% endif %}"></i>
+            <div class="header-icon">
+                <img src="{% static 'imagenes/proveidor.jpeg' %}" style="width:56px;height:56px;object-fit:contain;border-radius:12px;" onerror="this.src='{% static 'imagenes/default-provider.png' %}'">
             </div>
             <div>
                 <h1 class="header-titulo">
