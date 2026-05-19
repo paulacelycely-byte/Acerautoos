@@ -8,142 +8,98 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
 <style>
     :root {
-        --rojo:   #d32f2f;
-        --rojo2:  #b71c1c;
-        --carbon: #1a1a1a;
-        --gris:   #f2f2f0;
-        --borde:  #e0ddd8;
-        --texto:  #2a2a2a;
-        --muted:  #888;
+        --acento:      #d32f2f;
+        --acento2:     #b71c1c;
+        --acento-glow: rgba(211,47,47,.25);
+        --acento-ring: rgba(211,47,47,.1);
+        --carbon: #1a1a1a; --gris: #f2f2f0; --borde: #e0ddd8; --texto: #2a2a2a; --muted: #888;
     }
+    .taller-header { position:relative; background:var(--carbon); border-radius:10px; padding:28px 32px; margin-bottom:28px; overflow:hidden; display:flex; align-items:center; justify-content:space-between; }
+    .header-left { display:flex; align-items:center; gap:18px; }
+    .header-titulo { font-family:'Barlow Condensed',sans-serif; font-size:2rem; font-weight:800; color:white; letter-spacing:1px; text-transform:uppercase; line-height:1; margin:0; }
+    .header-sub { font-family:'DM Sans',sans-serif; font-size:.78rem; color:rgba(255,255,255,.45); margin-top:4px; }
+    .header-right { display:flex; align-items:center; gap:12px; }
+    .header-badge { font-family:'Barlow Condensed',sans-serif; font-size:.8rem; font-weight:700; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:1px; }
 
-    .taller-header {
-        position: relative; background: var(--carbon);
-        border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
-        overflow: hidden; display: flex; align-items: center; justify-content: space-between;
-    }
-    .taller-header::before {
-        content: ''; position: absolute; top: 0; right: 0; width: 260px; height: 100%;
-        background: repeating-linear-gradient(-55deg, transparent, transparent 14px, rgba(255,255,255,.03) 14px, rgba(255,255,255,.03) 28px);
-    }
-    .taller-header::after {
-        content: ''; position: absolute; left: 0; top: 0;
-        width: 5px; height: 100%; background: var(--rojo); border-radius: 16px 0 0 16px;
-    }
-    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
-    .header-icon-wrap {
-        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        color: white; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
-    }
-    .header-icon-wrap svg { width: 28px; height: 28px; stroke: white; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-    .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800;
-        color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
-    }
-    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
-    .header-right { display: flex; align-items: center; gap: 12px; position: relative; }
-    .header-badge { font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; font-weight: 700; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1px; }
+    .btn-volver { font-family:'DM Sans',sans-serif; font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; padding:9px 16px; border-radius:10px; border:1.5px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:white!important; text-decoration:none; display:flex; align-items:center; gap:8px; transition:background .2s,border-color .2s; white-space:nowrap; }
+    .btn-volver svg { width:14px; height:14px; stroke:white; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+    .btn-volver:hover { background:rgba(255,255,255,.15); border-color:rgba(255,255,255,.4); color:white!important; }
 
-    .btn-volver {
-        font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px;
-        padding: 9px 16px; border-radius: 10px;
-        border: 1.5px solid rgba(255,255,255,.2);
-        background: rgba(255,255,255,.08);
-        color: white !important; text-decoration: none;
-        display: flex; align-items: center; gap: 8px;
-        transition: background .2s, border-color .2s; white-space: nowrap;
-    }
-    .btn-volver svg { width: 14px; height: 14px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-    .btn-volver:hover { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.4); color: white !important; }
+    .form-card { background:white; border-radius:16px; border:1px solid var(--borde); overflow:hidden; }
+    .form-card-header { background:var(--carbon); padding:14px 24px; display:flex; align-items:center; gap:10px; }
+    .form-card-header svg { width:16px; height:16px; stroke:var(--acento); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+    .form-card-header span { font-family:'Barlow Condensed',sans-serif; font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,.7); }
+    .modo-chip { margin-left:auto; font-family:'Barlow Condensed',sans-serif; font-size:.7rem; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--acento); color:white; opacity:.85; }
+    .form-card-body { padding:32px; }
 
-    .form-card { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
-    .form-card-header { background: var(--carbon); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
-    .form-card-header svg { width: 16px; height: 16px; stroke: var(--rojo); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-    .form-card-header span { font-family: 'Barlow Condensed', sans-serif; font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.7); }
-    .form-card-body { padding: 32px; }
+    .field-group { margin-bottom:22px; }
+    .field-label { font-family:'DM Sans',sans-serif; font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.9px; color:var(--muted); display:flex; align-items:center; gap:6px; margin-bottom:7px; }
+    .field-inner { position:relative; }
+    .field-inner .field-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:#bbb; pointer-events:none; transition:color .2s; display:flex; align-items:center; justify-content:center; }
+    .field-inner .field-icon svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .field-inner.textarea-inner .field-icon { top:14px; transform:none; }
 
-    .field-group { margin-bottom: 22px; }
-    .field-label { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .9px; color: var(--muted); display: block; margin-bottom: 7px; }
-    .field-inner { position: relative; }
-    .field-inner .field-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #bbb; font-size: .85rem; pointer-events: none; transition: color .2s; z-index: 1; }
-    .field-inner input, .field-inner select {
-        width: 100%; padding: 12px 14px 12px 40px;
-        border: 1.5px solid var(--borde); border-radius: 10px;
-        font-family: 'DM Sans', sans-serif; font-size: .9rem; color: var(--texto);
-        background: var(--gris); outline: none;
-        transition: border-color .2s, background .2s, box-shadow .2s;
-        -webkit-appearance: none; appearance: none;
-    }
-    .field-inner input:focus, .field-inner select:focus { border-color: var(--rojo); background: white; box-shadow: 0 0 0 3px rgba(211,47,47,.1); }
-    .field-inner:focus-within .field-icon { color: var(--rojo); }
+    .form-field { width:100%; padding:12px 14px 12px 40px; border:1.5px solid var(--borde); border-radius:10px; font-family:'DM Sans',sans-serif; font-size:.9rem; color:var(--texto); background:var(--gris); outline:none; transition:border-color .2s,background .2s,box-shadow .2s; -webkit-appearance:none; appearance:none; }
+    .form-field:focus { border-color:var(--acento); background:white; box-shadow:0 0 0 3px var(--acento-ring); }
+    .field-inner:focus-within .field-icon { color:var(--acento); }
+    textarea.form-field { min-height:100px; resize:vertical; padding-top:12px; }
+
+    .field-with-btn { display:flex; }
+    .field-with-btn .field-inner { flex:1; }
+    .field-with-btn .form-field { border-radius:10px 0 0 10px; }
+    .btn-add-inline { background:var(--acento); color:white; border:none; border-radius:0 10px 10px 0; padding:0 14px; cursor:pointer; transition:background .2s; display:flex; align-items:center; justify-content:center; text-decoration:none; width:42px; }
+    .btn-add-inline svg { width:16px; height:16px; stroke:white; fill:none; stroke-width:2.5; stroke-linecap:round; }
+    .btn-add-inline:hover { background:var(--acento2); color:white; }
 
     /* Select2 */
-    .select2-container { width: 100% !important; }
-    .select2-container--default .select2-selection--single {
-        width: 100%; height: auto; padding: 10px 14px 10px 40px;
-        border: 1.5px solid var(--borde); border-radius: 10px;
-        font-family: 'DM Sans', sans-serif; font-size: .9rem; color: var(--texto);
-        background: var(--gris); display: flex; align-items: center;
-    }
+    .select2-container { width:100%!important; }
+    .select2-container--default .select2-selection--single { width:100%; height:auto; padding:10px 14px 10px 40px; border:1.5px solid var(--borde); border-radius:10px; font-family:'DM Sans',sans-serif; font-size:.9rem; color:var(--texto); background:var(--gris); display:flex; align-items:center; }
     .select2-container--default.select2-container--open .select2-selection--single,
-    .select2-container--default.select2-container--focus .select2-selection--single { border-color: var(--rojo); background: white; box-shadow: 0 0 0 3px rgba(211,47,47,.1); }
-    .select2-container--default .select2-selection--single .select2-selection__rendered { color: var(--texto); line-height: normal; padding: 0; display: flex; align-items: center; gap: 8px; }
-    .select2-container--default .select2-selection--single .select2-selection__arrow { top: 50%; transform: translateY(-50%); right: 10px; height: auto; }
-    .select2-dropdown { border: 1.5px solid var(--borde); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.1); font-family: 'DM Sans', sans-serif; overflow: hidden; }
-    .select2-container--default .select2-search--dropdown .select2-search__field { border: 1.5px solid var(--borde); border-radius: 8px; padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: .85rem; outline: none; }
-    .select2-container--default .select2-search--dropdown .select2-search__field:focus { border-color: var(--rojo); }
-    .select2-container--default .select2-results__option { padding: 9px 14px; font-size: .88rem; display: flex; align-items: center; gap: 10px; }
-    .select2-container--default .select2-results__option--highlighted[aria-selected] { background: var(--rojo); color: white; }
-    .select2-container--default .select2-results__option[aria-selected=true] { background: #fff5f5; color: var(--rojo); font-weight: 600; }
-    .select2-pais-option { display: flex; align-items: center; gap: 10px; }
-    .select2-pais-option .fi { font-size: 1.1rem; flex-shrink: 0; border-radius: 2px; }
+    .select2-container--default.select2-container--focus .select2-selection--single { border-color:var(--acento); background:white; box-shadow:0 0 0 3px var(--acento-ring); }
+    .select2-container--default .select2-selection--single .select2-selection__rendered { color:var(--texto); line-height:normal; padding:0; display:flex; align-items:center; gap:8px; }
+    .select2-container--default .select2-selection--single .select2-selection__arrow { top:50%; transform:translateY(-50%); right:10px; height:auto; }
+    .select2-dropdown { border:1.5px solid var(--borde); border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.1); font-family:'DM Sans',sans-serif; overflow:hidden; }
+    .select2-container--default .select2-search--dropdown .select2-search__field { border:1.5px solid var(--borde); border-radius:8px; padding:8px 12px; font-family:'DM Sans',sans-serif; font-size:.85rem; outline:none; }
+    .select2-container--default .select2-search--dropdown .select2-search__field:focus { border-color:var(--acento); }
+    .select2-container--default .select2-results__option { padding:9px 14px; font-size:.88rem; display:flex; align-items:center; gap:10px; }
+    .select2-container--default .select2-results__option--highlighted[aria-selected] { background:var(--acento); color:white; }
+    .select2-container--default .select2-results__option[aria-selected=true] { background:#fff5f5; color:var(--acento); font-weight:600; }
+    .select2-pais-option { display:flex; align-items:center; gap:10px; }
+    .select2-pais-option .fi { font-size:1.1rem; flex-shrink:0; border-radius:2px; }
 
     /* Switch */
-    .switch-wrap { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--gris); border: 1.5px solid var(--borde); border-radius: 10px; cursor: pointer; transition: border-color .2s; }
-    .switch-wrap:has(input:checked) { border-color: var(--rojo); background: #fff5f5; }
-    .switch-wrap input[type="checkbox"] { display: none; }
-    .switch-toggle { width: 44px; height: 24px; background: var(--borde); border-radius: 24px; position: relative; transition: background .2s; flex-shrink: 0; }
-    .switch-toggle::after { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: transform .2s; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
-    .switch-wrap:has(input:checked) .switch-toggle { background: var(--rojo); }
-    .switch-wrap:has(input:checked) .switch-toggle::after { transform: translateX(20px); }
-    .switch-label { font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; color: var(--texto); }
+    .switch-wrap { display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--gris); border:1.5px solid var(--borde); border-radius:10px; cursor:pointer; transition:border-color .2s; }
+    .switch-wrap:has(input:checked) { border-color:var(--acento); background:#fff5f5; }
+    .switch-wrap input[type="checkbox"] { display:none; }
+    .switch-toggle { width:44px; height:24px; background:var(--borde); border-radius:24px; position:relative; transition:background .2s; flex-shrink:0; }
+    .switch-toggle::after { content:''; position:absolute; width:18px; height:18px; background:white; border-radius:50%; top:3px; left:3px; transition:transform .2s; box-shadow:0 1px 4px rgba(0,0,0,.2); }
+    .switch-wrap:has(input:checked) .switch-toggle { background:var(--acento); }
+    .switch-wrap:has(input:checked) .switch-toggle::after { transform:translateX(20px); }
+    .switch-label { font-family:'DM Sans',sans-serif; font-size:.85rem; font-weight:600; color:var(--texto); }
 
-    .field-error { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: var(--rojo); margin-top: 5px; display: flex; align-items: center; gap: 5px; }
+    .field-error { font-family:'DM Sans',sans-serif; font-size:.78rem; color:#d32f2f; margin-top:5px; display:flex; align-items:center; gap:5px; }
 
-    .form-card-footer { background: var(--gris); border-top: 1px solid var(--borde); padding: 20px 32px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
-    .btn-cancelar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; padding: 10px 22px; border-radius: 10px; border: 1.5px solid var(--borde); background: white; color: var(--muted); text-decoration: none; transition: .2s; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-    .btn-cancelar svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-    .btn-cancelar:hover { background: var(--borde); color: var(--texto); }
-    .btn-guardar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 11px 28px; border-radius: 10px; border: none; background: var(--rojo); color: white; cursor: pointer; box-shadow: 0 4px 14px rgba(211,47,47,.35); transition: .2s; display: flex; align-items: center; gap: 8px; }
-    .btn-guardar svg { width: 15px; height: 15px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-    .btn-guardar:hover { background: var(--rojo2); transform: translateY(-1px); }
+    .form-card-footer { background:var(--gris); border-top:1px solid var(--borde); padding:20px 32px; display:flex; align-items:center; justify-content:flex-end; gap:12px; }
+    .btn-cancelar { font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:600; text-transform:uppercase; letter-spacing:.5px; padding:10px 22px; border-radius:10px; border:1.5px solid var(--borde); background:white; color:var(--muted); text-decoration:none; transition:.2s; cursor:pointer; display:flex; align-items:center; gap:8px; }
+    .btn-cancelar svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+    .btn-cancelar:hover { background:var(--borde); color:var(--texto); }
+    .btn-guardar { font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; padding:11px 28px; border-radius:10px; border:none; background:var(--acento); color:white; cursor:pointer; box-shadow:0 4px 14px var(--acento-glow); transition:.2s; display:flex; align-items:center; gap:8px; }
+    .btn-guardar svg { width:15px; height:15px; stroke:white; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+    .btn-guardar:hover { background:var(--acento2); transform:translateY(-1px); }
 
-    /* ── Logo upload personalizado ── */
-    .img-upload-wrap {
-        border: 2px dashed var(--borde); border-radius: 12px;
-        padding: 16px; background: var(--gris);
-        transition: border-color .2s; cursor: pointer;
-    }
-    .img-upload-wrap:hover { border-color: var(--rojo); }
-    .img-upload-wrap input[type="file"] { display: none; }
-    .img-upload-btn {
-        display: inline-flex; align-items: center; gap: 8px;
-        background: var(--carbon); color: white;
-        padding: 9px 18px; border-radius: 8px;
-        font-family: 'DM Sans', sans-serif; font-size: .8rem; font-weight: 600;
-        cursor: pointer; transition: background .2s;
-        text-transform: uppercase; letter-spacing: .5px;
-    }
-    .img-upload-btn:hover { background: var(--rojo); }
-    .img-upload-hint { font-family: 'DM Sans', sans-serif; font-size: .75rem; color: var(--muted); margin-top: 6px; }
-    .img-preview-box { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
-    .img-preview-box img { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; border: 2px solid var(--borde); background: white; }
-    .img-preview-info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
-    .img-preview-info strong { color: var(--texto); display: block; font-size: .85rem; margin-bottom: 4px; }
-    .img-clear-label { display: inline-flex; align-items: center; gap: 6px; font-family: 'DM Sans', sans-serif; font-size: .78rem; color: var(--rojo); font-weight: 600; cursor: pointer; margin-top: 6px; }
-    .img-clear-label input { accent-color: var(--rojo); width: 14px; height: 14px; }
+    /* Logo upload */
+    .img-upload-wrap { border:2px dashed var(--borde); border-radius:12px; padding:16px; background:var(--gris); transition:border-color .2s; cursor:pointer; }
+    .img-upload-wrap:hover { border-color:var(--acento); }
+    .img-upload-wrap input[type="file"] { display:none; }
+    .img-upload-btn { display:inline-flex; align-items:center; gap:8px; background:var(--carbon); color:white; padding:9px 18px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:.8rem; font-weight:600; cursor:pointer; transition:background .2s; text-transform:uppercase; letter-spacing:.5px; }
+    .img-upload-btn:hover { background:var(--acento); }
+    .img-upload-hint { font-family:'DM Sans',sans-serif; font-size:.75rem; color:var(--muted); margin-top:6px; }
+    .img-preview-box { display:flex; align-items:center; gap:14px; margin-top:12px; }
+    .img-preview-box img { width:80px; height:80px; object-fit:cover; border-radius:10px; border:2px solid var(--borde); background:white; }
+    .img-preview-info { font-family:'DM Sans',sans-serif; font-size:.8rem; color:var(--muted); }
+    .img-preview-info strong { color:var(--texto); display:block; font-size:.85rem; margin-bottom:4px; }
+    .img-clear-label { display:inline-flex; align-items:center; gap:6px; font-family:'DM Sans',sans-serif; font-size:.78rem; color:var(--acento); font-weight:600; cursor:pointer; margin-top:6px; }
+    .img-clear-label input { accent-color:var(--acento); width:14px; height:14px; }
 </style>
 {% endblock %}
 
@@ -152,15 +108,12 @@
 
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap">
-                <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-            </div>
+            <img src="{% static 'imagenes/marcaaas.jpeg' %}" style="width:56px;height:56px;object-fit:contain;border-radius:12px;">
             <div>
                 <h1 class="header-titulo">{{ titulo }}</h1>
                 <div class="header-sub">Información de la marca de vehículo o repuesto</div>
             </div>
         </div>
-
         <div class="header-right">
             {% if next == 'vehiculos' %}
             <a href="{% url 'app:crear_vehiculo' %}" class="btn-volver">
@@ -183,8 +136,9 @@
 
         <div class="form-card">
             <div class="form-card-header">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
                 <span>Información de la Marca</span>
+                <span class="modo-chip">+ Nueva</span>
             </div>
 
             <div class="form-card-body">
@@ -197,7 +151,6 @@
                             <label class="field-label">{{ field.label }}</label>
 
                             {% if field.name == 'logo' %}
-                                {# ── Logo upload personalizado — sin links feos ── #}
                                 <div class="img-upload-wrap" onclick="document.getElementById('id_logo').click()">
                                     <input type="file" name="logo" id="id_logo"
                                            accept="image/jpeg,image/png,image/webp"
@@ -208,16 +161,13 @@
                                     </label>
                                     <div class="img-upload-hint">JPG, PNG o WEBP · Máx. 2 MB</div>
                                 </div>
-
                                 <div class="img-preview-box" id="previewBox"
                                      style="{% if not form.instance.logo %}display:none;{% endif %}">
                                     <img id="previewImg"
                                          src="{% if form.instance.logo %}{{ form.instance.logo.url }}{% endif %}"
                                          alt="Vista previa logo">
                                     <div class="img-preview-info">
-                                        <strong id="previewNombre">
-                                            {% if form.instance.logo %}Logo actual{% endif %}
-                                        </strong>
+                                        <strong id="previewNombre">{% if form.instance.logo %}Logo actual{% endif %}</strong>
                                         <span id="previewTam"></span>
                                         {% if form.instance.logo %}
                                         <label class="img-clear-label">
@@ -241,15 +191,15 @@
                                     <span class="field-icon">
                                         <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
                                     </span>
-                                    {{ field|add_class:'form-field'|attr:'autocomplete:off' }}
+                                    {{ field|add_class:'form-field'|attr:'autocomplete:off'|attr:'placeholder:Ej: Toyota, Bosch...' }}
                                 </div>
 
                             {% elif field.name == 'descripcion' %}
-                                <div class="field-inner">
+                                <div class="field-inner textarea-inner">
                                     <span class="field-icon">
                                         <svg viewBox="0 0 24 24"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
                                     </span>
-                                    {{ field|add_class:'form-field'|attr:'autocomplete:off' }}
+                                    {{ field|add_class:'form-field'|attr:'autocomplete:off'|attr:'rows:3' }}
                                 </div>
 
                             {% else %}
@@ -329,20 +279,13 @@ function previsualizarLogo(input) {
     const previewImg = document.getElementById('previewImg');
     const previewNom = document.getElementById('previewNombre');
     const previewTam = document.getElementById('previewTam');
-
     if (input.files && input.files[0]) {
         const file = input.files[0];
-
         if (file.size > 2 * 1024 * 1024) {
-            Swal.fire({
-                icon: 'error', title: 'Imagen muy grande',
-                text: 'El logo no puede superar los 2 MB.',
-                confirmButtonColor: '#d32f2f',
-            });
+            Swal.fire({ icon:'error', title:'Imagen muy grande', text:'El logo no puede superar los 2 MB.', confirmButtonColor:'#d32f2f' });
             input.value = '';
             return;
         }
-
         const reader = new FileReader();
         reader.onload = e => {
             previewImg.src = e.target.result;
@@ -364,18 +307,6 @@ $(document).ready(function () {
         templateSelection: formatPais,
         width: '100%',
         language: { noResults: function() { return 'No se encontró el país'; } }
-    });
-
-    document.querySelectorAll('.form-field').forEach(el => {
-        if (el.type === 'file' || el.type === 'checkbox') return;
-        el.style.width='100%'; el.style.padding='12px 14px 12px 40px';
-        el.style.border='1.5px solid #e0ddd8'; el.style.borderRadius='10px';
-        el.style.fontFamily="'DM Sans', sans-serif"; el.style.fontSize='.9rem';
-        el.style.color='#2a2a2a'; el.style.background='#f2f2f0';
-        el.style.outline='none'; el.style.transition='border-color .2s, box-shadow .2s';
-        el.style.webkitAppearance='none'; el.style.appearance='none';
-        el.addEventListener('focus', () => { el.style.borderColor='#d32f2f'; el.style.background='white'; el.style.boxShadow='0 0 0 3px rgba(211,47,47,.1)'; });
-        el.addEventListener('blur',  () => { el.style.borderColor='#e0ddd8'; el.style.background='#f2f2f0'; el.style.boxShadow='none'; });
     });
 
     $('#formMarca').on('submit', function (e) {

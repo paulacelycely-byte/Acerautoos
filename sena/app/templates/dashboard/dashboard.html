@@ -68,7 +68,7 @@
 }
 .dc-corner { position: absolute; top: 0; right: 0; width: 52px; height: 52px; border-top: 2px solid var(--accent, #d32f2f); border-right: 2px solid var(--accent, #d32f2f); border-radius: 0 14px 0 0; opacity: 0.35; transition: opacity .25s, width .25s, height .25s; z-index: 1; }
 .dc:hover .dc-corner { opacity: 0.85; width: 62px; height: 62px; }
-/* ✅ ACTUALIZADO PARA SVG - MÁS VISIBLE */
+/* ACTUALIZADO PARA SVG - MÁS VISIBLE */
 .dc-bg-icon { position: absolute; right: 14px; bottom: 12px; width: 54px; height: 54px; opacity: 0.50; pointer-events: none; transition: opacity .25s, transform .25s; z-index: 1; filter: drop-shadow(0 0 4px rgba(255,255,255,0.1)); }
 .dc:hover .dc-bg-icon { opacity: 0.75; transform: scale(1.1) rotate(-5deg); filter: drop-shadow(0 0 8px rgba(255,255,255,0.2)); }
 .dc-inner { position: relative; z-index: 2; height: 100%; padding: 1rem 1.2rem 1rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between; }
@@ -122,7 +122,7 @@
   <!-- 01 Recepción -->
   <div class="sdiv"><span class="sdiv-num">01</span><span class="sdiv-label">Recepción de Clientes y Vehículos</span><div class="sdiv-line"></div></div>
   <div class="row g-3">
-    <!-- ✅ CLIENTES - CON SVG DE USUARIO -->
+    <!--  CLIENTES - CON SVG DE USUARIO -->
     <div class="col-xl-3 col-md-6"><a href="{% url 'app:listar_clientes' %}" class="dc" style="--accent:#3b82f6;"><div class="dc-corner"></div><img class="dc-bg-icon" src="{% static 'imagenes/usurioss.jpeg' %}" alt="Clientes" style="object-fit:contain;"><div class="dc-inner"><span class="dc-step">PASO 01</span><div><h4 class="dc-title">Clientes</h4><p class="dc-sub">Propietarios de vehículos del taller</p></div><span class="dc-cta">Gestionar →</span></div></a></div>
     <div class="col-xl-3 col-md-6"><a href="{% url 'app:listar_vehiculos' %}" class="dc" style="--accent:#3b82f6;"><div class="dc-corner"></div><img class="dc-bg-icon" src="{% static 'imagenes/carro.jpeg' %}" alt="Vehículos" style="object-fit:contain;"><div class="dc-inner"><span class="dc-step">PASO 02</span><div><h4 class="dc-title">Vehículos</h4><p class="dc-sub">Vehículos registrados para servicio</p></div><span class="dc-cta">Gestionar →</span></div></a></div>
     <div class="col-xl-3 col-md-6"><a href="{% url 'app:orden_servicio_list' %}" class="dc" style="--accent:#3b82f6;"><div class="dc-corner"></div><img class="dc-bg-icon" src="{% static 'imagenes/servicios.jpeg' %}" alt="Órdenes" style="object-fit:contain;"><div class="dc-inner"><span class="dc-step">PASO 03</span><div><h4 class="dc-title">Órdenes de Servicio</h4><p class="dc-sub">Órdenes de cambio de aceite</p></div><span class="dc-cta">Ver Órdenes →</span></div></a></div>
