@@ -7,7 +7,7 @@ from django.views import View
 from django.db.models import ProtectedError
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # ← Mixins añadidos
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin 
 
 from app.models import Marca
 from app.forms import MarcaForm
@@ -16,12 +16,11 @@ from app.forms import MarcaForm
 # ── MIXIN DE PROTECCIÓN ───────────────────────────────────
 class SoloAdminMixin(UserPassesTestMixin):
     def test_func(self):
-        # Solo permite el acceso si el cargo es ADMIN o es superusuario
         return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
 
     def handle_no_permission(self):
         messages.error(self.request, "No tienes permisos de administrador para gestionar las marcas.")
-        return redirect('app:dashboard') # Redirige al dashboard para evitar bucles
+        return redirect('app:dashboard') 
 
 
 # ================================
@@ -44,7 +43,7 @@ class MarcaListView(LoginRequiredMixin, SoloAdminMixin, ListView):
 
 
 # ================================
-# CREAR (Solo Admin)
+# CREAR (Solo Admin) - Ahora con color Azul
 # ================================
 class MarcaCreateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, CreateView):
     model = Marca
@@ -64,6 +63,7 @@ class MarcaCreateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, C
         context['titulo']    = 'Registro de Marca'
         context['listar_url']= reverse_lazy('app:listar_marca')
         context['next']      = self.request.GET.get('next', '')
+        context['btn_color'] = 'primary'  # ← 'primary' en Bootstrap es Azul
         return context
 
     def form_valid(self, form):
@@ -78,7 +78,7 @@ class MarcaCreateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, C
 
 
 # ================================
-# EDITAR (Solo Admin)
+# EDITAR (Solo Admin) - Ahora con color Azul
 # ================================
 class MarcaUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, UpdateView):
     model = Marca
@@ -98,6 +98,7 @@ class MarcaUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, U
         context['titulo']    = 'Editar Marca'
         context['listar_url']= reverse_lazy('app:listar_marca')
         context['next']      = self.request.GET.get('next', '')
+        context['btn_color'] = 'primary'  # ← 'primary' en Bootstrap es Azul
         return context
 
     def form_valid(self, form):
@@ -151,8 +152,6 @@ class MarcaDeleteView(LoginRequiredMixin, SoloAdminMixin, View):
 # ================================
 @require_POST
 def crear_marca_ajax(request):
-    # Nota: AJAX se mantiene sin SoloAdminMixin porque se usa al registrar vehículos, 
-    # pero requiere Login para mayor seguridad.
     if not request.user.is_authenticated:
         return JsonResponse({'success': False, 'error': 'Sesión expirada.'})
 
