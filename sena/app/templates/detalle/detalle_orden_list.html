@@ -19,13 +19,12 @@
     .header-titulo { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0; }
     .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
 
-    /* Stats estilo módulo productos — todas negro */
     .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
     @media(max-width:768px){ .stats-grid { grid-template-columns: repeat(2,1fr); } }
     .stat-card { background: var(--carbon); border-radius: 16px; border: none; padding: 22px 24px; display: flex; align-items: center; gap: 18px; transition: transform .2s, box-shadow .2s; overflow: hidden; }
     .stat-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,.25); }
-    .stat-icon { width: 50px; height: 50px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.1); }
-    .stat-icon svg { width: 24px; height: 24px; stroke: white; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .stat-icon { width: 50px; height: 50px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: transparent; }
+    .stat-icon img { width: 32px; height: 32px; object-fit: contain; }
     .stat-num { font-family: 'Bebas Neue', 'Barlow Condensed', sans-serif; font-size: 2.8rem; font-weight: 400; color: white; line-height: 1; letter-spacing: 1px; }
     .stat-label { font-family: 'DM Sans', sans-serif; font-size: .63rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,.55); margin-top: 2px; }
 
@@ -80,42 +79,51 @@
     </div>
 
     <div class="stats-grid">
+
+        <!-- Registros totales -->
         <div class="stat-card">
             <div class="stat-icon">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <img src="{% static 'imagenes/registro.jpeg' %}" alt="Registros">
             </div>
             <div>
                 <div class="stat-num">{{ total_registros }}</div>
                 <div class="stat-label">Registros totales</div>
             </div>
         </div>
+
+        <!-- Órdenes con productos -->
         <div class="stat-card">
             <div class="stat-icon">
-                <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                <img src="{% static 'imagenes/ordeness.jpeg' %}" alt="Órdenes">
             </div>
             <div>
                 <div class="stat-num">{{ total_ordenes }}</div>
                 <div class="stat-label">Órdenes con productos</div>
             </div>
         </div>
+
+        <!-- Unidades usadas -->
         <div class="stat-card">
             <div class="stat-icon">
-                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                <img src="{% static 'imagenes/unidades.jpeg' %}" alt="Unidades">
             </div>
             <div>
                 <div class="stat-num">{{ total_unidades }}</div>
                 <div class="stat-label">Unidades usadas</div>
             </div>
         </div>
+
+        <!-- Total en productos -->
         <div class="stat-card">
             <div class="stat-icon">
-                <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <img src="{% static 'imagenes/total.jpeg' %}" alt="Total">
             </div>
             <div>
                 <div class="stat-num">${{ total_general|floatformat:0 }}</div>
                 <div class="stat-label">Total en productos</div>
             </div>
         </div>
+
     </div>
 
     <div class="tabla-wrap">

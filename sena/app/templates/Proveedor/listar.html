@@ -7,6 +7,8 @@
     :root {
         --rojo:   #d32f2f;
         --rojo2:  #b71c1c;
+        --azul:   #2563eb;
+        --azul2:  #1d4ed8;
         --carbon: #1a1a1a;
         --gris:   #f2f2f0;
         --borde:  #e0ddd8;
@@ -22,7 +24,6 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        /* Sin ::before ni ::after — sin línea roja ni rayado */
     }
 
     .header-left { display: flex; align-items: center; gap: 18px; }
@@ -30,7 +31,7 @@
     .header-icon-wrap {
         width: 58px;
         height: 58px;
-        background: transparent;   /* sin fondo rojo */
+        background: transparent;
         border-radius: 0;
         box-shadow: none;
         display: flex;
@@ -47,79 +48,204 @@
     }
 
     .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800;
-        color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 2rem;
+        font-weight: 800;
+        color: white;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        line-height: 1;
+        margin: 0;
     }
-    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
+    .header-sub {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem;
+        color: rgba(255,255,255,.45);
+        margin-top: 4px;
+    }
     .header-actions { display: flex; align-items: center; gap: 10px; }
     .btn-accion {
-        font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px; padding: 10px 18px; border-radius: 10px;
-        display: flex; align-items: center; gap: 8px; border: none; cursor: pointer;
-        text-decoration: none; transition: transform .2s, box-shadow .2s;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .8px;
+        padding: 10px 18px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        transition: transform .2s, box-shadow .2s;
     }
     .btn-accion:hover { transform: translateY(-2px); }
     .btn-pdf   { background: #c0392b; color: white !important; }
     .btn-excel { background: #1e7e45; color: white !important; }
-    .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
-    .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
+    .btn-nuevo {
+        background: var(--rojo);
+        color: white !important;
+        box-shadow: 0 4px 16px rgba(211,47,47,.4);
+    }
+    .btn-nuevo:hover {
+        box-shadow: 0 6px 20px rgba(211,47,47,.5);
+        color: white !important;
+    }
 
-    .tabla-wrap { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
+    .tabla-wrap {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid var(--borde);
+        overflow: hidden;
+    }
 
     #tabla_pro {
-        font-family: 'DM Sans', sans-serif; font-size: .875rem;
-        border-collapse: collapse; width: 100%;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .875rem;
+        border-collapse: collapse;
+        width: 100%;
     }
-    #tabla_pro thead tr { background: var(--gris); border-bottom: 2px solid var(--borde); }
+    #tabla_pro thead tr {
+        background: var(--gris);
+        border-bottom: 2px solid var(--borde);
+    }
     #tabla_pro thead th {
-        font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 14px 16px; border: none;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: .78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--muted);
+        padding: 14px 16px;
+        border: none;
     }
-    #tabla_pro tbody tr { border-bottom: 1px solid var(--borde); transition: background .15s; }
+    #tabla_pro tbody tr {
+        border-bottom: 1px solid var(--borde);
+        transition: background .15s;
+    }
     #tabla_pro tbody tr:hover { background: #fafaf8; }
     #tabla_pro tbody tr:last-child { border-bottom: none; }
-    #tabla_pro tbody td { padding: 13px 16px; color: var(--texto) !important; vertical-align: middle; border: none; }
+    #tabla_pro tbody td {
+        padding: 13px 16px;
+        color: var(--texto) !important;
+        vertical-align: middle;
+        border: none;
+    }
 
     .proveedor-avatar {
-        width: 38px; height: 38px; background: var(--carbon); color: white;
-        border-radius: 10px; display: flex; align-items: center; justify-content: center;
-        font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 800; flex-shrink: 0;
+        width: 38px;
+        height: 38px;
+        background: var(--carbon);
+        color: white;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 1rem;
+        font-weight: 800;
+        flex-shrink: 0;
     }
-    .proveedor-nombre { font-weight: 600; color: var(--carbon); font-size: .9rem; }
+    .proveedor-nombre {
+        font-weight: 600;
+        color: var(--carbon);
+        font-size: .9rem;
+    }
 
     .nit-badge {
-        font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 600;
-        background: var(--gris); color: var(--texto); border: 1px solid var(--borde);
-        border-radius: 6px; padding: 3px 10px; display: inline-block; letter-spacing: .3px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem;
+        font-weight: 600;
+        background: var(--gris);
+        color: var(--texto);
+        border: 1px solid var(--borde);
+        border-radius: 6px;
+        padding: 3px 10px;
+        display: inline-block;
+        letter-spacing: .3px;
     }
 
+    /* ══════════ BOTONES DE FILA ══════════ */
     .btn-fila {
-        width: 32px; height: 32px; border-radius: 8px;
-        display: inline-flex; align-items: center; justify-content: center;
-        border: none; cursor: pointer; transition: .2s; font-size: .8rem;
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        cursor: pointer;
+        transition: transform .2s, box-shadow .2s;
+        font-size: .8rem;
+        text-decoration: none;
     }
-    .btn-fila:hover { transform: translateY(-2px); }
-    .btn-edit { background: #f39c12; color: white; }
-    .btn-view { background: #0ea5e9; color: white; }
-    .btn-del  { background: var(--rojo); color: white; }
+    .btn-fila:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    }
 
+    /* Editar — AZUL como imagen 2 */
+    .btn-edit {
+        background: var(--azul);
+        color: white !important;
+        box-shadow: 0 2px 8px rgba(37,99,235,.25);
+    }
+    .btn-edit:hover {
+        background: var(--azul2);
+        box-shadow: 0 4px 14px rgba(37,99,235,.4);
+    }
+
+    .btn-view { background: var(--carbon); color: white !important; }
+    .btn-view:hover { background: #333; box-shadow: 0 4px 12px rgba(0,0,0,.35); }
+
+    .btn-del  { background: var(--rojo); color: white !important; }
+    .btn-del:hover { background: var(--rojo2); box-shadow: 0 4px 12px rgba(211,47,47,.35); }
+
+    /* ══════════ DATATABLES ══════════ */
     .dataTables_wrapper { padding: 16px 20px; }
     .dataTables_filter input {
-        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
-        padding: 6px 12px !important; font-family: 'DM Sans', sans-serif !important;
-        font-size: .85rem !important; outline: none !important; transition: border-color .2s;
+        border: 1.5px solid var(--borde) !important;
+        border-radius: 8px !important;
+        padding: 6px 12px !important;
+        font-family: 'DM Sans', sans-serif !important;
+        font-size: .85rem !important;
+        outline: none !important;
+        transition: border-color .2s;
     }
-    .dataTables_filter input:focus { border-color: var(--rojo) !important; }
-    .dataTables_filter label, .dataTables_length label,
-    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
+    .dataTables_filter input:focus { border-color: var(--azul) !important; }
+    .dataTables_filter label,
+    .dataTables_length label,
+    .dataTables_info {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .8rem;
+        color: var(--muted);
+    }
     .dataTables_length select {
-        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
-        padding: 4px 8px !important; appearance: none !important;
-        background-image: none !important; background: white !important;
+        border: 1.5px solid var(--borde) !important;
+        border-radius: 8px !important;
+        padding: 4px 8px !important;
+        appearance: none !important;
+        background: white !important;
     }
-    .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
-    .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
-    .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
+    .page-item.active .page-link {
+        background: var(--azul) !important;
+        border-color: var(--azul) !important;
+        color: white !important;
+        font-weight: 700 !important;
+    }
+    .page-link {
+        color: var(--azul) !important;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .85rem;
+        font-weight: 600;
+    }
+    .paginate_button {
+        border-radius: 7px !important;
+        font-family: 'DM Sans', sans-serif !important;
+        font-size: .82rem !important;
+        font-weight: 600 !important;
+    }
     .paginate_button.disabled { display: inline-block !important; opacity: .4; }
     .dataTables_paginate { display: block !important; }
 </style>
@@ -128,14 +254,12 @@
 {% block contenido %}
 <div class="container-fluid py-2">
 
+    <!-- HEADER -->
     <div class="taller-header">
         <div class="header-left">
-
-            <!-- ICONO: imagen sin fondo, directo sobre el negro -->
             <div class="header-icon-wrap">
                 <img src="{% static 'imagenes/proveedores.jpeg' %}" alt="Proveedores">
             </div>
-
             <div>
                 <h1 class="header-titulo">{{ titulo|default:"Proveedores" }}</h1>
                 <div class="header-sub">Directorio de proveedores del taller</div>
@@ -155,6 +279,7 @@
         </div>
     </div>
 
+    <!-- TABLA -->
     <div class="tabla-wrap">
         <div class="table-responsive">
             <table id="tabla_pro" style="width:100%">
@@ -171,7 +296,9 @@
                 <tbody>
                     {% for p in object_list %}
                     <tr>
-                        <td class="text-center" style="font-weight:700; color:var(--muted); font-size:.8rem;">{{ forloop.counter }}</td>
+                        <td class="text-center" style="font-weight:700; color:var(--muted); font-size:.8rem;">
+                            {{ forloop.counter }}
+                        </td>
                         <td>
                             <div class="d-flex align-items-center" style="gap:10px;">
                                 <div class="proveedor-avatar">{{ p.nombre|first|upper }}</div>
@@ -180,17 +307,25 @@
                         </td>
                         <td><span class="nit-badge">{{ p.nit }}</span></td>
                         <td style="font-weight:600; color:var(--carbon);">{{ p.telefono }}</td>
-                        <td style="color:var(--muted); font-size:.82rem;">{{ p.direccion|default:"No registrada" }}</td>
+                        <td style="color:var(--muted); font-size:.82rem;">
+                            {{ p.direccion|default:"No registrada" }}
+                        </td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center" style="gap:6px;">
-                                <a href="{% url 'app:editar_proveedor' p.id %}" class="btn-fila btn-edit" title="Editar">
-                                    <i class="fas fa-pen"></i>
+                                <!-- BOTÓN EDITAR — azul, ícono pen-to-square -->
+                                <a href="{% url 'app:editar_proveedor' p.id %}"
+                                   class="btn-fila btn-edit"
+                                   title="Editar">
+                                    <i class="fas fa-pen-to-square"></i>
                                 </a>
-                                <button class="btn-fila btn-view" title="Ver detalle"
-                                    onclick="verDetalle('{{ p.nombre }}','{{ p.nit }}','{{ p.telefono }}','{{ p.direccion|default:''}}')">
+                                <button class="btn-fila btn-view"
+                                        title="Ver detalle"
+                                        onclick="verDetalle('{{ p.nombre }}','{{ p.nit }}','{{ p.telefono }}','{{ p.direccion|default:'' }}')">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <a href="{% url 'app:eliminar_proveedor' p.id %}" class="btn-fila btn-del" title="Eliminar">
+                                <a href="{% url 'app:eliminar_proveedor' p.id %}"
+                                   class="btn-fila btn-del"
+                                   title="Eliminar">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
                             </div>
@@ -212,12 +347,12 @@ function verDetalle(nombre, nit, telefono, direccion) {
         html: `
             <div style="text-align:left; font-family:'DM Sans',sans-serif; font-size:.9rem;">
                 <hr style="border-color:#e0ddd8;">
-                <p><strong><i class="fas fa-building me-2" style="color:#d32f2f;"></i>Razón Social:</strong> ${nombre}</p>
-                <p><strong><i class="fas fa-id-card me-2" style="color:#d32f2f;"></i>NIT:</strong> ${nit}</p>
-                <p><strong><i class="fas fa-phone me-2" style="color:#d32f2f;"></i>Teléfono:</strong> ${telefono}</p>
-                <p><strong><i class="fas fa-map-marker-alt me-2" style="color:#d32f2f;"></i>Dirección:</strong> ${direccion || 'No registrada'}</p>
+                <p><strong><i class="fas fa-building me-2" style="color:#2563eb;"></i>Razón Social:</strong> ${nombre}</p>
+                <p><strong><i class="fas fa-id-card me-2" style="color:#2563eb;"></i>NIT:</strong> ${nit}</p>
+                <p><strong><i class="fas fa-phone me-2" style="color:#2563eb;"></i>Teléfono:</strong> ${telefono}</p>
+                <p><strong><i class="fas fa-map-marker-alt me-2" style="color:#2563eb;"></i>Dirección:</strong> ${direccion || 'No registrada'}</p>
             </div>`,
-        confirmButtonColor: '#d32f2f',
+        confirmButtonColor: '#2563eb',
         confirmButtonText: 'Cerrar'
     });
 }
@@ -239,7 +374,12 @@ $(document).ready(function () {
             "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
             "sSearch":         "Buscar:",
             "sLoadingRecords": "Cargando...",
-            "oPaginate": { "sFirst": "«", "sLast": "»", "sNext": "›", "sPrevious": "‹" }
+            "oPaginate": {
+                "sFirst":    "«",
+                "sLast":     "»",
+                "sNext":     "›",
+                "sPrevious": "‹"
+            }
         }
     });
 });

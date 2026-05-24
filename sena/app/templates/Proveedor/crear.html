@@ -8,11 +8,19 @@
     :root {
         --rojo:   #d32f2f;
         --rojo2:  #b71c1c;
+        --azul:   #2563eb;
+        --azul2:  #1d4ed8;
         --carbon: #1a1a1a;
         --gris:   #f2f2f0;
         --borde:  #e0ddd8;
         --texto:  #2a2a2a;
         --muted:  #888;
+
+        /* Color principal dinámico según modo */
+        --primario: {% if 'editar' in request.path %}#2563eb{% else %}#d32f2f{% endif %};
+        --primario2: {% if 'editar' in request.path %}#1d4ed8{% else %}#b71c1c{% endif %};
+        --primario-glow: {% if 'editar' in request.path %}rgba(37,99,235,.15){% else %}rgba(211,47,47,.1){% endif %};
+        --primario-shadow: {% if 'editar' in request.path %}rgba(37,99,235,.35){% else %}rgba(211,47,47,.35){% endif %};
     }
 
     /* ══════════ HEADER ══════════ */
@@ -83,6 +91,23 @@
         letter-spacing: 1px;
     }
 
+    /* ══════════ BADGE EDITANDO ══════════ */
+    .badge-editando {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--azul);
+        color: white;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 6px 14px;
+        border-radius: 20px;
+        box-shadow: 0 2px 10px rgba(37,99,235,.35);
+    }
+
     /* ══════════ CARD ══════════ */
     .form-card {
         background: white;
@@ -108,7 +133,7 @@
         gap: 10px;
     }
 
-    .form-card-header span {
+    .form-card-header span.header-label {
         font-family: 'Barlow Condensed', sans-serif;
         font-size: .85rem;
         font-weight: 700;
@@ -118,29 +143,9 @@
     }
 
     .form-card-header i.header-icon {
-        color: var(--rojo);
+        color: var(--primario);
         font-size: .9rem;
     }
-
-    /* Badge "+ NUEVO" igual al de la imagen 2 */
-    .btn-nuevo {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .75rem;
-        font-weight: 700;
-        background: var(--rojo);
-        color: white;
-        border: none;
-        border-radius: 20px;
-        padding: 5px 14px;
-        cursor: pointer;
-        text-transform: uppercase;
-        letter-spacing: .5px;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        transition: background .2s;
-    }
-    .btn-nuevo:hover { background: var(--rojo2); color: white; }
 
     .form-card-body { padding: 32px 32px 20px; }
 
@@ -160,7 +165,7 @@
         margin-bottom: 7px;
     }
 
-    .field-label .req { color: var(--rojo); font-size: .9rem; line-height: 1; }
+    .field-label .req { color: var(--primario); font-size: .9rem; line-height: 1; }
 
     .field-inner { position: relative; }
     .field-inner .field-icon {
@@ -215,16 +220,20 @@
         padding: 11px 26px;
         border-radius: 10px;
         border: none;
-        background: var(--rojo);
+        background: var(--primario);
         color: white;
         cursor: pointer;
-        box-shadow: 0 4px 14px rgba(211,47,47,.35);
+        box-shadow: 0 4px 14px var(--primario-shadow);
         display: inline-flex;
         align-items: center;
         gap: 8px;
         transition: .2s;
     }
-    .btn-guardar:hover { background: var(--rojo2); transform: translateY(-1px); }
+    .btn-guardar:hover {
+        background: var(--primario2);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px var(--primario-shadow);
+    }
 
     /* ══════════ PHONE DROPDOWN ══════════ */
     #id_indicativo_proveedor { display: none !important; }
@@ -239,7 +248,9 @@
         transition: border-color .2s, background .2s, box-shadow .2s; min-height: 46px;
     }
     .pais-selected:hover, .pais-dropdown.open .pais-selected {
-        border-color: var(--rojo); background: white; box-shadow: 0 0 0 3px rgba(211,47,47,.1);
+        border-color: var(--primario);
+        background: white;
+        box-shadow: 0 0 0 3px var(--primario-glow);
     }
     .pais-selected img { width: 20px; height: 14px; object-fit: cover; border-radius: 2px; flex-shrink: 0; }
     .pais-selected .pais-placeholder { font-size: .78rem; color: var(--muted); flex: 1; }
@@ -259,7 +270,7 @@
         width: 100%; padding: 7px 10px; border: 1.5px solid var(--borde); border-radius: 8px;
         font-family: 'DM Sans', sans-serif; font-size: .82rem; outline: none; background: var(--gris);
     }
-    .pais-search input:focus { border-color: var(--rojo); background: white; }
+    .pais-search input:focus { border-color: var(--primario); background: white; }
 
     .pais-list { max-height: 220px; overflow-y: auto; }
     .pais-list::-webkit-scrollbar { width: 4px; }
@@ -270,12 +281,12 @@
         cursor: pointer; transition: background .15s; font-size: .84rem; color: var(--texto);
     }
     .pais-option:hover { background: var(--gris); }
-    .pais-option.selected { background: rgba(211,47,47,.07); }
+    .pais-option.selected { background: rgba(37,99,235,.07); }
     .pais-option img { width: 22px; height: 15px; object-fit: cover; border-radius: 2px; flex-shrink: 0; }
-    .pais-option .pais-codigo { font-weight: 600; color: var(--rojo); min-width: 44px; font-size: .8rem; }
+    .pais-option .pais-codigo { font-weight: 600; color: var(--primario); min-width: 44px; font-size: .8rem; }
     .pais-option .pais-nombre { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* ══════════ FORM FIELDS (aplicado por JS) ══════════ */
+    /* ══════════ FORM FIELDS ══════════ */
     .form-field-styled {
         width: 100% !important;
         padding: 12px 14px 12px 40px !important;
@@ -292,9 +303,9 @@
         appearance: none !important;
     }
     .form-field-styled:focus {
-        border-color: var(--rojo) !important;
+        border-color: var(--primario) !important;
         background: white !important;
-        box-shadow: 0 0 0 3px rgba(211,47,47,.1) !important;
+        box-shadow: 0 0 0 3px var(--primario-glow) !important;
     }
 </style>
 {% endblock %}
@@ -307,7 +318,7 @@
         <div class="header-left">
             <div class="header-icon-wrap">
                 {% if 'editar' in request.path %}
-                    <i class="fas fa-edit" style="font-size:1.6rem;color:white;"></i>
+                    <i class="fas fa-pen-to-square" style="font-size:1.6rem; color:white;"></i>
                 {% else %}
                     <img src="{% static 'imagenes/proveedores.jpeg' %}" alt="Proveedor" class="header-img-icon">
                 {% endif %}
@@ -333,9 +344,16 @@
             <!-- Card Header -->
             <div class="form-card-header">
                 <div class="form-card-header-left">
-                    <i class="fas fa-fire header-icon"></i>
-                    <span>Información del Proveedor</span>
+                    <i class="fas fa-{% if 'editar' in request.path %}pen-to-square{% else %}fire{% endif %} header-icon"></i>
+                    <span class="header-label">
+                        {% if 'editar' in request.path %}Editar Información del Proveedor{% else %}Información del Proveedor{% endif %}
+                    </span>
                 </div>
+                {% if 'editar' in request.path %}
+                <span class="badge-editando" style="font-size:.68rem; padding:4px 12px;">
+                    <i class="fas fa-pen-to-square" style="font-size:.62rem;"></i> Editando
+                </span>
+                {% endif %}
             </div>
 
             <!-- Card Body -->
@@ -413,11 +431,13 @@
 
             <!-- Card Footer -->
             <div class="form-card-footer">
-                <button type="button" class="btn-cancelar" onclick="confirmarCancelacion('{{ listar_url }}')">
+                <button type="button" class="btn-cancelar"
+                        onclick="confirmarCancelacion('{{ listar_url }}')">
                     <i class="fas fa-times"></i> Cancelar
                 </button>
                 <button type="submit" class="btn-guardar">
-                    <i class="fas fa-save"></i> Guardar Proveedor
+                    <i class="fas fa-{% if 'editar' in request.path %}pen-to-square{% else %}save{% endif %}"></i>
+                    {% if 'editar' in request.path %}Actualizar Proveedor{% else %}Guardar Proveedor{% endif %}
                 </button>
             </div>
 
@@ -497,7 +517,8 @@ function renderLista(filtro) {
 
 function seleccionar(p) {
     paisSelected.innerHTML = `
-        <img src="${flagUrl(p.iso)}" alt="${p.nombre}" style="width:20px;height:14px;object-fit:cover;border-radius:2px;flex-shrink:0;">
+        <img src="${flagUrl(p.iso)}" alt="${p.nombre}"
+             style="width:20px;height:14px;object-fit:cover;border-radius:2px;flex-shrink:0;">
         <span class="pais-label">${p.code}</span>
         <i class="fas fa-chevron-down pais-chevron"></i>
     `;
@@ -547,26 +568,37 @@ $(function () {
     $('[name="numero_telefono"]').on('input change', actualizarTelefono);
     actualizarTelefono();
 
+    const esEditar = {% if 'editar' in request.path %}true{% else %}false{% endif %};
+
     $('#formProveedor').on('submit', function (e) {
         e.preventDefault();
         actualizarTelefono();
         var f = this;
         Swal.fire({
-            title: '¿Confirmar registro?',
-            text: 'La información del proveedor será almacenada.',
-            icon: 'question', showCancelButton: true,
-            confirmButtonText: 'Sí, guardar', cancelButtonText: 'Revisar',
-            confirmButtonColor: '#d32f2f', cancelButtonColor: '#888',
+            title: esEditar ? '¿Confirmar actualización?' : '¿Confirmar registro?',
+            text: esEditar
+                ? 'Los datos del proveedor serán actualizados.'
+                : 'La información del proveedor será almacenada.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: esEditar ? 'Sí, actualizar' : 'Sí, guardar',
+            cancelButtonText: 'Revisar',
+            confirmButtonColor: esEditar ? '#2563eb' : '#d32f2f',
+            cancelButtonColor: '#888',
         }).then(r => { if (r.isConfirmed) { $(f).off('submit').submit(); } });
     });
 });
 
 function confirmarCancelacion(url) {
     Swal.fire({
-        title: '¿Cancelar?', text: 'Los cambios no se guardarán.',
-        icon: 'warning', showCancelButton: true,
-        confirmButtonText: 'Sí, salir', cancelButtonText: 'Seguir aquí',
-        confirmButtonColor: '#d32f2f', cancelButtonColor: '#888',
+        title: '¿Cancelar?',
+        text: 'Los cambios no se guardarán.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, salir',
+        cancelButtonText: 'Seguir aquí',
+        confirmButtonColor: '#d32f2f',
+        cancelButtonColor: '#888',
     }).then(r => { if (r.isConfirmed) window.location.href = url; });
 }
 </script>
