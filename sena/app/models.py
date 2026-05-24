@@ -398,34 +398,51 @@ class OrdenServicio(models.Model):
     class Meta:
         db_table = 'orden_servicio'
 
+# ══════════════════════════════════════════════════════════
+#  COMPRA
+# ══════════════════════════════════════════════════════════
 
-# ══════════════════════════════════════════════════════════
-#  COMPRA 
-# ══════════════════════════════════════════════════════════
 class Compra(models.Model):
-    METODOS = [('Efectivo', 'Efectivo'), ('Transferencia', 'Transferencia'), ('Credito', 'Crédito')]
+    METODOS = [
+        ('Efectivo',      'Efectivo'),
+        ('Transferencia', 'Transferencia'),
+        ('TarjetaDebito', 'Tarjeta débito'),
+        ('TarjetaCredito','Tarjeta crédito'),
+        ('Nequi',         'Nequi'),
+        ('Daviplata',     'Daviplata'),
+    ]
+    ESTADOS_PAGO = [('Pendiente', 'Pendiente'), ('Pagada', 'Pagada')]
+
     proveedor             = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     producto              = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad              = models.IntegerField()
     fecha                 = models.DateTimeField(default=timezone.now)
     num_factura_proveedor = models.CharField(max_length=50, unique=True)
-    metodo_pago           = models.CharField(max_length=20, choices=METODOS, default='Efectivo')
+    metodo_pago           = models.CharField(max_length=20, choices=METODOS, null=True, blank=True)
     total_pagado          = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    estado_pago           = models.CharField(max_length=10, choices=ESTADOS_PAGO, default='Pendiente')
+    fecha_pago            = models.DateTimeField(null=True, blank=True)
+    archivo_factura       = models.FileField(upload_to='facturas_proveedores/', blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        if not self.pk and self.metodo_pago != 'Credito':
-            Caja.objects.create(
-                descripcion = f"Compra Factura {self.num_factura_proveedor}",
-                monto       = self.total_pagado,
-                tipo        = 'EGRESO',
-                categoria   = 'Proveedores',
-                metodo_pago = self.metodo_pago,
-            )
+        is_new = not self.pk
         super().save(*args, **kwargs)
+        if is_new:
+            # Factura automática como Pendiente siempre al crear
+            if not Factura.objects.filter(compra=self).exists():
+                Factura.objects.create(
+                    tipo           = 'COMPRA',
+                    numero_factura = self.num_factura_proveedor,
+                    compra         = self,
+                    total          = self.total_pagado,
+                    subtotal       = self.total_pagado,
+                    iva            = 0,
+                    estado_pago    = 'Pendiente',
+                    metodo_pago    = None,
+                )
 
     class Meta:
         db_table = 'compra'
-
 
 # ══════════════════════════════════════════════════════════
 #  DETALLE PRODUCTO ORDEN DE SERVICIO
@@ -455,7 +472,11 @@ class DetalleOrdenProducto(models.Model):
 #  FACTURA
 # ══════════════════════════════════════════════════════════
 class Factura(models.Model):
-    TIPO_FACTURA = [('SERVICIO', 'Orden de Servicio'), ('PRODUCTO', 'Venta de Producto')]
+    TIPO_FACTURA = [
+        ('SERVICIO',  'Orden de Servicio'),
+        ('PRODUCTO',  'Venta de Producto'),
+        ('COMPRA',    'Compra a Proveedor'),   # ← nuevo
+    ]
     METODOS_PAGO = [('Efectivo', 'Efectivo'), ('Transferencia', 'Transferencia'), ('TarjetaDebito', 'Tarjeta Débito'), ('Nequi', 'Nequi'), ('Daviplata', 'Daviplata')]
     ESTADOS_PAGO = [('Pendiente', 'Pendiente'), ('Pagada', 'Pagada')]
 
@@ -463,29 +484,43 @@ class Factura(models.Model):
     numero_factura = models.CharField(max_length=20, unique=True)
     fecha_emision  = models.DateTimeField(auto_now_add=True)
     orden_servicio = models.ForeignKey(OrdenServicio, on_delete=models.SET_NULL, null=True, blank=True)
-    subtotal       = models.DecimalField(max_digits=12, decimal_places=2, default=0)  # ← nuevo
-    iva            = models.DecimalField(max_digits=12, decimal_places=2, default=0)  # ← nuevo
+    compra         = models.OneToOneField('Compra', on_delete=models.SET_NULL, null=True, blank=True)  # ← nuevo
+    producto       = models.ForeignKey(Producto, on_delete=models.SET_NULL, null=True, blank=True)
+    cantidad       = models.PositiveIntegerField(default=1)
+    subtotal       = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    iva            = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     total          = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     estado_pago    = models.CharField(max_length=10, choices=ESTADOS_PAGO, default='Pendiente')
-    metodo_pago    = models.CharField(max_length=20, choices=METODOS_PAGO, null=True, blank=True)  # ← agregué choices
+    metodo_pago    = models.CharField(max_length=20, choices=METODOS_PAGO, null=True, blank=True)
     fecha_pago     = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
+    # ── Calcular subtotal y total automáticamente ──
+        if self.tipo == 'SERVICIO' and self.orden_servicio:
+            servicios = sum(
+            s.precio_mano_obra 
+            for s in self.orden_servicio.servicios.all()
+        )
+            productos = sum(
+            dp.cantidad * dp.producto.precio 
+            for dp in self.orden_servicio.productos_usados.all()
+        )
+            self.subtotal = servicios + productos
+            self.total    = self.subtotal  # sin IVA por ahora
+
+        elif self.tipo == 'PRODUCTO' and self.producto:
+            self.subtotal = self.producto.precio * self.cantidad
+            self.total    = self.subtotal
+
+        elif self.tipo == 'COMPRA' and self.compra:
+            self.subtotal = self.compra.total_pagado
+            self.total    = self.subtotal
+
+    # ── Lo demás igual ──
         if self.estado_pago == 'Pagada' and not self.fecha_pago:
             self.fecha_pago = timezone.now()
         super().save(*args, **kwargs)
-        if self.estado_pago == 'Pagada':
-            if not Caja.objects.filter(descripcion__icontains=self.numero_factura).exists():
-                Caja.objects.create(
-                    descripcion = f"Factura {self.numero_factura}",
-                    monto       = self.total,
-                    tipo        = 'INGRESO',
-                    categoria   = 'Ventas' if self.tipo == 'PRODUCTO' else 'Servicios',
-                    metodo_pago = self.metodo_pago or 'Efectivo',
-                )
-            if self.tipo == 'SERVICIO' and self.orden_servicio:
-                self.orden_servicio.estado = 'Terminado'
-                self.orden_servicio.save()
+    # ... resto del código igual
 
     class Meta:
         db_table = 'factura'

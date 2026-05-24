@@ -1,15 +1,10 @@
-from django.shortcuts import render, redirect
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
-from django.contrib import messages
+from django.views.generic import ListView
 from django.db.models import Sum
-
 from app.models import Caja
-from app.forms import CajaForm
-# --- IMPORTAMOS EL MIXIN DE SEGURIDAD ---
 from app.mixins import AdminRequeridoMixin
 
-class CajaListView(AdminRequeridoMixin, ListView): # <--- Candado puesto
+
+class CajaListView(AdminRequeridoMixin, ListView):
     model = Caja
     template_name = 'Caja/listar.html'
     context_object_name = 'object_list'
@@ -20,66 +15,14 @@ class CajaListView(AdminRequeridoMixin, ListView): # <--- Candado puesto
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Listado de Movimientos de Caja'
-        context['crear_url'] = reverse_lazy('app:caja_crear')
-
         qs = self.get_queryset()
+
         total_ingresos = qs.filter(tipo='INGRESO').aggregate(t=Sum('monto'))['t'] or 0
         total_egresos  = qs.filter(tipo='EGRESO').aggregate(t=Sum('monto'))['t'] or 0
-        context['total_ingresos'] = total_ingresos
-        context['total_egresos']  = total_egresos
-        context['saldo_caja']     = total_ingresos - total_egresos
+
+        context['titulo']            = 'Registro de Caja'
+        context['total_ingresos']    = total_ingresos
+        context['total_egresos']     = total_egresos
+        context['saldo_caja']        = total_ingresos - total_egresos
+        context['total_movimientos'] = qs.count()
         return context
-
-
-class CajaCreateView(AdminRequeridoMixin, CreateView): # <--- Candado puesto
-    model = Caja
-    form_class = CajaForm
-    template_name = 'Caja/crear.html'
-    success_url = reverse_lazy('app:caja_listar')
-    login_url = 'login:login'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = "Registrar Movimiento de Caja"
-        context['listar_url'] = reverse_lazy('app:caja_listar')
-        return context
-
-    def form_valid(self, form):
-        messages.success(self.request, "Se registró correctamente el movimiento")
-        return super().form_valid(form)
-
-
-class CajaUpdateView(AdminRequeridoMixin, UpdateView): # <--- Candado puesto
-    model = Caja
-    form_class = CajaForm
-    template_name = 'Caja/crear.html'
-    success_url = reverse_lazy('app:caja_listar')
-    login_url = 'login:login'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Editar Movimiento de Caja'
-        context['listar_url'] = reverse_lazy('app:caja_listar')
-        return context
-
-    def form_valid(self, form):
-        messages.success(self.request, "Se editó correctamente el movimiento")
-        return super().form_valid(form)
-
-
-class CajaDeleteView(AdminRequeridoMixin, DeleteView): # <--- Candado puesto
-    model = Caja
-    template_name = 'Caja/eliminar.html'
-    success_url = reverse_lazy('app:caja_listar')
-    login_url = 'login:login'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar Movimiento de Caja'
-        context['listar_url'] = reverse_lazy('app:caja_listar')
-        return context
-
-    def form_valid(self, form):
-        messages.success(self.request, "Se eliminó correctamente el movimiento")
-        return super().form_valid(form)

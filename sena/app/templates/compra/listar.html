@@ -12,105 +12,62 @@
         --borde:  #e0ddd8;
         --texto:  #2a2a2a;
         --muted:  #888;
+        --verde:  #16a34a;
     }
 
-    /* ── HEADER ── */
     .taller-header {
         position: relative; background: var(--carbon);
         border-radius: 16px; padding: 28px 32px; margin-bottom: 28px;
         overflow: hidden; display: flex; align-items: center; justify-content: space-between;
     }
-
-
     .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
-    .header-icon-wrap {
-        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.4rem; color: white; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
-    }
-    .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800;
-        color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
-    }
+    .header-titulo { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0; }
     .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
-    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
-    .btn-accion {
-        font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px; padding: 10px 18px; border-radius: 10px;
-        display: flex; align-items: center; gap: 8px; border: none; cursor: pointer;
-        text-decoration: none; transition: transform .2s, box-shadow .2s;
-    }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .btn-accion { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 10px 18px; border-radius: 10px; display: flex; align-items: center; gap: 8px; border: none; cursor: pointer; text-decoration: none; transition: transform .2s, box-shadow .2s; }
     .btn-accion:hover { transform: translateY(-2px); }
     .btn-pdf   { background: #c0392b; color: white !important; }
     .btn-excel { background: #1e7e45; color: white !important; }
     .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
     .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
 
-    /* ── TABLA ── */
     .tabla-wrap { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
-
-    #tabla_compras {
-        font-family: 'DM Sans', sans-serif; font-size: .875rem;
-        border-collapse: collapse; width: 100%;
-    }
+    #tabla_compras { font-family: 'DM Sans', sans-serif; font-size: .875rem; border-collapse: collapse; width: 100%; }
     #tabla_compras thead tr { background: var(--gris); border-bottom: 2px solid var(--borde); }
-    #tabla_compras thead th {
-        font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 14px 16px; border: none;
-    }
+    #tabla_compras thead th { font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 14px 16px; border: none; }
     #tabla_compras tbody tr { border-bottom: 1px solid var(--borde); transition: background .15s; }
     #tabla_compras tbody tr:hover { background: #fafaf8; }
     #tabla_compras tbody tr:last-child { border-bottom: none; }
     #tabla_compras tbody td { padding: 13px 16px; color: var(--texto) !important; vertical-align: middle; border: none; }
 
-    /* Avatar proveedor */
-    .proveedor-avatar {
-        width: 38px; height: 38px; background: var(--carbon); color: white;
-        border-radius: 10px; display: flex; align-items: center; justify-content: center;
-        font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 800; flex-shrink: 0;
-    }
+    .proveedor-avatar { width: 38px; height: 38px; background: var(--carbon); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 800; flex-shrink: 0; }
     .proveedor-nombre { font-weight: 600; color: var(--carbon); font-size: .9rem; }
     .factura-sub { font-family: 'DM Sans', sans-serif; font-size: .75rem; color: var(--muted); margin-top: 2px; }
+    .metodo-badge { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 600; background: var(--gris); color: var(--texto); border: 1px solid var(--borde); border-radius: 6px; padding: 3px 10px; display: inline-block; text-transform: uppercase; letter-spacing: .3px; }
+    .total-valor { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--rojo); }
 
-    /* Badge método pago */
-    .metodo-badge {
-        font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 600;
-        background: var(--gris); color: var(--texto); border: 1px solid var(--borde);
-        border-radius: 6px; padding: 3px 10px; display: inline-block;
-        text-transform: uppercase; letter-spacing: .3px;
-    }
+    .badge-estado { font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700; border-radius: 100px; padding: 4px 11px; text-transform: uppercase; letter-spacing: .4px; display: inline-flex; align-items: center; gap: 5px; }
+    .badge-pagada    { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+    .badge-pendiente { background: #fff8e1; color: #f57f17; border: 1px solid #ffe082; }
 
-    /* Total */
-    .total-valor {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem;
-        font-weight: 800; color: var(--rojo);
-    }
+    .btn-fila { width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: .2s; font-size: .8rem; text-decoration: none; }
+    .btn-fila:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,.2); }
+    .btn-edit  { background: #1565c0; color: white; }
+    .btn-pagar { background: var(--verde); color: white; }
 
-    /* Botones fila */
-    .btn-fila {
-        width: 32px; height: 32px; border-radius: 8px;
-        display: inline-flex; align-items: center; justify-content: center;
-        border: none; cursor: pointer; transition: .2s; font-size: .8rem;
-        text-decoration: none;
-    }
-    .btn-fila:hover { transform: translateY(-2px); }
-    .btn-edit { background: #1565c0; color: white; }
+    /* Modal pago */
+    .metodo-card { border: 2px solid var(--borde); border-radius: 12px; padding: 14px; cursor: pointer; text-align: center; transition: all .2s; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: .85rem; color: var(--muted); background: var(--gris); user-select: none; }
+    .metodo-card:hover { border-color: var(--carbon); background: white; color: var(--carbon); }
+    .metodo-card.activo { border-color: var(--rojo); background: #fff5f5; color: var(--rojo); }
+    .metodo-card i { display: block; font-size: 1.4rem; margin-bottom: 6px; pointer-events: none; }
+    .btn-confirmar-pago { font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 12px; border-radius: 10px; border: none; background: var(--verde); color: white; width: 100%; cursor: pointer; box-shadow: 0 4px 14px rgba(22,163,74,.35); transition: .2s; }
+    .btn-confirmar-pago:hover { background: #15803d; transform: translateY(-1px); }
 
-    /* DataTables overrides */
     .dataTables_wrapper { padding: 16px 20px; }
-    .dataTables_filter input {
-        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
-        padding: 6px 12px !important; font-family: 'DM Sans', sans-serif !important;
-        font-size: .85rem !important; outline: none !important; transition: border-color .2s;
-    }
+    .dataTables_filter input { border: 1.5px solid var(--borde) !important; border-radius: 8px !important; padding: 6px 12px !important; font-family: 'DM Sans', sans-serif !important; font-size: .85rem !important; outline: none !important; transition: border-color .2s; }
     .dataTables_filter input:focus { border-color: var(--rojo) !important; }
-    .dataTables_filter label, .dataTables_length label,
-    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
-    .dataTables_length select {
-        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
-        padding: 4px 8px !important; appearance: none !important;
-        background-image: none !important; background: white !important;
-    }
+    .dataTables_filter label, .dataTables_length label, .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
+    .dataTables_length select { border: 1.5px solid var(--borde) !important; border-radius: 8px !important; padding: 4px 8px !important; appearance: none !important; background: white !important; }
     .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
     .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
     .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
@@ -154,8 +111,8 @@
                         <th>Proveedor / Factura</th>
                         <th>Producto</th>
                         <th class="text-center">Cant.</th>
-                        <th class="text-center">Método</th>
                         <th>Total Pagado</th>
+                        <th class="text-center">Estado</th>
                         <th>Fecha</th>
                         <th class="text-center">Acciones</th>
                     </tr>
@@ -175,14 +132,39 @@
                         </td>
                         <td style="font-weight:600; color:var(--carbon);">{{ c.producto.nombre }}</td>
                         <td class="text-center" style="font-weight:700; color:var(--carbon); font-size:1.05rem;">{{ c.cantidad }}</td>
-                        <td class="text-center"><span class="metodo-badge">{{ c.metodo_pago }}</span></td>
                         <td><span class="total-valor">$ {{ c.total_pagado }}</span></td>
+                        <td class="text-center">
+                            {% if c.estado_pago == 'Pagada' %}
+                                <span class="badge-estado badge-pagada">
+                                    <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5;"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Pagada
+                                </span>
+                            {% else %}
+                                <span class="badge-estado badge-pendiente">
+                                    <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    Pendiente
+                                </span>
+                            {% endif %}
+                        </td>
                         <td style="color:var(--muted); font-size:.82rem;">{{ c.fecha|date:"d/m/Y H:i" }}</td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center" style="gap:6px;">
-                                <a href="{% url 'app:editar_compra' c.id %}" class="btn-fila btn-edit" title="Editar">
-                                    <i class="fas fa-edit"></i>
+                                {% if c.archivo_factura %}
+                                <a href="{{ c.archivo_factura.url }}" 
+                                download 
+                                class="btn-fila" 
+                                style="background:#7c3aed; color:white;" 
+                                title="Descargar factura proveedor">
+                                <i class="fas fa-download"></i>
                                 </a>
+                                {% endif %}
+                                {% if c.estado_pago == 'Pendiente' %}
+                                <button class="btn-fila btn-pagar"
+                                    onclick="abrirModalPagar({{ c.id }}, '{{ c.num_factura_proveedor }}', '{% url 'app:pagar_compra' c.id %}')"
+                                    title="Registrar pago">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </button>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>
@@ -192,6 +174,41 @@
         </div>
     </div>
 
+</div>
+
+<!-- MODAL PAGAR -->
+<div id="modalPagarOverlay" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.55); align-items:center; justify-content:center;">
+    <div style="background:white; border-radius:16px; width:100%; max-width:480px; margin:16px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+        <div style="background:#1a1a1a; padding:18px 24px; display:flex; align-items:center; justify-content:space-between;">
+            <h5 style="font-family:'Barlow Condensed',sans-serif; font-size:1.2rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:white; margin:0;">
+                <i class="fas fa-dollar-sign" style="margin-right:8px; color:#4ade80;"></i> Registrar Pago
+            </h5>
+            <button onclick="cerrarModalPagar()" style="background:none; border:none; color:white; font-size:1.4rem; cursor:pointer; opacity:.7; line-height:1; padding:0;">&times;</button>
+        </div>
+        <div style="padding:24px;">
+            <p style="font-family:'DM Sans',sans-serif; font-size:.85rem; color:#888; margin-bottom:16px;">
+                Método de pago para la factura <strong id="modalNumFactura" style="color:#1a1a1a;"></strong>
+            </p>
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px;">
+                <div class="metodo-card" onclick="seleccionarMetodo('Efectivo', this)"><i class="fas fa-money-bill-wave"></i>Efectivo</div>
+                <div class="metodo-card" onclick="seleccionarMetodo('Transferencia', this)"><i class="fas fa-university"></i>Transferencia</div>
+                <div class="metodo-card" onclick="seleccionarMetodo('TarjetaDebito', this)"><i class="fas fa-credit-card"></i>T. Débito</div>
+                <div class="metodo-card" onclick="seleccionarMetodo('TarjetaCredito', this)"><i class="fas fa-credit-card"></i>T. Crédito</div>
+                <div class="metodo-card" onclick="seleccionarMetodo('Nequi', this)"><i class="fas fa-mobile-alt"></i>Nequi</div>
+                <div class="metodo-card" onclick="seleccionarMetodo('Daviplata', this)"><i class="fas fa-mobile-alt"></i>Daviplata</div>
+            </div>
+            <form method="post" id="formPagarCompra" action="">
+                {% csrf_token %}
+                <input type="hidden" name="metodo_pago" id="metodoPagoInput">
+                <div id="errorMetodo" style="display:none; font-family:'DM Sans',sans-serif; font-size:.78rem; color:#d32f2f; margin-bottom:10px;">
+                    <i class="fas fa-exclamation-circle"></i> Seleccione un método de pago.
+                </div>
+                <button type="submit" class="btn-confirmar-pago">
+                    <i class="fas fa-check-circle" style="margin-right:8px;"></i> Confirmar Pago
+                </button>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -203,7 +220,7 @@ $(document).ready(function () {
         autoWidth: false,
         order: [[0, "desc"]],
         pagingType: "full_numbers",
-        columnDefs: [{ orderable: false, targets: [0, 7] }],
+        columnDefs: [{ orderable: false, targets: [5, 7] }],
         language: {
             "sProcessing":     "Procesando...",
             "sLengthMenu":     "Mostrar _MENU_ registros",
@@ -217,6 +234,37 @@ $(document).ready(function () {
             "oPaginate": { "sFirst": "«", "sLast": "»", "sNext": "›", "sPrevious": "‹" }
         }
     });
+});
+
+function abrirModalPagar(compraId, numFactura, urlPagar) {
+    document.getElementById('modalNumFactura').textContent = numFactura;
+    document.getElementById('formPagarCompra').action = urlPagar;
+    document.getElementById('metodoPagoInput').value = '';
+    document.querySelectorAll('.metodo-card').forEach(c => c.classList.remove('activo'));
+    document.getElementById('errorMetodo').style.display = 'none';
+    document.getElementById('modalPagarOverlay').style.display = 'flex';
+}
+
+function cerrarModalPagar() {
+    document.getElementById('modalPagarOverlay').style.display = 'none';
+}
+
+document.getElementById('modalPagarOverlay').addEventListener('click', function(e) {
+    if (e.target === this) cerrarModalPagar();
+});
+
+function seleccionarMetodo(val, el) {
+    document.querySelectorAll('.metodo-card').forEach(c => c.classList.remove('activo'));
+    el.classList.add('activo');
+    document.getElementById('metodoPagoInput').value = val;
+    document.getElementById('errorMetodo').style.display = 'none';
+}
+
+document.getElementById('formPagarCompra').addEventListener('submit', function(e) {
+    if (!document.getElementById('metodoPagoInput').value) {
+        e.preventDefault();
+        document.getElementById('errorMetodo').style.display = 'block';
+    }
 });
 </script>
 {% endblock %}

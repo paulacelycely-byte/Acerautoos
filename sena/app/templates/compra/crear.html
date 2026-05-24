@@ -13,102 +13,51 @@
         --carbon: #1a1a1a; --gris: #f2f2f0; --borde: #e0ddd8; --texto: #2a2a2a; --muted: #888;
     }
 
-    /* ── HEADER ── */
     .taller-header {
         position: relative; background: var(--carbon);
         border-radius: 10px; padding: 28px 32px; margin-bottom: 28px;
         overflow: hidden; display: flex; align-items: center; justify-content: space-between;
     }
     .header-left { display: flex; align-items: center; gap: 18px; }
-    .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800;
-        color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0;
-    }
+    .header-titulo { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0; }
     .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; }
-    .header-badge {
-        font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; font-weight: 700;
-        color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1px;
-    }
+    .header-badge { font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; font-weight: 700; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1px; }
 
-    /* ── TARJETA ── */
     .form-card { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
-    .form-card-header {
-        background: var(--carbon); padding: 14px 24px;
-        display: flex; align-items: center; gap: 10px;
-    }
+    .form-card-header { background: var(--carbon); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
     .form-card-header svg { width: 16px; height: 16px; stroke: var(--acento); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-    .form-card-header span {
-        font-family: 'Barlow Condensed', sans-serif; font-size: .85rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.7);
-    }
-    .modo-chip {
-        margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: .7rem;
-        font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
-        padding: 3px 10px; border-radius: 20px; background: var(--acento); color: white; opacity: .85;
-    }
-    .form-card-body { padding: 32px 32px; }
+    .form-card-header span { font-family: 'Barlow Condensed', sans-serif; font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.7); }
+    .modo-chip { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: .7rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; background: var(--acento); color: white; opacity: .85; }
+    .form-card-body { padding: 32px; }
 
-    /* ── SEPARADOR ── */
     .section-sep { display: flex; align-items: center; gap: 12px; margin: 8px 0 24px; }
-    .section-sep-label {
-        font-family: 'Barlow Condensed', sans-serif; font-size: .72rem; font-weight: 800;
-        letter-spacing: 2px; text-transform: uppercase; color: var(--acento); white-space: nowrap;
-    }
+    .section-sep-label { font-family: 'Barlow Condensed', sans-serif; font-size: .72rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--acento); white-space: nowrap; }
     .section-sep-line { flex: 1; height: 1px; background: var(--borde); }
 
-    /* ── CAMPOS ── */
     .field-group { margin-bottom: 22px; }
-    .field-label {
-        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .9px; color: var(--muted);
-        display: flex; align-items: center; gap: 6px; margin-bottom: 7px;
-    }
+    .field-label { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .9px; color: var(--muted); display: flex; align-items: center; gap: 6px; margin-bottom: 7px; }
     .field-inner { position: relative; }
-    .field-inner .field-icon {
-        position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-        width: 15px; height: 15px; color: #bbb; pointer-events: none; transition: color .2s;
-        display: flex; align-items: center; justify-content: center;
-    }
+    .field-inner .field-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: #bbb; pointer-events: none; transition: color .2s; display: flex; align-items: center; justify-content: center; }
     .field-inner .field-icon svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .form-field { width: 100%; padding: 12px 14px 12px 40px; border: 1.5px solid var(--borde); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: .9rem; color: var(--texto); background: var(--gris); outline: none; transition: border-color .2s, background .2s, box-shadow .2s; -webkit-appearance: none; appearance: none; }
+    .form-field:focus { border-color: var(--acento); background: white; box-shadow: 0 0 0 3px var(--acento-ring); }
 
-    .form-field {
-        width: 100%; padding: 12px 14px 12px 40px;
-        border: 1.5px solid var(--borde); border-radius: 10px;
-        font-family: 'DM Sans', sans-serif; font-size: .9rem; color: var(--texto);
-        background: var(--gris); outline: none;
-        transition: border-color .2s, background .2s, box-shadow .2s;
-        -webkit-appearance: none; appearance: none;
-    }
-    .form-field:focus {
-        border-color: var(--acento); background: white;
-        box-shadow: 0 0 0 3px var(--acento-ring);
-    }
+    /* ── ARCHIVO ── */
+    .file-wrap { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1.5px solid var(--borde); border-radius: 10px; background: var(--gris); transition: border-color .2s; }
+    .file-wrap:focus-within { border-color: var(--acento); background: white; }
+    .file-input { display: none; }
+    .file-btn { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; padding: 7px 14px; border-radius: 7px; background: var(--carbon); color: white; border: none; cursor: pointer; white-space: nowrap; transition: background .2s; flex-shrink: 0; }
+    .file-btn:hover { background: var(--acento); }
+    .file-info { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .file-info.selected { color: var(--texto); font-weight: 600; }
+    .file-error-msg { font-family: 'DM Sans', sans-serif; font-size: .76rem; color: #d32f2f; margin-top: 5px; display: none; }
 
-    .field-error {
-        font-family: 'DM Sans', sans-serif; font-size: .78rem; color: #d32f2f;
-        margin-top: 5px; display: flex; align-items: center; gap: 5px;
-    }
+    .field-error { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: #d32f2f; margin-top: 5px; display: flex; align-items: center; gap: 5px; }
 
-    /* ── FOOTER ── */
-    .form-card-footer {
-        background: var(--gris); border-top: 1px solid var(--borde);
-        padding: 20px 32px; display: flex; align-items: center; justify-content: flex-end; gap: 12px;
-    }
-    .btn-cancelar {
-        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 600;
-        text-transform: uppercase; letter-spacing: .5px; padding: 10px 22px;
-        border-radius: 10px; border: 1.5px solid var(--borde);
-        background: white; color: var(--muted); text-decoration: none;
-        transition: .2s; cursor: pointer; display: flex; align-items: center; gap: 8px;
-    }
+    .form-card-footer { background: var(--gris); border-top: 1px solid var(--borde); padding: 20px 32px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+    .btn-cancelar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; padding: 10px 22px; border-radius: 10px; border: 1.5px solid var(--borde); background: white; color: var(--muted); text-decoration: none; transition: .2s; cursor: pointer; display: flex; align-items: center; gap: 8px; }
     .btn-cancelar:hover { background: var(--borde); color: var(--texto); }
-    .btn-guardar {
-        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px; padding: 11px 28px;
-        border-radius: 10px; border: none; background: var(--acento); color: white;
-        cursor: pointer; box-shadow: 0 4px 14px var(--acento-glow);
-        transition: .2s; display: flex; align-items: center; gap: 8px;
-    }
+    .btn-guardar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 11px 28px; border-radius: 10px; border: none; background: var(--acento); color: white; cursor: pointer; box-shadow: 0 4px 14px var(--acento-glow); transition: .2s; display: flex; align-items: center; gap: 8px; }
     .btn-guardar:hover { background: var(--acento2); transform: translateY(-1px); }
 </style>
 {% endblock %}
@@ -127,11 +76,10 @@
         <span class="header-badge">Acerautos S.A.S</span>
     </div>
 
-    <form method="post" action="." id="formCompra">
+    <form method="post" action="." enctype="multipart/form-data" id="formCompra">
         {% csrf_token %}
 
         <div class="form-card">
-
             <div class="form-card-header">
                 <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                 <span>Detalles del Abastecimiento</span>
@@ -141,8 +89,8 @@
             <div class="form-card-body">
                 <div class="row g-3">
 
-                    <!-- FILA 1: Proveedor | Producto -->
-                    <div class="col-md-6 pe-md-3">
+                    <!-- Proveedor | Producto -->
+                    <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.proveedor.label }}</label>
                             <div class="field-inner">
@@ -152,7 +100,7 @@
                             {% for error in form.proveedor.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
                         </div>
                     </div>
-                    <div class="col-md-6 ps-md-3">
+                    <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.producto.label }}</label>
                             <div class="field-inner">
@@ -163,8 +111,8 @@
                         </div>
                     </div>
 
-                    <!-- FILA 2: Cantidad | Núm. Factura Proveedor -->
-                    <div class="col-md-6 pe-md-3">
+                    <!-- Cantidad | Núm. Factura -->
+                    <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.cantidad.label }}</label>
                             <div class="field-inner">
@@ -174,7 +122,7 @@
                             {% for error in form.cantidad.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
                         </div>
                     </div>
-                    <div class="col-md-6 ps-md-3">
+                    <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.num_factura_proveedor.label }}</label>
                             <div class="field-inner">
@@ -193,8 +141,8 @@
                         </div>
                     </div>
 
-                    <!-- FILA 3: Fecha | Método de pago -->
-                    <div class="col-md-6 pe-md-3">
+                    <!-- Fecha | Total pagado -->
+                    <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.fecha.label }}</label>
                             <div class="field-inner">
@@ -204,19 +152,7 @@
                             {% for error in form.fecha.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
                         </div>
                     </div>
-                    <div class="col-md-6 ps-md-3">
-                        <div class="field-group">
-                            <label class="field-label">{{ form.metodo_pago.label }}</label>
-                            <div class="field-inner">
-                                <span class="field-icon"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
-                                {{ form.metodo_pago|add_class:'form-field' }}
-                            </div>
-                            {% for error in form.metodo_pago.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
-                        </div>
-                    </div>
-
-                    <!-- FILA 4: Total pagado (ancho completo) -->
-                    <div class="col-md-6 pe-md-3">
+                    <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.total_pagado.label }}</label>
                             <div class="field-inner">
@@ -224,6 +160,27 @@
                                 {{ form.total_pagado|add_class:'form-field'|attr:'autocomplete:off'|attr:'placeholder:Ej: 150000' }}
                             </div>
                             {% for error in form.total_pagado.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Archivo factura -->
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">
+                                <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                Factura del proveedor
+                                <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">(opcional)</span>
+                            </label>
+                            <input type="file" name="archivo_factura" id="id_archivo_factura"
+                                   class="file-input" accept=".pdf,.jpg,.jpeg,.png">
+                            <div class="file-wrap" onclick="document.getElementById('id_archivo_factura').click()">
+                                <button type="button" class="file-btn" onclick="event.stopPropagation(); document.getElementById('id_archivo_factura').click();">
+                                    Elegir archivo
+                                </button>
+                                <span class="file-info" id="fileInfo">PDF, JPG o PNG · Máx. 5 MB</span>
+                            </div>
+                            <div class="file-error-msg" id="fileError"></div>
+                            {% for error in form.archivo_factura.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
                         </div>
                     </div>
 
@@ -240,7 +197,6 @@
                     {% if form.instance.pk %}Actualizar Compra{% else %}Guardar Compra{% endif %}
                 </button>
             </div>
-
         </div>
     </form>
 </div>
@@ -248,6 +204,43 @@
 
 {% block js %}
 <script>
+document.getElementById('id_archivo_factura').addEventListener('change', function () {
+    var info   = document.getElementById('fileInfo');
+    var errBox = document.getElementById('fileError');
+
+    errBox.style.display = 'none';
+    info.className = 'file-info';
+
+    if (!this.files || !this.files[0]) {
+        info.textContent = 'PDF, JPG o PNG · Máx. 5 MB';
+        return;
+    }
+
+    var file = this.files[0];
+    var ext  = file.name.split('.').pop().toLowerCase();
+    var permitidos = ['pdf', 'jpg', 'jpeg', 'png'];
+
+    if (!permitidos.includes(ext)) {
+        this.value = '';
+        info.textContent = 'PDF, JPG o PNG · Máx. 5 MB';
+        errBox.textContent = '⚠ Tipo de archivo no permitido. Solo PDF, JPG o PNG.';
+        errBox.style.display = 'block';
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        this.value = '';
+        info.textContent = 'PDF, JPG o PNG · Máx. 5 MB';
+        errBox.textContent = '⚠ El archivo supera los 5 MB permitidos.';
+        errBox.style.display = 'block';
+        return;
+    }
+
+    var iconos = { pdf: '📄', jpg: '🖼️', jpeg: '🖼️', png: '🖼️' };
+    info.textContent = (iconos[ext] || '📎') + ' ' + file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+    info.className = 'file-info selected';
+});
+
 $(function () {
     $('#btnCancelar').on('click', function () {
         Swal.fire({

@@ -60,9 +60,9 @@ WSGI_APPLICATION = 'sena.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.mysql',
-        'NAME':     'Acerautooos',
+        'NAME':     'acerautos_db',
         'USER':     'root',
-        'PASSWORD': '1234567890',
+        'PASSWORD': 'Acerautos2026*',
         'HOST':     'localhost',
         'PORT':     '3306',
         'OPTIONS': {
@@ -71,7 +71,6 @@ DATABASES = {
         },
     }
 }
-
 
 
 AUTH_PASSWORD_VALIDATORS = [

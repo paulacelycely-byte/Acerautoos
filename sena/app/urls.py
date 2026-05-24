@@ -105,14 +105,14 @@ urlpatterns = [
     # ── COMPRAS
     path('compras/listar/',            compra.CompraListView.as_view(),   name='lista_compras'),
     path('compras/crear/',             compra.CompraCreateView.as_view(), name='crear_compra'),
-    path('compras/editar/<int:pk>/',   compra.CompraUpdateView.as_view(), name='editar_compra'),
+#path('compras/editar/<int:pk>/',   compra.CompraUpdateView.as_view(), name='editar_compra'),
     path('compras/eliminar/<int:pk>/', compra.CompraDeleteView.as_view(), name='eliminar_compra'),
-
+    path('compras/pagar/<int:pk>/',    compra.PagarCompraView.as_view(),  name='pagar_compra'),
     # ── CAJA
     path('caja/listar/',            caja.CajaListView.as_view(),   name='caja_listar'),
-    path('caja/crear/',             caja.CajaCreateView.as_view(), name='caja_crear'),
-    path('caja/editar/<int:pk>/',   caja.CajaUpdateView.as_view(), name='caja_editar'),
-    path('caja/eliminar/<int:pk>/', caja.CajaDeleteView.as_view(), name='caja_eliminar'),
+    #path('caja/crear/',             caja.CajaCreateView.as_view(), name='caja_crear'),
+    #path('caja/editar/<int:pk>/',   caja.CajaUpdateView.as_view(), name='caja_editar'),
+    #path('caja/eliminar/<int:pk>/', caja.CajaDeleteView.as_view(), name='caja_eliminar'),
 
     # ── FACTURAS
     path('factura/listar/',            factura.FacturaListView.as_view(),   name='listar_factura'),

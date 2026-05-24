@@ -568,14 +568,19 @@ class ProductoForm(forms.ModelForm):
         return cleaned
 
 
-# ══════════════════════════════════════════════════════════
-#  COMPRA
-# ══════════════════════════════════════════════════════════
-
 class CompraForm(forms.ModelForm):
     class Meta:
         model  = Compra
-        fields = '__all__'
+        fields = [
+            'proveedor',
+            'producto',
+            'cantidad',
+            'fecha',
+            'num_factura_proveedor',
+            'total_pagado',
+            'archivo_factura',
+        ]
+        
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -593,6 +598,8 @@ class CompraForm(forms.ModelForm):
             raise forms.ValidationError("El número de factura es obligatorio.")
         if len(nf) < 3:
             raise forms.ValidationError("El número de factura debe tener al menos 3 caracteres.")
+        if len(nf) > 20:
+            raise forms.ValidationError("El número de factura no puede superar 20 caracteres.")
         qs = Compra.objects.filter(num_factura_proveedor=nf)
         if self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
@@ -609,10 +616,13 @@ class CompraForm(forms.ModelForm):
     def clean_fecha(self):
         fecha = self.cleaned_data.get('fecha')
         if fecha:
-            hoy        = timezone.now().date()
+            hoy        = timezone.localdate()
             fecha_date = fecha.date() if hasattr(fecha, 'date') else fecha
             if fecha_date != hoy:
-                raise forms.ValidationError(f"La fecha de compra debe ser el día de hoy ({hoy.strftime('%d/%m/%Y')}). No se permiten fechas pasadas ni futuras.")
+                raise forms.ValidationError(
+                    f"La fecha de compra debe ser el día de hoy ({hoy.strftime('%d/%m/%Y')}). "
+                    f"No se permiten fechas pasadas ni futuras."
+                )
         return fecha
 
 
@@ -1123,6 +1133,10 @@ class NotificacionForm(forms.ModelForm):
             raise forms.ValidationError("El mensaje no puede superar 500 caracteres.")
         return mensaje
 
+from django import forms
+from app.models import Factura, OrdenServicio, Producto
+
+
 # ══════════════════════════════════════════════════════════
 #  FACTURA
 # ══════════════════════════════════════════════════════════
@@ -1133,25 +1147,37 @@ class FacturaForm(forms.ModelForm):
         fields = ['tipo', 'numero_factura', 'orden_servicio']
         widgets = {
             'tipo'           : forms.Select(attrs={'class': 'form-control', 'id': 'id_tipo'}),
-            'numero_factura' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: FAC-0001'}),
+            'numero_factura' : forms.TextInput(attrs={
+                'class'     : 'form-control',
+                'readonly'  : 'readonly',   # ← el usuario no puede editarlo
+                'placeholder': 'Se genera automáticamente',
+            }),
             'orden_servicio' : forms.Select(attrs={'class': 'form-control', 'id': 'id_orden_servicio'}),
         }
 
-    # Campos extra para venta de producto (no están en el modelo, son solo para el form)
+    # Campos extra para venta de producto
     producto = forms.ModelChoiceField(
-        queryset      = Producto.objects.filter(estado=True, stock__gt=0),
-        required      = False,
-        empty_label   = "-- Seleccione un Producto --",
-        widget        = forms.Select(attrs={'class': 'form-control', 'id': 'id_producto'})
+        queryset    = Producto.objects.filter(estado=True, stock__gt=0),
+        required    = False,
+        empty_label = "-- Seleccione un Producto --",
+        widget      = forms.Select(attrs={'class': 'form-control', 'id': 'id_producto'})
     )
     cantidad = forms.IntegerField(
-        required = False,
+        required  = False,
         min_value = 1,
-        widget   = forms.NumberInput(attrs={'class': 'form-control', 'min': '1', 'id': 'id_cantidad'})
+        widget    = forms.NumberInput(attrs={'class': 'form-control', 'min': '1', 'id': 'id_cantidad'})
     )
+
+    def _generar_numero(self):
+        """Genera el próximo número de factura en formato FAC-0001."""
+        ultimo = Factura.objects.order_by('-id').first()
+        siguiente = (ultimo.id + 1) if ultimo else 1
+        return f'FAC-{siguiente:04d}'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # Órdenes disponibles para facturar
         self.fields['orden_servicio'].queryset = (
             OrdenServicio.objects
             .filter(estado__in=['En Proceso', 'Terminado'])
@@ -1161,6 +1187,10 @@ class FacturaForm(forms.ModelForm):
         self.fields['orden_servicio'].empty_label = "-- Seleccione una Orden --"
         self.fields['orden_servicio'].required    = False
 
+        # ── Autogenerar número si es factura nueva ──
+        if not self.instance.pk:
+            self.fields['numero_factura'].initial = self._generar_numero()
+
     def clean(self):
         cleaned  = super().clean()
         tipo     = cleaned.get('tipo')
@@ -1168,6 +1198,7 @@ class FacturaForm(forms.ModelForm):
         producto = cleaned.get('producto')
         cantidad = cleaned.get('cantidad')
 
+        # ── Validación según tipo ──
         if tipo == 'SERVICIO':
             if not orden:
                 self.add_error('orden_servicio', "Seleccione una Orden de Servicio.")
@@ -1176,6 +1207,7 @@ class FacturaForm(forms.ModelForm):
                 estado_pago='Pagada'
             ).exclude(pk=self.instance.pk if self.instance.pk else None).exists():
                 self.add_error('orden_servicio', "Esta orden ya tiene una factura pagada asociada.")
+
         elif tipo == 'PRODUCTO':
             if not producto:
                 self.add_error('producto', "Seleccione un Producto.")
@@ -1184,18 +1216,26 @@ class FacturaForm(forms.ModelForm):
             elif producto and cantidad > producto.stock:
                 self.add_error('cantidad', f"Stock insuficiente. Disponible: {producto.stock}, solicitado: {cantidad}.")
 
+        # ── Número de factura: si viene vacío o fue manipulado, regenerar ──
         nf = cleaned.get('numero_factura', '').strip()
         if not nf:
-            self.add_error('numero_factura', "El número de factura es obligatorio.")
-        elif len(nf) < 3:
-            self.add_error('numero_factura', "El número de factura debe tener al menos 3 caracteres.")
-        else:
-            qs = Factura.objects.filter(numero_factura=nf)
-            if self.instance.pk:
-                qs = qs.exclude(pk=self.instance.pk)
-            if qs.exists():
-                self.add_error('numero_factura', "Ya existe una factura con este número.")
+            nf = self._generar_numero()
+            cleaned['numero_factura'] = nf
+
+        # Verificar unicidad
+        qs = Factura.objects.filter(numero_factura=nf)
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            # Si hay colisión, incrementar hasta encontrar uno libre
+            base  = Factura.objects.order_by('-id').first()
+            sig   = (base.id + 1) if base else 1
+            while Factura.objects.filter(numero_factura=f'FAC-{sig:04d}').exists():
+                sig += 1
+            cleaned['numero_factura'] = f'FAC-{sig:04d}'
+
         return cleaned
+
 
 # ══════════════════════════════════════════════════════════
 #  FACTURA — PAGAR
@@ -1203,8 +1243,8 @@ class FacturaForm(forms.ModelForm):
 
 class PagarFacturaForm(forms.ModelForm):
     class Meta:
-        model  = Factura
-        fields = ['metodo_pago']
+        model   = Factura
+        fields  = ['metodo_pago']
         widgets = {'metodo_pago': forms.Select(attrs={'class': 'form-control'})}
 
     def clean_metodo_pago(self):
