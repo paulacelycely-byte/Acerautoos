@@ -4,370 +4,439 @@
 
 {% block css %}
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-    :root {
-        --acento:      {% if es_editar %}#1565c0{% else %}#d32f2f{% endif %};
-        --acento2:     {% if es_editar %}#0d47a1{% else %}#b71c1c{% endif %};
-        --acento-glow: {% if es_editar %}rgba(21,101,192,.25){% else %}rgba(211,47,47,.25){% endif %};
-        --acento-ring: {% if es_editar %}rgba(21,101,192,.1){% else %}rgba(211,47,47,.1){% endif %};
-        --acento-swal: {% if es_editar %}'#1565c0'{% else %}'#d32f2f'{% endif %};
-        --carbon:  #1a1a1a;
-        --gris:    #f2f2f0;
-        --borde:   #e0ddd8;
-        --texto:   #2a2a2a;
-        --muted:   #888;
+
+    :root{
+        --acento:#d32f2f;
+        --acento2:#b71c1c;
+        --acento-ring:rgba(211,47,47,.1);
+        --acento-glow:rgba(211,47,47,.25);
+
+        --carbon:#151515;
+        --gris:#f5f5f5;
+        --borde:#e2dfda;
+        --texto:#2a2a2a;
+        --muted:#8a8a8a;
     }
 
-    /* ── Encabezado ── */
-    .taller-header {
-        position: relative;
-        background: var(--carbon);
-        border-radius: 16px;
-        padding: 28px 32px;
-        margin-bottom: 28px;
-        overflow: hidden;
-        display: flex; align-items: center; justify-content: space-between;
+    .container-form{
+        max-width:900px;
+        margin:auto;
     }
 
-    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
+    .taller-header{
+        background:var(--carbon);
+        border-radius:20px;
+        padding:34px;
+        margin-bottom:30px;
 
-    .header-icon-wrap {
-        width: 56px; height: 56px;
-        background: var(--acento);
-        border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 0 0 4px var(--acento-glow);
-        flex-shrink: 0;
-    }
-
-    .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: 2rem; font-weight: 800;
-        color: white; letter-spacing: 1px;
-        text-transform: uppercase; line-height: 1; margin: 0;
-    }
-    .header-sub {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .78rem; color: rgba(255,255,255,.45);
-        margin-top: 4px; letter-spacing: .5px;
-    }
-    .header-badge {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .8rem; font-weight: 700;
-        color: rgba(255,255,255,.4);
-        text-transform: uppercase; letter-spacing: 1px;
-        position: relative;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
     }
 
-    /* ── Tarjeta ── */
-    .form-card {
-        background: white;
-        border-radius: 16px;
-        border: 1px solid var(--borde);
-        overflow: hidden;
+    .header-left{
+        display:flex;
+        align-items:center;
+        gap:18px;
     }
 
-    .form-card-header {
-        background: var(--carbon);
-        padding: 14px 24px;
-        display: flex; align-items: center; gap: 10px;
-    }
-    .form-card-header svg {
-        width: 16px; height: 16px;
-        stroke: var(--acento); fill: none;
-        stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-        flex-shrink: 0;
-    }
-    .form-card-header span {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .85rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1px;
-        color: rgba(255,255,255,.7);
-    }
-    .modo-chip {
-        margin-left: auto;
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .7rem; font-weight: 800;
-        letter-spacing: 1.5px; text-transform: uppercase;
-        padding: 3px 10px; border-radius: 20px;
-        background: var(--acento);
-        color: white; opacity: .85;
+    .header-icon-wrap img{
+        width:72px;
+        height:72px;
+        object-fit:contain;
     }
 
-    .form-card-body { padding: 32px; }
-
-    /* ── Campos ── */
-    .field-group { margin-bottom: 22px; }
-    .field-label {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .72rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .9px;
-        color: var(--muted); display: block; margin-bottom: 7px;
-    }
-    .field-inner { position: relative; display: flex; align-items: center; }
-    
-    /* ── ÍCONOS FIJOS SIN MOVIMIENTO ── */
-    .field-inner::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        width: 44px;
-        height: 100%;
-        pointer-events: none;
-        z-index: 1;
-    }
-    
-    .field-inner .field-icon {
-        position: absolute;
-        left: 13px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 18px;
-        height: 18px;
-        color: #a0a0a0;
-        pointer-events: none;
-        transition: color .2s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        z-index: 3;
-    }
-    
-    .field-inner .field-icon svg {
-        width: 18px;
-        height: 18px;
-        stroke: currentColor;
-        fill: none;
-        stroke-width: 1.5;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-    }
-    
-    .field-inner input,
-    .field-inner select {
-        width: 100%;
-        padding: 12px 14px 12px 44px;
-        border: 1.5px solid var(--borde);
-        border-radius: 10px;
-        font-family: 'DM Sans', sans-serif;
-        font-size: .9rem;
-        color: var(--texto);
-        background: var(--gris);
-        outline: none;
-        transition: border-color .2s, background .2s, box-shadow .2s;
-        -webkit-appearance: none;
-        appearance: none;
-        box-sizing: border-box;
-        position: relative;
-        z-index: 2;
-    }
-    
-    .field-inner input:focus,
-    .field-inner select:focus {
-        border-color: var(--acento);
-        background: white;
-        box-shadow: 0 0 0 3px var(--acento-ring);
-    }
-    
-    .field-inner:focus-within .field-icon {
-        color: var(--acento);
+    .header-titulo{
+        font-family:'Barlow Condensed',sans-serif;
+        font-size:3rem;
+        color:#fff;
+        margin:0;
+        line-height:1;
+        text-transform:uppercase;
+        font-weight:800;
     }
 
-    .field-error {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .78rem; color: #d32f2f;
-        margin-top: 5px; display: flex; align-items: center; gap: 5px;
-    }
-    .field-error svg {
-        width: 13px; height: 13px;
-        stroke: #d32f2f; fill: none;
-        stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-        flex-shrink: 0;
+    .header-sub{
+        color:rgba(255,255,255,.5);
+        font-family:'DM Sans',sans-serif;
+        margin-top:5px;
+        font-size:.95rem;
     }
 
-    /* ── Footer ── */
-    .form-card-footer {
-        background: var(--gris);
-        border-top: 1px solid var(--borde);
-        padding: 20px 32px;
-        display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+    .header-badge{
+        color:rgba(255,255,255,.35);
+        font-family:'Barlow Condensed',sans-serif;
+        font-size:1rem;
+        font-weight:700;
+        letter-spacing:1px;
     }
-    .btn-cancelar {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .82rem; font-weight: 600;
-        text-transform: uppercase; letter-spacing: .5px;
-        padding: 10px 22px; border-radius: 10px;
-        border: 1.5px solid var(--borde);
-        background: white; color: var(--muted);
-        text-decoration: none; transition: .2s; cursor: pointer;
-        display: flex; align-items: center; gap: 8px;
-    }
-    .btn-cancelar svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-    .btn-cancelar:hover { background: var(--borde); color: var(--texto); }
 
-    .btn-guardar {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .82rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px;
-        padding: 11px 28px; border-radius: 10px;
-        border: none; background: var(--acento);
-        color: white; cursor: pointer;
-        box-shadow: 0 4px 14px var(--acento-glow);
-        transition: .2s;
-        display: flex; align-items: center; gap: 8px;
+    .form-card{
+        background:white;
+        border-radius:20px;
+        overflow:hidden;
+        border:1px solid #ddd;
     }
-    .btn-guardar svg {
-        width: 15px; height: 15px;
-        stroke: white; fill: none;
-        stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+
+    .form-card-header{
+        background:var(--carbon);
+        padding:18px 24px;
+
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
     }
-    .btn-guardar:hover { background: var(--acento2); transform: translateY(-1px); }
+
+    .form-card-header span{
+        color:white;
+        font-family:'Barlow Condensed',sans-serif;
+        font-size:1.1rem;
+        font-weight:700;
+        letter-spacing:1px;
+        text-transform:uppercase;
+    }
+
+    .modo-chip{
+        background:var(--acento);
+        color:white;
+        border-radius:30px;
+        padding:6px 16px;
+        font-size:.9rem;
+        font-weight:700;
+    }
+
+    .form-card-body{
+        padding:35px;
+    }
+
+    .field-group{
+        margin-bottom:28px;
+    }
+
+    .field-label{
+        display:block;
+        margin-bottom:10px;
+
+        font-family:'DM Sans',sans-serif;
+        font-size:.9rem;
+        font-weight:700;
+        color:#8f8f8f;
+
+        text-transform:uppercase;
+        letter-spacing:1px;
+    }
+
+    .field-inner{
+        position:relative;
+    }
+
+    .field-icon{
+        position:absolute;
+        left:16px;
+        top:50%;
+        transform:translateY(-50%);
+        z-index:5;
+        color:#b5b5b5;
+    }
+
+    .field-icon svg{
+        width:18px;
+        height:18px;
+        stroke:currentColor;
+        fill:none;
+        stroke-width:2;
+    }
+
+    .form-field{
+        width:100%;
+        height:58px;
+
+        border:1.5px solid var(--borde);
+        border-radius:14px;
+
+        background:var(--gris);
+
+        padding-left:50px;
+        padding-right:18px;
+
+        font-family:'DM Sans',sans-serif;
+        font-size:1rem;
+
+        transition:.2s;
+        outline:none;
+    }
+
+    .form-field:focus{
+        border-color:var(--acento);
+        background:white;
+        box-shadow:0 0 0 4px var(--acento-ring);
+    }
+
+    .has-error .form-field{
+        border-color:#ef5350;
+        background:#fff5f5;
+    }
+
+    .field-error{
+        margin-top:10px;
+
+        background:#fff1f1;
+        border:1px solid #ffbcbc;
+
+        color:#ef5350;
+
+        padding:10px 14px;
+        border-radius:10px;
+
+        font-family:'DM Sans',sans-serif;
+        font-size:.92rem;
+        font-weight:600;
+    }
+
+    .form-card-footer{
+        padding:24px 35px;
+        background:#fafafa;
+        border-top:1px solid #eee;
+
+        display:flex;
+        justify-content:flex-end;
+        gap:15px;
+    }
+
+    .btn-cancelar{
+        height:50px;
+        padding:0 24px;
+
+        border-radius:12px;
+        border:1px solid #ddd;
+
+        background:white;
+        color:#888;
+
+        display:flex;
+        align-items:center;
+        justify-content:center;
+
+        text-decoration:none;
+
+        font-family:'DM Sans',sans-serif;
+        font-weight:700;
+
+        transition:.2s;
+    }
+
+    .btn-cancelar:hover{
+        background:#eee;
+    }
+
+    .btn-guardar{
+        height:50px;
+        padding:0 30px;
+
+        border:none;
+        border-radius:12px;
+
+        background:var(--acento);
+        color:white;
+
+        font-family:'DM Sans',sans-serif;
+        font-weight:700;
+
+        cursor:pointer;
+        transition:.2s;
+    }
+
+    .btn-guardar:hover{
+        background:var(--acento2);
+    }
+
 </style>
 {% endblock %}
 
 {% block contenido %}
-<div class="container animate__animated animate__fadeIn" style="max-width:680px;">
+
+<div class="container container-form animate__animated animate__fadeIn">
 
     <div class="taller-header">
+
         <div class="header-left">
-            <div class="header-icon-wrap" style="background:transparent; box-shadow:none;">
-                <img src="{% static 'imagenes/compatibilidaad.jpeg' %}" style="width:56px;height:56px;object-fit:contain;border-radius:12px;">
+
+            <div class="header-icon-wrap">
+                <img src="{% static 'imagenes/compatibilidaad.jpeg' %}">
             </div>
+
             <div>
-                <h1 class="header-titulo">{{ titulo }}</h1>
+
+                <h1 class="header-titulo">
+                    {{ titulo }}
+                </h1>
+
                 <div class="header-sub">
-                    {% if es_editar %}Modifica la relación de compatibilidad{% else %}Vincula un producto con una marca de vehículo{% endif %}
+
+                    {% if es_editar %}
+                        Modifica la relación de compatibilidad
+                    {% else %}
+                        Vincula un producto con una marca de vehículo
+                    {% endif %}
+
                 </div>
+
             </div>
+
         </div>
-        <span class="header-badge">Acerautos S.A.S</span>
+
+        <div class="header-badge">
+            ACERAUTOS S.A.S
+        </div>
+
     </div>
 
     <form method="post" action="." id="formCompatibilidad">
+
         {% csrf_token %}
 
         <div class="form-card">
+
             <div class="form-card-header">
-                {% if es_editar %}
-                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                {% else %}
-                <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                {% endif %}
-                <span>{% if es_editar %}Editar Compatibilidad{% else %}Detalles de Compatibilidad{% endif %}</span>
-                <span class="modo-chip">{% if es_editar %}✎ Editando{% else %}+ Nueva{% endif %}</span>
+
+                <span>
+                    {% if es_editar %}
+                        Editar Compatibilidad
+                    {% else %}
+                        Detalles de Compatibilidad
+                    {% endif %}
+                </span>
+
+                <div class="modo-chip">
+
+                    {% if es_editar %}
+                        ✎ Editando
+                    {% else %}
+                        + Nueva
+                    {% endif %}
+
+                </div>
+
             </div>
 
             <div class="form-card-body">
+
                 {% for field in form.visible_fields %}
+
                 <div class="field-group">
-                    <label class="field-label">{{ field.label }}</label>
-                    <div class="field-inner">
-                        <span class="field-icon">
+
+                    <label class="field-label">
+                        {{ field.label }}
+                    </label>
+
+                    <div class="field-inner {% if field.errors %}has-error{% endif %}">
+
+                        <div class="field-icon">
+
                             {% if 'producto' in field.name %}
-                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="9" y1="12" x2="9" y2="12.01"/><line x1="15" y1="12" x2="15" y2="12.01"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            </svg>
+
                             {% elif 'marca' in field.name %}
-                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 19a7 7 0 110-14 7 7 0 010 14z" fill="none"/><circle cx="12" cy="12" r="3"/></svg>
-                            {% elif 'servicio' in field.name %}
-                            <svg viewBox="0 0 24 24"><path d="M14.4 14.3L9.7 9.6"/><path d="M12 2c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12 6.5 2 12 2z"/><path d="M12 6v6l4 2.4"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="9"/>
+                            </svg>
+
                             {% else %}
-                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="2"/>
+                            </svg>
                             {% endif %}
-                        </span>
-                        {{ field|add_class:'form-field' }}
-                    </div>
-                    {% for error in field.errors %}
-                        <div class="field-error">
-                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                            {{ error }}
+
                         </div>
+
+                        {{ field|add_class:'form-field' }}
+
+                    </div>
+
+                    {% for error in field.errors %}
+                    <div class="field-error">
+                        ⚠ {{ error }}
+                    </div>
                     {% endfor %}
+
                 </div>
+
                 {% endfor %}
 
-                {% if form.non_field_errors %}
-                    {% for error in form.non_field_errors %}
-                        <div class="field-error">
-                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                            {{ error }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
             </div>
 
             <div class="form-card-footer">
+
                 <a href="{% url 'app:listar_compatibilidad' %}" class="btn-cancelar">
-                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     Cancelar
                 </a>
+
                 <button type="submit" class="btn-guardar">
+
                     {% if es_editar %}
-                    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                    Actualizar Relación
+                        Actualizar Relación
                     {% else %}
-                    <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                    Guardar Relación
+                        Guardar Relación
                     {% endif %}
+
                 </button>
+
             </div>
+
         </div>
+
     </form>
+
 </div>
+
 {% endblock %}
 
 {% block js %}
+
 <script>
-const esEditar = {% if es_editar %}true{% else %}false{% endif %};
-const acentoColor = esEditar ? '#1565c0' : '#d32f2f';
-const acentoRing  = esEditar ? 'rgba(21,101,192,.1)' : 'rgba(211,47,47,.1)';
 
-document.querySelectorAll('.form-field').forEach(el => {
-    el.style.cssText = `
-        width: 100%;
-        padding: 12px 14px 12px 44px;
-        border: 1.5px solid #e0ddd8;
-        border-radius: 10px;
-        font-family: 'DM Sans', sans-serif;
-        font-size: .9rem;
-        color: #2a2a2a;
-        background: #f2f2f0;
-        outline: none;
-        transition: border-color .2s, background .2s, box-shadow .2s;
-        -webkit-appearance: none;
-        appearance: none;
-        box-sizing: border-box;
-    `;
-    el.addEventListener('focus', () => {
-        el.style.borderColor = acentoColor;
-        el.style.background  = 'white';
-        el.style.boxShadow   = `0 0 0 3px ${acentoRing}`;
-    });
-    el.addEventListener('blur', () => {
-        el.style.borderColor = '#e0ddd8';
-        el.style.background  = '#f2f2f0';
-        el.style.boxShadow   = 'none';
-    });
-});
+    $(function(){
 
-$(function () {
-    $('#formCompatibilidad').on('submit', function (e) {
-        e.preventDefault();
-        var formulario = this;
-        Swal.fire({
-            title: esEditar ? '¿Actualizar relación?' : '¿Confirmar relación?',
-            text: esEditar
-                ? 'Se guardarán los cambios en esta compatibilidad.'
-                : 'Se vinculará este producto con la marca seleccionada.',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: esEditar ? 'Sí, actualizar' : 'Sí, guardar',
-            cancelButtonText: 'Revisar',
-            confirmButtonColor: acentoColor,
-            cancelButtonColor: '#888',
-        }).then((result) => {
-            if (result.isConfirmed) { $(formulario).off('submit').submit(); }
+        $('#formCompatibilidad').on('submit', function(e){
+
+            e.preventDefault();
+
+            const formulario = this;
+
+            Swal.fire({
+
+                title:'¿Confirmar acción?',
+
+                text:'Se guardará la compatibilidad.',
+
+                icon:'question',
+
+                showCancelButton:true,
+
+                confirmButtonColor:'#d32f2f',
+
+                cancelButtonColor:'#888',
+
+                confirmButtonText:'Sí, guardar',
+
+                cancelButtonText:'Cancelar'
+
+            }).then((result)=>{
+
+                if(result.isConfirmed){
+                    formulario.submit();
+                }
+
+            });
+
         });
+
     });
-});
+
 </script>
+
 {% endblock %}
