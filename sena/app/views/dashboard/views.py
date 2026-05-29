@@ -4,18 +4,21 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from app.models import Cliente, Vehiculo, Factura, Producto, Proveedor, Notificacion
+from app.models import Cliente, Vehiculo, Factura, Producto, Proveedor, Notificacion, SeguimientoMantenimiento
 
 
 def _verificar_mantenimientos():
-    """Revisa todos los vehículos por fecha de próximo mantenimiento."""
-    for vehiculo in Vehiculo.objects.select_related('marca', 'cliente').all():
+    """Revisa todos los vehículos a través de sus seguimientos activos."""
+    hoy = timezone.now().date()
 
-        dias_rest = vehiculo.dias_restantes_mantenimiento()
+    seguimientos = SeguimientoMantenimiento.objects.filter(
+        activo=True,
+        fecha_proximo_mantenimiento__isnull=False
+    ).select_related('vehiculo', 'vehiculo__marca', 'vehiculo__cliente')
 
-        # Sin fecha configurada, saltar
-        if dias_rest is None:
-            continue
+    for seg in seguimientos:
+        vehiculo  = seg.vehiculo
+        dias_rest = (seg.fecha_proximo_mantenimiento - hoy).days
 
         # ── Vencido ──
         if dias_rest <= 0:
@@ -30,7 +33,7 @@ def _verificar_mantenimientos():
                     mensaje  = (
                         f"El vehículo {vehiculo.placa} ({vehiculo.marca.nombre} {vehiculo.modelo}) "
                         f"tiene el mantenimiento VENCIDO. "
-                        f"Fecha programada: {vehiculo.fecha_proximo_mantenimiento}."
+                        f"Fecha programada: {seg.fecha_proximo_mantenimiento}."
                     ),
                 )
             continue
@@ -48,7 +51,7 @@ def _verificar_mantenimientos():
                     mensaje  = (
                         f"El vehículo {vehiculo.placa} tiene su mantenimiento próximo. "
                         f"Faltan {dias_rest} días "
-                        f"(fecha: {vehiculo.fecha_proximo_mantenimiento})."
+                        f"(fecha: {seg.fecha_proximo_mantenimiento})."
                     ),
                 )
 

@@ -3,7 +3,10 @@ from django.dispatch import receiver
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 from django.utils import timezone
-from .models import Producto, Notificacion, DetalleOrdenProducto, Compra, Vehiculo, OrdenServicio
+from .models import (
+    Producto, Notificacion, DetalleOrdenProducto,
+    Compra, Vehiculo, OrdenServicio, SeguimientoMantenimiento
+)
 
 CORREO_ADMIN = 'acerautos09@gmail.com'
 
@@ -153,24 +156,12 @@ def verificar_stock_bajo(sender, instance, **kwargs):
 # ══════════════════════════════════════════════════════════
 @receiver(post_save, sender=DetalleOrdenProducto)
 def verificar_stock_bajo_despues_uso(sender, instance, created, **kwargs):
-    """
-    Cuando se usa un producto en una orden, verifica si quedó bajo stock.
-    El descuento ya se hace en DetalleOrdenProducto.save()
-    """
     if created:
         producto = instance.producto
-        
-        # Solo notificar si quedó bajo stock
         if producto.stock <= producto.stock_minimo:
             nivel  = "CRITICO" if producto.stock == 0 else "BAJO"
             titulo = f"Stock {nivel} — {producto.nombre}"
-            
-            # Evitar notificaciones duplicadas
-            existe = Notificacion.objects.filter(
-                titulo=titulo,
-                leido=False
-            ).exists()
-
+            existe = Notificacion.objects.filter(titulo=titulo, leido=False).exists()
             if not existe:
                 Notificacion.objects.create(
                     tipo    = 'Alerta',
@@ -194,18 +185,25 @@ def devolver_stock_cancelacion(sender, instance, **kwargs):
 
 
 # ══════════════════════════════════════════════════════════
-#  4. ALERTA DE MANTENIMIENTO AL GUARDAR ORDEN DE SERVICIO
+#  4. ALERTA DE MANTENIMIENTO AL GUARDAR ORDEN
+#     Ahora lee desde SeguimientoMantenimiento, no del Vehiculo
 # ══════════════════════════════════════════════════════════
 @receiver(post_save, sender=OrdenServicio)
 def alerta_mantenimiento_vehiculo(sender, instance, **kwargs):
     vehiculo = instance.vehiculo
-    vehiculo.refresh_from_db()
 
-    dias_rest = vehiculo.dias_restantes_mantenimiento()
+    # Buscar el seguimiento activo más reciente
+    seg = SeguimientoMantenimiento.objects.filter(
+        vehiculo=vehiculo,
+        activo=True,
+        fecha_proximo_mantenimiento__isnull=False
+    ).order_by('-fecha_creacion').first()
 
-    # Sin fecha configurada, no hay nada que verificar
-    if dias_rest is None:
+    # Sin seguimiento activo no hay nada que verificar
+    if not seg:
         return
+
+    dias_rest = (seg.fecha_proximo_mantenimiento - timezone.now().date()).days
 
     # ── Vencido ──
     if dias_rest <= 0:
@@ -220,7 +218,7 @@ def alerta_mantenimiento_vehiculo(sender, instance, **kwargs):
                 mensaje  = (
                     f"El vehiculo {vehiculo.placa} ({vehiculo.marca.nombre} {vehiculo.modelo}) "
                     f"tiene el mantenimiento VENCIDO. "
-                    f"Fecha programada: {vehiculo.fecha_proximo_mantenimiento}."
+                    f"Fecha programada: {seg.fecha_proximo_mantenimiento}."
                 ),
             )
             filas = (
@@ -228,7 +226,7 @@ def alerta_mantenimiento_vehiculo(sender, instance, **kwargs):
                 + _fila("Marca / Modelo", f"{vehiculo.marca.nombre} {vehiculo.modelo}")
                 + _fila("Cliente",        str(vehiculo.cliente))
                 + _fila("Km actuales",    f"{vehiculo.km_ultimo_servicio:,} km")
-                + _fila("Fecha prog.",    str(vehiculo.fecha_proximo_mantenimiento), ultimo=True)
+                + _fila("Fecha prog.",    str(seg.fecha_proximo_mantenimiento), ultimo=True)
             )
             pie = """
             <p style="margin:20px 0 0;padding:14px 16px;background:#fff5f5;
@@ -257,7 +255,7 @@ def alerta_mantenimiento_vehiculo(sender, instance, **kwargs):
                 vehiculo = vehiculo,
                 mensaje  = (
                     f"El vehiculo {vehiculo.placa} tiene su mantenimiento proximo. "
-                    f"Faltan {dias_rest} dias (fecha: {vehiculo.fecha_proximo_mantenimiento})."
+                    f"Faltan {dias_rest} dias (fecha: {seg.fecha_proximo_mantenimiento})."
                 ),
             )
             filas = (
@@ -265,7 +263,7 @@ def alerta_mantenimiento_vehiculo(sender, instance, **kwargs):
                 + _fila("Marca / Modelo", f"{vehiculo.marca.nombre} {vehiculo.modelo}")
                 + _fila("Cliente",        str(vehiculo.cliente))
                 + _fila("Km actuales",    f"{vehiculo.km_ultimo_servicio:,} km")
-                + _fila("Fecha prog.",    str(vehiculo.fecha_proximo_mantenimiento))
+                + _fila("Fecha prog.",    str(seg.fecha_proximo_mantenimiento))
                 + _fila("Dias restantes", str(dias_rest), ultimo=True)
             )
             pie = """
@@ -281,3 +279,18 @@ def alerta_mantenimiento_vehiculo(sender, instance, **kwargs):
                 texto_plano = f"El vehiculo {vehiculo.placa} tiene mantenimiento proximo: {dias_rest} dias.",
                 html        = html,
             )
+
+
+# ══════════════════════════════════════════════════════════
+#  5. CREAR SEGUIMIENTO AL GUARDAR ORDEN CON SERVICIO
+#     que requiere seguimiento y fecha fue enviada
+# ══════════════════════════════════════════════════════════
+@receiver(post_save, sender=OrdenServicio)
+def crear_seguimiento_mantenimiento(sender, instance, created, **kwargs):
+    """
+    Este signal NO crea el SeguimientoMantenimiento directamente
+    porque la fecha_proximo_mantenimiento viene del formulario, no del modelo.
+    La creación del seguimiento se hace en OrdenServicioCreateView.form_valid()
+    y OrdenServicioUpdateView.form_valid() en views.py
+    """
+    pass

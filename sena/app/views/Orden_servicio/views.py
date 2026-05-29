@@ -6,10 +6,19 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 from django.http import JsonResponse
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-
-from app.models import OrdenServicio, DetalleOrdenProducto, Vehiculo, Producto, CompatibilidadProducto
 from app.forms import OrdenServicioForm
+
+from app.models import (
+    OrdenServicio,
+    OrdenServicioDetalle,
+    DetalleOrdenProducto,
+    Vehiculo,
+    Producto,
+    CompatibilidadProducto,
+    SeguimientoMantenimiento,
+)
 
 
 class SoloAdminMixin(UserPassesTestMixin):
@@ -46,6 +55,7 @@ def _get_productos_disponibles():
 def _guardar_productos(request, orden):
     producto_ids = request.POST.getlist('producto_ids[]')
     cantidades   = request.POST.getlist('producto_cantidades[]')
+    errores = []
     for pid, cant in zip(producto_ids, cantidades):
         try:
             prod = Producto.objects.get(pk=pid, estado=True)
@@ -54,6 +64,20 @@ def _guardar_productos(request, orden):
             )
         except (Producto.DoesNotExist, ValueError):
             continue
+        except ValidationError as e:
+            errores.append(e.message)
+    return errores  # retorna lista de errores, vacía si todo ok
+
+
+def _guardar_servicios_detalle(form, orden):
+    orden.servicios_detalle.all().delete()
+    servicios = form.cleaned_data.get('servicios', [])
+    for tipo in servicios:
+        OrdenServicioDetalle.objects.create(
+            orden=orden,
+            tipo_servicio=tipo,
+            precio_mano_obra=tipo.precio_mano_obra,
+        )
 
 
 def _hay_incompatibles(request, marca_id, servicio_ids):
@@ -61,11 +85,8 @@ def _hay_incompatibles(request, marca_id, servicio_ids):
         try:
             prod = Producto.objects.get(pk=pid, estado=True)
             total_reglas = CompatibilidadProducto.objects.filter(producto=prod).count()
-            
             if total_reglas == 0:
                 return True
-            
-           
             es_compatible = False
             for sid in servicio_ids:
                 status, _ = _verificar_compat(prod, marca_id, sid)
@@ -78,6 +99,28 @@ def _hay_incompatibles(request, marca_id, servicio_ids):
             continue
     return False
 
+
+def _crear_seguimientos(request, orden):
+    fecha_proximo = request.POST.get('fecha_proximo_mantenimiento') or None
+    servicios_con_seguimiento = orden.servicios.filter(requiere_seguimiento=True)
+
+    if not servicios_con_seguimiento.exists():
+        return
+
+    for servicio in servicios_con_seguimiento:
+        SeguimientoMantenimiento.objects.create(
+            vehiculo=orden.vehiculo,
+            orden_servicio=orden,
+            tipo_servicio=servicio,
+            km_al_momento=orden.km_actual,
+            km_proximo_mantenimiento=None,
+            fecha_proximo_mantenimiento=fecha_proximo or None,
+            estado='Pendiente',
+            activo=True,
+            observaciones=f'Creado automáticamente desde Orden #{orden.pk}',
+        )
+
+
 # ══════════════════════════════════════════════════════════
 #  LISTAR
 # ══════════════════════════════════════════════════════════
@@ -89,8 +132,8 @@ class OrdenServicioListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset().prefetch_related(
-            'servicios',
-            'productos_usados__producto'
+            'servicios_detalle__tipo_servicio',
+            'productos_usados__producto',
         )
         for orden in qs:
             marca_id     = orden.vehiculo.marca_id
@@ -109,7 +152,7 @@ class OrdenServicioListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Órdenes de Servicio '
+        context['titulo'] = 'Órdenes de Servicio'
         return context
 
 
@@ -158,9 +201,15 @@ class OrdenServicioDetailView(LoginRequiredMixin, View):
             sid = servicio_ids[0] if servicio_ids else None
             d.compat_status, d.compat_mensaje = _verificar_compat(d.producto, marca_id, sid)
 
-        mano_obra          = sum(s.precio_mano_obra for s in orden.servicios.all())
-        subtotal_productos = sum(d.producto.precio * d.cantidad for d in detalles)
-        total              = subtotal_productos + mano_obra
+        mano_obra = sum(
+            d.precio_mano_obra
+            for d in orden.servicios_detalle.all()
+        )
+        subtotal_productos = sum(
+            d.precio_unitario * d.cantidad
+            for d in detalles
+        )
+        total = subtotal_productos + mano_obra
 
         return render(request, 'OrdenServicio/detalle.html', {
             'orden':               orden,
@@ -238,7 +287,7 @@ class ProductosCompatiblesView(LoginRequiredMixin, View):
 
 
 # ══════════════════════════════════════════════════════════
-#  CREAR — fecha forzada por el servidor
+#  CREAR
 # ══════════════════════════════════════════════════════════
 
 class OrdenServicioCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
@@ -257,25 +306,37 @@ class OrdenServicioCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
 
     def form_valid(self, form):
         orden = form.save(commit=False)
-        # Fecha siempre la pone el servidor — nadie la puede manipular
         orden.fecha = timezone.now()
-        # Km: usar el del vehículo si no viene uno mayor
+
         if orden.vehiculo:
             km_vehiculo = orden.vehiculo.km_ultimo_servicio or 0
-            # Si alguien manipuló el km desde consola y mandó uno menor, lo corregimos
             if orden.km_actual < km_vehiculo:
                 orden.km_actual = km_vehiculo
             elif orden.km_actual > km_vehiculo:
                 orden.vehiculo.km_ultimo_servicio = orden.km_actual
                 orden.vehiculo.save(update_fields=['km_ultimo_servicio'])
+
         orden.save()
-        form.save_m2m()
+
+        # Guarda servicios con snapshot de precio — NO usa form.save_m2m()
+        _guardar_servicios_detalle(form, orden)
+
         servicio_ids = list(orden.servicios.values_list('id', flat=True))
         if _hay_incompatibles(self.request, orden.vehiculo.marca_id, servicio_ids):
             messages.error(self.request, '⚠ No se puede guardar: hay productos incompatibles con la marca.')
             orden.delete()
             return self.form_invalid(form)
-        _guardar_productos(self.request, orden)
+
+        # Guarda productos y captura errores de stock
+        errores = _guardar_productos(self.request, orden)
+        if errores:
+            for e in errores:
+                messages.error(self.request, f'⚠ {e}')
+            orden.delete()
+            return self.form_invalid(form)
+
+        _crear_seguimientos(self.request, orden)
+
         messages.success(self.request, 'Orden de servicio creada correctamente.')
         return redirect(self.success_url)
 
@@ -285,7 +346,7 @@ class OrdenServicioCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
 
 
 # ══════════════════════════════════════════════════════════
-#  EDITAR — bloqueado si Terminada, fecha y km protegidos
+#  EDITAR
 # ══════════════════════════════════════════════════════════
 
 class OrdenServicioUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
@@ -311,9 +372,8 @@ class OrdenServicioUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
 
     def form_valid(self, form):
         orden = form.save(commit=False)
-        # Fecha: conservar la original, no permitir cambios
         orden.fecha = self.get_object().fecha
-        # Km: proteger contra manipulación desde consola
+
         if orden.vehiculo:
             km_vehiculo = orden.vehiculo.km_ultimo_servicio or 0
             if orden.km_actual < km_vehiculo:
@@ -321,14 +381,29 @@ class OrdenServicioUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
             elif orden.km_actual > km_vehiculo:
                 orden.vehiculo.km_ultimo_servicio = orden.km_actual
                 orden.vehiculo.save(update_fields=['km_ultimo_servicio'])
+
         orden.save()
-        form.save_m2m()
+
+        # Borra y recrea servicios con precios actuales — NO usa form.save_m2m()
+        _guardar_servicios_detalle(form, orden)
+
         servicio_ids = list(orden.servicios.values_list('id', flat=True))
         if _hay_incompatibles(self.request, orden.vehiculo.marca_id, servicio_ids):
             messages.error(self.request, '⚠ No se puede guardar: hay productos incompatibles con la marca.')
             return self.form_invalid(form)
+
         orden.productos_usados.all().delete()
-        _guardar_productos(self.request, orden)
+
+        # Guarda productos y captura errores de stock
+        errores = _guardar_productos(self.request, orden)
+        if errores:
+            for e in errores:
+                messages.error(self.request, f'⚠ {e}')
+            return self.form_invalid(form)
+
+        if self.request.POST.get('fecha_proximo_mantenimiento'):
+            _crear_seguimientos(self.request, orden)
+
         messages.success(self.request, 'Orden de servicio actualizada correctamente.')
         return redirect(self.success_url)
 

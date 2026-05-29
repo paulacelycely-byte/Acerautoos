@@ -1,3 +1,4 @@
+
 {% extends 'body.html' %}
 {% load static %}
 {% load widget_tweaks %}
@@ -15,91 +16,31 @@
         --borde:   #e0ddd8;
         --texto:   #2a2a2a;
         --muted:   #888;
+        --naranja: #f59e0b;
     }
 
     /* ── Header ── */
-    .taller-header {
-        background: var(--carbon);
-        border-radius: 10px;
-        padding: 28px 32px;
-        margin-bottom: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
+    .taller-header { background: var(--carbon); border-radius: 10px; padding: 28px 32px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; }
     .header-left { display: flex; align-items: center; gap: 16px; }
     .header-icon-wrap { width: 52px; height: 52px; border-radius: 12px; overflow: hidden; flex-shrink: 0; }
     .header-icon-wrap img { width: 100%; height: 100%; object-fit: contain; }
-    .header-titulo {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: 2rem; font-weight: 800;
-        color: white; letter-spacing: 1px;
-        text-transform: uppercase; line-height: 1; margin: 0;
-    }
-    .header-sub {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .78rem; color: rgba(255,255,255,.4);
-        margin-top: 5px;
-    }
-    .modo-chip {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .72rem; font-weight: 800;
-        letter-spacing: 1.5px; text-transform: uppercase;
-        padding: 7px 16px; border-radius: 50px;
-        background: var(--acento); color: white;
-        display: flex; align-items: center; gap: 6px; flex-shrink: 0;
-    }
+    .header-titulo { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0; }
+    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.4); margin-top: 5px; }
+    .modo-chip { font-family: 'Barlow Condensed', sans-serif; font-size: .72rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 7px 16px; border-radius: 50px; background: var(--acento); color: white; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .modo-chip svg { width: 13px; height: 13px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 
-    /* ── Card única ── */
-    .form-card {
-        background: white;
-        border-radius: 10px;
-        border: 1px solid var(--borde);
-        overflow: hidden;
-        margin-bottom: 18px;
-    }
-
-    /* ── Separadores de sección dentro de la card ── */
-    .form-section {
-        padding: 24px 28px;
-        border-bottom: 1px solid var(--borde);
-    }
+    /* ── Card ── */
+    .form-card { background: white; border-radius: 10px; border: 1px solid var(--borde); overflow: hidden; margin-bottom: 18px; }
+    .form-section { padding: 24px 28px; border-bottom: 1px solid var(--borde); }
     .form-section:last-child { border-bottom: none; }
 
-    .section-title {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .82rem; font-weight: 800;
-        text-transform: uppercase; letter-spacing: 1.2px;
-        color: var(--muted);
-        margin: 0 0 18px;
-        display: flex; align-items: center; gap: 8px;
-    }
-    .section-title svg {
-        width: 13px; height: 13px;
-        stroke: var(--acento); fill: none;
-        stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
-        flex-shrink: 0;
-    }
-    .section-title::after {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background: var(--borde);
-        margin-left: 6px;
-    }
+    .section-title { font-family: 'Barlow Condensed', sans-serif; font-size: .82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin: 0 0 18px; display: flex; align-items: center; gap: 8px; }
+    .section-title svg { width: 13px; height: 13px; stroke: var(--acento); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--borde); margin-left: 6px; }
 
-    /* ── Estado selector ── */
+    /* ── Estado ── */
     .estado-wrap { display: flex; gap: 10px; flex-wrap: wrap; }
-    .estado-btn {
-        font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .6px;
-        padding: 10px 20px; border-radius: 10px;
-        border: 1.5px solid var(--borde); background: var(--gris); color: var(--muted);
-        cursor: pointer; transition: all .18s;
-        display: flex; align-items: center; gap: 8px;
-        flex: 1; justify-content: center; min-width: 130px;
-    }
+    .estado-btn { font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; padding: 10px 20px; border-radius: 10px; border: 1.5px solid var(--borde); background: var(--gris); color: var(--muted); cursor: pointer; transition: all .18s; display: flex; align-items: center; gap: 8px; flex: 1; justify-content: center; min-width: 130px; }
     .estado-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .estado-btn:hover { border-color: #c5bfb8; background: white; }
     .estado-btn.activo-Pendiente  { background: #fff8e1; border-color: #f59e0b; color: #b45309; }
@@ -108,236 +49,124 @@
 
     /* ── Campos ── */
     .field-group { margin-bottom: 18px; }
-    .field-label {
-        font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .9px;
-        color: var(--muted); display: block; margin-bottom: 6px;
-    }
+    .field-label { font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .9px; color: var(--muted); display: block; margin-bottom: 6px; }
     .field-label .req { color: var(--acento); margin-left: 2px; }
-
     .field-inner { position: relative; }
-    .field-inner .fi-icon {
-        position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
-        width: 15px; height: 15px; color: #c0bbb5; pointer-events: none;
-        display: flex; align-items: center; justify-content: center; transition: color .2s;
-    }
+    .field-inner .fi-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: #c0bbb5; pointer-events: none; display: flex; align-items: center; justify-content: center; transition: color .2s; }
     .field-inner .fi-icon svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .field-inner input,
-    .field-inner select {
-        width: 100%; padding: 11px 14px 11px 40px;
-        border: 1.5px solid var(--borde); border-radius: 9px;
-        font-family: 'DM Sans', sans-serif; font-size: .88rem;
-        color: var(--texto); background: var(--gris); outline: none;
-        transition: border-color .18s, background .18s, box-shadow .18s;
-        -webkit-appearance: none; appearance: none;
-    }
-    .field-inner input:focus,
-    .field-inner select:focus {
-        border-color: var(--acento); background: white;
-        box-shadow: 0 0 0 3px var(--acento-ring);
-    }
+    .field-inner input, .field-inner select { width: 100%; padding: 11px 14px 11px 40px; border: 1.5px solid var(--borde); border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: .88rem; color: var(--texto); background: var(--gris); outline: none; transition: border-color .18s, background .18s, box-shadow .18s; -webkit-appearance: none; appearance: none; }
+    .field-inner input:focus, .field-inner select:focus { border-color: var(--acento); background: white; box-shadow: 0 0 0 3px var(--acento-ring); }
     .field-inner:focus-within .fi-icon { color: var(--acento); }
     .field-inner input.fecha-auto { background: #f1f5f9 !important; color: var(--muted) !important; cursor: not-allowed; }
 
     .field-with-btn { display: flex; }
     .field-with-btn .field-inner { flex: 1; }
-    .field-with-btn .field-inner input,
-    .field-with-btn .field-inner select { border-radius: 9px 0 0 9px; }
+    .field-with-btn .field-inner input, .field-with-btn .field-inner select { border-radius: 9px 0 0 9px; }
 
-    .btn-add-inline {
-        background: var(--acento); color: white; border: none;
-        border-radius: 0 9px 9px 0; padding: 0 14px; cursor: pointer;
-        transition: background .18s; display: flex; align-items: center;
-        justify-content: center; text-decoration: none; flex-shrink: 0;
-        width: 42px; position: relative;
-    }
+    .btn-add-inline { background: var(--acento); color: white; border: none; border-radius: 0 9px 9px 0; padding: 0 14px; cursor: pointer; transition: background .18s; display: flex; align-items: center; justify-content: center; text-decoration: none; flex-shrink: 0; width: 42px; position: relative; }
     .btn-add-inline svg { width: 15px; height: 15px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; }
     .btn-add-inline:hover { background: var(--acento2); color: white; }
-    .btn-add-inline::after {
-        content: attr(data-tip); position: absolute; top: calc(100% + 6px); left: 50%;
-        transform: translateX(-50%); background: var(--carbon); color: rgba(255,255,255,.8);
-        font-size: .65rem; font-weight: 600; padding: 3px 8px; border-radius: 5px;
-        white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity .15s; z-index: 999;
-    }
+    .btn-add-inline::after { content: attr(data-tip); position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--carbon); color: rgba(255,255,255,.8); font-size: .65rem; font-weight: 600; padding: 3px 8px; border-radius: 5px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity .15s; z-index: 999; }
     .btn-add-inline:hover::after { opacity: 1; }
 
-    .badge-auto {
-        font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 700;
-        background: #e2e8f0; color: #475569; border-radius: 20px;
-        padding: 2px 9px; text-transform: uppercase; letter-spacing: .4px; margin-left: 5px;
-    }
-    .badge-km-auto {
-        font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 700;
-        background: #dcfce7; color: #16a34a; border-radius: 20px;
-        padding: 2px 9px; text-transform: uppercase; letter-spacing: .4px;
-        margin-left: 5px; display: none;
-    }
+    .badge-auto { font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 700; background: #e2e8f0; color: #475569; border-radius: 20px; padding: 2px 9px; text-transform: uppercase; letter-spacing: .4px; margin-left: 5px; }
+    .badge-km-auto { font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 700; background: #dcfce7; color: #16a34a; border-radius: 20px; padding: 2px 9px; text-transform: uppercase; letter-spacing: .4px; margin-left: 5px; display: none; }
     .badge-km-auto.visible { display: inline; }
     .km-hint { font-family: 'DM Sans', sans-serif; font-size: .72rem; color: #16a34a; margin-top: 5px; display: none; align-items: center; gap: 5px; }
     .km-hint.visible { display: flex; }
     .km-hint svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
 
-    .vehiculo-info-strip {
-        display: none; align-items: center; gap: 8px; padding: 7px 13px;
-        border-radius: 8px; background: #f0f9ff; border: 1px solid #bae6fd; margin-top: 6px;
-    }
+    .vehiculo-info-strip { display: none; align-items: center; gap: 8px; padding: 7px 13px; border-radius: 8px; background: #f0f9ff; border: 1px solid #bae6fd; margin-top: 6px; }
     .vehiculo-info-strip.visible { display: flex; }
     .vehiculo-info-strip span { font-family: 'DM Sans', sans-serif; font-size: .75rem; color: #0369a1; font-weight: 600; }
 
     .field-error { font-family: 'DM Sans', sans-serif; font-size: .76rem; color: #d32f2f; margin-top: 5px; display: flex; align-items: center; gap: 5px; }
 
     /* ── Servicios ── */
-    .srv-tag {
-        display: inline-flex; align-items: center; gap: 5px;
-        background: #fff0f0; border: 1.5px solid #f5c6c6; color: #b71c1c;
-        border-radius: 6px; padding: 4px 10px;
-        font-size: .78rem; font-weight: 600; font-family: 'DM Sans', sans-serif;
-        animation: tagPop .15s ease;
-    }
+    .srv-tag { display: inline-flex; align-items: center; gap: 5px; background: #fff0f0; border: 1.5px solid #f5c6c6; color: #b71c1c; border-radius: 6px; padding: 4px 10px; font-size: .78rem; font-weight: 600; font-family: 'DM Sans', sans-serif; animation: tagPop .15s ease; }
     @keyframes tagPop { from { opacity:0; transform:scale(.88); } to { opacity:1; transform:scale(1); } }
     .srv-tag button { background: none; border: none; color: #b71c1c; cursor: pointer; font-size: 14px; line-height: 1; padding: 0; opacity: .7; }
     .srv-tag button:hover { opacity: 1; }
 
-    #servicios-dropdown {
-        border: 1.5px solid var(--borde); border-radius: 10px; background: #fff;
-        box-shadow: 0 8px 24px rgba(0,0,0,.1);
-        max-height: 0; opacity: 0; overflow: hidden;
-        transition: max-height .22s ease, opacity .18s ease; margin-top: 4px;
-    }
+    #servicios-dropdown { border: 1.5px solid var(--borde); border-radius: 10px; background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.1); max-height: 0; opacity: 0; overflow: hidden; transition: max-height .22s ease, opacity .18s ease; margin-top: 4px; }
     #servicios-dropdown.open { max-height: 220px; opacity: 1; overflow-y: auto; }
     #servicios-dropdown::-webkit-scrollbar { width: 4px; }
     #servicios-dropdown::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
-    .srv-dropdown-item {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 10px 14px; cursor: pointer;
-        font-size: .85rem; font-family: 'DM Sans', sans-serif; color: #2a2a2a;
-        border-bottom: 1px solid #f0f0f0; transition: background .13s;
-    }
+    .srv-dropdown-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; cursor: pointer; font-size: .85rem; font-family: 'DM Sans', sans-serif; color: #2a2a2a; border-bottom: 1px solid #f0f0f0; transition: background .13s; }
     .srv-dropdown-item:last-child { border-bottom: none; }
     .srv-dropdown-item:hover, .srv-dropdown-item.sel { background: #fff5f5; color: #b71c1c; }
     .srv-dropdown-item .chk { font-weight: 700; color: #b71c1c; }
     .srv-empty { padding: 14px; text-align: center; font-size: .8rem; color: #aaa; font-family: 'DM Sans', sans-serif; }
 
-    /* ── Productos ── */
-    .compat-aviso {
-        display: none; align-items: flex-start; gap: 11px;
-        padding: 12px 16px; border-radius: 9px;
-        border: 1.5px solid #fde68a; background: #fffbeb; margin-bottom: 14px;
+    /* ── Bloque seguimiento (aparece dinámicamente) ── */
+    #bloque-seguimiento {
+        display: none;
+        margin-top: 18px;
+        padding: 18px 20px;
+        background: #fffbeb;
+        border: 1.5px solid #fde68a;
+        border-radius: 12px;
+        animation: fadeSlide .2s ease;
     }
+    #bloque-seguimiento.visible { display: block; }
+    @keyframes fadeSlide { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+    .seguimiento-titulo {
+        font-family: 'Barlow Condensed', sans-serif; font-size: .82rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 1px; color: #92400e;
+        display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+    }
+    .seguimiento-titulo svg { width: 14px; height: 14px; stroke: #a16207; fill: none; stroke-width: 2.2; stroke-linecap: round; flex-shrink: 0; }
+    #id_fecha_proximo_mantenimiento {
+        width: 100%; padding: 11px 14px 11px 40px;
+        border: 1.5px solid #fde68a; border-radius: 9px;
+        font-family: 'DM Sans', sans-serif; font-size: .88rem;
+        color: var(--texto); background: white; outline: none;
+        transition: border-color .18s, box-shadow .18s;
+    }
+    #id_fecha_proximo_mantenimiento:focus { border-color: var(--naranja); box-shadow: 0 0 0 3px rgba(245,158,11,.15); }
+    .seguimiento-hint { font-family: 'DM Sans', sans-serif; font-size: .72rem; color: #a16207; margin-top: 6px; }
+
+    /* ── Productos ── */
+    .compat-aviso { display: none; align-items: flex-start; gap: 11px; padding: 12px 16px; border-radius: 9px; border: 1.5px solid #fde68a; background: #fffbeb; margin-bottom: 14px; }
     .compat-aviso.visible { display: flex; }
     .compat-aviso svg { width: 16px; height: 16px; stroke: #a16207; fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; margin-top: 1px; }
     .compat-aviso-texto { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: #92400e; font-weight: 600; }
     .compat-aviso-sub { font-family: 'DM Sans', sans-serif; font-size: .72rem; color: #a16207; margin-top: 2px; }
 
-    .productos-vacio {
-        font-family: 'DM Sans', sans-serif; font-size: .82rem; color: var(--muted);
-        text-align: center; padding: 22px 16px;
-        background: var(--gris); border-radius: 9px;
-        border: 1.5px dashed var(--borde); margin-bottom: 14px;
-    }
-
-    .producto-row {
-        display: flex; align-items: center; gap: 10px;
-        padding: 11px 14px; border-radius: 10px;
-        border: 1.5px solid var(--borde); background: var(--gris);
-        margin-bottom: 9px; transition: border-color .18s, background .18s;
-    }
+    .productos-vacio { font-family: 'DM Sans', sans-serif; font-size: .82rem; color: var(--muted); text-align: center; padding: 22px 16px; background: var(--gris); border-radius: 9px; border: 1.5px dashed var(--borde); margin-bottom: 14px; }
+    .producto-row { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 10px; border: 1.5px solid var(--borde); background: var(--gris); margin-bottom: 9px; transition: border-color .18s, background .18s; }
     .producto-row:hover { border-color: #c0bbb5; background: white; }
-
     .producto-select-wrap { flex: 1; position: relative; }
-    .producto-select-wrap select {
-        width: 100%; padding: 9px 12px 9px 34px;
-        border: 1.5px solid var(--borde); border-radius: 8px;
-        font-family: 'DM Sans', sans-serif; font-size: .84rem; color: var(--texto);
-        background: white; outline: none; transition: border-color .18s;
-        -webkit-appearance: none; appearance: none;
-    }
+    .producto-select-wrap select { width: 100%; padding: 9px 12px 9px 34px; border: 1.5px solid var(--borde); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: .84rem; color: var(--texto); background: white; outline: none; transition: border-color .18s; -webkit-appearance: none; appearance: none; }
     .producto-select-wrap select:focus { border-color: var(--acento); box-shadow: 0 0 0 3px var(--acento-ring); }
-    .producto-select-wrap .sel-icon {
-        position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
-        width: 14px; height: 14px; color: #bbb; pointer-events: none;
-        display: flex; align-items: center; justify-content: center;
-    }
+    .producto-select-wrap .sel-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: #bbb; pointer-events: none; display: flex; align-items: center; justify-content: center; }
     .producto-select-wrap .sel-icon svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
-
     .cantidad-wrap { width: 78px; flex-shrink: 0; }
-    .cantidad-wrap input {
-        width: 100%; padding: 9px 10px;
-        border: 1.5px solid var(--borde); border-radius: 8px;
-        font-family: 'DM Sans', sans-serif; font-size: .9rem; color: var(--texto);
-        background: white; outline: none; text-align: center; transition: border-color .18s;
-    }
+    .cantidad-wrap input { width: 100%; padding: 9px 10px; border: 1.5px solid var(--borde); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: .9rem; color: var(--texto); background: white; outline: none; text-align: center; transition: border-color .18s; }
     .cantidad-wrap input:focus { border-color: var(--acento); box-shadow: 0 0 0 3px var(--acento-ring); }
 
-    .compat-pill {
-        font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700;
-        padding: 5px 10px; border-radius: 20px;
-        display: inline-flex; align-items: center; gap: 5px;
-        white-space: nowrap; flex-shrink: 0; line-height: 1;
-    }
-    .compat-pill svg {
-        width: 11px; height: 11px; stroke: currentColor; fill: none;
-        stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
-        flex-shrink: 0; display: block;
-    }
+    .compat-pill { font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700; padding: 5px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0; line-height: 1; }
+    .compat-pill svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; display: block; }
     .compat-ok      { background: #dcfce7; color: #15803d; }
     .compat-warn    { background: #fef9c3; color: #a16207; }
     .compat-neutral { background: #f1f5f9; color: #64748b; }
     .compat-loading { background: #f1f5f9; color: #94a3b8; }
 
-    .btn-quitar-row {
-        width: 30px; height: 30px; border-radius: 7px; border: none;
-        background: #fee2e2; color: #dc2626; cursor: pointer; flex-shrink: 0;
-        display: flex; align-items: center; justify-content: center; transition: .18s;
-    }
+    .btn-quitar-row { width: 30px; height: 30px; border-radius: 7px; border: none; background: #fee2e2; color: #dc2626; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: .18s; }
     .btn-quitar-row:hover { background: #dc2626; color: white; }
     .btn-quitar-row svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
 
     .btns-producto-wrap { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
-
-    .btn-prod-agregar {
-        font-family: 'DM Sans', sans-serif; font-size: .76rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .6px; padding: 9px 18px;
-        border-radius: 9px; border: none; background: var(--acento); color: white;
-        cursor: pointer; display: flex; align-items: center; gap: 7px; transition: .18s;
-        text-decoration: none;
-    }
+    .btn-prod-agregar { font-family: 'DM Sans', sans-serif; font-size: .76rem; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; padding: 9px 18px; border-radius: 9px; border: none; background: var(--acento); color: white; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: .18s; text-decoration: none; }
     .btn-prod-agregar:hover { background: var(--acento2); transform: translateY(-1px); color: white; }
     .btn-prod-agregar svg { width: 13px; height: 13px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; }
 
-    .btn-prod-nuevo {
-        font-family: 'DM Sans', sans-serif; font-size: .76rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .6px; padding: 9px 18px;
-        border-radius: 9px; border: 1.5px solid var(--acento);
-        background: white; color: var(--acento) !important;
-        cursor: pointer; display: flex; align-items: center; gap: 7px; transition: .18s;
-        text-decoration: none;
-    }
-    .btn-prod-nuevo:hover { background: var(--gris); transform: translateY(-1px); }
-    .btn-prod-nuevo svg { width: 13px; height: 13px; stroke: var(--acento); fill: none; stroke-width: 2.5; stroke-linecap: round; }
-
     /* ── Footer ── */
-    .form-footer {
-        background: var(--gris); border-top: 1px solid var(--borde);
-        padding: 18px 28px; display: flex; align-items: center;
-        justify-content: flex-end; gap: 10px;
-    }
-    .btn-cancelar {
-        font-family: 'DM Sans', sans-serif; font-size: .8rem; font-weight: 600;
-        text-transform: uppercase; letter-spacing: .5px; padding: 11px 22px;
-        border-radius: 10px; border: 1.5px solid var(--borde); background: white;
-        color: var(--muted); text-decoration: none; transition: .18s;
-        display: flex; align-items: center; gap: 7px; cursor: pointer;
-    }
+    .form-footer { background: var(--gris); border-top: 1px solid var(--borde); padding: 18px 28px; display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+    .btn-cancelar { font-family: 'DM Sans', sans-serif; font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; padding: 11px 22px; border-radius: 10px; border: 1.5px solid var(--borde); background: white; color: var(--muted); text-decoration: none; transition: .18s; display: flex; align-items: center; gap: 7px; cursor: pointer; }
     .btn-cancelar svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; }
     .btn-cancelar:hover { background: var(--borde); color: var(--texto); }
-    .btn-guardar {
-        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px; padding: 12px 32px;
-        border-radius: 10px; border: none; background: var(--acento); color: white;
-        cursor: pointer; box-shadow: 0 4px 14px var(--acento-glow); transition: .18s;
-        display: flex; align-items: center; gap: 8px;
-    }
+    .btn-guardar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 12px 32px; border-radius: 10px; border: none; background: var(--acento); color: white; cursor: pointer; box-shadow: 0 4px 14px var(--acento-glow); transition: .18s; display: flex; align-items: center; gap: 8px; }
     .btn-guardar svg { width: 15px; height: 15px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; }
     .btn-guardar:hover { background: var(--acento2); transform: translateY(-2px); }
 </style>
@@ -354,6 +183,11 @@
         {% endfor %}
     </select>
     {% endif %}
+
+    <!-- Catálogo de servicios con flag requiere_seguimiento para el JS -->
+    <script id="_servicios_data_" type="application/json">
+    [{% for s in form.servicios.field.queryset %}{"id":{{ s.id }},"nombre":"{{ s.nombre|escapejs }}","seguimiento":{% if s.requiere_seguimiento %}true{% else %}false{% endif %}}{% if not forloop.last %},{% endif %}{% endfor %}]
+    </script>
 
     <!-- ══ HEADER ══ -->
     <div class="taller-header">
@@ -381,7 +215,6 @@
         {% csrf_token %}
         <input type="hidden" name="estado" id="campo-estado" value="{{ form.estado.value|default:'Pendiente' }}">
 
-        <!-- ══ CARD ÚNICA ══ -->
         <div class="form-card">
 
             <!-- Estado -->
@@ -414,7 +247,7 @@
                 </div>
                 <div class="row">
                     {% for field in form.visible_fields %}
-                        {% if field.name != 'estado' %}
+                        {% if field.name != 'estado' and field.name != 'fecha_proximo_mantenimiento' %}
                         <div class="col-md-6">
                             <div class="field-group">
 
@@ -473,6 +306,25 @@
                                         </a>
                                     </div>
                                     <div id="servicios-dropdown"></div>
+
+                                    <!-- ══ BLOQUE SEGUIMIENTO — aparece dinámicamente ══ -->
+                                    <div id="bloque-seguimiento">
+                                        <div class="seguimiento-titulo">
+                                            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                            Próximo mantenimiento
+                                        </div>
+                                        <div class="field-inner">
+                                            <span class="fi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+                                            {{ form.fecha_proximo_mantenimiento }}
+                                        </div>
+                                        <div class="seguimiento-hint">
+                                            📅 Indica cuándo debe volver el vehículo. Se guardará en su ficha automáticamente.
+                                        </div>
+                                        {% for error in form.fecha_proximo_mantenimiento.errors %}
+                                            <div class="field-error">⚠ {{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
                                     <div id="servicios-hidden" style="display:none;">{{ field }}</div>
 
                                 {% elif 'empleado' in field.name|lower %}
@@ -482,7 +334,7 @@
                                             <span class="fi-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
                                             {{ field|add_class:'form-field' }}
                                         </div>
-                                        <a href="{% url 'app:crear_empleado' %}?next=orden" class="btn-add-inline" data-tip="Nuevo empleado">
+                                        <a href="{% url 'app:crear_usuario' %}?next=orden" class="btn-add-inline" data-tip="Nuevo empleado">
                                             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                                         </a>
                                     </div>
@@ -511,7 +363,6 @@
                     <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                     Productos / Repuestos
                 </div>
-
                 <div class="compat-aviso" id="compat-aviso">
                     <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                     <div>
@@ -519,21 +370,17 @@
                         <div class="compat-aviso-sub">Verifica que los repuestos sean los correctos antes de guardar.</div>
                     </div>
                 </div>
-
                 <div id="productos-lista">
                     <div class="productos-vacio" id="productos-vacio">
                         Aún no has agregado productos. Usa el botón de abajo para agregar repuestos e insumos usados en esta orden.
                     </div>
                 </div>
-
                 <div class="btns-producto-wrap">
                     <button type="button" class="btn-prod-agregar" onclick="agregarFilaProducto()">
                         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Agregar Producto
                     </button>
-                    
                 </div>
-
                 <div id="productos-hidden"></div>
             </div>
 
@@ -568,19 +415,30 @@ const ES_EDITAR  = {% if es_editar %}true{% else %}false{% endif %};
 let marcaVehiculo = null;
 let contadorFilas = 0;
 
-const SERVICIOS_CATALOG = [
-    {% for s in form.servicios.field.queryset %}
-    { id: {{ s.id }}, nombre: "{{ s.nombre|escapejs }}" },
-    {% endfor %}
-];
+// Catálogo con flag de seguimiento
+const SERVICIOS_CATALOG = JSON.parse(document.getElementById('_servicios_data_').textContent);
 
 let srvSeleccionados = [
     {% if form.instance.pk %}
         {% for s in form.instance.servicios.all %}
-        { id: {{ s.id }}, nombre: "{{ s.nombre|escapejs }}" },
+        { id: {{ s.id }}, nombre: "{{ s.nombre|escapejs }}", seguimiento: {% if s.requiere_seguimiento %}true{% else %}false{% endif %} },
         {% endfor %}
     {% endif %}
 ];
+
+// ── Bloque seguimiento: mostrar/ocultar según servicios seleccionados ──
+function actualizarBloqueSeguimiento() {
+    var requiere = srvSeleccionados.some(function(s) { return s.seguimiento; });
+    var bloque   = document.getElementById('bloque-seguimiento');
+    var campo    = document.getElementById('id_fecha_proximo_mantenimiento');
+    if (requiere) {
+        bloque.classList.add('visible');
+        if (campo) campo.required = true;
+    } else {
+        bloque.classList.remove('visible');
+        if (campo) { campo.required = false; campo.value = ''; }
+    }
+}
 
 function srvRenderTags() {
     var wrap = document.getElementById('servicios-tags');
@@ -608,8 +466,9 @@ function srvRenderDropdown(q) {
     if (!filtrados.length) { dd.innerHTML = '<div class="srv-empty">Sin resultados</div>'; return; }
     dd.innerHTML = filtrados.map(function(s) {
         var sel = srvSeleccionados.find(function(x){ return x.id === s.id; });
-        return '<div class="srv-dropdown-item' + (sel ? ' sel' : '') + '" onclick="srvToggle(' + s.id + ',\'' + s.nombre.replace(/'/g,"\\'") + '\')">'
-             + '<span>' + s.nombre + '</span><span class="chk">' + (sel ? '✓' : '') + '</span></div>';
+        var icono = s.seguimiento ? ' 📅' : '';
+        return '<div class="srv-dropdown-item' + (sel ? ' sel' : '') + '" onclick="srvToggle(' + s.id + ',\'' + s.nombre.replace(/'/g,"\\'") + '\',' + s.seguimiento + ')">'
+             + '<span>' + s.nombre + icono + '</span><span class="chk">' + (sel ? '✓' : '') + '</span></div>';
     }).join('');
 }
 function abrirServicioDropdown() {
@@ -620,18 +479,20 @@ function filtrarServicioDropdown(q) {
     document.getElementById('servicios-dropdown').classList.add('open');
     srvRenderDropdown(q);
 }
-function srvToggle(id, nombre) {
+function srvToggle(id, nombre, seguimiento) {
     var idx = srvSeleccionados.findIndex(function(x){ return x.id === id; });
-    if (idx === -1) srvSeleccionados.push({ id: id, nombre: nombre });
+    if (idx === -1) srvSeleccionados.push({ id: id, nombre: nombre, seguimiento: !!seguimiento });
     else srvSeleccionados.splice(idx, 1);
     srvRenderTags(); srvRenderHidden();
     srvRenderDropdown(document.getElementById('servicios-search').value);
+    actualizarBloqueSeguimiento();
     revalidarTodosLosProductos();
 }
 function srvQuitar(id) {
     srvSeleccionados = srvSeleccionados.filter(function(x){ return x.id !== id; });
     srvRenderTags(); srvRenderHidden();
     srvRenderDropdown(document.getElementById('servicios-search').value);
+    actualizarBloqueSeguimiento();
     revalidarTodosLosProductos();
 }
 
@@ -645,6 +506,7 @@ document.addEventListener('click', function(e) {
 document.addEventListener('DOMContentLoaded', function () {
     srvRenderTags();
     srvRenderHidden();
+    actualizarBloqueSeguimiento(); // estado inicial
 
     var campoFecha = document.getElementById('campo_fecha');
     if (campoFecha && !campoFecha.value) {
@@ -652,6 +514,13 @@ document.addEventListener('DOMContentLoaded', function () {
         campoFecha.value = campoFecha.type === 'datetime-local'
             ? hoy.getFullYear()+'-'+pad(hoy.getMonth()+1)+'-'+pad(hoy.getDate())+'T'+pad(hoy.getHours())+':'+pad(hoy.getMinutes())
             : hoy.getFullYear()+'-'+pad(hoy.getMonth()+1)+'-'+pad(hoy.getDate());
+    }
+
+    // Poner fecha mínima de hoy en el campo de seguimiento
+    var campoPrxMant = document.getElementById('id_fecha_proximo_mantenimiento');
+    if (campoPrxMant) {
+        var hoy2 = new Date(), pad2 = function(n){ return String(n).padStart(2,'0'); };
+        campoPrxMant.min = hoy2.getFullYear()+'-'+pad2(hoy2.getMonth()+1)+'-'+pad2(hoy2.getDate());
     }
 
     var selectVehiculo = document.getElementById('id_vehiculo');
@@ -727,6 +596,14 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         if (srvSeleccionados.length === 0) {
             Swal.fire({ icon: 'warning', title: 'Servicio requerido', text: 'Selecciona al menos un servicio antes de guardar.', confirmButtonColor: '#d32f2f' });
+            return;
+        }
+        // Validar fecha seguimiento si es requerida
+        var requiereSeguimiento = srvSeleccionados.some(function(s) { return s.seguimiento; });
+        var campoPrx = document.getElementById('id_fecha_proximo_mantenimiento');
+        if (requiereSeguimiento && campoPrx && !campoPrx.value) {
+            Swal.fire({ icon: 'warning', title: 'Fecha requerida', text: 'Indica la fecha del próximo mantenimiento para este servicio.', confirmButtonColor: '#f59e0b' });
+            campoPrx.focus();
             return;
         }
         var formulario = this;
@@ -814,8 +691,8 @@ function onProductoChange(sel, filaId) {
     fetch(URL_COMPAT + '?' + params.toString())
         .then(function(r){ return r.json(); })
         .then(function(data) {
-            if (data.compatible === true)       setPill(pill, 'ok',      'Compatible');
-            else if (data.compatible === false) setPill(pill, 'warn',    'Revisar');
+            if (data.compatible === true)       setPill(pill, 'ok',   'Compatible');
+            else if (data.compatible === false) setPill(pill, 'warn', 'Revisar');
             else                                setPill(pill, 'neutral', 'Sin restricción');
             revalidarAvisoGeneral();
         })

@@ -4,7 +4,6 @@ from .views.dashboard              import views as dash
 from .views.Cliente                import views as cli
 from .views.Vehiculo               import views as veh
 from .views.UsuarioSistema         import views as usr
-from .views.Empleado               import views as emp
 from .views.compra                 import views as compra
 from .views.Proveedor              import views as prov
 from .views.Marca                  import views as marca
@@ -17,8 +16,9 @@ from .views.DetalleOrdenProducto   import views as detalles
 from .views.CompatibilidadProducto import views as comp
 from .views.factura                import views as factura
 from .views.backup                 import views as backup
+from .views.seguimiento            import views as seguimiento
 from app                           import reportes as rep
-from .views.chatbot import views as chatbot
+from .views.chatbot                import views as chatbot
 
 
 app_name = 'app'
@@ -29,18 +29,12 @@ urlpatterns = [
     path('dashboard/', dash.DashboardView.as_view(), name='dashboard'),
 
     # ── USUARIOS
-    path('usuarios/perfil/',            usr.PerfilView.as_view(),        name='mi_perfil'),
-    path('usuarios/listar/',            usr.UsuarioListView.as_view(),   name='listar_usuario'),
-    path('usuarios/crear/',             usr.UsuarioCreateView.as_view(), name='crear_usuario'),
-    path('usuarios/editar/<int:pk>/',   usr.UsuarioUpdateView.as_view(), name='editar_usuario'),
-    path('usuarios/eliminar/<int:pk>/', usr.UsuarioDeleteView.as_view(), name='eliminar_usuario'),
-    path('usuarios/cambiar-estado/<int:pk>/', usr.CambiarEstadoUsuarioView.as_view(), name='cambiar_estado_usuario'),
-
-    # ── EMPLEADOS
-    path('empleados/listar/',            emp.EmpleadoListView.as_view(),   name='listar_empleado'),
-    path('empleados/crear/',             emp.EmpleadoCreateView.as_view(), name='crear_empleado'),
-    path('empleados/editar/<int:pk>/',   emp.EmpleadoUpdateView.as_view(), name='editar_empleado'),
-    path('empleados/eliminar/<int:pk>/', emp.EmpleadoDeleteView.as_view(), name='eliminar_empleado'),
+    path('usuarios/perfil/',                  usr.PerfilView.as_view(),              name='mi_perfil'),
+    path('usuarios/listar/',                  usr.UsuarioListView.as_view(),         name='listar_usuario'),
+    path('usuarios/crear/',                   usr.UsuarioCreateView.as_view(),       name='crear_usuario'),
+    path('usuarios/editar/<int:pk>/',         usr.UsuarioUpdateView.as_view(),       name='editar_usuario'),
+    path('usuarios/eliminar/<int:pk>/',       usr.UsuarioDeleteView.as_view(),       name='eliminar_usuario'),
+    path('usuarios/cambiar-estado/<int:pk>/', usr.CambiarEstadoUsuarioView.as_view(),name='cambiar_estado_usuario'),
 
     # ── CLIENTES
     path('clientes/listar/',            cli.ClienteListView.as_view(),   name='listar_clientes'),
@@ -89,11 +83,11 @@ urlpatterns = [
     path('orden_servicio/listar/',                   orden.OrdenServicioListView.as_view(),       name='orden_servicio_list'),
     path('orden_servicio/crear/',                    orden.OrdenServicioCreateView.as_view(),     name='orden_servicio_create'),
     path('orden_servicio/detalle/<int:pk>/',         orden.OrdenServicioDetailView.as_view(),     name='orden_servicio_detail'),
-    path('orden_servicio/editar/<int:pk>/',           orden.OrdenServicioUpdateView.as_view(),     name='orden_servicio_edit'),
+    path('orden_servicio/editar/<int:pk>/',          orden.OrdenServicioUpdateView.as_view(),     name='orden_servicio_edit'),
     path('orden_servicio/eliminar/<int:pk>/',        orden.OrdenServicioDeleteView.as_view(),     name='orden_servicio_delete'),
     path('orden_servicio/vehiculo-km/<int:pk>/',     orden.VehiculoKmView.as_view(),              name='vehiculo_km'),
     path('orden_servicio/verificar-compatibilidad/', orden.VerificarCompatibilidadView.as_view(), name='verificar_compatibilidad'),
-    path('orden_servicio/productos-compatibles/',     orden.ProductosCompatiblesView.as_view(),    name='productos_compatibles'),
+    path('orden_servicio/productos-compatibles/',    orden.ProductosCompatiblesView.as_view(),    name='productos_compatibles'),
     path('orden_servicio/<int:pk>/cambiar-estado/',  orden.CambiarEstadoOrdenView.as_view(),      name='cambiar_estado_orden'),
 
     # ── DETALLES DE ORDEN
@@ -102,17 +96,21 @@ urlpatterns = [
     path('detalles/edit/<int:pk>/',   detalles.DetalleOrdenUpdateView.as_view(), name='detalle_orden_edit'),
     path('detalles/delete/<int:pk>/', detalles.DetalleOrdenDeleteView.as_view(), name='detalle_orden_delete'),
 
+    # ── SEGUIMIENTO MANTENIMIENTO
+    path('seguimiento/',                     seguimiento.SeguimientoListView.as_view(),     name='seguimiento_list'),
+    path('seguimiento/nuevo/',               seguimiento.SeguimientoCreateView.as_view(),   name='seguimiento_crear'),
+    path('seguimiento/editar/<int:pk>/',     seguimiento.SeguimientoUpdateView.as_view(),   name='seguimiento_editar'),
+    path('seguimiento/eliminar/<int:pk>/',   seguimiento.SeguimientoDeleteView.as_view(),   name='seguimiento_eliminar'),
+    path('seguimiento/completar/<int:pk>/',  seguimiento.SeguimientoCompletarView.as_view(),name='seguimiento_completar'),
+    path('seguimiento/servicios-orden/', seguimiento.get_servicios_orden, name='servicios_orden'),
     # ── COMPRAS
     path('compras/listar/',            compra.CompraListView.as_view(),   name='lista_compras'),
     path('compras/crear/',             compra.CompraCreateView.as_view(), name='crear_compra'),
-#path('compras/editar/<int:pk>/',   compra.CompraUpdateView.as_view(), name='editar_compra'),
     path('compras/eliminar/<int:pk>/', compra.CompraDeleteView.as_view(), name='eliminar_compra'),
     path('compras/pagar/<int:pk>/',    compra.PagarCompraView.as_view(),  name='pagar_compra'),
+
     # ── CAJA
-    path('caja/listar/',            caja.CajaListView.as_view(),   name='caja_listar'),
-    #path('caja/crear/',             caja.CajaCreateView.as_view(), name='caja_crear'),
-    #path('caja/editar/<int:pk>/',   caja.CajaUpdateView.as_view(), name='caja_editar'),
-    #path('caja/eliminar/<int:pk>/', caja.CajaDeleteView.as_view(), name='caja_eliminar'),
+    path('caja/listar/', caja.CajaListView.as_view(), name='caja_listar'),
 
     # ── FACTURAS
     path('factura/listar/',            factura.FacturaListView.as_view(),   name='listar_factura'),
@@ -121,11 +119,9 @@ urlpatterns = [
     path('factura/eliminar/<int:pk>/', factura.FacturaDeleteView.as_view(), name='eliminar_factura'),
     path('factura/pagar/<int:pk>/',    factura.PagarFacturaView.as_view(),  name='pagar_factura'),
 
-    # ── NOTIFICACIONES 
+    # ── NOTIFICACIONES
     path('notificaciones/listar/',                notif.NotificacionListView.as_view(),   name='listar_notificacion'),
     path('notificaciones/crear/',                 notif.NotificacionCreateView.as_view(), name='crear_notificacion'),
-    #path('notificaciones/editar/<int:pk>/',       notif.NotificacionUpdateView.as_view(), name='editar_notificacion'),
-    #path('notificaciones/eliminar/<int:pk>/',     notif.NotificacionDeleteView.as_view(), name='eliminar_notificacion'),
     path('notificaciones/marcar-leida/<int:pk>/', notif.MarcarLeidaView.as_view(),        name='marcar_notificacion_leida'),
     path('notificaciones/marcar-todas-leidas/',   notif.MarcarTodasLeidasView.as_view(),  name='marcar_todas_leidas'),
     path('notificaciones/no-leidas/',             notif.notificaciones_no_leidas,         name='notificaciones_no_leidas'),
@@ -151,11 +147,9 @@ urlpatterns = [
     path('reportes/facturas/excel/',    rep.ExportarFacturasExcel.as_view(),    name='reporte_facturas_excel'),
 
     # ── BACKUP
-    path('backup/',            backup.backup,           name='backup'),
-    path('backup/restaurar/',  backup.restaurar_datos,  name='restaurar_datos'),
-    
+    path('backup/',           backup.backup,          name='backup'),
+    path('backup/restaurar/', backup.restaurar_datos, name='restaurar_datos'),
+
     # ── CHATBOT
     path('chatbot/', chatbot.chatbot_responder, name='chatbot'),
-    
- 
 ]

@@ -118,7 +118,6 @@
 .sb-item:hover .sb-icon,
 .sb-item.active .sb-icon { stroke: #d32f2f; }
 
-/* ══ IMAGEN ICONO ══ */
 .sb-img-icon {
     min-width: 20px; width: 20px; height: 20px;
     flex-shrink: 0;
@@ -256,13 +255,17 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
            class="sb-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
            data-tip="Panel de control">
             <svg class="sb-icon" viewBox="0 0 24 24">
-                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-                <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="7" height="7" rx="1"/>
             </svg>
             <span class="sb-item-text">Panel de control</span>
         </a>
 
-        <!-- 01 Recepción -->
+        <!-- ══════════════════════════════════════
+             01 RECEPCIÓN — el cliente llega
+        ══════════════════════════════════════ -->
         <div class="sb-section">
             <span class="sb-section-num">01</span>
             <div class="sb-section-line"></div>
@@ -299,11 +302,14 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
            class="sb-item {% if request.resolver_match.url_name == 'tipo_servicio_list' %}active{% endif %}"
            data-tip="Servicios">
             <img src="{% static 'imagenes/servicios.jpeg' %}" class="sb-img-icon" alt="Tipos Servicio">
-            <span class="sb-item-text">ervicios</span>
+            <span class="sb-item-text">Servicios</span>
             <span class="sb-step">{% if user.cargo == 'MECANICO' %}M3{% else %}P4{% endif %}</span>
         </a>
 
-        <!-- 02 Ejecución — SOLO ADMIN -->
+        <!-- ══════════════════════════════════════
+             02 EJECUCIÓN — el mecánico trabaja
+             SOLO ADMIN
+        ══════════════════════════════════════ -->
         {% if user.cargo == 'ADMIN' %}
         <div class="sb-section">
             <span class="sb-section-num">02</span>
@@ -319,20 +325,12 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
             <span class="sb-step">P5</span>
         </a>
 
-        <a href="{% url 'app:listar_compatibilidad' %}"
-           class="sb-item {% if request.resolver_match.url_name == 'listar_compatibilidad' %}active{% endif %}"
-           data-tip="Compatibilidad">
-            <img src="{% static 'imagenes/compatibilidad.jpeg' %}" class="sb-img-icon" alt="Compatibilidad">
-            <span class="sb-item-text">Compatibilidad</span>
-            <span class="sb-step">P6</span>
-        </a>
-
         <a href="{% url 'app:listar_producto' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_producto' %}active{% endif %}"
            data-tip="Productos">
             <img src="{% static 'imagenes/productos.jpeg' %}" class="sb-img-icon" alt="Productos">
             <span class="sb-item-text">Productos</span>
-            <span class="sb-step">P7</span>
+            <span class="sb-step">P6</span>
         </a>
 
         <a href="{% url 'app:listar_marca' %}"
@@ -340,10 +338,21 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
            data-tip="Marcas">
             <img src="{% static 'imagenes/marcas.jpeg' %}" class="sb-img-icon" alt="Marcas">
             <span class="sb-item-text">Marcas</span>
+            <span class="sb-step">P7</span>
+        </a>
+
+        <a href="{% url 'app:listar_compatibilidad' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_compatibilidad' %}active{% endif %}"
+           data-tip="Compatibilidad">
+            <img src="{% static 'imagenes/compatibilidad.jpeg' %}" class="sb-img-icon" alt="Compatibilidad">
+            <span class="sb-item-text">Compatibilidad</span>
             <span class="sb-step">P8</span>
         </a>
 
-        <!-- 03 Abastecimiento — SOLO ADMIN -->
+        <!-- ══════════════════════════════════════
+             03 ABASTECIMIENTO — inventario
+             SOLO ADMIN
+        ══════════════════════════════════════ -->
         <div class="sb-section">
             <span class="sb-section-num">03</span>
             <div class="sb-section-line"></div>
@@ -366,9 +375,39 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
             <span class="sb-step">P10</span>
         </a>
 
-        <!-- 04 Cobro — SOLO ADMIN -->
+        <!-- ══════════════════════════════════════
+             04 SEGUIMIENTO — antes de cobrar
+             se registra el próximo mantenimiento
+             SOLO ADMIN
+        ══════════════════════════════════════ -->
         <div class="sb-section">
             <span class="sb-section-num">04</span>
+            <div class="sb-section-line"></div>
+            <span class="sb-section-label">Seguimiento</span>
+        </div>
+
+        <a href="{% url 'app:seguimiento_list' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'seguimiento_list' %}active{% endif %}"
+           data-tip="Seguimiento">
+            <svg class="sb-icon" viewBox="0 0 24 24">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+                <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
+            </svg>
+            <span class="sb-item-text">Seguimiento</span>
+            <span class="sb-step">P11</span>
+        </a>
+
+        
+
+        <!-- ══════════════════════════════════════
+             05 COBRO Y CIERRE — se cobra
+             SOLO ADMIN
+        ══════════════════════════════════════ -->
+        <div class="sb-section">
+            <span class="sb-section-num">05</span>
             <div class="sb-section-line"></div>
             <span class="sb-section-label">Cobro y Cierre</span>
         </div>
@@ -378,7 +417,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
            data-tip="Caja">
             <img src="{% static 'imagenes/caja.jpeg' %}" class="sb-img-icon" alt="Caja">
             <span class="sb-item-text">Caja</span>
-            <span class="sb-step">P11</span>
+            <span class="sb-step">P12</span>
         </a>
 
         <a href="{% url 'app:listar_factura' %}"
@@ -386,32 +425,34 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
            data-tip="Facturación">
             <img src="{% static 'imagenes/factura.jpeg' %}" class="sb-img-icon" alt="Facturación">
             <span class="sb-item-text">Facturación</span>
-            <span class="sb-step">P12</span>
+            <span class="sb-step">P13</span>
         </a>
 
-        <!-- 05 Sistema — SOLO ADMIN -->
+        <!-- ══════════════════════════════════════
+             06 SISTEMA — administración interna
+             SOLO ADMIN
+        ══════════════════════════════════════ -->
         <div class="sb-section">
-            <span class="sb-section-num">05</span>
+            <span class="sb-section-num">06</span>
             <div class="sb-section-line"></div>
             <span class="sb-section-label">Sistema</span>
         </div>
-
-        <a href="{% url 'app:listar_empleado' %}"
-           class="sb-item {% if request.resolver_match.url_name == 'listar_empleado' %}active{% endif %}"
-           data-tip="Empleados">
-            <img src="{% static 'imagenes/empleados.jpeg' %}" class="sb-img-icon" alt="Empleados">
-            <span class="sb-item-text">Empleados</span>
-        </a>
 
         <a href="{% url 'app:listar_usuario' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_usuario' %}active{% endif %}"
            data-tip="Usuarios">
             <img src="{% static 'imagenes/usurios.jpeg' %}" class="sb-img-icon" alt="Usuarios">
             <span class="sb-item-text">Usuarios</span>
+            <span class="sb-step">P14</span>
         </a>
+
+        
+
         {% endif %}
 
-        <!-- Notificaciones - SOLO MECANICO -->
+        <!-- ══════════════════════════════════════
+             MECÁNICO — sección alertas
+        ══════════════════════════════════════ -->
         {% if user.cargo == 'MECANICO' %}
         <div class="sb-section">
             <span class="sb-section-num">02</span>
@@ -432,11 +473,11 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
     <!-- Footer -->
     <div class="sb-footer">
         <div class="sb-avatar-wrap">
-            <img src="https://ui-avatars.com/api/?name={% if user.nombres %}{{ user.nombres }}+{{ user.apellidos }}{% else %}{{ user.username }}{% endif %}&background=d32f2f&color=fff&bold=true"
+            <img src="https://ui-avatars.com/api/?name={{ user.first_name|default:user.username }}+{{ user.last_name }}&background=d32f2f&color=fff&bold=true"
                  class="sb-avatar" alt="avatar">
         </div>
         <div class="sb-user-info">
-            <div class="sb-user-name">{% if user.nombres %}{{ user.nombres }} {{ user.apellidos }}{% else %}{{ user.username|capfirst }}{% endif %}</div>
+            <div class="sb-user-name">{{ user.nombre_completo }}</div>
             <div class="sb-user-role">{% if user.cargo %}{{ user.get_cargo_display }}{% else %}Administrador{% endif %}</div>
         </div>
         <form method="post" action="{% url 'login:logout' %}">

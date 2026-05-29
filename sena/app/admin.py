@@ -1,41 +1,38 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import (
-    UsuarioSistema, Empleado,
+    UsuarioSistema,
     Proveedor, Producto, Compra, Cliente,
     Marca, Vehiculo, TipoServicio, OrdenServicio,
     DetalleOrdenProducto, CompatibilidadProducto,
     Factura, Notificacion, Caja,
+    SeguimientoMantenimiento,
 )
 
 
 # ══════════════════════════════════════════════════════════
-#  USUARIO SISTEMA — registro especial con UserAdmin
-#  Sin esto el /admin/ no muestra bien los campos de password
+#  USUARIO SISTEMA
 # ══════════════════════════════════════════════════════════
 @admin.register(UsuarioSistema)
 class UsuarioSistemaAdmin(UserAdmin):
-    # Campos extra que aparecen al editar un usuario en /admin/
     fieldsets = UserAdmin.fieldsets + (
         ('Datos del taller', {
-            'fields': ('tipo_documento', 'cedula', 'telefono', 'cargo')
+            'fields': ('tipo_documento', 'cedula', 'telefono', 'cargo', 'activo')
         }),
     )
-    # Campos extra al crear un usuario nuevo en /admin/
     add_fieldsets = UserAdmin.add_fieldsets + (
         ('Datos del taller', {
-            'fields': ('tipo_documento', 'cedula', 'telefono', 'cargo')
+            'fields': ('tipo_documento', 'cedula', 'telefono', 'cargo', 'activo')
         }),
     )
-    list_display  = ('username', 'email', 'first_name', 'last_name', 'cargo', 'is_active')
-    list_filter   = ('cargo', 'is_active', 'is_staff')
+    list_display  = ('username', 'email', 'first_name', 'last_name', 'cargo', 'activo', 'is_active')
+    list_filter   = ('cargo', 'activo', 'is_active', 'is_staff')
     search_fields = ('username', 'email', 'first_name', 'last_name', 'cedula')
 
 
 # ══════════════════════════════════════════════════════════
 #  RESTO DE MODELOS
 # ══════════════════════════════════════════════════════════
-admin.site.register(Empleado)
 admin.site.register(Proveedor)
 admin.site.register(Producto)
 admin.site.register(Compra)
@@ -49,3 +46,4 @@ admin.site.register(CompatibilidadProducto)
 admin.site.register(Factura)
 admin.site.register(Notificacion)
 admin.site.register(Caja)
+admin.site.register(SeguimientoMantenimiento)
