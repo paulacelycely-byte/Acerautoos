@@ -254,12 +254,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:dashboard' %}"
            class="sb-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
            data-tip="Panel de control">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <rect x="3" y="3" width="7" height="7" rx="1"/>
-                <rect x="14" y="3" width="7" height="7" rx="1"/>
-                <rect x="3" y="14" width="7" height="7" rx="1"/>
-                <rect x="14" y="14" width="7" height="7" rx="1"/>
-            </svg>
+            <img src="{% static 'imagenes/paneldecontrol.jpeg' %}" class="sb-img-icon" alt="Clientes">
             <span class="sb-item-text">Panel de control</span>
         </a>
 
@@ -319,9 +314,9 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
 
         <a href="{% url 'app:detalle_orden_list' %}"
            class="sb-item {% if request.resolver_match.url_name == 'detalle_orden_list' %}active{% endif %}"
-           data-tip="Detalles Orden">
-            <img src="{% static 'imagenes/orden.jpeg' %}" class="sb-img-icon" alt="Detalles">
-            <span class="sb-item-text">Detalles de Orden</span>
+           data-tip="Análisis de consumo">
+            <img src="{% static 'imagenes/analisis.jpeg' %}" class="sb-img-icon" alt="Detalles">
+            <span class="sb-item-text">Análisis De Consumo</span>
             <span class="sb-step">P5</span>
         </a>
 
@@ -389,13 +384,7 @@ body.sidebar-mini .app-sidebar:not(:hover) .sb-item::after {
         <a href="{% url 'app:seguimiento_list' %}"
            class="sb-item {% if request.resolver_match.url_name == 'seguimiento_list' %}active{% endif %}"
            data-tip="Seguimiento">
-            <svg class="sb-icon" viewBox="0 0 24 24">
-                <rect x="3" y="4" width="18" height="18" rx="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-                <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
-            </svg>
+            <img src="{% static 'imagenes/seguimientoo.jpeg' %}" class="sb-img-icon" alt="Seguimiento">
             <span class="sb-item-text">Seguimiento</span>
             <span class="sb-step">P11</span>
         </a>

@@ -98,8 +98,8 @@ urlpatterns = [
 
     # ── SEGUIMIENTO MANTENIMIENTO
     path('seguimiento/',                     seguimiento.SeguimientoListView.as_view(),     name='seguimiento_list'),
-    path('seguimiento/nuevo/',               seguimiento.SeguimientoCreateView.as_view(),   name='seguimiento_crear'),
-    path('seguimiento/editar/<int:pk>/',     seguimiento.SeguimientoUpdateView.as_view(),   name='seguimiento_editar'),
+    #path('seguimiento/nuevo/',               seguimiento.SeguimientoCreateView.as_view(),   name='seguimiento_crear'),
+    # path('seguimiento/editar/<int:pk>/',     seguimiento.SeguimientoUpdateView.as_view(),   name='seguimiento_editar'),
     path('seguimiento/eliminar/<int:pk>/',   seguimiento.SeguimientoDeleteView.as_view(),   name='seguimiento_eliminar'),
     path('seguimiento/completar/<int:pk>/',  seguimiento.SeguimientoCompletarView.as_view(),name='seguimiento_completar'),
     path('seguimiento/servicios-orden/', seguimiento.get_servicios_orden, name='servicios_orden'),
