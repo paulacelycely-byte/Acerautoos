@@ -5,8 +5,27 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import JsonResponse
 from django.utils import timezone
+from datetime import timedelta
 
 from app.models import SeguimientoMantenimiento, Vehiculo
+
+
+# ── Intervalos de cambio de aceite según tipo de uso ──────
+INTERVALOS_ACEITE = {
+    'BAJO':   180,   # 6 meses
+    'NORMAL': 120,   # 4 meses
+    'ALTO':   90,    # 3 meses
+    'CARGA':  60,    # 2 meses
+}
+
+def calcular_fecha_sugerida(vehiculo):
+    """
+    Calcula la fecha sugerida del próximo mantenimiento
+    basada en el tipo de uso del vehículo.
+    Retorna un objeto date.
+    """
+    dias = INTERVALOS_ACEITE.get(vehiculo.tipo_uso, 120)
+    return timezone.now().date() + timedelta(days=dias)
 
 
 class SoloAdminMixin(UserPassesTestMixin):
@@ -41,7 +60,6 @@ class SeguimientoListView(LoginRequiredMixin, AccesoTallerMixin, ListView):
         context = super().get_context_data(**kwargs)
         qs = self.get_queryset()
 
-        # Stats SOLO sobre seguimientos activos
         qs_activos = list(qs.filter(activo=True))
         total_ok = total_alerta = total_vencidos = 0
         for s in qs_activos:
@@ -50,7 +68,6 @@ class SeguimientoListView(LoginRequiredMixin, AccesoTallerMixin, ListView):
             elif estado == 'alerta':  total_alerta += 1
             elif estado == 'vencido': total_vencidos += 1
 
-        # Agregar estado_calc a todos para el template
         seguimientos_con_estado = []
         for s in qs:
             s.estado_calc = s.estado_calculado()
@@ -85,10 +102,16 @@ class SeguimientoCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
 
     def form_valid(self, form):
         seg = form.instance
+
+        # Si no viene fecha, calcularla automáticamente según tipo de uso
+        if not seg.fecha_proximo_mantenimiento and seg.vehiculo:
+            seg.fecha_proximo_mantenimiento = calcular_fecha_sugerida(seg.vehiculo)
+
         if seg.activo:
             SeguimientoMantenimiento.objects.filter(
                 vehiculo=seg.vehiculo, activo=True
             ).update(activo=False)
+
         messages.success(self.request, "Seguimiento registrado correctamente.")
         return super().form_valid(form)
 
@@ -102,17 +125,18 @@ class SeguimientoUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
     model         = SeguimientoMantenimiento
     template_name = 'seguimiento/seguimiento_form.html'
     success_url   = reverse_lazy('app:seguimiento_list')
-    fields        = ['fecha_proximo_mantenimiento', 'observaciones']
+    fields        = ['fecha_proximo_mantenimiento', 'observaciones', 'activo']
 
     def form_valid(self, form):
         from app.models import Notificacion
-
         seg = form.instance
         hoy = timezone.now().date()
 
-        # Al cambiar la fecha del mantenimiento, borrar las notificaciones
-        # automáticas de HOY para este vehículo para que se regeneren
-        # con el nuevo estado/fecha en la próxima visita al sistema.
+        # Si no tienen fecha y hay vehículo, calcular automáticamente
+        if not seg.fecha_proximo_mantenimiento and seg.vehiculo:
+            seg.fecha_proximo_mantenimiento = calcular_fecha_sugerida(seg.vehiculo)
+
+        # Borrar notificaciones del día para que se regeneren con el nuevo estado
         Notificacion.objects.filter(
             vehiculo=seg.vehiculo,
             origen='SISTEMA',
@@ -124,7 +148,24 @@ class SeguimientoUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({'titulo': 'Editar Seguimiento', 'accion': 'Guardar cambios', 'es_editar': True})
+
+        # Pasar la fecha sugerida al template para mostrarla como referencia
+        seg = self.object
+        fecha_sugerida = None
+        if seg.vehiculo:
+            fecha_sugerida = calcular_fecha_sugerida(seg.vehiculo)
+            intervalo_dias = INTERVALOS_ACEITE.get(seg.vehiculo.tipo_uso, 120)
+        else:
+            intervalo_dias = 120
+
+        context.update({
+            'titulo':         'Editar Seguimiento',
+            'accion':         'Guardar cambios',
+            'es_editar':      True,
+            'fecha_sugerida': fecha_sugerida,
+            'intervalo_dias': intervalo_dias,
+            'tipo_uso_display': seg.vehiculo.get_tipo_uso_display() if seg.vehiculo else '',
+        })
         return context
 
 
@@ -155,11 +196,25 @@ class SeguimientoCompletarView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
 def get_servicios_orden(request):
     orden_id = request.GET.get('orden_id')
     if not orden_id:
-        return JsonResponse({'servicios': [], 'km_orden': None})
+        return JsonResponse({'servicios': [], 'km_orden': None, 'fecha_sugerida': None})
     try:
         from app.models import OrdenServicio
-        orden     = OrdenServicio.objects.get(pk=orden_id)
+        orden    = OrdenServicio.objects.select_related('vehiculo').get(pk=orden_id)
         servicios = list(orden.servicios.values('id', 'nombre'))
-        return JsonResponse({'servicios': servicios, 'km_orden': orden.km_actual})
+
+        # Calcular fecha sugerida según tipo de uso del vehículo de la orden
+        fecha_sugerida  = None
+        intervalo_label = None
+        if orden.vehiculo:
+            dias = INTERVALOS_ACEITE.get(orden.vehiculo.tipo_uso, 120)
+            fecha_sugerida  = (timezone.now().date() + timedelta(days=dias)).isoformat()
+            intervalo_label = f"{orden.vehiculo.get_tipo_uso_display()} → cada {dias} días (~{dias//30} meses)"
+
+        return JsonResponse({
+            'servicios':       servicios,
+            'km_orden':        orden.km_actual,
+            'fecha_sugerida':  fecha_sugerida,
+            'intervalo_label': intervalo_label,
+        })
     except OrdenServicio.DoesNotExist:
-        return JsonResponse({'servicios': [], 'km_orden': None})
+        return JsonResponse({'servicios': [], 'km_orden': None, 'fecha_sugerida': None})

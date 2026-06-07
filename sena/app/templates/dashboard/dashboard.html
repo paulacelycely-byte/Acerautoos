@@ -12,21 +12,18 @@ body.sidebar-mini .app-header { width: calc(100% - 72px); }
 body.sidebar-hidden .app-header { width: 100%; }
 .app-main-bg { padding-top: 60px !important; }
 
+/* ── FIX SIDEBAR OVERLAP ── */
+.dash-wrapper { margin-left: 0; transition: margin-left .3s ease; }
+.app-sidebar { z-index: 1050 !important; }
+.app-main-outer { overflow-x: hidden !important; }
+.app-main-inner { overflow-x: hidden !important; }
+
 .dash-wrapper {
     min-height: 100vh;
+    overflow-x: hidden;
     background: linear-gradient(rgba(37,36,36,.78), rgba(40,40,40,.85)),
                 url("{% static 'imagenes/fondo2.jpg' %}") center/cover no-repeat fixed;
 }
-
-/* ── CABECERA ── */
-.dash-head { background: rgba(0,0,0,.5); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem 2rem; margin-bottom: 1rem; backdrop-filter: blur(8px); display: flex; justify-content: space-between; align-items: center; gap: 16px; }
-.dash-head-title { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; color: #fff; text-transform: uppercase; line-height: 1; margin: 0; }
-.dash-head-title span { color: var(--red); }
-.dash-head-sub { font-size: .78rem; color: rgba(255,255,255,.4); margin: 4px 0 0; }
-.dash-user-simple { text-align: right; flex-shrink: 0; }
-.dash-user-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1.15rem; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; line-height: 1; }
-.dash-user-role { font-size: .72rem; color: rgba(255,255,255,.35); margin-top: 3px; }
-.badge-active { background: rgba(16,185,129,.15); border: 1px solid rgba(16,185,129,.35); color: #10b981; font-family: 'Barlow Condensed', sans-serif; font-size: .62rem; letter-spacing: 2px; font-weight: 700; padding: 3px 10px; border-radius: 50px; display: inline-block; margin-top: 5px; }
 
 /* ── DIVISOR ── */
 .sdiv { display: flex; align-items: center; gap: 14px; margin: 1.8rem 0 1rem; }
@@ -47,25 +44,38 @@ body.sidebar-hidden .app-header { width: 100%; }
 .dc-sub { font-size: .72rem; color: rgba(255,255,255,.45); margin: 3px 0 0; }
 .dc-cta { font-family: 'Barlow Condensed', sans-serif; font-size: .72rem; font-weight: 700; letter-spacing: 1.5px; color: color-mix(in srgb, var(--accent,#d32f2f) 100%, white 20%); text-transform: uppercase; transition: letter-spacing .2s; }
 .dc:hover .dc-cta { letter-spacing: 2.5px; }
+
+/* ── RESPONSIVO ── */
+@media (max-width: 1199px) {
+    .col-xl-3 { flex: 0 0 50%; max-width: 50%; }
+}
+
+@media (max-width: 991px) {
+    .app-header { width: 100% !important; }
+    .col-xl-3, .col-md-6 { flex: 0 0 50%; max-width: 50%; }
+}
+
+@media (max-width: 767px) {
+    .container-fluid { padding-left: 1rem !important; padding-right: 1rem !important; }
+    .col-xl-3, .col-md-6 { flex: 0 0 100%; max-width: 100%; }
+    .dc { height: 130px; }
+    .dc-title { font-size: 1.2rem; }
+    .sdiv-num { font-size: 1.5rem; }
+    .sdiv-label { font-size: .7rem; letter-spacing: 2px; }
+    .sdiv { margin: 1.2rem 0 .8rem; }
+}
+
+@media (max-width: 480px) {
+    .dc { height: 120px; }
+    .dc-title { font-size: 1.1rem; }
+    .dc-bg-icon { width: 42px; height: 42px; }
+}
 </style>
 {% endblock %}
 
 {% block contenido %}
 <div class="dash-wrapper">
 <div class="container-fluid py-3 px-4">
-
-    <!-- CABECERA -->
-    <div class="dash-head">
-        <div>
-            <h1 class="dash-head-title">Panel <span>Administrativo</span></h1>
-            <p class="dash-head-sub">Gestión completa del sistema Acerautos</p>
-        </div>
-        <div class="dash-user-simple">
-            <div class="dash-user-name">{{ user.nombre_completo }}</div>
-            <div class="dash-user-role">{{ user.get_cargo_display }}</div>
-            <span class="badge-active">SISTEMA ACTIVO</span>
-        </div>
-    </div>
 
     <!-- ── 01 RECEPCIÓN ── -->
     <div class="sdiv">
@@ -285,5 +295,23 @@ body.sidebar-hidden .app-header { width: 100%; }
 {% endblock %}
 
 {% block js %}
-<script>console.log('Dashboard cargado correctamente');</script>
+<script>
+console.log('Dashboard cargado correctamente');
+
+// Fix sidebar overlap on toggle
+(function() {
+    function fixOverflow() {
+        var mainOuter = document.querySelector('.app-main-outer');
+        var mainInner = document.querySelector('.app-main-inner');
+        if (mainOuter) mainOuter.style.overflowX = 'hidden';
+        if (mainInner) mainInner.style.overflowX = 'hidden';
+    }
+    fixOverflow();
+    // Re-apply after sidebar animations
+    document.addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-trigger="sidebar-toggle"], .hamburger, .sidebar-toggle');
+        if (btn) setTimeout(fixOverflow, 350);
+    });
+})();
+</script>
 {% endblock %}

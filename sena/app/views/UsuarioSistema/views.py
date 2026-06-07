@@ -47,8 +47,14 @@ class UsuarioCreateView(SoloSuperAdminMixin, CreateView):
     model         = UsuarioSistema
     form_class    = UsuarioSistemaForm
     template_name = 'UsuarioSistema/crear.html'
-    success_url   = reverse_lazy('app:listar_usuario')
     login_url     = 'login:login'
+
+    # FIX — redirige a la orden si viene con ?next=orden
+    def get_success_url(self):
+        next_param = self.request.POST.get('next') or self.request.GET.get('next')
+        if next_param == 'orden':
+            return reverse_lazy('app:orden_servicio_create')
+        return reverse_lazy('app:listar_usuario')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

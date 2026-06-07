@@ -72,7 +72,6 @@ DATABASES = {
     }
 }
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -88,7 +87,7 @@ USE_THOUSAND_SEPARATOR = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ========== REDIRECCION LOGIN/LOGOUT ==========
@@ -116,3 +115,4 @@ EMAIL_USE_TLS       = True
 EMAIL_HOST_USER     = 'acerautos09@gmail.com'
 EMAIL_HOST_PASSWORD = 'ydvbowswvxangcxs'
 DEFAULT_FROM_EMAIL  = 'ACERAUTOS <acerautos09@gmail.com>'
+

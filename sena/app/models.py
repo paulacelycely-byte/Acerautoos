@@ -308,7 +308,7 @@ class OrdenServicio(models.Model):
     ESTADOS = [
         ('Pendiente',  'Pendiente'),
         ('En Proceso', 'En Proceso'),
-        ('Terminado',  'Terminado'),
+        
     ]
     empleado = models.ForeignKey(
         UsuarioSistema,
@@ -348,10 +348,7 @@ class OrdenServicio(models.Model):
 
 
 # ══════════════════════════════════════════════════════════
-#  FIX #3 — TABLA INTERMEDIA CON PRECIO HISTÓRICO
-#  Reemplaza el ManyToMany simple entre OrdenServicio y TipoServicio.
-#  Al crear la orden se guarda precio_mano_obra en ese momento exacto,
-#  así los cambios futuros de precio no afectan facturas pasadas.
+#  ORDEN DE SERVICIO - 
 # ══════════════════════════════════════════════════════════
 class OrdenServicioDetalle(models.Model):
     orden            = models.ForeignKey(

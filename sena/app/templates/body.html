@@ -359,20 +359,40 @@
   document.addEventListener('DOMContentLoaded', function () {
 
     var trigger = document.getElementById('sidebar-trigger');
-    var body    = document.body;
-    var MINI    = 'sidebar-mini';
-    var HIDDEN  = 'sidebar-hidden';
-    if (trigger) {
-      trigger.addEventListener('click', function () {
-        if (!body.classList.contains(MINI) && !body.classList.contains(HIDDEN)) {
-          body.classList.add(MINI); localStorage.setItem('sb_state', 'mini');
-        } else if (body.classList.contains(MINI)) {
-          body.classList.remove(MINI); body.classList.add(HIDDEN); localStorage.setItem('sb_state', 'hidden');
-        } else {
-          body.classList.remove(HIDDEN); localStorage.setItem('sb_state', 'full');
-        }
-      });
+var body    = document.body;
+var MINI    = 'sidebar-mini';
+var HIDDEN  = 'sidebar-hidden';
+var OPEN    = 'sidebar-open';
+
+if (trigger) {
+  trigger.addEventListener('click', function () {
+    if (window.innerWidth <= 768) {
+      // Móvil: abrir/cerrar drawer
+      body.classList.toggle(OPEN);
+    } else {
+      // Desktop: ciclo full → mini → hidden → full
+      if (!body.classList.contains(MINI) && !body.classList.contains(HIDDEN)) {
+        body.classList.add(MINI); localStorage.setItem('sb_state', 'mini');
+      } else if (body.classList.contains(MINI)) {
+        body.classList.remove(MINI); body.classList.add(HIDDEN); localStorage.setItem('sb_state', 'hidden');
+      } else {
+        body.classList.remove(HIDDEN); localStorage.setItem('sb_state', 'full');
+      }
     }
+  });
+}
+// Sincronizar estado al redimensionar
+window.addEventListener('resize', function () {
+  if (window.innerWidth <= 768) {
+    body.classList.remove(MINI, HIDDEN, OPEN);
+  } else {
+    body.classList.remove(OPEN);
+    var state = localStorage.getItem('sb_state');
+    body.classList.remove(MINI, HIDDEN);
+    if (state === 'mini')   body.classList.add(MINI);
+    if (state === 'hidden') body.classList.add(HIDDEN);
+  }
+});
     // Sincronizar estado del sidebar al redimensionar ventana
     window.addEventListener('resize', function () {
         if (window.innerWidth <= 768) {

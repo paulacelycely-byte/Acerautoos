@@ -274,7 +274,7 @@ class LimpiarNotificacionesAntiguasView(LoginRequiredMixin, View):
 # ── API PARA EL NAVBAR ─────────────────────────────────────
 @login_required(login_url='login:login')
 def notificaciones_no_leidas(request):
-    # Solo lee — no genera ni envía nada, respuesta inmediata
+   
     qs_no_leidas = Notificacion.objects.filter(leido=False).order_by('-id')
     results = []
     for n in qs_no_leidas[:5]:

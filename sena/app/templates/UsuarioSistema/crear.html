@@ -369,19 +369,27 @@ $(document).ready(function () {
 
     // ── Cancelar ──
     $('#btnCancelar').on('click', function () {
-        Swal.fire({
-            title: '¿Cancelar?',
-            text: 'Los datos no guardados se perderán.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Sí, salir',
-            cancelButtonText: 'Continuar editando',
-            confirmButtonColor: '#d32f2f',
-            cancelButtonColor: '#888'
-        }).then((result) => {
-            if (result.isConfirmed) window.location.href = "{% url 'app:listar_usuario' %}";
-        });
+    Swal.fire({
+        title: '¿Cancelar?',
+        text: 'Los datos no guardados se perderán.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, salir',
+        cancelButtonText: 'Continuar editando',
+        confirmButtonColor: '#d32f2f',
+        cancelButtonColor: '#888'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // FIX — si venía de orden, regresa a orden
+            var next = "{{ request.GET.next|default:'' }}";
+            if (next === 'orden') {
+                window.location.href = "{% url 'app:orden_servicio_create' %}";
+            } else {
+                window.location.href = "{% url 'app:listar_usuario' %}";
+            }
+        }
     });
+});
 
     // ── Confirmar guardar ──
     $('#formUsuario').on('submit', function (e) {

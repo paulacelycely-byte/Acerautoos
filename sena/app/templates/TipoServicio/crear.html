@@ -126,12 +126,15 @@
 
                     <!-- ESTADO -->
                     <div class="field-group">
-                        <label class="field-label">{{ form.estado.label }}</label>
+                        <label class="field-label">{{ form.requiere_seguimiento.label }}</label>
                         <div class="checkbox-wrapper">
-                            {{ form.estado }}
-                            <label for="{{ form.estado.id_for_label }}">Activar este servicio</label>
+                            {{ form.requiere_seguimiento }}
+                            <label for="{{ form.requiere_seguimiento.id_for_label }}">Activar seguimiento automático</label>
                         </div>
-                        {% for error in form.estado.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                        <div style="font-family:'DM Sans',sans-serif;font-size:.72rem;color:#888;margin-top:6px;">
+                            Actívalo para cambio de aceite — el sistema calculará la fecha del próximo mantenimiento según el uso del vehículo.
+                        </div>
+                        {% for error in form.requiere_seguimiento.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
                     </div>
 
                 </div>

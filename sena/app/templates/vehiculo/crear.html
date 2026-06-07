@@ -164,7 +164,8 @@
                             </label>
                             <div class="field-inner">
                                 <span class="field-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span>
-                                {{ form.km_ultimo_servicio|add_class:'form-field'|attr:'autocomplete:off'|attr:'placeholder:Ej: 45000' }}
+                                {{ form.km_ultimo_servicio|add_class:'form-field fecha-auto'|attr:'readonly:true'|attr:'placeholder:Ej: 45000' }}
+                                <small style="font-family:'DM Sans',sans-serif;font-size:.7rem;color:#888;margin-top:4px;display:block;">Se actualiza automáticamente al crear una orden de servicio.</small>
                             </div>
                             {% for error in form.km_ultimo_servicio.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
                         </div>

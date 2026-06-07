@@ -36,19 +36,26 @@ class CompatibilidadListView(LoginRequiredMixin, SoloAdminMixin, ListView): # â†
 
 
 # 2. CREAR (Solo Admin)
-class CompatibilidadCreateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, CreateView):
+class CompatibilidadCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
     model = CompatibilidadProducto
     form_class = CompatibilidadProductoForm
     template_name = 'compatibilidadProducto/crear.html'
-    success_url = reverse_lazy('app:listar_compatibilidad')
-    success_message = 'Compatibilidad registrada exitosamente.'
+
+    def get_success_url(self):
+        next_param = self.request.POST.get('next') or self.request.GET.get('next')
+        if next_param == 'orden':
+            return reverse_lazy('app:orden_servicio_create')
+        return reverse_lazy('app:listar_compatibilidad')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Compatibilidad registrada exitosamente.')
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Nueva Compatibilidad'
-        context['es_editar'] = False  
+        context['es_editar'] = False
         return context
-
 
 # 3. EDITAR (Solo Admin)
 class CompatibilidadUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, UpdateView):
