@@ -427,7 +427,7 @@ class MarcaForm(forms.ModelForm):
 
 
 # ══════════════════════════════════════════════════════════
-#  PRODUCTO
+#  PRODUCTO  — reemplaza el ProductoForm en forms.py
 # ══════════════════════════════════════════════════════════
 
 class ProductoForm(forms.ModelForm):
@@ -438,6 +438,19 @@ class ProductoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['marca'].queryset = Marca.objects.filter(categoria='REPUESTO', estado=True)
+
+        if self.instance.pk:
+            # EDITAR — stock de solo lectura, no se puede cambiar a mano
+            self.fields['stock'].widget.attrs['readonly'] = True
+            self.fields['stock'].widget.attrs['style']    = 'background:#f1f5f9;cursor:not-allowed;color:#888;'
+            self.fields['stock'].help_text = '⚠ El stock solo se actualiza desde el módulo de Compras.'
+        else:
+            # CREAR — quitar stock del formulario, arranca en 0 automáticamente
+      
+            self.fields['stock'].initial = 0
+            self.fields['stock'].widget.attrs['readonly'] = True
+            self.fields['stock'].widget.attrs['style']    = 'background:#f1f5f9;cursor:not-allowed;color:#888;'
+            self.fields['stock'].help_text = 'Arranca en 0. Se actualizará automáticamente desde el módulo de Compras.'
 
     def clean_codigo(self):
         codigo = val_solo_numeros(self.cleaned_data['codigo'], "Código")
@@ -468,18 +481,24 @@ class ProductoForm(forms.ModelForm):
         return precio
 
     def clean_stock(self):
-        return val_no_negativo(self.cleaned_data['stock'], "Stock")
+        
+        if self.instance.pk:
+            return self.instance.stock
+        return 0
 
     def clean_stock_minimo(self):
         return val_no_negativo(self.cleaned_data['stock_minimo'], "Stock mínimo")
 
     def clean(self):
         cleaned   = super().clean()
-        stock     = cleaned.get('stock')
+        # Stock real: si edición usa el del modelo, si creación usa 0
+        stock     = self.instance.stock if self.instance.pk else 0
         stock_min = cleaned.get('stock_minimo')
-        if stock is not None and stock_min is not None:
-            if stock_min > stock:
-                self.add_error('stock_minimo', "El stock mínimo no puede ser mayor al stock actual.")
+        if stock_min is not None and stock_min > stock and stock > 0:
+            self.add_error(
+                'stock_minimo',
+                f"El stock mínimo ({stock_min}) no puede ser mayor al stock actual ({stock})."
+            )
         return cleaned
 
 
@@ -723,7 +742,7 @@ class TipoServicioForm(forms.ModelForm):
 
 class OrdenServicioForm(forms.ModelForm):
     servicios = forms.ModelMultipleChoiceField(
-        queryset      = TipoServicio.objects.all(),
+        queryset = TipoServicio.objects.filter(estado=True),
         required      = True,
         label         = "Servicios",
         widget        = forms.CheckboxSelectMultiple(),
@@ -747,7 +766,7 @@ class OrdenServicioForm(forms.ModelForm):
         self.fields['empleado'].queryset    = UsuarioSistema.objects.filter(cargo='MECANICO', activo=True).order_by('first_name', 'last_name')
         self.fields['empleado'].required    = False
         self.fields['empleado'].empty_label = "-- Sin asignar --"
-        self.fields['servicios'].queryset   = TipoServicio.objects.all().order_by('nombre')
+        self.fields['servicios'].queryset   = TipoServicio.objects.filter(estado=True).order_by('nombre')
 
     def clean_fecha_proximo_mantenimiento(self):
         fecha     = self.cleaned_data.get('fecha_proximo_mantenimiento')

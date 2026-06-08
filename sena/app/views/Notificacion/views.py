@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, request
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -160,11 +160,8 @@ class NotificacionListView(LoginRequiredMixin, ListView):
     login_url = 'login:login'
 
     def get(self, request, *args, **kwargs):
-        # Ejecutar en background — la página carga inmediato
-        # sin esperar a que se generen notificaciones ni se envíen correos
-        t = threading.Thread(target=generar_notificaciones_automaticas)
-        t.daemon = True
-        t.start()
+        generar_notificaciones_automaticas()  # genera las nuevas
+        Notificacion.objects.filter(leido=False).update(leido=True)  # marca todas leídas
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):

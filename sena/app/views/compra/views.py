@@ -47,9 +47,9 @@ class CompraCreateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, 
 
     def form_valid(self, form):
         compra = form.save(commit=False)
-        # Sumar stock
+        # Sumar stock al producto
         compra.producto.stock += compra.cantidad
-        compra.producto.save()
+        compra.producto.save(update_fields=['stock'])
         compra.save()  # el save() del modelo crea la Factura automáticamente
         return super().form_valid(form)
 
@@ -69,10 +69,20 @@ class CompraUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, 
     def form_valid(self, form):
         compra_anterior = Compra.objects.get(pk=self.object.pk)
         compra = form.save(commit=False)
-        # Ajustar stock
-        compra.producto.stock -= compra_anterior.cantidad
-        compra.producto.stock += compra.cantidad
-        compra.producto.save()
+
+        if compra_anterior.producto_id != compra.producto_id:
+            # Cambió el producto — revertir stock del producto anterior
+            compra_anterior.producto.stock -= compra_anterior.cantidad
+            compra_anterior.producto.save(update_fields=['stock'])
+            # Sumar al nuevo producto
+            compra.producto.stock += compra.cantidad
+            compra.producto.save(update_fields=['stock'])
+        else:
+            # Mismo producto — solo ajustar la diferencia
+            diferencia = compra.cantidad - compra_anterior.cantidad
+            compra.producto.stock += diferencia
+            compra.producto.save(update_fields=['stock'])
+
         compra.save()
         return super().form_valid(form)
 
@@ -87,9 +97,15 @@ class CompraDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
         context['titulo'] = 'Eliminar Registro de Compra'
         return context
 
-    def delete(self, request, *args, **kwargs):
+    def form_valid(self, form):
+        compra = self.get_object()
+        # FIX — revertir stock al eliminar la compra
+        compra.producto.stock -= compra.cantidad
+        if compra.producto.stock < 0:
+            compra.producto.stock = 0
+        compra.producto.save(update_fields=['stock'])
         messages.success(self.request, "El registro de compra ha sido eliminado.")
-        return super().delete(request, *args, **kwargs)
+        return super().form_valid(form)
 
 
 class PagarCompraView(LoginRequiredMixin, SoloAdminMixin, View):
@@ -106,13 +122,13 @@ class PagarCompraView(LoginRequiredMixin, SoloAdminMixin, View):
             messages.error(request, "Seleccione un método de pago.")
             return redirect('app:lista_compras')
 
-        # 1. Marcar compra como pagada
+        # Marcar compra como pagada
         compra.estado_pago = 'Pagada'
         compra.metodo_pago = metodo
         compra.fecha_pago  = timezone.now()
         compra.save()
 
-        # 2. Registrar en Caja como EGRESO
+        # Registrar en Caja como EGRESO
         Caja.objects.create(
             descripcion = f"Compra Factura {compra.num_factura_proveedor}",
             monto       = compra.total_pagado,
@@ -121,7 +137,7 @@ class PagarCompraView(LoginRequiredMixin, SoloAdminMixin, View):
             metodo_pago = metodo,
         )
 
-       
+        # Actualizar factura asociada
         try:
             factura = compra.factura
             factura.estado_pago = 'Pagada'
