@@ -62,7 +62,7 @@ DATABASES = {
         'ENGINE':   'django.db.backends.mysql',
         'NAME':     'acerautos_db',
         'USER':     'root',
-        'PASSWORD': 'Acerautos2026*',
+        'PASSWORD': '123456789',
         'HOST':     'localhost',
         'PORT':     '3306',
         'OPTIONS': {
