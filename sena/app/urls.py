@@ -125,6 +125,9 @@ urlpatterns = [
     path('notificaciones/marcar-leida/<int:pk>/', notif.MarcarLeidaView.as_view(),        name='marcar_notificacion_leida'),
     path('notificaciones/marcar-todas-leidas/',   notif.MarcarTodasLeidasView.as_view(),  name='marcar_todas_leidas'),
     path('notificaciones/no-leidas/',             notif.notificaciones_no_leidas,         name='notificaciones_no_leidas'),
+    path('notificaciones/eliminar/<int:pk>/', notif.NotificacionDeleteView.as_view(), name='eliminar_notificacion'),
+    path('notificaciones/eliminar-masivo/',       notif.EliminarNotificacionesMasivoView.as_view(), name='eliminar_notificaciones_masivo'),
+    path('notificaciones/eliminar-todas/',        notif.EliminarTodasNotificacionesView.as_view(),  name='eliminar_todas_notificaciones'),
 
     # ── REPORTES PDF
     path('reportes/clientes/pdf/',    rep.ExportarClientesPDF.as_view(),    name='reporte_clientes_pdf'),

@@ -2,8 +2,10 @@
 {% load static %}
 
 {% block body %}
-  {% block css %}{% endblock %}
 
+
+  {% block css %}{% endblock %}
+  
   <style>
     html, body { margin:0; padding:0; }
 
@@ -657,5 +659,5 @@ window.addEventListener('resize', function () {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 {% block js %}{% endblock %}
-
+{% include 'widget_accesibilidad.html' %} 
 {% endblock %}

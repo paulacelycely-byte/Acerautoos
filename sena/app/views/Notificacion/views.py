@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.http import JsonResponse, request
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -12,11 +12,11 @@ from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 from django.utils import timezone
 
-from app.models import Notificacion, Vehiculo, SeguimientoMantenimiento
+from app.models import Notificacion, Vehiculo, SeguimientoMantenimiento, Cliente
 from app.forms import NotificacionForm
 
 
-# ── HELPER: enviar correo de notificación ─────────────────
+# ── HELPER: correo para notificaciones de vehículo ────────
 def _enviar_correo_notificacion(cliente, vehiculo, tipo, mensaje):
     destinatarios = []
     if cliente and cliente.email:
@@ -89,6 +89,51 @@ def _enviar_correo_notificacion(cliente, vehiculo, tipo, mensaje):
         print(f"[ACERAUTOS] ❌ Error enviando correo para {vehiculo.placa}: {e}")
 
 
+# ── HELPER: correo masivo tipo Información ────────────────
+def _enviar_correo_informacion(cliente, titulo, mensaje):
+    if not cliente.email:
+        return
+    asunto = f"{titulo} | ACERAUTOS"
+    html = f"""<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#f4f4f4;font-family:'Segoe UI',Arial,sans-serif;">
+<div style="max-width:600px;margin:32px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
+    <div style="background:#1a1a1a;padding:28px 32px;text-align:center;border-bottom:4px solid #2e7d32;">
+        <h1 style="margin:0;color:#fff;font-size:28px;font-weight:800;letter-spacing:3px;">ACERAUTOS</h1>
+        <p style="margin:6px 0 0;color:#888;font-size:12px;letter-spacing:1px;text-transform:uppercase;">Centro Integral Automotriz</p>
+    </div>
+    <div style="padding:36px 32px;">
+        <p style="margin:0 0 6px;font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;">Estimado/a</p>
+        <p style="margin:0 0 28px;font-size:22px;font-weight:700;color:#1a1a1a;">{cliente.nombre}</p>
+        <div style="background:#e8f5e9;border-radius:8px;padding:20px 24px;margin-bottom:24px;border-left:4px solid #2e7d32;">
+            <p style="margin:0 0 8px;font-size:13px;font-weight:700;color:#2e7d32;text-transform:uppercase;letter-spacing:.5px;">ℹ {titulo}</p>
+            <p style="margin:0;font-size:15px;color:#333;line-height:1.7;">{mensaje}</p>
+        </div>
+        <div style="background:#1a1a1a;border-radius:8px;padding:20px 24px;text-align:center;">
+            <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:1px;">Contáctanos</p>
+            <p style="margin:0;font-size:13px;color:#aaa;line-height:1.9;">📞 +57 (8) 632-5678<br>💬 WhatsApp: +57 320 123 4567<br>📍 Yopal, Casanare — Colombia</p>
+        </div>
+    </div>
+    <div style="background:#111;padding:20px 32px;text-align:center;border-top:1px solid #222;">
+        <p style="margin:0;font-size:12px;color:#555;"><span style="color:#2e7d32;font-weight:700;">ACERAUTOS</span> — Tu Confianza, Nuestro Compromiso</p>
+    </div>
+</div>
+</body>
+</html>"""
+    texto = f"Estimado/a {cliente.nombre},\n\n{titulo}\n\n{mensaje}\n\nACERAUTOS — Tu Confianza, Nuestro Compromiso"
+    try:
+        correo = EmailMultiAlternatives(
+            subject=asunto, body=texto,
+            from_email=settings.DEFAULT_FROM_EMAIL, to=[cliente.email],
+        )
+        correo.attach_alternative(html, "text/html")
+        correo.send()
+        print(f"[ACERAUTOS] ✅ Info enviada a: {cliente.email}")
+    except Exception as e:
+        print(f"[ACERAUTOS] ❌ Error enviando info a {cliente.email}: {e}")
+
+
 # ── GENERAR NOTIFICACIONES AUTOMÁTICAS ────────────────────
 def generar_notificaciones_automaticas():
     hoy = timezone.now().date()
@@ -118,7 +163,6 @@ def generar_notificaciones_automaticas():
         else:
             continue
 
-        # Si ya existe hoy con el mismo mensaje exacto → no hacer nada
         ya_existe = Notificacion.objects.filter(
             vehiculo=v,
             origen='SISTEMA',
@@ -127,27 +171,22 @@ def generar_notificaciones_automaticas():
         ).exists()
 
         if not ya_existe:
-            # Marcar como leídas las notificaciones automáticas viejas
-            # de días anteriores para no inflar el badge
             Notificacion.objects.filter(
                 vehiculo=v,
                 origen='SISTEMA',
             ).exclude(fecha=hoy).update(leido=True)
 
-            # Borrar duplicados de hoy con mensaje desactualizado
             Notificacion.objects.filter(
                 vehiculo=v,
                 origen='SISTEMA',
                 fecha=hoy,
             ).delete()
 
-            # Crear la notificación nueva
             Notificacion.objects.create(
                 tipo=tipo, origen='SISTEMA', titulo=titulo,
                 vehiculo=v, mensaje=mensaje, leido=False,
             )
 
-            # Enviar correo SOLO cuando se crea una notificación nueva
             if v.cliente:
                 _enviar_correo_notificacion(v.cliente, v, tipo, mensaje)
 
@@ -160,8 +199,8 @@ class NotificacionListView(LoginRequiredMixin, ListView):
     login_url = 'login:login'
 
     def get(self, request, *args, **kwargs):
-        generar_notificaciones_automaticas()  # genera las nuevas
-        Notificacion.objects.filter(leido=False).update(leido=True)  # marca todas leídas
+        generar_notificaciones_automaticas()
+        Notificacion.objects.filter(leido=False).update(leido=True)
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -169,9 +208,12 @@ class NotificacionListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo']    = 'Listado de Notificaciones'
-        context['crear_url'] = reverse_lazy('app:crear_notificacion')
-        context['no_leidas'] = Notificacion.objects.filter(leido=False).count()
+        context['titulo']        = 'Listado de Notificaciones'
+        context['crear_url']     = reverse_lazy('app:crear_notificacion')
+        context['no_leidas']     = Notificacion.objects.filter(leido=False).count()
+        context['urgentes']      = Notificacion.objects.filter(tipo='Urgente').count()
+        context['alertas']       = Notificacion.objects.filter(tipo='Alerta').count()
+        context['mantenimientos'] = Notificacion.objects.filter(tipo='Mantenimiento').count()
         return context
 
 
@@ -194,11 +236,26 @@ class NotificacionCreateView(LoginRequiredMixin, CreateView):
         notificacion = form.save(commit=False)
         notificacion.origen = 'ADMIN'
         notificacion.save()
-        if notificacion.vehiculo and notificacion.vehiculo.cliente:
+
+        if notificacion.tipo == 'Informacion':
+            # Enviar a todos los clientes con email en background
+            def _enviar_masivo():
+                clientes = Cliente.objects.filter(
+                    email__isnull=False
+                ).exclude(email='')
+                for cliente in clientes:
+                    _enviar_correo_informacion(
+                        cliente, notificacion.titulo, notificacion.mensaje
+                    )
+            t = threading.Thread(target=_enviar_masivo)
+            t.daemon = True
+            t.start()
+        elif notificacion.vehiculo and notificacion.vehiculo.cliente:
             _enviar_correo_notificacion(
                 notificacion.vehiculo.cliente, notificacion.vehiculo,
                 notificacion.tipo, notificacion.mensaje,
             )
+
         messages.success(self.request, 'Notificación creada correctamente.')
         return redirect(self.success_url)
 
@@ -258,7 +315,6 @@ class MarcarTodasLeidasView(LoginRequiredMixin, View):
 class LimpiarNotificacionesAntiguasView(LoginRequiredMixin, View):
     def post(self, request):
         hoy = timezone.now().date()
-        # Elimina notificaciones automáticas de días anteriores ya leídas
         Notificacion.objects.filter(
             origen='SISTEMA',
             leido=True,
@@ -271,7 +327,6 @@ class LimpiarNotificacionesAntiguasView(LoginRequiredMixin, View):
 # ── API PARA EL NAVBAR ─────────────────────────────────────
 @login_required(login_url='login:login')
 def notificaciones_no_leidas(request):
-   
     qs_no_leidas = Notificacion.objects.filter(leido=False).order_by('-id')
     results = []
     for n in qs_no_leidas[:5]:
@@ -292,3 +347,21 @@ def notificaciones_no_leidas(request):
         'count':   qs_no_leidas.count(),
         'results': results,
     })
+    
+class EliminarNotificacionesMasivoView(LoginRequiredMixin, View):
+    def post(self, request):
+        try:
+            pks = json.loads(request.body).get('pks', [])
+            eliminadas, _ = Notificacion.objects.filter(pk__in=pks).delete()
+            return JsonResponse({'ok': True, 'eliminadas': eliminadas})
+        except Exception as e:
+            return JsonResponse({'ok': False, 'mensaje': str(e)}, status=400)
+
+
+class EliminarTodasNotificacionesView(LoginRequiredMixin, View):
+    def post(self, request):
+        try:
+            eliminadas, _ = Notificacion.objects.all().delete()
+            return JsonResponse({'ok': True, 'eliminadas': eliminadas})
+        except Exception as e:
+            return JsonResponse({'ok': False, 'mensaje': str(e)}, status=400)
