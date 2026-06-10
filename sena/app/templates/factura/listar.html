@@ -295,7 +295,7 @@
                             <div class="factura-sub">{{ f.fecha_emision|date:"H:i" }}</div>
                         </td>
 
-                        <!-- Acciones — ✅ data-* en lugar de onclick con strings -->
+                        <!-- Acciones —  data-* en lugar de onclick con strings -->
                         <td class="text-center">
                             <div class="d-flex justify-content-center" style="gap:6px;">
                                 {% if f.estado_pago == 'Pagada' %}
@@ -307,7 +307,7 @@
                                 </button>
                                 {% endif %}
                                 {% if f.estado_pago == 'Pendiente' and f.tipo != 'COMPRA' %}
-                                {# ✅ CORRECCIÓN: data-* attributes evitan problemas con caracteres especiales #}
+                                {#  CORRECCIÓN: data-* attributes evitan problemas con caracteres especiales #}
                                 <button class="btn-fila btn-pagar btn-abrir-pago"
                                     title="Registrar pago"
                                     data-id="{{ f.pk }}"
@@ -347,7 +347,7 @@
         <!-- Cuerpo -->
         <div style="padding:24px;">
 
-            <!-- Info factura — ✅ número limpio sin caracteres raros -->
+            <!-- Info factura —  número limpio sin caracteres raros -->
             <div style="background:var(--gris);border-radius:10px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:10px;">
                 <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;flex-shrink:0;stroke-linecap:round;stroke-linejoin:round;">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -489,14 +489,14 @@ $(document).ready(function () {
     $('#tabla_facturas').on('draw.dt', recalcularStats);
     recalcularStats();
 
-    // ✅ CORRECCIÓN PRINCIPAL — usar data-* para evitar problemas con caracteres especiales
+    // CORRECCIÓN PRINCIPAL — usar data-* para evitar problemas con caracteres especiales
     $(document).on('click', '.btn-abrir-pago', function () {
         var num = $(this).data('num');
         var url = $(this).data('url');
         abrirModalPagar(num, url);
     });
 
-    // ✅ Selección de método con data-metodo
+    // Selección de método con data-metodo
     $(document).on('click', '.metodo-card', function () {
         $('.metodo-card').removeClass('activo');
         $(this).addClass('activo');
@@ -506,7 +506,7 @@ $(document).ready(function () {
 });
 
 function abrirModalPagar(numFactura, urlPagar) {
-    // ✅ textContent en lugar de innerHTML para evitar interpretación de caracteres
+    //  textContent en lugar de innerHTML para evitar interpretación de caracteres
     document.getElementById('modalNumFactura').textContent = numFactura;
     document.getElementById('formPagar').action = urlPagar;
     document.getElementById('metodoPagoInput').value = '';

@@ -5,15 +5,18 @@
 {% block css %}
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-    :root {
-        --rojo:   #d32f2f;
-        --rojo2:  #b71c1c;
-        --carbon: #1a1a1a;
-        --gris:   #f2f2f0;
-        --borde:  #e0ddd8;
-        --texto:  #2a2a2a;
-        --muted:  #888;
-    }
+:root {
+    --acento: {% if es_editar %}#1565c0{% else %}#d32f2f{% endif %};
+    --acento2: {% if es_editar %}#0d47a1{% else %}#b71c1c{% endif %};
+    --acento-glow: {% if es_editar %}rgba(21,101,192,.25){% else %}rgba(211,47,47,.25){% endif %};
+    --acento-ring: {% if es_editar %}rgba(21,101,192,.1){% else %}rgba(211,47,47,.1){% endif %};
+
+    --carbon: #1a1a1a;
+    --gris: #f2f2f0;
+    --borde: #e0ddd8;
+    --texto: #2a2a2a;
+    --muted: #888;
+}
 
     .taller-header {
         background: var(--carbon); border-radius: 14px;
@@ -21,11 +24,7 @@
         display: flex; align-items: center; justify-content: space-between;
         position: relative; overflow: hidden;
     }
-    .taller-header::after {
-        content: ''; position: absolute; right: -40px; top: -40px;
-        width: 180px; height: 180px; background: var(--rojo);
-        border-radius: 50%; opacity: .06;
-    }
+
     .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
     .header-icon { width: 52px; height: 52px; border-radius: 12px; overflow: hidden; flex-shrink: 0; }
     .header-icon img { width: 100%; height: 100%; object-fit: contain; }
@@ -42,23 +41,23 @@
         background: var(--carbon); padding: 14px 24px;
         display: flex; align-items: center; gap: 10px;
     }
-    .form-card-head svg { width: 15px; height: 15px; stroke: var(--rojo); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .form-card-head svg { width: 15px; height: 15px; stroke: var(--acento); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
     .form-card-head span { font-family: 'Barlow Condensed', sans-serif; font-size: .9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.7); }
-    .modo-chip { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: .7rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; background: var(--rojo); color: white; }
+    .modo-chip { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: .7rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; background: var(--acento); color: white; }
 
     .form-card-body { padding: 28px 28px 8px; }
 
     .field-group { margin-bottom: 22px; }
     .field-label { font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .9px; color: var(--muted); display: block; margin-bottom: 7px; }
-    .field-label .req { color: var(--rojo); margin-left: 2px; }
+    .field-label .req { color: var(--acento); margin-left: 2px; }
     .field-inner { position: relative; }
     .field-inner .fi-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: #ccc; pointer-events: none; display: flex; align-items: center; justify-content: center; transition: color .2s; }
     .field-inner .fi-icon svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .field-inner select { width: 100%; padding: 11px 14px 11px 40px; border: 1.5px solid var(--borde); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: .88rem; color: var(--texto); background: var(--gris); outline: none; transition: border-color .18s, background .18s, box-shadow .18s; -webkit-appearance: none; appearance: none; }
-    .field-inner select:focus { border-color: var(--rojo); background: white; box-shadow: 0 0 0 3px rgba(211,47,47,.1); }
-    .field-inner:focus-within .fi-icon { color: var(--rojo); }
+    .field-inner select:focus { border-color: var(--acento); background: white; box-shadow: 0 0 0 3px rgba(21,101,192,.1); }
+    .field-inner:focus-within .fi-icon { color: var(--acento); }
 
-    .field-error { font-family: 'DM Sans', sans-serif; font-size: .76rem; color: var(--rojo); margin-top: 5px; display: flex; align-items: center; gap: 5px; }
+    .field-error { font-family: 'DM Sans', sans-serif; font-size: .76rem; color: var(--acento); margin-top: 5px; display: flex; align-items: center; gap: 5px; }
     .field-hint { font-family: 'DM Sans', sans-serif; font-size: .72rem; color: var(--muted); margin-top: 5px; }
 
     .desde-orden-banner {
@@ -76,14 +75,14 @@
     }
     .btn-cancelar { font-family: 'DM Sans', sans-serif; font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; padding: 11px 22px; border-radius: 10px; border: 1.5px solid var(--borde); background: white; color: var(--muted); text-decoration: none; transition: .18s; display: flex; align-items: center; gap: 7px; cursor: pointer; }
     .btn-cancelar:hover { background: var(--borde); color: var(--texto); }
-    .btn-guardar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 12px 28px; border-radius: 10px; border: none; background: var(--rojo); color: white; cursor: pointer; box-shadow: 0 4px 14px rgba(211,47,47,.3); transition: .18s; display: flex; align-items: center; gap: 8px; }
+    .btn-guardar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 12px 28px; border-radius: 10px; border: none; background: var(--acento); color: white; cursor: pointer; box-shadow: 0 4px 14px rgba(21,101,192,.3); transition: .18s; display: flex; align-items: center; gap: 8px; }
     .btn-guardar svg { width: 15px; height: 15px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; }
-    .btn-guardar:hover { background: var(--rojo2); transform: translateY(-1px); }
+    .btn-guardar:hover { background: var(--acento2); transform: translateY(-1px); }
 </style>
 {% endblock %}
 
 {% block contenido %}
-<div class="container animate__animated animate__fadeIn" style="max-width:680px;">
+<div class="container animate__animated animate__fadeIn" style="max-width:860px;">
 
     <div class="taller-header">
         <div class="header-left">
@@ -120,7 +119,7 @@
 
                 <!-- Producto -->
                 <div class="field-group">
-                    <label class="field-label">{{ form.producto.label }} <span class="req">*</span></label>
+                    <label class="field-label">{{ form.producto.label }} <span class="req"></span></label>
                     <div class="field-inner">
                         <span class="fi-icon">
                             <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
@@ -132,7 +131,7 @@
 
                 <!-- Marca vehículo -->
                 <div class="field-group">
-                    <label class="field-label">{{ form.marca_vehiculo.label }} <span class="req">*</span></label>
+                    <label class="field-label">{{ form.marca_vehiculo.label }} <span class="req"></span></label>
                     <div class="field-inner">
                         <span class="fi-icon">
                             <svg viewBox="0 0 24 24"><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M5 17H3v-6l2-5h12l2 5h1a1 1 0 0 1 1 1v4h-2"/><path d="M9 17h6"/></svg>
@@ -193,7 +192,7 @@ $(function(){
             text: desdeOrden ? 'Se guardará y regresarás a la orden.' : 'Se registrará la relación de compatibilidad.',
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#d32f2f',
+            confirmButtonColor: {% if es_editar %}'#1565c0'{% else %}'#d32f2f'{% endif %},,
             cancelButtonColor: '#888',
             confirmButtonText: '{% if es_editar %}Sí, actualizar{% else %}Sí, guardar{% endif %}',
             cancelButtonText: 'Revisar'

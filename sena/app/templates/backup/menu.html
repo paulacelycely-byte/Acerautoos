@@ -23,14 +23,7 @@
         display: flex; align-items: center; justify-content: space-between;
         position: relative; overflow: hidden;
     }
-    .bk-header::after {
-        content: '';
-        position: absolute; right: -40px; top: -40px;
-        width: 180px; height: 180px;
-        background: var(--rojo);
-        border-radius: 50%;
-        opacity: .07;
-    }
+
     .bk-header-left { display: flex; align-items: center; gap: 18px; position: relative; }
     .bk-icon-wrap {
         width: 52px; height: 52px; border-radius: 12px;
@@ -188,9 +181,7 @@
     <!-- Header -->
     <div class="bk-header">
         <div class="bk-header-left">
-            <div class="bk-icon-wrap">
-                <i class="fas fa-database"></i>
-            </div>
+                        <img src="{% static 'imagenes/backups.jpeg' %}" style="width:56px;height:56px;object-fit:contain;border-radius:12px;">
             <div>
                 <h1 class="bk-titulo">{{ titulo }}</h1>
                 <div class="bk-sub">Base de datos MySQL · respaldo y restauración</div>

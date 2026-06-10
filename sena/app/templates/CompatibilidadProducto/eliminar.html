@@ -5,7 +5,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-    :root{
+    :root {
         --rojo:#d32f2f;
         --rojo2:#b71c1c;
         --carbon:#1a1a1a;
@@ -23,143 +23,101 @@
     }
 
     .delete-card{
-        width:100%;
-        max-width:560px;
-        background:#fff;
-        border-radius:18px;
-        overflow:hidden;
+        background:white;
+        border-radius:10px;
         border:1px solid var(--borde);
-        box-shadow:0 25px 60px rgba(0,0,0,.18);
-        animation:fadeIn .4s ease;
+        overflow:hidden;
+        width:100%;
+        max-width:480px;
+        box-shadow:0 20px 60px rgba(0,0,0,.1);
     }
 
-    @keyframes fadeIn{
-        from{
-            opacity:0;
-            transform:translateY(10px);
-        }
-        to{
-            opacity:1;
-            transform:translateY(0);
-        }
-    }
-
-    /* HEADER */
     .delete-card-top{
         background:var(--carbon);
         position:relative;
-        overflow:hidden;
-        padding:38px 34px 30px;
+        padding:36px 32px 32px;
         text-align:center;
-    }
-
-    .delete-card-top::before{
-        content:'';
-        position:absolute;
-        inset:0;
-        background:
-        repeating-linear-gradient(
-            -45deg,
-            transparent,
-            transparent 14px,
-            rgba(255,255,255,.03) 14px,
-            rgba(255,255,255,.03) 28px
-        );
-    }
-
-    .delete-card-top::after{
-        content:'';
-        position:absolute;
-        left:0;
-        top:0;
-        width:5px;
-        height:100%;
-        background:var(--rojo);
+        overflow:hidden;
     }
 
     .delete-icon{
         position:relative;
-        z-index:2;
-        margin-bottom:18px;
+        z-index:1;
+        margin:0 auto 20px;
     }
 
     .delete-icon img{
-        width:78px;
-        height:78px;
+        width:72px;
+        height:72px;
         object-fit:contain;
         border-radius:18px;
     }
 
     .delete-card-top h2{
-        position:relative;
-        z-index:2;
-        margin:0;
-        color:#fff;
         font-family:'Barlow Condensed',sans-serif;
-        font-size:2rem;
+        font-size:1.7rem;
         font-weight:800;
+        color:white;
         text-transform:uppercase;
-        letter-spacing:1px;
-        line-height:1;
+        letter-spacing:1.5px;
+        margin:0;
     }
 
     .delete-card-top p{
-        position:relative;
-        z-index:2;
-        margin-top:10px;
-        margin-bottom:0;
-        color:rgba(255,255,255,.45);
         font-family:'DM Sans',sans-serif;
-        font-size:.84rem;
+        font-size:.8rem;
+        color:rgba(255,255,255,.4);
+        margin:8px 0 0;
     }
 
-    /* BODY */
+    .delete-divider{
+        height:3px;
+        background:linear-gradient(90deg,var(--rojo),transparent);
+    }
+
     .delete-card-body{
         padding:28px;
-        background:#fff;
     }
 
-    /* INFO BOX */
-    .compat-box{
+    .compat-ficha{
         background:var(--gris);
-        border-radius:14px;
-        padding:20px;
-        margin-bottom:22px;
-        border-left:4px solid var(--rojo);
+        border-radius:12px;
+        padding:18px 20px;
+        margin-bottom:16px;
     }
 
-    .compat-label{
+    .compat-ficha-label{
         font-family:'DM Sans',sans-serif;
-        font-size:.72rem;
+        font-size:.68rem;
         font-weight:700;
         text-transform:uppercase;
         letter-spacing:1px;
         color:var(--muted);
-        margin-bottom:8px;
+        margin-bottom:4px;
     }
 
-    .compat-producto{
+    .compat-ficha-producto{
         font-family:'Barlow Condensed',sans-serif;
-        font-size:2rem;
+        font-size:1.5rem;
         font-weight:800;
         color:var(--carbon);
         line-height:1;
-        margin-bottom:6px;
     }
 
-    .compat-marca{
+    .compat-ficha-sub{
+        font-family:'DM Sans',sans-serif;
+        font-size:.78rem;
+        color:var(--muted);
+        margin-top:6px;
         display:flex;
         align-items:center;
-        gap:6px;
-        color:#666;
-        font-family:'DM Sans',sans-serif;
-        font-size:.88rem;
+        gap:5px;
     }
 
-    .compat-marca svg{
-        width:15px;
-        height:15px;
-        stroke:#777;
+    .compat-ficha-sub svg{
+        width:12px;
+        height:12px;
+        stroke:var(--muted);
         fill:none;
         stroke-width:2;
         stroke-linecap:round;
@@ -167,65 +125,67 @@
         flex-shrink:0;
     }
 
-    /* ALERT */
     .alerta-info{
+        font-family:'DM Sans',sans-serif;
+        font-size:.78rem;
+        color:#7f1d1d;
         display:flex;
         align-items:flex-start;
         gap:10px;
-        background:#fff4f4;
+        background:#fef2f2;
         border:1px solid #fecaca;
-        border-radius:12px;
-        padding:14px 16px;
-        margin-bottom:26px;
+        border-radius:10px;
+        padding:13px 16px;
+        margin-bottom:24px;
+        line-height:1.5;
     }
 
     .alerta-info svg{
-        width:17px;
-        height:17px;
+        width:16px;
+        height:16px;
         stroke:var(--rojo);
         fill:none;
         stroke-width:2;
         stroke-linecap:round;
         stroke-linejoin:round;
-        flex-shrink:0;
         margin-top:1px;
+        flex-shrink:0;
     }
 
-    .alerta-info span{
-        font-family:'DM Sans',sans-serif;
-        font-size:.82rem;
-        color:#8b1e1e;
-        line-height:1.5;
-    }
-
-    /* BUTTONS */
     .delete-actions{
         display:flex;
-        gap:12px;
+        gap:10px;
     }
 
-    .btn-cancelar,
-    .btn-eliminar{
+    .btn-cancelar{
         flex:1;
-        height:50px;
-        border-radius:12px;
+        font-family:'DM Sans',sans-serif;
+        font-size:.82rem;
+        font-weight:700;
+        text-transform:uppercase;
+        letter-spacing:.5px;
+        padding:12px;
+        border-radius:10px;
+        border:1.5px solid var(--borde);
+        background:white;
+        color:var(--muted);
+        text-decoration:none;
+        text-align:center;
+        transition:.2s;
         display:flex;
         align-items:center;
         justify-content:center;
         gap:8px;
-        text-decoration:none;
-        transition:.2s ease;
-        font-family:'DM Sans',sans-serif;
-        font-size:.83rem;
-        font-weight:700;
-        text-transform:uppercase;
-        letter-spacing:.5px;
     }
 
-    .btn-cancelar{
-        background:#fff;
-        border:1.5px solid var(--borde);
-        color:var(--muted);
+    .btn-cancelar svg{
+        width:14px;
+        height:14px;
+        stroke:currentColor;
+        fill:none;
+        stroke-width:2.2;
+        stroke-linecap:round;
+        stroke-linejoin:round;
     }
 
     .btn-cancelar:hover{
@@ -234,46 +194,39 @@
     }
 
     .btn-eliminar{
+        flex:1;
+        font-family:'DM Sans',sans-serif;
+        font-size:.82rem;
+        font-weight:700;
+        text-transform:uppercase;
+        letter-spacing:.5px;
+        padding:12px;
+        border-radius:10px;
         border:none;
-        cursor:pointer;
         background:var(--rojo);
-        color:#fff;
-        box-shadow:0 8px 22px rgba(211,47,47,.28);
+        color:white;
+        cursor:pointer;
+        box-shadow:0 4px 14px rgba(211,47,47,.35);
+        transition:.2s;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:8px;
     }
 
-    .btn-eliminar:hover{
-        background:var(--rojo2);
-        transform:translateY(-1px);
-    }
-
-    .btn-cancelar svg,
     .btn-eliminar svg{
-        width:15px;
-        height:15px;
+        width:14px;
+        height:14px;
+        stroke:white;
         fill:none;
-        stroke:currentColor;
         stroke-width:2.2;
         stroke-linecap:round;
         stroke-linejoin:round;
     }
 
-    @media(max-width:600px){
-
-        .delete-card{
-            max-width:100%;
-        }
-
-        .delete-actions{
-            flex-direction:column;
-        }
-
-        .compat-producto{
-            font-size:1.6rem;
-        }
-
-        .delete-card-top h2{
-            font-size:1.6rem;
-        }
+    .btn-eliminar:hover{
+        background:var(--rojo2);
+        transform:translateY(-1px);
     }
 </style>
 {% endblock %}
@@ -283,11 +236,10 @@
 
     <div class="delete-card">
 
-        <!-- HEADER -->
         <div class="delete-card-top">
 
             <div class="delete-icon">
-                <img src="{% static 'imagenes/eliminar.jpeg' %}">
+                <img src="{% static 'imagenes/eliminar.jpeg' %}" alt="Eliminar">
             </div>
 
             <h2>Confirmar Eliminación</h2>
@@ -298,21 +250,21 @@
 
         </div>
 
-        <!-- BODY -->
+        <div class="delete-divider"></div>
+
         <div class="delete-card-body">
 
-            <!-- INFO -->
-            <div class="compat-box">
+            <div class="compat-ficha">
 
-                <div class="compat-label">
-                    Relación a eliminar
+                <div class="compat-ficha-label">
+                    Compatibilidad a eliminar
                 </div>
 
-                <div class="compat-producto">
+                <div class="compat-ficha-producto">
                     {{ object.producto.nombre }}
                 </div>
 
-                <div class="compat-marca">
+                <div class="compat-ficha-sub">
 
                     <svg viewBox="0 0 24 24">
                         <path d="M3 13l2-5h14l2 5"/>
@@ -329,7 +281,6 @@
 
             </div>
 
-            <!-- ALERT -->
             <div class="alerta-info">
 
                 <svg viewBox="0 0 24 24">
@@ -339,12 +290,11 @@
                 </svg>
 
                 <span>
-                    Esta operación eliminará la relación de compatibilidad de forma permanente del sistema.
+                    La relación entre este producto y la marca seleccionada será eliminada permanentemente del sistema.
                 </span>
 
             </div>
 
-            <!-- FORM -->
             <form method="post" id="formEliminar">
                 {% csrf_token %}
 
@@ -388,44 +338,26 @@
 
 {% block js %}
 <script>
+$('#btnConfirmar').on('click', function () {
 
-    $('#btnConfirmar').on('click', function () {
+    Swal.fire({
+        title: '¿Proceder?',
+        text: "Se eliminará la relación de '{{ object.producto.nombre }}' permanentemente.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d32f2f',
+        cancelButtonColor: '#1a1a1a',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+    }).then((result) => {
 
-        Swal.fire({
-
-            title: '¿Eliminar compatibilidad?',
-
-            text: "Se eliminará la relación de '{{ object.producto.nombre }}' permanentemente.",
-
-            icon: 'warning',
-
-            showCancelButton: true,
-
-            confirmButtonColor: '#d32f2f',
-
-            cancelButtonColor: '#1a1a1a',
-
-            confirmButtonText: 'Sí, eliminar',
-
-            cancelButtonText: 'Cancelar',
-
-            reverseButtons: true,
-
-            background: '#fff',
-
-            color: '#1a1a1a'
-
-        }).then((result) => {
-
-            if (result.isConfirmed) {
-
-                $('#formEliminar').submit();
-
-            }
-
-        });
+        if (result.isConfirmed) {
+            $('#formEliminar').submit();
+        }
 
     });
 
+});
 </script>
 {% endblock %}
