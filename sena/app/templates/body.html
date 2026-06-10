@@ -601,11 +601,33 @@ window.addEventListener('resize', function () {
         var lenNit = val.trim().length; if (lenNit < 9 || lenNit > 10) { mostrarError(input, '"' + label + '" debe tener 9 o 10 dígitos.'); return; }
       }
       if (name === 'numero_telefono') {
-        if (!esVacio(val)) {
-          if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
-          var lenTel = val.trim().length; if (lenTel !== 7 && lenTel !== 10) { mostrarError(input, '"' + label + '" debe tener 10 dígitos (celular) o 7 (fijo).'); return; }
+    if (!esVacio(val)) {
+        if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
+        // Obtener el indicativo seleccionado
+        var indInput = document.getElementById('id_indicativo_proveedor') || document.getElementById('id_indicativo_cliente');
+        var ind = indInput ? indInput.value : '+57';
+        var RANGOS = {
+            '+57':(7,10),'+1':[10,10],'+52':[10,10],'+54':[6,11],'+55':[8,11],
+            '+56':[8,9],'+51':[7,9],'+58':[7,11],'+593':[8,9],'+591':[7,8],
+            '+595':[5,9],'+598':[7,8],'+507':[7,8],'+506':[8,8],'+503':[8,8],
+            '+502':[8,8],'+504':[8,8],'+505':[8,8],'+53':[7,8],'+1809':[10,10],
+            '+34':[9,9],'+44':[7,10],'+33':[9,9],'+49':[3,12],'+39':[6,11],
+            '+351':[9,9],'+7':[10,10],'+86':[7,11],'+81':[9,10],'+82':[9,11],
+            '+91':[10,10],'+61':[5,9],'+27':[9,9],'+20':[7,10],
+            '+212':[9,10],'+971':[7,9],'+966':[9,9]
+        };
+        var rango = RANGOS[ind] || [6,15];
+        var lenTel = val.trim().length;
+        if (lenTel < rango[0] || lenTel > rango[1]) {
+            var msg = rango[0] === rango[1]
+                ? '"' + label + '" debe tener exactamente ' + rango[0] + ' dígitos para ' + ind + '.'
+                : '"' + label + '" debe tener entre ' + rango[0] + ' y ' + rango[1] + ' dígitos para ' + ind + '.';
+            mostrarError(input, msg); return;
         }
-        mostrarOk(input); return;
+    }
+    mostrarOk(input); return;
+}
+
       }
       if (name.includes('email') || name.includes('correo')) {
         if (!esVacio(val) && !/^[\w.\+\-]+@[\w\-]+\.[a-zA-Z]{2,}$/.test(val.trim())) { mostrarError(input, '"' + label + '" no tiene formato válido.'); return; }

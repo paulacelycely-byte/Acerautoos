@@ -122,18 +122,294 @@ PAISES = [
 
 
 # ══════════════════════════════════════════════════════════
+#  REGLAS DE VALIDACIÓN DE TELÉFONO POR PAÍS
+#  (longitud, prefijos válidos y mensajes de error propios)
+# ══════════════════════════════════════════════════════════
+
+REGLAS_TELEFONO = {
+    '+57': {
+        'longitud': (7, 10),
+        'prefijos': ['3','60','61','62','63','64','65','66','67','68'],
+        'error_long': "Colombia (+57): ingrese 10 dígitos para celular (ej: 3101234567) o 7 para fijo (ej: 6012345).",
+        'error_pref': "Colombia (+57): celular debe empezar por 3 (ej: 3101234567) o fijo por 60–68 (ej: 6012345).",
+    },
+    '+1': {
+        'longitud': (10, 10),
+        'prefijos': ['2','3','4','5','6','7','8','9'],
+        'error_long': "EEUU/Canadá (+1): ingrese exactamente 10 dígitos (ej: 2125551234).",
+        'error_pref': "EEUU/Canadá (+1): el primer dígito debe ser 2–9 (ej: 2125551234). El 0 y el 1 no son válidos.",
+    },
+    '+52': {
+        'longitud': (10, 10),
+        'prefijos': ['2','3','4','5','6','7','8','9'],
+        'error_long': "México (+52): ingrese exactamente 10 dígitos (ej: 5512345678).",
+        'error_pref': "México (+52): el primer dígito debe ser 2–9 (ej: 5512345678). Los números no comienzan por 0 ni 1.",
+    },
+    '+54': {
+        'longitud': (6, 11),
+        'prefijos': ['9','11','15','2','3'],
+        'error_long': "Argentina (+54): 10–11 dígitos para móvil (ej: 91112345678) o 6–10 para fijo.",
+        'error_pref': "Argentina (+54): móvil empieza por 9 (ej: 91112345678), fijo por 11/2xx/3xx.",
+    },
+    '+55': {
+        'longitud': (8, 11),
+        'prefijos': ['1','2','3','4','5','6','7','8','9'],
+        'error_long': "Brasil (+55): incluya código de área (2 díg) + número. Móvil 11 díg (ej: 11987654321), fijo 10 díg.",
+        'error_pref': "Brasil (+55): el número debe iniciar por código de área válido (11–99). No puede empezar por 0.",
+    },
+    '+56': {
+        'longitud': (8, 9),
+        'prefijos': ['2','3','4','5','6','7','9'],
+        'error_long': "Chile (+56): móvil 9 dígitos (ej: 912345678) o fijo 8 dígitos.",
+        'error_pref': "Chile (+56): móvil empieza por 9 (ej: 912345678), fijo por 2–7.",
+    },
+    '+51': {
+        'longitud': (7, 9),
+        'prefijos': ['1','9'],
+        'error_long': "Perú (+51): móvil 9 dígitos (ej: 987654321) o fijo 7 dígitos (ej: 1234567).",
+        'error_pref': "Perú (+51): móvil empieza por 9 (ej: 987654321) o fijo por 1 (Lima).",
+    },
+    '+58': {
+        'longitud': (7, 11),
+        'prefijos': ['0412','0414','0416','0424','0426','02'],
+        'error_long': "Venezuela (+58): móvil 11 dígitos (ej: 04121234567) o fijo 7–10 dígitos empezando por 02.",
+        'error_pref': "Venezuela (+58): móvil empieza por 0412/0414/0416/0424/0426 (ej: 04121234567), fijo por 02.",
+    },
+    '+593': {
+        'longitud': (8, 9),
+        'prefijos': ['09','02','03','04','05','06','07'],
+        'error_long': "Ecuador (+593): móvil 9 dígitos (ej: 0987654321) o fijo 8 dígitos.",
+        'error_pref': "Ecuador (+593): móvil empieza por 09 (ej: 0987654321), fijo por 02–07.",
+    },
+    '+591': {
+        'longitud': (7, 8),
+        'prefijos': ['2','3','4','6','7'],
+        'error_long': "Bolivia (+591): móvil 8 dígitos (ej: 71234567) o fijo 7 dígitos.",
+        'error_pref': "Bolivia (+591): móvil empieza por 6 o 7 (ej: 71234567), fijo por 2/3/4.",
+    },
+    '+595': {
+        'longitud': (5, 9),
+        'prefijos': ['09','02','03','04','05','06','07'],
+        'error_long': "Paraguay (+595): móvil 9 dígitos (ej: 0981234567) o fijo 5–7 dígitos.",
+        'error_pref': "Paraguay (+595): móvil empieza por 09 (ej: 0981234567), fijo por 02–07.",
+    },
+    '+598': {
+        'longitud': (7, 8),
+        'prefijos': ['09','2'],
+        'error_long': "Uruguay (+598): móvil 8 dígitos (ej: 091234567) o fijo 7 dígitos.",
+        'error_pref': "Uruguay (+598): móvil empieza por 09 (ej: 091234567), fijo por 2.",
+    },
+    '+507': {
+        'longitud': (7, 8),
+        'prefijos': ['2','3','4','5','6'],
+        'error_long': "Panamá (+507): móvil 8 dígitos (ej: 61234567) o fijo 7 dígitos.",
+        'error_pref': "Panamá (+507): móvil empieza por 6 (ej: 61234567), fijo por 2–5.",
+    },
+    '+506': {
+        'longitud': (8, 8),
+        'prefijos': ['2','5','6','7','8'],
+        'error_long': "Costa Rica (+506): exactamente 8 dígitos (ej: 83456789).",
+        'error_pref': "Costa Rica (+506): móvil empieza por 5/6/7/8 (ej: 83456789), fijo por 2.",
+    },
+    '+503': {
+        'longitud': (8, 8),
+        'prefijos': ['2','6','7'],
+        'error_long': "El Salvador (+503): exactamente 8 dígitos (ej: 70123456).",
+        'error_pref': "El Salvador (+503): móvil empieza por 6 o 7 (ej: 70123456), fijo por 2.",
+    },
+    '+502': {
+        'longitud': (8, 8),
+        'prefijos': ['2','3','4','5','6','7'],
+        'error_long': "Guatemala (+502): exactamente 8 dígitos (ej: 51234567).",
+        'error_pref': "Guatemala (+502): móvil empieza por 3/4/5 (ej: 51234567), fijo por 2/6/7.",
+    },
+    '+504': {
+        'longitud': (8, 8),
+        'prefijos': ['2','3','7','8','9'],
+        'error_long': "Honduras (+504): exactamente 8 dígitos (ej: 91234567).",
+        'error_pref': "Honduras (+504): móvil empieza por 3/7/8/9 (ej: 91234567), fijo por 2.",
+    },
+    '+505': {
+        'longitud': (8, 8),
+        'prefijos': ['2','5','6','7','8'],
+        'error_long': "Nicaragua (+505): exactamente 8 dígitos (ej: 81234567).",
+        'error_pref': "Nicaragua (+505): móvil empieza por 5/6/7/8 (ej: 81234567), fijo por 2.",
+    },
+    '+53': {
+        'longitud': (7, 8),
+        'prefijos': ['2','3','4','5'],
+        'error_long': "Cuba (+53): móvil 8 dígitos (ej: 51234567) o fijo 7 dígitos.",
+        'error_pref': "Cuba (+53): móvil empieza por 5 (ej: 51234567), fijo por 2/3/4.",
+    },
+    '+1809': {
+        'longitud': (10, 10),
+        'prefijos': ['809','829','849'],
+        'error_long': "Rep. Dominicana (+1809): exactamente 10 dígitos (ej: 8091234567).",
+        'error_pref': "Rep. Dominicana (+1809): debe empezar por 809, 829 o 849 (ej: 8091234567).",
+    },
+    '+34': {
+        'longitud': (9, 9),
+        'prefijos': ['6','7','8','9'],
+        'error_long': "España (+34): exactamente 9 dígitos (ej: 612345678).",
+        'error_pref': "España (+34): móvil empieza por 6 o 7 (ej: 612345678), fijo por 8 o 9.",
+    },
+    '+44': {
+        'longitud': (7, 10),
+        'prefijos': ['1','2','3','7'],
+        'error_long': "Reino Unido (+44): 7–10 dígitos sin el 0 inicial (ej: 7911123456).",
+        'error_pref': "Reino Unido (+44): sin el 0 inicial — móvil empieza por 7 (ej: 7911123456), fijo por 1/2/3.",
+    },
+    '+33': {
+        'longitud': (9, 9),
+        'prefijos': ['1','2','3','4','5','6','7'],
+        'error_long': "Francia (+33): 9 dígitos sin el 0 inicial (ej: 612345678).",
+        'error_pref': "Francia (+33): sin el 0 inicial — móvil empieza por 6 o 7 (ej: 612345678), fijo por 1–5.",
+    },
+    '+49': {
+        'longitud': (3, 12),
+        'prefijos': [],
+        'error_long': "Alemania (+49): entre 3 y 12 dígitos según la región (ej móvil: 15123456789).",
+        'error_pref': "",
+    },
+    '+39': {
+        'longitud': (6, 11),
+        'prefijos': ['0','3'],
+        'error_long': "Italia (+39): móvil 10 dígitos (ej: 3201234567) o fijo 6–11 dígitos empezando por 0.",
+        'error_pref': "Italia (+39): móvil empieza por 3 (ej: 3201234567), fijo por 0.",
+    },
+    '+351': {
+        'longitud': (9, 9),
+        'prefijos': ['2','9'],
+        'error_long': "Portugal (+351): exactamente 9 dígitos (ej: 912345678).",
+        'error_pref': "Portugal (+351): móvil empieza por 9 (ej: 912345678), fijo por 2.",
+    },
+    '+7': {
+        'longitud': (10, 10),
+        'prefijos': ['3','4','8','9'],
+        'error_long': "Rusia (+7): exactamente 10 dígitos (ej: 9161234567).",
+        'error_pref': "Rusia (+7): móvil empieza por 9 (ej: 9161234567), fijo por 3/4/8.",
+    },
+    '+86': {
+        'longitud': (7, 11),
+        'prefijos': ['1','2','3','4','5','6','7','8','9'],
+        'error_long': "China (+86): móvil 11 dígitos (ej: 13812345678) o fijo 7–8 dígitos con código de área.",
+        'error_pref': "China (+86): no puede empezar por 0. Móvil empieza por 1 (ej: 13812345678).",
+    },
+    '+81': {
+        'longitud': (9, 10),
+        'prefijos': ['0','7','8','9'],
+        'error_long': "Japón (+81): 9–10 dígitos (ej móvil: 09012345678 → ingresar sin el 0: 9012345678).",
+        'error_pref': "Japón (+81): móvil empieza por 070/080/090 (ej: 09012345678), fijo por código de área.",
+    },
+    '+82': {
+        'longitud': (9, 11),
+        'prefijos': ['0','1','2','3','4','5','6'],
+        'error_long': "Corea del Sur (+82): 9–11 dígitos (ej móvil: 01012345678).",
+        'error_pref': "Corea del Sur (+82): móvil empieza por 010 (ej: 01012345678), fijo por 02/031/…",
+    },
+    '+91': {
+        'longitud': (10, 10),
+        'prefijos': ['6','7','8','9'],
+        'error_long': "India (+91): exactamente 10 dígitos (ej: 9876543210).",
+        'error_pref': "India (+91): debe empezar por 6, 7, 8 o 9 (ej: 9876543210). No comienza por 0–5.",
+    },
+    '+61': {
+        'longitud': (5, 9),
+        'prefijos': ['2','3','4','7','8'],
+        'error_long': "Australia (+61): móvil 9 dígitos (ej: 412345678) o fijo 8 dígitos, sin el 0 inicial.",
+        'error_pref': "Australia (+61): sin el 0 inicial — móvil empieza por 4 (ej: 412345678), fijo por 2/3/7/8.",
+    },
+    '+27': {
+        'longitud': (9, 9),
+        'prefijos': ['1','2','3','4','5','6','7','8'],
+        'error_long': "Sudáfrica (+27): exactamente 9 dígitos sin el 0 inicial (ej: 812345678).",
+        'error_pref': "Sudáfrica (+27): sin el 0 inicial — móvil empieza por 6/7/8 (ej: 812345678), fijo por 1–5.",
+    },
+    '+20': {
+        'longitud': (7, 10),
+        'prefijos': ['01','02','03'],
+        'error_long': "Egipto (+20): móvil 10 dígitos (ej: 0101234567) o fijo 8–9 dígitos.",
+        'error_pref': "Egipto (+20): móvil empieza por 01 (ej: 0101234567), fijo por 02 o 03.",
+    },
+    '+212': {
+        'longitud': (9, 10),
+        'prefijos': ['05','06','07'],
+        'error_long': "Marruecos (+212): 9–10 dígitos (ej: 0612345678).",
+        'error_pref': "Marruecos (+212): móvil empieza por 06 o 07 (ej: 0612345678), fijo por 05.",
+    },
+    '+971': {
+        'longitud': (7, 9),
+        'prefijos': ['02','03','04','05','06','07','09'],
+        'error_long': "Emiratos Árabes (+971): móvil 9 dígitos (ej: 0512345678) o fijo 7–8 dígitos.",
+        'error_pref': "Emiratos Árabes (+971): móvil empieza por 05 (ej: 0512345678), fijo por 02/03/04/06/07/09.",
+    },
+    '+966': {
+        'longitud': (9, 9),
+        'prefijos': ['01','02','03','05'],
+        'error_long': "Arabia Saudita (+966): exactamente 9 dígitos (ej: 0512345678).",
+        'error_pref': "Arabia Saudita (+966): móvil empieza por 05 (ej: 0512345678), fijo por 01/02/03.",
+    },
+}
+
+# Alias de compatibilidad por si algún módulo ya importa LONGITUDES_POR_INDICATIVO
+LONGITUDES_POR_INDICATIVO = {k: v['longitud'] for k, v in REGLAS_TELEFONO.items()}
+
+
+# ══════════════════════════════════════════════════════════
 #  UTILIDADES COMPARTIDAS
 # ══════════════════════════════════════════════════════════
 
+def _validar_numero_por_regla(numero, indicativo):
+    """
+    Valida número local según REGLAS_TELEFONO[indicativo].
+    Lanza forms.ValidationError con el mensaje propio del país.
+    Retorna el número limpio si es válido.
+    Uso interno compartido por clean_numero_telefono y val_telefono_internacional.
+    """
+    numero_limpio = str(numero).strip()
+
+    if not numero_limpio:
+        raise forms.ValidationError("Ingrese el número de teléfono.")
+    if not numero_limpio.isdigit():
+        raise forms.ValidationError(
+            "Solo se permiten dígitos, sin espacios, guiones ni símbolos."
+        )
+
+    regla = REGLAS_TELEFONO.get(indicativo)
+    if not regla:
+        # País no mapeado: rango genérico
+        if not (6 <= len(numero_limpio) <= 15):
+            raise forms.ValidationError(
+                f"Número inválido para {indicativo or 'indicativo no seleccionado'}: "
+                f"debe tener entre 6 y 15 dígitos."
+            )
+        return numero_limpio
+
+    # 1. Longitud
+    min_d, max_d = regla['longitud']
+    if not (min_d <= len(numero_limpio) <= max_d):
+        raise forms.ValidationError(regla['error_long'])
+
+    # 2. Prefijo (más específicos primero)
+    prefijos = regla.get('prefijos', [])
+    if prefijos:
+        sorted_p = sorted(prefijos, key=len, reverse=True)
+        if not any(numero_limpio.startswith(p) for p in sorted_p):
+            raise forms.ValidationError(regla['error_pref'])
+
+    return numero_limpio
+
+
 def val_telefono_internacional(indicativo, numero, campo):
+    """
+    Valida longitud + prefijo según el país del indicativo.
+    Retorna '{indicativo}{numero}' si todo es válido.
+    """
     if not indicativo:
         raise forms.ValidationError(f"'{campo}': seleccione el indicativo del país.")
-    numero_limpio = str(numero).strip()
-    if not numero_limpio.isdigit():
-        raise forms.ValidationError(f"'{campo}' solo permite números, sin espacios, guiones ni símbolos.")
-    if not (6 <= len(numero_limpio) <= 15):
-        raise forms.ValidationError(f"'{campo}' debe tener entre 6 y 15 dígitos.")
+    numero_limpio = _validar_numero_por_regla(numero, indicativo)
     return f"{indicativo}{numero_limpio}"
+
 
 def val_solo_letras(valor, campo):
     if not re.match(r'^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$', str(valor).strip()):
@@ -171,20 +447,19 @@ def val_email(valor, campo):
     return valor.strip().lower()
 
 def val_telefono_colombiano(valor, campo):
+    """Mantenida por compatibilidad — úsala solo para campos puramente colombianos."""
     limpio = str(valor).strip()
     if not limpio.isdigit():
         raise forms.ValidationError(f"'{campo}' solo permite números, sin espacios, guiones ni símbolos.")
     if len(limpio) == 10:
-        if limpio.startswith('3'):
+        if limpio.startswith('3') or limpio.startswith('60') or limpio.startswith('61'):
             return limpio
-        elif limpio.startswith('60') or limpio.startswith('61'):
-            return limpio
-        else:
-            raise forms.ValidationError(f"'{campo}': celular debe empezar por 3 o fijo con indicativo por 60/61.")
+        raise forms.ValidationError(f"'{campo}': celular debe empezar por 3 o fijo con indicativo por 60/61.")
     elif len(limpio) == 7:
         return limpio
-    else:
-        raise forms.ValidationError(f"'{campo}' inválido. Use 10 dígitos para celular o 7 para fijo. Recibido: {len(limpio)} dígitos.")
+    raise forms.ValidationError(
+        f"'{campo}' inválido. Use 10 dígitos para celular o 7 para fijo. Recibido: {len(limpio)} dígitos."
+    )
 
 def val_documento_colombiano(valor, campo, tipo_doc=None):
     limpio = str(valor).strip()
@@ -308,8 +583,14 @@ class UsuarioSistemaForm(forms.ModelForm):
 # ══════════════════════════════════════════════════════════
 
 class ProveedorForm(forms.ModelForm):
-    indicativo_telefono = forms.ChoiceField(choices=INDICATIVOS_PAISES, required=True, label="Indicativo", widget=forms.HiddenInput())
-    numero_telefono     = forms.CharField(max_length=15, required=True, label="Teléfono", widget=forms.TextInput(attrs={'class': 'form-control'}))
+    indicativo_telefono = forms.ChoiceField(
+        choices=INDICATIVOS_PAISES, required=True, label="Indicativo",
+        widget=forms.HiddenInput()
+    )
+    numero_telefono = forms.CharField(
+        max_length=15, required=True, label="Teléfono",
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
 
     class Meta:
         model  = Proveedor
@@ -349,7 +630,19 @@ class ProveedorForm(forms.ModelForm):
             raise forms.ValidationError("Ya existe un proveedor registrado con este NIT.")
         return nit
 
+    def clean_numero_telefono(self):
+        """
+        Valida el número local según el indicativo seleccionado.
+        Usa REGLAS_TELEFONO para dar el mensaje correcto por país.
+        Esto reemplaza cualquier validación colombiana del backend.
+        """
+        numero     = self.cleaned_data.get('numero_telefono', '').strip()
+        indicativo = self.data.get('indicativo_telefono', '').strip()
+        _validar_numero_por_regla(numero, indicativo)
+        return numero
+
     def clean_telefono(self):
+        # El campo telefono del modelo se construye en clean(), no aquí
         return self.cleaned_data.get('telefono')
 
     def clean_direccion(self):
@@ -362,8 +655,8 @@ class ProveedorForm(forms.ModelForm):
         cleaned    = super().clean()
         indicativo = cleaned.get('indicativo_telefono', '')
         numero     = cleaned.get('numero_telefono', '')
-        if indicativo or numero:
-            telefono_completo = val_telefono_internacional(indicativo, numero, "Teléfono")
+        if indicativo and numero:
+            telefono_completo = f"{indicativo}{numero}"
             cleaned['telefono'] = telefono_completo
             qs = Proveedor.objects.filter(telefono=telefono_completo)
             if self.instance.pk:
@@ -387,7 +680,10 @@ class ProveedorForm(forms.ModelForm):
 # ══════════════════════════════════════════════════════════
 
 class MarcaForm(forms.ModelForm):
-    pais_origen = forms.ChoiceField(choices=PAISES, required=False, label="País de origen", widget=SelectConEmoji(attrs={'class': 'form-control'}))
+    pais_origen = forms.ChoiceField(
+        choices=PAISES, required=False, label="País de origen",
+        widget=SelectConEmoji(attrs={'class': 'form-control'})
+    )
 
     class Meta:
         model  = Marca
@@ -427,7 +723,7 @@ class MarcaForm(forms.ModelForm):
 
 
 # ══════════════════════════════════════════════════════════
-#  PRODUCTO  — reemplaza el ProductoForm en forms.py
+#  PRODUCTO
 # ══════════════════════════════════════════════════════════
 
 class ProductoForm(forms.ModelForm):
@@ -438,15 +734,11 @@ class ProductoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['marca'].queryset = Marca.objects.filter(categoria='REPUESTO', estado=True)
-
         if self.instance.pk:
-            # EDITAR — stock de solo lectura, no se puede cambiar a mano
             self.fields['stock'].widget.attrs['readonly'] = True
             self.fields['stock'].widget.attrs['style']    = 'background:#f1f5f9;cursor:not-allowed;color:#888;'
             self.fields['stock'].help_text = '⚠ El stock solo se actualiza desde el módulo de Compras.'
         else:
-            # CREAR — quitar stock del formulario, arranca en 0 automáticamente
-      
             self.fields['stock'].initial = 0
             self.fields['stock'].widget.attrs['readonly'] = True
             self.fields['stock'].widget.attrs['style']    = 'background:#f1f5f9;cursor:not-allowed;color:#888;'
@@ -481,7 +773,6 @@ class ProductoForm(forms.ModelForm):
         return precio
 
     def clean_stock(self):
-        
         if self.instance.pk:
             return self.instance.stock
         return 0
@@ -491,7 +782,6 @@ class ProductoForm(forms.ModelForm):
 
     def clean(self):
         cleaned   = super().clean()
-        # Stock real: si edición usa el del modelo, si creación usa 0
         stock     = self.instance.stock if self.instance.pk else 0
         stock_min = cleaned.get('stock_minimo')
         if stock_min is not None and stock_min > stock and stock > 0:
@@ -560,8 +850,14 @@ class CompraForm(forms.ModelForm):
 # ══════════════════════════════════════════════════════════
 
 class ClienteForm(forms.ModelForm):
-    indicativo_telefono = forms.ChoiceField(choices=INDICATIVOS_PAISES, required=True, label="Indicativo", widget=forms.HiddenInput())
-    numero_telefono     = forms.CharField(max_length=15, required=True, label="Teléfono", widget=forms.TextInput(attrs={'class': 'form-control'}))
+    indicativo_telefono = forms.ChoiceField(
+        choices=INDICATIVOS_PAISES, required=True, label="Indicativo",
+        widget=forms.HiddenInput()
+    )
+    numero_telefono = forms.CharField(
+        max_length=15, required=True, label="Teléfono",
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
 
     class Meta:
         model  = Cliente
@@ -597,6 +893,16 @@ class ClienteForm(forms.ModelForm):
             raise forms.ValidationError("Ya existe un cliente registrado con este número de documento.")
         return doc
 
+    def clean_numero_telefono(self):
+        """
+        Valida el número local según el indicativo seleccionado.
+        Usa REGLAS_TELEFONO para dar el mensaje correcto por país.
+        """
+        numero     = self.cleaned_data.get('numero_telefono', '').strip()
+        indicativo = self.data.get('indicativo_telefono', '').strip()
+        _validar_numero_por_regla(numero, indicativo)
+        return numero
+
     def clean_telefono(self):
         return self.cleaned_data.get('telefono')
 
@@ -615,8 +921,8 @@ class ClienteForm(forms.ModelForm):
         cleaned    = super().clean()
         indicativo = cleaned.get('indicativo_telefono', '')
         numero     = cleaned.get('numero_telefono', '')
-        if indicativo or numero:
-            telefono_completo = val_telefono_internacional(indicativo, numero, "Teléfono")
+        if indicativo and numero:
+            telefono_completo = f"{indicativo}{numero}"
             cleaned['telefono'] = telefono_completo
             qs = Cliente.objects.filter(telefono=telefono_completo)
             if self.instance.pk:
@@ -636,7 +942,7 @@ class ClienteForm(forms.ModelForm):
 
 
 # ══════════════════════════════════════════════════════════
-#  VEHÍCULO  
+#  VEHÍCULO
 # ══════════════════════════════════════════════════════════
 
 class VehiculoForm(forms.ModelForm):
@@ -647,22 +953,17 @@ class VehiculoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['marca'].queryset = Marca.objects.filter(categoria='AUTO', estado=True)
-
         self.fields['placa'].label     = "Placa del Vehículo"
         self.fields['placa'].help_text = "Ej: ABC123 o ABC12D"
         self.fields['placa'].widget.attrs.update({'placeholder': 'ABC123'})
-
-        self.fields['marca'].label  = "Marca"
+        self.fields['marca'].label   = "Marca"
         self.fields['cliente'].label = "Propietario"
-
         self.fields['modelo'].label     = "Año del Vehículo"
         self.fields['modelo'].help_text = "Ej: 2020"
         self.fields['modelo'].widget.attrs.update({'placeholder': '2020'})
-
         self.fields['km_ultimo_servicio'].required = True
         self.fields['km_ultimo_servicio'].label    = "¿Cuántos km tiene el vehículo ahora?"
         self.fields['km_ultimo_servicio'].widget.attrs.update({'placeholder': '0'})
-
         self.fields['tipo_uso'].required  = True
         self.fields['tipo_uso'].label     = "¿Cómo se usa este vehículo?"
         self.fields['tipo_uso'].help_text = "Ayuda a estimar el próximo mantenimiento"
@@ -742,13 +1043,12 @@ class TipoServicioForm(forms.ModelForm):
 
 class OrdenServicioForm(forms.ModelForm):
     servicios = forms.ModelMultipleChoiceField(
-        queryset = TipoServicio.objects.filter(estado=True),
+        queryset      = TipoServicio.objects.filter(estado=True),
         required      = True,
         label         = "Servicios",
         widget        = forms.CheckboxSelectMultiple(),
         error_messages= {'required': "Debe seleccionar al menos un servicio."},
     )
-    # Campo extra para capturar la fecha del próximo mantenimiento
     fecha_proximo_mantenimiento = forms.DateField(
         required  = False,
         label     = "Fecha próximo mantenimiento",
@@ -762,7 +1062,6 @@ class OrdenServicioForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # ← CAMBIO CLAVE: usa UsuarioSistema, no Empleado
         self.fields['empleado'].queryset    = UsuarioSistema.objects.filter(cargo='MECANICO', activo=True).order_by('first_name', 'last_name')
         self.fields['empleado'].required    = False
         self.fields['empleado'].empty_label = "-- Sin asignar --"
@@ -836,16 +1135,20 @@ class OrdenServicioForm(forms.ModelForm):
 
 
 # ══════════════════════════════════════════════════════════
-#  SEGUIMIENTO MANTENIMIENTO
+#  SEGUIMIENTO MANTENIMIENTO (primera definición)
 # ══════════════════════════════════════════════════════════
 
 class SeguimientoMantenimientoForm(forms.ModelForm):
     class Meta:
         model  = SeguimientoMantenimiento
-        fields = ['vehiculo', 'orden_servicio', 'tipo_servicio', 'km_al_momento', 'km_proximo_mantenimiento', 'fecha_proximo_mantenimiento', 'observaciones']
+        fields = [
+            'vehiculo', 'orden_servicio', 'tipo_servicio',
+            'km_al_momento', 'km_proximo_mantenimiento',
+            'fecha_proximo_mantenimiento', 'estado', 'observaciones',
+        ]
         widgets = {
             'fecha_proximo_mantenimiento': forms.DateInput(attrs={'type': 'date'}),
-            'observaciones':              forms.Textarea(attrs={'rows': 3}),
+            'observaciones': forms.Textarea(attrs={'rows': 3}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -862,8 +1165,8 @@ class SeguimientoMantenimientoForm(forms.ModelForm):
 
     def clean_fecha_proximo_mantenimiento(self):
         fecha = self.cleaned_data.get('fecha_proximo_mantenimiento')
-        if fecha and fecha < timezone.now().date():
-            raise forms.ValidationError("La fecha debe ser futura.")
+        if fecha and fecha <= timezone.now().date():
+            raise forms.ValidationError("La fecha del próximo mantenimiento debe ser futura.")
         return fecha
 
     def clean_km_proximo_mantenimiento(self):
@@ -1020,9 +1323,8 @@ class NotificacionForm(forms.ModelForm):
 
     def clean_fecha(self):
         fecha = self.cleaned_data.get('fecha')
-        if fecha:
-            if fecha.year > timezone.now().year:
-                raise forms.ValidationError(f"No se pueden registrar notificaciones para el año {fecha.year}.")
+        if fecha and fecha.year > timezone.now().year:
+            raise forms.ValidationError(f"No se pueden registrar notificaciones para el año {fecha.year}.")
         return fecha
 
     def clean_tipo(self):
@@ -1146,39 +1448,3 @@ class PagarFacturaForm(forms.ModelForm):
         if not metodo:
             raise forms.ValidationError("Seleccione un método de pago.")
         return metodo
-
-# ══════════════════════════════════════════════════════════
-#  SEGUIMIENTO MANTENIMIENTO
-# ══════════════════════════════════════════════════════════
-
-class SeguimientoMantenimientoForm(forms.ModelForm):
-    class Meta:
-        model  = SeguimientoMantenimiento
-        fields = [
-            'vehiculo',
-            'orden_servicio',
-            'tipo_servicio',
-            'km_al_momento',
-            'km_proximo_mantenimiento',
-            'fecha_proximo_mantenimiento',
-            'estado',
-            'observaciones',
-        ]
-        widgets = {
-            'fecha_proximo_mantenimiento': forms.DateInput(attrs={'type': 'date'}),
-            'observaciones': forms.Textarea(attrs={'rows': 3}),
-        }
- 
-    def clean_fecha_proximo_mantenimiento(self):
-        fecha = self.cleaned_data.get('fecha_proximo_mantenimiento')
-        if fecha and fecha <= timezone.now().date():
-            raise forms.ValidationError("La fecha del próximo mantenimiento debe ser futura.")
-        return fecha
- 
-    def clean_km_proximo_mantenimiento(self):
-        km_prox = self.cleaned_data.get('km_proximo_mantenimiento')
-        km_act  = self.cleaned_data.get('km_al_momento')
-        if km_prox and km_act and km_prox <= km_act:
-            raise forms.ValidationError("El km del próximo mantenimiento debe ser mayor al km actual.")
-        return km_prox
- 
