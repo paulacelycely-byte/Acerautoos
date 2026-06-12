@@ -2,17 +2,15 @@ from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import RegexValidator
-from django.core.exceptions import ValidationError
+
 
 # ══════════════════════════════════════════════════════════
 #  USUARIO SISTEMA
 # ══════════════════════════════════════════════════════════
 class UsuarioSistema(AbstractUser):
     CARGOS = [
-        ('ADMIN',         'Administrador'),
-        ('MECANICO',      'Mecánico'),
-
+        ('ADMIN',    'Administrador'),
+        ('MECANICO', 'Mecánico'),
     ]
     TIPOS_DOC = [
         ('CC',  'Cédula de Ciudadanía'),
@@ -23,6 +21,7 @@ class UsuarioSistema(AbstractUser):
     cedula         = models.CharField(max_length=20, unique=True, null=True, blank=True)
     telefono       = models.CharField(max_length=20, null=True, blank=True)
     cargo          = models.CharField(max_length=20, choices=CARGOS, default='ADMIN')
+    activo         = models.BooleanField(default=True)
 
     @property
     def nombre_completo(self):
@@ -38,46 +37,6 @@ class UsuarioSistema(AbstractUser):
     class Meta:
         db_table     = 'usuario_sistema'
         verbose_name = 'Usuario del Sistema'
-
-
-# ══════════════════════════════════════════════════════════
-#  EMPLEADO
-# ══════════════════════════════════════════════════════════
-class Empleado(models.Model):
-    CARGOS = [
-        ('ADMIN',         'Administrador'),
-        ('MECANICO',      'Mecánico'),
-       
-    ]
-    TIPOS_DOC = [
-        ('CC',  'Cédula de Ciudadanía'),
-        ('CE',  'Cédula de Extranjería'),
-        ('PAS', 'Pasaporte'),
-    ]
-    nombres        = models.CharField(max_length=150)
-    apellidos      = models.CharField(max_length=150)
-    tipo_documento = models.CharField(max_length=3, choices=TIPOS_DOC, default='CC')
-    cedula         = models.CharField(max_length=20, unique=True)
-    telefono       = models.CharField(max_length=20, null=True, blank=True)
-    correo         = models.EmailField(unique=True)
-    cargo          = models.CharField(max_length=20, choices=CARGOS, default='MECANICO')
-    activo         = models.BooleanField(default=True)
-    fecha_registro = models.DateTimeField(auto_now=True)
-
-    @property
-    def nombre_completo(self):
-        return f"{self.nombres} {self.apellidos}"
-
-    @property
-    def inicial(self):
-        return self.nombres[0].upper() if self.nombres else "E"
-
-    def __str__(self):
-        return f"{self.nombres} {self.apellidos} — {self.get_cargo_display()}"
-
-    class Meta:
-        db_table     = 'empleado'
-        verbose_name = 'Empleado'
 
 
 # ══════════════════════════════════════════════════════════
@@ -109,24 +68,24 @@ class Marca(models.Model):
 class Caja(models.Model):
     TIPOS = [('INGRESO', 'Ingreso (+)'), ('EGRESO', 'Egreso (-)')]
     CATEGORIAS = [
-        ('Ventas', 'Ventas'),
-        ('Servicios', 'Servicios'),
-        ('Anticipos', 'Anticipos de clientes'),
-        ('Arriendo', 'Arriendo'),
+        ('Ventas',            'Ventas'),
+        ('Servicios',         'Servicios'),
+        ('Anticipos',         'Anticipos de clientes'),
+        ('Arriendo',          'Arriendo'),
         ('ServiciosPublicos', 'Servicios públicos'),
-        ('Proveedores', 'Pago a proveedores'),
-        ('Nomina', 'Nómina / Salarios'),
-        ('Mantenimiento', 'Mantenimiento'),
-        ('Otros', 'Otros'),
+        ('Proveedores',       'Pago a proveedores'),
+        ('Nomina',            'Nómina / Salarios'),
+        ('Mantenimiento',     'Mantenimiento'),
+        ('Otros',             'Otros'),
     ]
     METODOS_PAGO = [
-        ('Efectivo', 'Efectivo'),
-        ('Transferencia', 'Transferencia bancaria'),
-        ('TarjetaDebito', 'Tarjeta débito'),
+        ('Efectivo',       'Efectivo'),
+        ('Transferencia',  'Transferencia bancaria'),
+        ('TarjetaDebito',  'Tarjeta débito'),
         ('TarjetaCredito', 'Tarjeta crédito'),
-        ('Cheque', 'Cheque'),
-        ('Nequi', 'Nequi'),
-        ('Daviplata', 'Daviplata'),
+        ('Cheque',         'Cheque'),
+        ('Nequi',          'Nequi'),
+        ('Daviplata',      'Daviplata'),
     ]
     descripcion   = models.CharField(max_length=255)
     monto         = models.DecimalField(max_digits=12, decimal_places=2)
@@ -166,10 +125,11 @@ class Proveedor(models.Model):
 # ══════════════════════════════════════════════════════════
 class Producto(models.Model):
     UNIDADES = [
-        ('UND', 'Unidad'), ('LT', 'Litro'), ('ML', 'Mililitro'),
-        ('KG', 'Kilogramo'), ('GR', 'Gramo'), ('MT', 'Metro'),
-        ('CM', 'Centímetro'), ('GL', 'Galón'), ('PAR', 'Par'),
-        ('KIT', 'Kit'), ('CJA', 'Caja'), ('RLL', 'Rollo'), ('JGO', 'Juego'),
+        ('UND', 'Unidad'),  ('LT',  'Litro'),      ('ML',  'Mililitro'),
+        ('KG',  'Kilogramo'), ('GR', 'Gramo'),      ('MT',  'Metro'),
+        ('CM',  'Centímetro'), ('GL', 'Galón'),     ('PAR', 'Par'),
+        ('KIT', 'Kit'),     ('CJA', 'Caja'),        ('RLL', 'Rollo'),
+        ('JGO', 'Juego'),
     ]
     nombre        = models.CharField(max_length=100, unique=True)
     marca         = models.ForeignKey(Marca, on_delete=models.PROTECT, limit_choices_to={'categoria': 'REPUESTO', 'estado': True})
@@ -191,25 +151,29 @@ class Producto(models.Model):
 
 
 # ══════════════════════════════════════════════════════════
-#  TIPO SERVICIO 
+#  TIPO SERVICIO
 # ══════════════════════════════════════════════════════════
 class TipoServicio(models.Model):
-    nombre           = models.CharField(max_length=100, unique=True)
-    descripcion      = models.TextField(blank=True, null=True, help_text="Descripción breve del servicio")
-    precio_mano_obra = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    estado           = models.BooleanField(default=True, help_text="¿Está disponible?")
-    
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    nombre               = models.CharField(max_length=100, unique=True)
+    descripcion          = models.TextField(blank=True, null=True)
+    precio_mano_obra     = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    estado               = models.BooleanField(default=True)
+    requiere_seguimiento = models.BooleanField(
+        default=False,
+        help_text="Si está activo, al crear una orden con este servicio se pedirá la fecha del próximo mantenimiento."
+    )
+    fecha_creacion      = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.nombre} - ${self.precio_mano_obra:,.0f}"
 
     class Meta:
-        db_table = 'tipo_servicio'
-        ordering = ['nombre']
-        verbose_name = "Tipo de Servicio"
+        db_table            = 'tipo_servicio'
+        ordering            = ['nombre']
+        verbose_name        = "Tipo de Servicio"
         verbose_name_plural = "Tipos de Servicio"
+
 
 # ══════════════════════════════════════════════════════════
 #  COMPATIBILIDAD PRODUCTO
@@ -217,7 +181,7 @@ class TipoServicio(models.Model):
 class CompatibilidadProducto(models.Model):
     producto       = models.ForeignKey(Producto, on_delete=models.CASCADE, limit_choices_to={'estado': True})
     marca_vehiculo = models.ForeignKey(Marca, on_delete=models.CASCADE, limit_choices_to={'categoria': 'AUTO', 'estado': True})
-    tipo_servicio  = models.ForeignKey(TipoServicio, on_delete=models.CASCADE, null=True, blank=True)  # ← Mantén null=True
+    tipo_servicio  = models.ForeignKey(TipoServicio, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         srv = f" — {self.tipo_servicio.nombre}" if self.tipo_servicio else ""
@@ -227,11 +191,16 @@ class CompatibilidadProducto(models.Model):
         db_table        = 'compatibilidad_producto'
         unique_together = ('producto', 'marca_vehiculo', 'tipo_servicio')
 
+
 # ══════════════════════════════════════════════════════════
 #  CLIENTE
 # ══════════════════════════════════════════════════════════
 class Cliente(models.Model):
-    TIPOS_DOC = [('CC', 'Cédula de Ciudadanía'), ('CE', 'Cédula de Extranjería'), ('PAS', 'Pasaporte')]
+    TIPOS_DOC = [
+        ('CC',  'Cédula de Ciudadanía'),
+        ('CE',  'Cédula de Extranjería'),
+        ('PAS', 'Pasaporte'),
+    ]
     nombre           = models.CharField(max_length=150)
     tipo_documento   = models.CharField(max_length=3, choices=TIPOS_DOC, default='CC')
     numero_documento = models.CharField(max_length=20, unique=True)
@@ -246,7 +215,7 @@ class Cliente(models.Model):
 
 
 # ══════════════════════════════════════════════════════════
-#  VEHÍCULO 
+#  VEHÍCULO
 # ══════════════════════════════════════════════════════════
 class Vehiculo(models.Model):
     TIPOS_USO = [
@@ -255,67 +224,31 @@ class Vehiculo(models.Model):
         ('ALTO',   'Uso alto (viajes frecuentes)'),
         ('CARGA',  'Carga / Transporte (intensivo)'),
     ]
-
-    placa   = models.CharField(max_length=10, unique=True)
-    modelo  = models.CharField(max_length=50)
-    marca   = models.ForeignKey(Marca, on_delete=models.PROTECT, limit_choices_to={'categoria': 'AUTO', 'estado': True})
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-
-    # ── Kilometraje ──
-    km_ultimo_servicio = models.IntegerField(default=0, help_text="Km actuales del vehículo")
-    km_proximo_mantenimiento = models.IntegerField(default=5000, help_text="A qué km debe volver")
-    km_alerta_anticipacion = models.IntegerField(default=500, help_text="Km antes para avisar")
-
-    # ── Fecha de próximo mantenimiento ──
-    fecha_proximo_mantenimiento = models.DateField(null=True, blank=True, help_text="Cuándo volver a hacer mantenimiento")
-
-    # ── Tipo de uso ──
-    tipo_uso = models.CharField(max_length=10, choices=TIPOS_USO, default='NORMAL', help_text="Intensidad de uso del vehículo")
-
-    # Fechas de control
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    placa              = models.CharField(max_length=10, unique=True)
+    modelo             = models.CharField(max_length=50)
+    marca              = models.ForeignKey(Marca, on_delete=models.PROTECT, limit_choices_to={'categoria': 'AUTO', 'estado': True})
+    cliente            = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    km_ultimo_servicio = models.IntegerField(default=0, help_text="Km registrados en el último servicio")
+    tipo_uso           = models.CharField(max_length=10, choices=TIPOS_USO, default='NORMAL')
+    fecha_creacion     = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
 
-    def km_diarios(self):
-        """Retorna km diarios estimados según tipo de uso."""
+    def km_diarios_estimados(self):
         estimados = {'BAJO': 30, 'NORMAL': 50, 'ALTO': 80, 'CARGA': 120}
         return estimados.get(self.tipo_uso, 50)
 
-    def km_estimados_hoy(self):
-        """Calcula km estimados hoy basado en último servicio."""
-        if not self.fecha_proximo_mantenimiento:
-            return self.km_ultimo_servicio
-        dias = (timezone.now().date() - self.fecha_proximo_mantenimiento).days
-        if dias < 0:
-            dias = 0
-        return self.km_ultimo_servicio + (dias * self.km_diarios())
-
-    def km_restantes_estimados(self):
-        """Calcula cuántos KM le quedan basados en los días que faltan."""
-        dias = self.dias_restantes_mantenimiento()
-        if dias is None:
-            return None
-        return dias * self.km_diarios()
-
-    def dias_restantes_mantenimiento(self):
-        """Cuántos días faltan para el próximo mantenimiento."""
-        if not self.fecha_proximo_mantenimiento:
-            return None
-        return (self.fecha_proximo_mantenimiento - timezone.now().date()).days
+    def seguimiento_activo(self):
+        return self.seguimientos.filter(activo=True).order_by('-fecha_creacion').first()
 
     def estado_mantenimiento(self):
-        """Retorna: 'vencido', 'alerta', 'ok' o 'sin_datos'."""
-        dias_rest = self.dias_restantes_mantenimiento()
-        
-        if dias_rest is None:
+        seg = self.seguimiento_activo()
+        if not seg or not seg.fecha_proximo_mantenimiento:
             return 'sin_datos'
-        
-        if dias_rest <= 0:
+        dias = (seg.fecha_proximo_mantenimiento - timezone.now().date()).days
+        if dias <= 0:
             return 'vencido'
-        
-        if dias_rest <= 15:
+        if dias <= 15:
             return 'alerta'
-        
         return 'ok'
 
     def __str__(self):
@@ -324,6 +257,7 @@ class Vehiculo(models.Model):
     class Meta:
         db_table = 'vehiculo'
         ordering = ['-fecha_actualizacion']
+
 
 # ══════════════════════════════════════════════════════════
 #  NOTIFICACION
@@ -337,30 +271,26 @@ def validar_no_futuro(value):
 
 class Notificacion(models.Model):
     TIPOS = [
-        ('Alerta', 'Alerta'), 
-        ('Recordatorio', 'Recordatorio'), 
-        ('Mantenimiento', 'Mantenimiento'), 
-        ('Urgente', 'Urgente'), 
-        ('Informacion', 'Información')
+        ('Alerta',        'Alerta'),
+        ('Recordatorio',  'Recordatorio'),
+        ('Mantenimiento', 'Mantenimiento'),
+        ('Urgente',       'Urgente'),
+        ('Informacion',   'Información'),
     ]
     ORIGENES = [
-        ('SISTEMA', 'Automática del sistema'), 
-        ('ADMIN', 'Creada por administrador')
+        ('SISTEMA', 'Automática del sistema'),
+        ('ADMIN',   'Creada por administrador'),
     ]
-    
     tipo     = models.CharField(max_length=50, choices=TIPOS)
     origen   = models.CharField(max_length=10, choices=ORIGENES, default='ADMIN')
     titulo   = models.CharField(max_length=150, blank=True)
     vehiculo = models.ForeignKey(Vehiculo, on_delete=models.CASCADE, null=True, blank=True)
     mensaje  = models.TextField()
     leido    = models.BooleanField(default=False)
-    
-    # 2. Aplicamos DateField con el validador personalizado
-    # Esto permite que sea editable en el formulario y bloquea años futuros
     fecha    = models.DateField(
-        default=timezone.now, 
+        default=timezone.now,
         validators=[validar_no_futuro],
-        help_text="Seleccione la fecha de la notificación (no mayor al año actual)."
+        help_text="Fecha de la notificación (no mayor al año actual)."
     )
 
     def __str__(self):
@@ -370,17 +300,35 @@ class Notificacion(models.Model):
         db_table = 'notificacion'
         ordering = ['-fecha']
 
+
 # ══════════════════════════════════════════════════════════
 #  ORDEN DE SERVICIO
 # ══════════════════════════════════════════════════════════
 class OrdenServicio(models.Model):
-    ESTADOS = [('Pendiente', 'Pendiente'), ('En Proceso', 'En Proceso'), ('Terminado', 'Terminado')]
-    empleado  = models.ForeignKey(Empleado, on_delete=models.SET_NULL, null=True, blank=True)
-    vehiculo  = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
-    servicios = models.ManyToManyField(TipoServicio, verbose_name="Servicios")
-    fecha     = models.DateTimeField(default=timezone.now)
-    km_actual = models.IntegerField()
-    estado    = models.CharField(max_length=20, choices=ESTADOS, default='Pendiente')
+    ESTADOS = [
+        ('Pendiente',  'Pendiente'),
+        ('En Proceso', 'En Proceso'),
+        
+    ]
+    empleado = models.ForeignKey(
+        UsuarioSistema,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        limit_choices_to={'cargo': 'MECANICO', 'activo': True},
+        verbose_name="Mecánico responsable",
+    )
+    vehiculo      = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
+
+    # FIX #3 — through model para guardar precio histórico por servicio
+    servicios     = models.ManyToManyField(
+        TipoServicio,
+        through='OrdenServicioDetalle',
+        verbose_name="Servicios",
+    )
+    fecha         = models.DateTimeField(default=timezone.now)
+    km_actual     = models.IntegerField()
+    estado        = models.CharField(max_length=20, choices=ESTADOS, default='Pendiente')
+    observaciones = models.TextField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -390,7 +338,7 @@ class OrdenServicio(models.Model):
         veh = self.vehiculo
         if self.km_actual >= veh.km_ultimo_servicio:
             veh.km_ultimo_servicio = self.km_actual
-        veh.save(update_fields=['km_ultimo_servicio'])
+            veh.save(update_fields=['km_ultimo_servicio'])
 
     def __str__(self):
         return f"Orden #{self.id} — {self.vehiculo.placa}"
@@ -398,18 +346,102 @@ class OrdenServicio(models.Model):
     class Meta:
         db_table = 'orden_servicio'
 
+
+# ══════════════════════════════════════════════════════════
+#  ORDEN DE SERVICIO - 
+# ══════════════════════════════════════════════════════════
+class OrdenServicioDetalle(models.Model):
+    orden            = models.ForeignKey(
+        OrdenServicio, on_delete=models.CASCADE,
+        related_name='servicios_detalle'
+    )
+    tipo_servicio    = models.ForeignKey(
+        TipoServicio, on_delete=models.PROTECT
+    )
+    # Snapshot del precio en el momento de crear la orden
+    precio_mano_obra = models.DecimalField(max_digits=12, decimal_places=2)
+
+    def save(self, *args, **kwargs):
+        # Si es nuevo y no se pasó precio explícito, tomarlo del TipoServicio
+        if not self.pk and not self.precio_mano_obra:
+            self.precio_mano_obra = self.tipo_servicio.precio_mano_obra
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Orden #{self.orden_id} — {self.tipo_servicio.nombre} (${self.precio_mano_obra:,.0f})"
+
+    class Meta:
+        db_table        = 'orden_servicio_detalle'
+        unique_together = ('orden', 'tipo_servicio')
+        verbose_name    = "Detalle de Servicio en Orden"
+
+
+# ══════════════════════════════════════════════════════════
+#  SEGUIMIENTO MANTENIMIENTO
+# ══════════════════════════════════════════════════════════
+class SeguimientoMantenimiento(models.Model):
+    ESTADOS = [
+        ('Pendiente',  'Pendiente'),
+        ('Completado', 'Completado'),
+        ('Vencido',    'Vencido'),
+    ]
+    vehiculo                    = models.ForeignKey(Vehiculo, on_delete=models.CASCADE, related_name='seguimientos')
+    orden_servicio              = models.ForeignKey(OrdenServicio, on_delete=models.SET_NULL, null=True, blank=True, related_name='seguimientos')
+    tipo_servicio               = models.ForeignKey(TipoServicio, on_delete=models.SET_NULL, null=True, blank=True)
+    km_al_momento               = models.IntegerField(help_text="Km del vehículo cuando se registró este seguimiento")
+    km_proximo_mantenimiento    = models.IntegerField(null=True, blank=True, help_text="A qué km debe volver (opcional)")
+    fecha_proximo_mantenimiento = models.DateField(null=True, blank=True, help_text="Cuándo debe volver")
+    estado                      = models.CharField(max_length=15, choices=ESTADOS, default='Pendiente')
+    activo                      = models.BooleanField(default=True, help_text="Solo el seguimiento activo más reciente importa para alertas")
+    observaciones               = models.TextField(blank=True, null=True)
+    fecha_creacion              = models.DateTimeField(auto_now_add=True)
+    fecha_actualizacion         = models.DateTimeField(auto_now=True)
+
+    # FIX #5 — Al activar este seguimiento, desactiva los anteriores del mismo vehículo
+    def save(self, *args, **kwargs):
+        if self.activo:
+            SeguimientoMantenimiento.objects.filter(
+                vehiculo=self.vehiculo,
+                activo=True
+            ).exclude(pk=self.pk).update(activo=False)
+        super().save(*args, **kwargs)
+
+    def dias_restantes(self):
+        if not self.fecha_proximo_mantenimiento:
+            return None
+        return (self.fecha_proximo_mantenimiento - timezone.now().date()).days
+
+    def estado_calculado(self):
+        dias = self.dias_restantes()
+        if dias is None:
+            return 'sin_fecha'
+        if dias <= 0:
+            return 'vencido'
+        if dias <= 15:
+            return 'alerta'
+        return 'ok'
+
+    def __str__(self):
+        return f"Seguimiento #{self.pk} — {self.vehiculo.placa} ({self.estado})"
+
+    class Meta:
+        db_table            = 'seguimiento_mantenimiento'
+        ordering            = ['-fecha_creacion']
+        verbose_name        = "Seguimiento de Mantenimiento"
+        verbose_name_plural = "Seguimientos de Mantenimiento"
+
+
 # ══════════════════════════════════════════════════════════
 #  COMPRA
 # ══════════════════════════════════════════════════════════
-
 class Compra(models.Model):
     METODOS = [
-        ('Efectivo',      'Efectivo'),
-        ('Transferencia', 'Transferencia'),
-        ('TarjetaDebito', 'Tarjeta débito'),
-        ('TarjetaCredito','Tarjeta crédito'),
-        ('Nequi',         'Nequi'),
-        ('Daviplata',     'Daviplata'),
+        ('Efectivo',       'Efectivo'),
+        ('Transferencia',  'Transferencia'),
+        ('TarjetaDebito',  'Tarjeta débito'),
+        ('TarjetaCredito', 'Tarjeta crédito'),
+        ('Nequi',          'Nequi'),
+        ('Daviplata',      'Daviplata'),
     ]
     ESTADOS_PAGO = [('Pendiente', 'Pendiente'), ('Pagada', 'Pagada')]
 
@@ -428,7 +460,6 @@ class Compra(models.Model):
         is_new = not self.pk
         super().save(*args, **kwargs)
         if is_new:
-            # Factura automática como Pendiente siempre al crear
             if not Factura.objects.filter(compra=self).exists():
                 Factura.objects.create(
                     tipo           = 'COMPRA',
@@ -444,6 +475,7 @@ class Compra(models.Model):
     class Meta:
         db_table = 'compra'
 
+
 # ══════════════════════════════════════════════════════════
 #  DETALLE PRODUCTO ORDEN DE SERVICIO
 # ══════════════════════════════════════════════════════════
@@ -452,17 +484,25 @@ class DetalleOrdenProducto(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
     cantidad = models.PositiveIntegerField(default=1)
 
+    # FIX #4 — snapshot del precio del producto al momento de agregarlo
+    precio_unitario = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0,
+        help_text="Precio del producto en el momento de agregarlo a la orden"
+    )
+
     def save(self, *args, **kwargs):
-       
         if self.producto.stock < self.cantidad:
             raise ValidationError(f"Stock insuficiente para '{self.producto.nombre}'.")
-        
-        
-        if not self.pk:  
+        if not self.pk:
+            self.precio_unitario = self.producto.precio  # snapshot
             self.producto.stock -= self.cantidad
             self.producto.save(update_fields=['stock'])
-        
         super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        self.producto.stock += self.cantidad
+        self.producto.save(update_fields=['stock'])
+        super().delete(*args, **kwargs)
 
     class Meta:
         db_table = 'detalle_orden_producto'
@@ -470,21 +510,28 @@ class DetalleOrdenProducto(models.Model):
 
 # ══════════════════════════════════════════════════════════
 #  FACTURA
+#  FIX #4 — lee precios desde snapshots, no desde los modelos en vivo
 # ══════════════════════════════════════════════════════════
 class Factura(models.Model):
     TIPO_FACTURA = [
-        ('SERVICIO',  'Orden de Servicio'),
-        ('PRODUCTO',  'Venta de Producto'),
-        ('COMPRA',    'Compra a Proveedor'),   # ← nuevo
+        ('SERVICIO', 'Orden de Servicio'),
+        ('PRODUCTO', 'Venta de Producto'),
+        ('COMPRA',   'Compra a Proveedor'),
     ]
-    METODOS_PAGO = [('Efectivo', 'Efectivo'), ('Transferencia', 'Transferencia'), ('TarjetaDebito', 'Tarjeta Débito'), ('Nequi', 'Nequi'), ('Daviplata', 'Daviplata')]
+    METODOS_PAGO = [
+        ('Efectivo',      'Efectivo'),
+        ('Transferencia', 'Transferencia'),
+        ('TarjetaDebito', 'Tarjeta Débito'),
+        ('Nequi',         'Nequi'),
+        ('Daviplata',     'Daviplata'),
+    ]
     ESTADOS_PAGO = [('Pendiente', 'Pendiente'), ('Pagada', 'Pagada')]
 
     tipo           = models.CharField(max_length=10, choices=TIPO_FACTURA, default='SERVICIO')
     numero_factura = models.CharField(max_length=20, unique=True)
     fecha_emision  = models.DateTimeField(auto_now_add=True)
     orden_servicio = models.ForeignKey(OrdenServicio, on_delete=models.SET_NULL, null=True, blank=True)
-    compra         = models.OneToOneField('Compra', on_delete=models.SET_NULL, null=True, blank=True)  # ← nuevo
+    compra         = models.OneToOneField('Compra', on_delete=models.SET_NULL, null=True, blank=True)
     producto       = models.ForeignKey(Producto, on_delete=models.SET_NULL, null=True, blank=True)
     cantidad       = models.PositiveIntegerField(default=1)
     subtotal       = models.DecimalField(max_digits=12, decimal_places=2, default=0)
@@ -495,18 +542,19 @@ class Factura(models.Model):
     fecha_pago     = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-    # ── Calcular subtotal y total automáticamente ──
         if self.tipo == 'SERVICIO' and self.orden_servicio:
+            # FIX #4 — usa precio_mano_obra del detalle (snapshot histórico)
             servicios = sum(
-            s.precio_mano_obra 
-            for s in self.orden_servicio.servicios.all()
-        )
+                d.precio_mano_obra
+                for d in self.orden_servicio.servicios_detalle.all()
+            )
+            # FIX #4 — usa precio_unitario del detalle (snapshot histórico)
             productos = sum(
-            dp.cantidad * dp.producto.precio 
-            for dp in self.orden_servicio.productos_usados.all()
-        )
+                dp.cantidad * dp.precio_unitario
+                for dp in self.orden_servicio.productos_usados.all()
+            )
             self.subtotal = servicios + productos
-            self.total    = self.subtotal  # sin IVA por ahora
+            self.total    = self.subtotal
 
         elif self.tipo == 'PRODUCTO' and self.producto:
             self.subtotal = self.producto.precio * self.cantidad
@@ -516,11 +564,10 @@ class Factura(models.Model):
             self.subtotal = self.compra.total_pagado
             self.total    = self.subtotal
 
-    # ── Lo demás igual ──
         if self.estado_pago == 'Pagada' and not self.fecha_pago:
             self.fecha_pago = timezone.now()
+
         super().save(*args, **kwargs)
-    # ... resto del código igual
 
     class Meta:
         db_table = 'factura'

@@ -31,6 +31,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'app.middleware.AlertasAutomaticasMiddleware',
 ]
 
 ROOT_URLCONF = 'sena.urls'
@@ -60,7 +61,7 @@ WSGI_APPLICATION = 'sena.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.mysql',
-        'NAME':     'acerautos_db',
+        'NAME':     'proyecto_acerautos',
         'USER':     'root',
         'PASSWORD': '123456789',
         'HOST':     'localhost',
@@ -71,7 +72,6 @@ DATABASES = {
         },
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -88,7 +88,7 @@ USE_THOUSAND_SEPARATOR = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ========== REDIRECCION LOGIN/LOGOUT ==========
@@ -116,3 +116,4 @@ EMAIL_USE_TLS       = True
 EMAIL_HOST_USER     = 'acerautos09@gmail.com'
 EMAIL_HOST_PASSWORD = 'ydvbowswvxangcxs'
 DEFAULT_FROM_EMAIL  = 'ACERAUTOS <acerautos09@gmail.com>'
+

@@ -2,8 +2,10 @@
 {% load static %}
 
 {% block body %}
-  {% block css %}{% endblock %}
 
+
+  {% block css %}{% endblock %}
+  
   <style>
     html, body { margin:0; padding:0; }
 
@@ -24,8 +26,9 @@
       border-bottom: 1px solid rgba(255,255,255,.07);
       padding: .55rem 1.5rem;
       z-index: 900;
-      position: fixed; top: 0;
-      width: 95%; max-width: 100%;
+      position: sticky;
+      top: 0;
+      width: 100%;
       box-shadow: 0 1px 0 rgba(211,47,47,.25), 0 4px 24px rgba(0,0,0,.7);
     }
 
@@ -214,17 +217,20 @@
             <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
           <span class="navbar-brand-text d-none d-md-block">ACER<span>AUTOS</span></span>
+          <span style="font-family:'DM Sans',sans-serif;font-size:.7rem;color:rgba(255,255,255,.35);margin-left:8px;display:none;" class="d-none d-lg-block" id="header-sub">
+          TALLER ESPECIALISTA EN CAMBIO DE ACEITE &nbsp;·&nbsp; {% now "l, d F Y" %}
+        </span>
         </div>
 
         <div class="d-flex align-items-center gap-2">
 
           {% if user.cargo == 'ADMIN' %}
-          <a href="{% url 'app:backup' %}" class="btn-icon-img" data-tip="Backup BD">
-            <img src="{% static 'imagenes/basededatos.jpeg' %}" alt="Backup">
+          <a href="{% url 'app:backup' %}" class="btn-icon-img" data-tip="Respaldo De Datos">
+            <img src="{% static 'imagenes/basededatos.jpeg' %}" alt="Respaldo De Datos">
           </a>
 
           <div class="nav-vdivider"></div>
-
+          
           <div class="dropdown">
             <button class="btn-icon-img" type="button"
                     data-bs-toggle="dropdown" aria-expanded="false"
@@ -255,8 +261,12 @@
                 {% if user.nombres %}{{ user.nombres|slice:':1'|upper }}{% else %}{{ user.username|slice:':1'|upper }}{% endif %}
               </div>
               <div class="user-pill-info d-none d-sm-block">
-                <div class="user-pill-name">{% if user.nombres %}{{ user.nombres }}{% else %}{{ user.username }}{% endif %}</div>
-                <div class="user-pill-role">{% if user.cargo %}{{ user.get_cargo_display }}{% else %}Admin{% endif %}</div>
+                <div class="user-pill-name" style="display:flex;align-items:center;gap:6px;">
+    {% if user.nombres %}{{ user.nombres }}{% else %}{{ user.username }}{% endif %}
+    <span style="font-size:.5rem;font-weight:800;letter-spacing:1px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.35);color:#10b981;padding:1px 5px;border-radius:50px;line-height:1.6;">● Activo</span>
+</div>
+<div class="user-pill-role">{% if user.cargo %}{{ user.get_cargo_display }}{% else %}Admin{% endif %}</div>
+                
               </div>
               <span class="pill-arrow"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
             </button>
@@ -351,23 +361,53 @@
   document.addEventListener('DOMContentLoaded', function () {
 
     var trigger = document.getElementById('sidebar-trigger');
-    var body    = document.body;
-    var MINI    = 'sidebar-mini';
-    var HIDDEN  = 'sidebar-hidden';
-    if (trigger) {
-      trigger.addEventListener('click', function () {
-        if (!body.classList.contains(MINI) && !body.classList.contains(HIDDEN)) {
-          body.classList.add(MINI); localStorage.setItem('sb_state', 'mini');
-        } else if (body.classList.contains(MINI)) {
-          body.classList.remove(MINI); body.classList.add(HIDDEN); localStorage.setItem('sb_state', 'hidden');
-        } else {
-          body.classList.remove(HIDDEN); localStorage.setItem('sb_state', 'full');
-        }
-      });
+var body    = document.body;
+var MINI    = 'sidebar-mini';
+var HIDDEN  = 'sidebar-hidden';
+var OPEN    = 'sidebar-open';
+
+if (trigger) {
+  trigger.addEventListener('click', function () {
+    if (window.innerWidth <= 768) {
+      // Móvil: abrir/cerrar drawer
+      body.classList.toggle(OPEN);
+    } else {
+      // Desktop: ciclo full → mini → hidden → full
+      if (!body.classList.contains(MINI) && !body.classList.contains(HIDDEN)) {
+        body.classList.add(MINI); localStorage.setItem('sb_state', 'mini');
+      } else if (body.classList.contains(MINI)) {
+        body.classList.remove(MINI); body.classList.add(HIDDEN); localStorage.setItem('sb_state', 'hidden');
+      } else {
+        body.classList.remove(HIDDEN); localStorage.setItem('sb_state', 'full');
+      }
     }
-    var saved = localStorage.getItem('sb_state');
-    if (saved === 'mini')   body.classList.add(MINI);
-    if (saved === 'hidden') body.classList.add(HIDDEN);
+  });
+}
+// Sincronizar estado al redimensionar
+window.addEventListener('resize', function () {
+  if (window.innerWidth <= 768) {
+    body.classList.remove(MINI, HIDDEN, OPEN);
+  } else {
+    body.classList.remove(OPEN);
+    var state = localStorage.getItem('sb_state');
+    body.classList.remove(MINI, HIDDEN);
+    if (state === 'mini')   body.classList.add(MINI);
+    if (state === 'hidden') body.classList.add(HIDDEN);
+  }
+});
+    // Sincronizar estado del sidebar al redimensionar ventana
+    window.addEventListener('resize', function () {
+        if (window.innerWidth <= 768) {
+        // En móvil, forzar sidebar oculto sin tocar localStorage
+        body.classList.remove(MINI);
+      } else {
+        // Al volver a desktop, restaurar estado guardado
+        var state = localStorage.getItem('sb_state');
+        body.classList.remove(MINI, HIDDEN, 'sidebar-open');
+        if (state === 'mini')   body.classList.add(MINI);
+        if (state === 'hidden') body.classList.add(HIDDEN);
+    }
+});
 
     const COLORES_DOT  = { 'Urgente':'dot-urgente','Alerta':'dot-alerta','Mantenimiento':'dot-mantenimiento','Recordatorio':'dot-recordatorio','Informacion':'dot-informacion' };
     const COLORES_TIPO = { 'Urgente':'tipo-urgente','Alerta':'tipo-alerta','Mantenimiento':'tipo-mantenimiento','Recordatorio':'tipo-recordatorio','Informacion':'tipo-informacion' };
@@ -407,10 +447,23 @@
           } else {
             container.innerHTML = '<div class="notif-empty">Sin notificaciones nuevas</div>';
           }
-        }).catch(() => {});
+        }).catch((err) => {
+        console.error('[ACERAUTOS] Error fetch notificaciones:', err);
+        const container = document.getElementById('notif-list-container');
+        if (container) container.innerHTML = '<div class="notif-empty">Error al cargar.</div>';
+        });
     }
-    actualizarNotificaciones();
-    setInterval(actualizarNotificaciones, 30000);
+    // DESPUÉS — llamar inmediatamente Y al abrir el dropdown
+  actualizarNotificaciones();
+  setInterval(actualizarNotificaciones, 30000);
+
+// Refrescar también cada vez que el usuario abre el dropdown
+  const btnNotif = document.getElementById('btn-notif-navbar');
+  if (btnNotif) {
+      btnNotif.addEventListener('click', function () {
+          actualizarNotificaciones();
+      });
+  } 
 
     {% if messages %}
       {% for message in messages %}
@@ -550,11 +603,33 @@
         var lenNit = val.trim().length; if (lenNit < 9 || lenNit > 10) { mostrarError(input, '"' + label + '" debe tener 9 o 10 dígitos.'); return; }
       }
       if (name === 'numero_telefono') {
-        if (!esVacio(val)) {
-          if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
-          var lenTel = val.trim().length; if (lenTel !== 7 && lenTel !== 10) { mostrarError(input, '"' + label + '" debe tener 10 dígitos (celular) o 7 (fijo).'); return; }
+    if (!esVacio(val)) {
+        if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
+        // Obtener el indicativo seleccionado
+        var indInput = document.getElementById('id_indicativo_proveedor') || document.getElementById('id_indicativo_cliente');
+        var ind = indInput ? indInput.value : '+57';
+        var RANGOS = {
+            '+57':(7,10),'+1':[10,10],'+52':[10,10],'+54':[6,11],'+55':[8,11],
+            '+56':[8,9],'+51':[7,9],'+58':[7,11],'+593':[8,9],'+591':[7,8],
+            '+595':[5,9],'+598':[7,8],'+507':[7,8],'+506':[8,8],'+503':[8,8],
+            '+502':[8,8],'+504':[8,8],'+505':[8,8],'+53':[7,8],'+1809':[10,10],
+            '+34':[9,9],'+44':[7,10],'+33':[9,9],'+49':[3,12],'+39':[6,11],
+            '+351':[9,9],'+7':[10,10],'+86':[7,11],'+81':[9,10],'+82':[9,11],
+            '+91':[10,10],'+61':[5,9],'+27':[9,9],'+20':[7,10],
+            '+212':[9,10],'+971':[7,9],'+966':[9,9]
+        };
+        var rango = RANGOS[ind] || [6,15];
+        var lenTel = val.trim().length;
+        if (lenTel < rango[0] || lenTel > rango[1]) {
+            var msg = rango[0] === rango[1]
+                ? '"' + label + '" debe tener exactamente ' + rango[0] + ' dígitos para ' + ind + '.'
+                : '"' + label + '" debe tener entre ' + rango[0] + ' y ' + rango[1] + ' dígitos para ' + ind + '.';
+            mostrarError(input, msg); return;
         }
-        mostrarOk(input); return;
+    }
+    mostrarOk(input); return;
+}
+
       }
       if (name.includes('email') || name.includes('correo')) {
         if (!esVacio(val) && !/^[\w.\+\-]+@[\w\-]+\.[a-zA-Z]{2,}$/.test(val.trim())) { mostrarError(input, '"' + label + '" no tiene formato válido.'); return; }
@@ -606,5 +681,5 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 {% block js %}{% endblock %}
-
+{% include 'widget_accesibilidad.html' %} 
 {% endblock %}

@@ -1,15 +1,19 @@
+from datetime import timedelta
+
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Sum
+from django.db import connection
+from django.utils import timezone
 
 from app.models import DetalleOrdenProducto
 from app.forms import DetalleOrdenProductoForm
 
 
-# ── MIXINS ────────────────────────────────────────────────────────────
+# ── MIXINS ────────────────────────────────────────────────
 
 class SoloAdminMixin(UserPassesTestMixin):
     def test_func(self):
@@ -29,7 +33,7 @@ class AccesoLecturaTallerMixin(UserPassesTestMixin):
         return redirect('app:dashboard')
 
 
-# ── 1. LISTADO ────────────────────────────────────────────────────────
+# ── 1. LISTADO ────────────────────────────────────────────
 
 class DetalleOrdenListView(LoginRequiredMixin, AccesoLecturaTallerMixin, ListView):
     model = DetalleOrdenProducto
@@ -49,21 +53,53 @@ class DetalleOrdenListView(LoginRequiredMixin, AccesoLecturaTallerMixin, ListVie
         total_registros = qs.count()
         total_ordenes   = qs.values('orden').distinct().count()
         total_unidades  = qs.aggregate(t=Sum('cantidad'))['t'] or 0
+        total_general   = sum(d.cantidad * d.producto.precio for d in qs)
 
-        # Total correcto: suma de (cantidad × precio) por cada registro
-        total_general = sum(d.cantidad * d.producto.precio for d in qs)
+        # ── Consumo por mes — últimos 6 meses (SQL directo para evitar problema TZ) ──
+        hace_6_meses = timezone.now() - timedelta(days=180)
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT DATE_FORMAT(o.fecha, '%%Y-%%m') as mes, SUM(d.cantidad) as total
+                FROM detalle_orden_producto d
+                JOIN orden_servicio o ON d.orden_id = o.id
+                WHERE o.fecha >= %s
+                GROUP BY mes
+                ORDER BY mes
+            """, [hace_6_meses])
+            rows = cursor.fetchall()
+
+        MESES_ES = ['', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+                    'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+        por_mes = []
+        for mes_str, total in rows:
+            if mes_str:
+                anio, mes_num = mes_str.split('-')
+                por_mes.append({
+                    'mes':   f"{MESES_ES[int(mes_num)]} {anio}",
+                    'total': total,
+                })
+
+        # ── Top 5 productos más usados ──
+        ranking = list(
+            DetalleOrdenProducto.objects
+            .values('producto__nombre', 'producto__codigo')
+            .annotate(veces=Sum('cantidad'))
+            .order_by('-veces')[:5]
+        )
 
         context.update({
-            'titulo':          'Historial de Productos',
+            'titulo':          'Análisis de Consumo',
             'total_registros': total_registros,
             'total_ordenes':   total_ordenes,
             'total_unidades':  total_unidades,
             'total_general':   total_general,
+            'por_mes':         por_mes,
+            'ranking':         ranking,
         })
         return context
 
 
-# ── 2. CREAR ─────────────────────────────────────────────────────────
+# ── 2. CREAR ─────────────────────────────────────────────
 
 class DetalleOrdenCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
     model = DetalleOrdenProducto
@@ -81,7 +117,7 @@ class DetalleOrdenCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
             return self.form_invalid(form)
 
 
-# ── 3. EDITAR ────────────────────────────────────────────────────────
+# ── 3. EDITAR ────────────────────────────────────────────
 
 class DetalleOrdenUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
     model = DetalleOrdenProducto
@@ -90,7 +126,7 @@ class DetalleOrdenUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
     success_url = reverse_lazy('app:detalle_orden_list')
 
 
-# ── 4. ELIMINAR ──────────────────────────────────────────────────────
+# ── 4. ELIMINAR ──────────────────────────────────────────
 
 class DetalleOrdenDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
     model = DetalleOrdenProducto

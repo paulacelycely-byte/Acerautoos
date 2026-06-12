@@ -3,7 +3,10 @@ from django.dispatch import receiver
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 from django.utils import timezone
-from .models import Producto, Notificacion, DetalleOrdenProducto, Compra, Vehiculo, OrdenServicio
+from .models import (
+    Producto, Notificacion, DetalleOrdenProducto,
+    Compra, Vehiculo, OrdenServicio, SeguimientoMantenimiento
+)
 
 CORREO_ADMIN = 'acerautos09@gmail.com'
 
@@ -102,7 +105,7 @@ SVG_MANT    = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" strok
 
 
 # ══════════════════════════════════════════════════════════
-#  1. ALERTA DE STOCK BAJO
+#  1. ALERTA DE STOCK BAJO — al guardar Producto
 # ══════════════════════════════════════════════════════════
 @receiver(post_save, sender=Producto)
 def verificar_stock_bajo(sender, instance, **kwargs):
@@ -153,24 +156,12 @@ def verificar_stock_bajo(sender, instance, **kwargs):
 # ══════════════════════════════════════════════════════════
 @receiver(post_save, sender=DetalleOrdenProducto)
 def verificar_stock_bajo_despues_uso(sender, instance, created, **kwargs):
-    """
-    Cuando se usa un producto en una orden, verifica si quedó bajo stock.
-    El descuento ya se hace en DetalleOrdenProducto.save()
-    """
     if created:
         producto = instance.producto
-        
-        # Solo notificar si quedó bajo stock
         if producto.stock <= producto.stock_minimo:
             nivel  = "CRITICO" if producto.stock == 0 else "BAJO"
             titulo = f"Stock {nivel} — {producto.nombre}"
-            
-            # Evitar notificaciones duplicadas
-            existe = Notificacion.objects.filter(
-                titulo=titulo,
-                leido=False
-            ).exists()
-
+            existe = Notificacion.objects.filter(titulo=titulo, leido=False).exists()
             if not existe:
                 Notificacion.objects.create(
                     tipo    = 'Alerta',
@@ -194,90 +185,18 @@ def devolver_stock_cancelacion(sender, instance, **kwargs):
 
 
 # ══════════════════════════════════════════════════════════
-#  4. ALERTA DE MANTENIMIENTO AL GUARDAR ORDEN DE SERVICIO
+#  4. MANTENIMIENTO — lo maneja generar_notificaciones_automaticas()
+#     en views/Notificacion/views.py, no aquí.
 # ══════════════════════════════════════════════════════════
 @receiver(post_save, sender=OrdenServicio)
 def alerta_mantenimiento_vehiculo(sender, instance, **kwargs):
-    vehiculo = instance.vehiculo
-    vehiculo.refresh_from_db()
+    pass
 
-    dias_rest = vehiculo.dias_restantes_mantenimiento()
 
-    # Sin fecha configurada, no hay nada que verificar
-    if dias_rest is None:
-        return
-
-    # ── Vencido ──
-    if dias_rest <= 0:
-        titulo = f"Mantenimiento VENCIDO — {vehiculo.placa}"
-        existe = Notificacion.objects.filter(titulo=titulo, leido=False).exists()
-        if not existe:
-            Notificacion.objects.create(
-                tipo     = 'Urgente',
-                origen   = 'SISTEMA',
-                titulo   = titulo,
-                vehiculo = vehiculo,
-                mensaje  = (
-                    f"El vehiculo {vehiculo.placa} ({vehiculo.marca.nombre} {vehiculo.modelo}) "
-                    f"tiene el mantenimiento VENCIDO. "
-                    f"Fecha programada: {vehiculo.fecha_proximo_mantenimiento}."
-                ),
-            )
-            filas = (
-                _fila("Vehiculo",         vehiculo.placa)
-                + _fila("Marca / Modelo", f"{vehiculo.marca.nombre} {vehiculo.modelo}")
-                + _fila("Cliente",        str(vehiculo.cliente))
-                + _fila("Km actuales",    f"{vehiculo.km_ultimo_servicio:,} km")
-                + _fila("Fecha prog.",    str(vehiculo.fecha_proximo_mantenimiento), ultimo=True)
-            )
-            pie = """
-            <p style="margin:20px 0 0;padding:14px 16px;background:#fff5f5;
-                      border-radius:8px;border-left:4px solid #b71c1c;
-                      font-size:.82rem;color:#555;line-height:1.5;">
-              Este vehiculo requiere atencion inmediata. Contacte al cliente
-              para programar el mantenimiento a la brevedad posible.
-            </p>"""
-            html = _html_base("#b71c1c", SVG_CRITICO, f"Mantenimiento VENCIDO — {vehiculo.placa}", filas, pie)
-            enviar_correo_html(
-                subject     = f"Mantenimiento VENCIDO — {vehiculo.placa}",
-                texto_plano = f"El vehiculo {vehiculo.placa} tiene mantenimiento vencido.",
-                html        = html,
-            )
-        return
-
-    # ── Próximo (15 días de anticipación) ──
-    if dias_rest <= 15:
-        titulo = f"Mantenimiento proximo — {vehiculo.placa}"
-        existe = Notificacion.objects.filter(titulo=titulo, leido=False).exists()
-        if not existe:
-            Notificacion.objects.create(
-                tipo     = 'Mantenimiento',
-                origen   = 'SISTEMA',
-                titulo   = titulo,
-                vehiculo = vehiculo,
-                mensaje  = (
-                    f"El vehiculo {vehiculo.placa} tiene su mantenimiento proximo. "
-                    f"Faltan {dias_rest} dias (fecha: {vehiculo.fecha_proximo_mantenimiento})."
-                ),
-            )
-            filas = (
-                _fila("Vehiculo",         vehiculo.placa)
-                + _fila("Marca / Modelo", f"{vehiculo.marca.nombre} {vehiculo.modelo}")
-                + _fila("Cliente",        str(vehiculo.cliente))
-                + _fila("Km actuales",    f"{vehiculo.km_ultimo_servicio:,} km")
-                + _fila("Fecha prog.",    str(vehiculo.fecha_proximo_mantenimiento))
-                + _fila("Dias restantes", str(dias_rest), ultimo=True)
-            )
-            pie = """
-            <p style="margin:20px 0 0;padding:14px 16px;background:#fff8e1;
-                      border-radius:8px;border-left:4px solid #f39c12;
-                      font-size:.82rem;color:#555;line-height:1.5;">
-              Recomendamos contactar al cliente para agendar el proximo
-              mantenimiento preventivo con anticipacion.
-            </p>"""
-            html = _html_base("#e67e22", SVG_MANT, f"Mantenimiento proximo — {vehiculo.placa}", filas, pie)
-            enviar_correo_html(
-                subject     = f"Mantenimiento proximo — {vehiculo.placa}",
-                texto_plano = f"El vehiculo {vehiculo.placa} tiene mantenimiento proximo: {dias_rest} dias.",
-                html        = html,
-            )
+# ══════════════════════════════════════════════════════════
+#  5. SEGUIMIENTO — lo crea OrdenServicioCreateView.form_valid()
+#     y OrdenServicioUpdateView.form_valid() en views.py
+# ══════════════════════════════════════════════════════════
+@receiver(post_save, sender=OrdenServicio)
+def crear_seguimiento_mantenimiento(sender, instance, created, **kwargs):
+    pass

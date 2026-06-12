@@ -15,47 +15,27 @@
     .header-icon-wrap { width:56px; height:56px; background:var(--rojo); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:white; box-shadow:0 0 0 4px rgba(211,47,47,.25); flex-shrink:0; }
     .header-titulo { font-family:'Barlow Condensed',sans-serif; font-size:2rem; font-weight:800; color:white; letter-spacing:1px; text-transform:uppercase; line-height:1; margin:0; }
     .header-sub { font-family:'DM Sans',sans-serif; font-size:.78rem; color:rgba(255,255,255,.45); margin-top:4px; }
-
     .form-card { background:white; border-radius:16px; border:1px solid var(--borde); overflow:hidden; }
     .form-card-header { background:var(--carbon); padding:16px 28px; display:flex; align-items:center; gap:12px; }
     .form-card-header i { color:var(--rojo); font-size:1rem; }
     .form-card-header span { font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; color:white; text-transform:uppercase; letter-spacing:1px; }
     .form-card-body { padding:32px 28px; }
     .campo-label { font-family:'DM Sans',sans-serif; font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:8px; }
-
-    /* Tipo pills */
     .tipo-grid { display:flex; flex-wrap:wrap; gap:8px; }
-    .tipo-btn {
-        display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:10px;
-        border:2px solid var(--borde); background:var(--gris);
-        font-family:'DM Sans',sans-serif; font-weight:700; font-size:.82rem;
-        color:var(--muted); cursor:pointer; transition:all .2s; user-select:none;
-    }
+    .tipo-btn { display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:10px; border:2px solid var(--borde); background:var(--gris); font-family:'DM Sans',sans-serif; font-weight:700; font-size:.82rem; color:var(--muted); cursor:pointer; transition:all .2s; user-select:none; }
     .tipo-btn:hover { border-color:var(--carbon); color:var(--carbon); background:white; transform:translateY(-2px); }
     .tipo-btn.activo-Mantenimiento { background:#e3f2fd; border-color:#1565c0; color:#1565c0; box-shadow:0 4px 12px rgba(21,101,192,.15); }
     .tipo-btn.activo-Alerta { background:#ffebee; border-color:#c62828; color:#c62828; box-shadow:0 4px 12px rgba(198,40,40,.15); }
     .tipo-btn.activo-Recordatorio { background:#f3e5f5; border-color:#6a1b9a; color:#6a1b9a; box-shadow:0 4px 12px rgba(106,27,154,.15); }
     .tipo-btn.activo-Urgente { background:#fff3e0; border-color:#e65100; color:#e65100; box-shadow:0 4px 12px rgba(230,81,0,.15); }
     .tipo-btn.activo-Informacion { background:#e8f5e9; border-color:#2e7d32; color:#2e7d32; box-shadow:0 4px 12px rgba(46,125,50,.15); }
-
-    /* Campos */
     .field-wrap { position:relative; }
     .field-wrap .field-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#bbb; font-size:.85rem; pointer-events:none; transition:color .2s; }
     .field-wrap .field-icon.top { top:14px; transform:none; }
-    .field-wrap input, .field-wrap select, .field-wrap textarea {
-        width:100%; padding:11px 14px 11px 40px;
-        border:1.5px solid var(--borde); border-radius:10px;
-        font-family:'DM Sans',sans-serif; font-size:.88rem; color:var(--texto);
-        background:var(--gris); outline:none; transition:border-color .2s, box-shadow .2s, background .2s;
-        -webkit-appearance:none; appearance:none;
-    }
+    .field-wrap input, .field-wrap select, .field-wrap textarea { width:100%; padding:11px 14px 11px 40px; border:1.5px solid var(--borde); border-radius:10px; font-family:'DM Sans',sans-serif; font-size:.88rem; color:var(--texto); background:var(--gris); outline:none; transition:border-color .2s, box-shadow .2s, background .2s; -webkit-appearance:none; appearance:none; }
     .field-wrap textarea { resize:vertical; min-height:110px; }
-    .field-wrap input:focus, .field-wrap select:focus, .field-wrap textarea:focus {
-        border-color:var(--rojo); background:white; box-shadow:0 0 0 3px rgba(211,47,47,.08);
-    }
+    .field-wrap input:focus, .field-wrap select:focus, .field-wrap textarea:focus { border-color:var(--rojo); background:white; box-shadow:0 0 0 3px rgba(211,47,47,.08); }
     .field-wrap:focus-within .field-icon { color:var(--rojo); }
-
-    /* Switch */
     .switch-wrap { display:flex; align-items:center; gap:14px; padding:13px 18px; border:1.5px solid var(--borde); border-radius:12px; background:var(--gris); cursor:pointer; user-select:none; transition:border-color .2s; }
     .switch-wrap:hover { border-color:#ccc; }
     .switch-toggle { position:relative; width:54px; height:28px; flex-shrink:0; }
@@ -65,11 +45,10 @@
     .switch-toggle input:checked ~ .switch-track { background:var(--rojo); }
     .switch-toggle input:checked ~ .switch-thumb { transform:translateX(26px); }
     .switch-label { font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; transition:color .3s; }
-
-    /* Footer */
     .form-card-footer { background:var(--gris); border-top:1px solid var(--borde); padding:20px 28px; display:flex; justify-content:flex-end; gap:10px; }
     .btn-cancelar { font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding:11px 24px; border-radius:10px; border:1.5px solid var(--borde); background:white; color:var(--muted); cursor:pointer; transition:.2s; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
     .btn-guardar { font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; padding:11px 28px; border-radius:10px; border:none; background:var(--rojo); color:white; box-shadow:0 4px 14px rgba(211,47,47,.35); cursor:pointer; transition:.2s; display:flex; align-items:center; gap:8px; }
+    .aviso-info { padding:14px 18px; background:#e8f5e9; border-radius:10px; border-left:4px solid #2e7d32; font-family:'DM Sans',sans-serif; font-size:.85rem; color:#2e7d32; font-weight:600; }
 </style>
 {% endblock %}
 
@@ -121,7 +100,7 @@
                         </div>
                     </div>
 
-                    <!-- Fecha (CLAVE PARA EL FILTRO) -->
+                    <!-- Fecha -->
                     <div class="col-md-4">
                         <div class="campo-label">Fecha del Evento</div>
                         <div class="field-wrap">
@@ -131,12 +110,20 @@
                         <small style="font-size: 0.65rem; color: var(--muted);">Esta fecha determinará el <b>Mes y Año</b> en la lista.</small>
                     </div>
 
-                    <!-- Vehículo -->
-                    <div class="col-md-12">
+                    <!-- Vehículo — se oculta en tipo Información -->
+                    <div class="col-md-12" id="campo-vehiculo-wrap">
                         <div class="campo-label">Vehículo Asociado</div>
                         <div class="field-wrap">
                             <i class="fas fa-car field-icon"></i>
                             {{ form.vehiculo|add_class:'form-control'|attr:'id:id_vehiculo' }}
+                        </div>
+                    </div>
+
+                    <!-- Aviso masivo — se muestra solo en tipo Información -->
+                    <div class="col-md-12" id="aviso-info-wrap" style="display:none;">
+                        <div class="aviso-info">
+                            <i class="fas fa-users me-2"></i>
+                            Este mensaje se enviará por correo a <strong>todos los clientes</strong> registrados en el sistema.
                         </div>
                     </div>
 
@@ -179,7 +166,6 @@
 
 {% block js %}
 <script>
-    // Inicialización de fecha actual si está vacío
     window.onload = function() {
         const fechaInput = document.getElementById('id_fecha');
         if (!fechaInput.value) {
@@ -188,6 +174,12 @@
             const month = ("0" + (now.getMonth() + 1)).slice(-2);
             fechaInput.value = now.getFullYear() + "-" + month + "-" + day;
         }
+        // Si ya hay tipo seleccionado (edición), aplicar estilo
+        const tipoActual = document.getElementById('campo-tipo').value;
+        if (tipoActual) {
+            const btn = document.querySelector(`.tipo-btn[data-tipo="${tipoActual}"]`);
+            if (btn) seleccionarTipo(btn);
+        }
     };
 
     function seleccionarTipo(btn) {
@@ -195,6 +187,15 @@
         var tipo = btn.dataset.tipo;
         btn.classList.add('activo-' + tipo);
         document.getElementById('campo-tipo').value = tipo;
+
+        // Mostrar/ocultar vehículo según tipo
+        if (tipo === 'Informacion') {
+            document.getElementById('campo-vehiculo-wrap').style.display = 'none';
+            document.getElementById('aviso-info-wrap').style.display = 'block';
+        } else {
+            document.getElementById('campo-vehiculo-wrap').style.display = 'block';
+            document.getElementById('aviso-info-wrap').style.display = 'none';
+        }
     }
 
     function actualizarLeido() {
