@@ -10,21 +10,28 @@ from app.models import Vehiculo, Notificacion, SeguimientoMantenimiento
 from app.forms import VehiculoForm
 
 
-# ── MIXIN DE PROTECCIÓN PARA ADMINISTRADORES ──────────────────
+# ── Mixin 1: Solo ADMIN ──────────────────────────────────────────
 class SoloAdminMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
 
     def handle_no_permission(self):
         messages.error(self.request, "No tienes permisos de administrador para realizar esta acción.")
-        return redirect('app:listar_vehiculos')
+        return redirect('app:dashboard')
+
+# ── Mixin 2: ADMIN o MECANICO ────────────────────────────────────
+class AdminOMecanicoMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.cargo in ('ADMIN', 'MECANICO') or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos para acceder a este módulo.")
+        return redirect('app:dashboard')
 
 
-# ── GENERAR ALERTAS — ahora lee desde SeguimientoMantenimiento ──
+# ── GENERAR ALERTAS (sin cambios) ────────────────────────────────
 def generar_alertas_mantenimiento():
     hoy = date.today()
-
-    # Solo seguimientos activos con fecha definida
     seguimientos = SeguimientoMantenimiento.objects.filter(
         activo=True,
         fecha_proximo_mantenimiento__isnull=False
@@ -39,7 +46,7 @@ def generar_alertas_mantenimiento():
         elif dias_para <= 15:
             estado = 'alerta'
         else:
-            continue  # ok, no genera notificación
+            continue
 
         titulo = (
             f"Mantenimiento VENCIDO — {v.placa}"
@@ -48,33 +55,25 @@ def generar_alertas_mantenimiento():
         )
 
         ya_existe = Notificacion.objects.filter(
-            vehiculo=v,
-            tipo='Mantenimiento',
-            origen='SISTEMA',
-            leido=False,
-            titulo=titulo
+            vehiculo=v, tipo='Mantenimiento',
+            origen='SISTEMA', leido=False, titulo=titulo
         ).exists()
 
         if not ya_existe:
-            if estado == 'vencido':
-                msg = f"El vehículo {v.placa} superó la fecha límite ({seg.fecha_proximo_mantenimiento})."
-            else:
-                msg = (
-                    f"El vehículo {v.placa} tiene su próximo servicio el "
-                    f"{seg.fecha_proximo_mantenimiento} ({dias_para} días restantes)."
-                )
+            msg = (
+                f"El vehículo {v.placa} superó la fecha límite ({seg.fecha_proximo_mantenimiento})."
+                if estado == 'vencido'
+                else f"El vehículo {v.placa} tiene su próximo servicio el "
+                     f"{seg.fecha_proximo_mantenimiento} ({dias_para} días restantes)."
+            )
             Notificacion.objects.create(
-                tipo='Mantenimiento',
-                origen='SISTEMA',
-                leido=False,
-                vehiculo=v,
-                titulo=titulo,
-                mensaje=msg,
+                tipo='Mantenimiento', origen='SISTEMA', leido=False,
+                vehiculo=v, titulo=titulo, mensaje=msg,
             )
 
 
-# ── 1. LISTADO ────────────────────────────────────────────────
-class VehiculoListView(LoginRequiredMixin, ListView):
+# ── 1. LISTADO — Mecánico puede ver ──────────────────────────────
+class VehiculoListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
     model = Vehiculo
     template_name = 'vehiculo/listar.html'
     context_object_name = 'vehiculos'
@@ -91,7 +90,7 @@ class VehiculoListView(LoginRequiredMixin, ListView):
         vehiculos_con_estado = []
 
         for v in context['vehiculos']:
-            seg    = v.seguimiento_activo()   # método del modelo
+            seg    = v.seguimiento_activo()
             dias   = None
             estado = 'sin_datos'
 
@@ -117,8 +116,15 @@ class VehiculoListView(LoginRequiredMixin, ListView):
         return context
 
 
-# ── 2. CREAR ──────────────────────────────────────────────────
-class VehiculoCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
+OPCIONES_USO = [
+    {'val': 'BAJO',   'label': 'Uso Bajo',   'img': 'ciudadvehiculo.jpeg', 'desc': '~30 km/día'},
+    {'val': 'NORMAL', 'label': 'Uso Normal',  'img': 'vehiculoo.jpeg',     'desc': '~50 km/día'},
+    {'val': 'ALTO',   'label': 'Uso Alto',    'img': 'viajevehiculo.jpeg', 'desc': '~80 km/día'},
+    {'val': 'CARGA',  'label': 'Carga',       'img': 'carga.jpeg',         'desc': '~120 km/día'},
+]
+
+# ── 2. CREAR — Mecánico puede crear ──────────────────────────────
+class VehiculoCreateView(LoginRequiredMixin, AdminOMecanicoMixin, CreateView):
     model = Vehiculo
     form_class = VehiculoForm
     template_name = 'vehiculo/crear.html'
@@ -126,28 +132,22 @@ class VehiculoCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo']     = 'Registrar Nuevo Vehículo'
-        context['es_editar']  = False
-        context['next']       = self.request.GET.get('next', '')
-        context['opciones_uso'] = [
-            {'val': 'BAJO',   'label': 'Uso Bajo',   'img': 'ciudadvehiculo.jpeg', 'desc': '~30 km/día'},
-            {'val': 'NORMAL', 'label': 'Uso Normal',  'img': 'vehiculoo.jpeg',     'desc': '~50 km/día'},
-            {'val': 'ALTO',   'label': 'Uso Alto',    'img': 'viajevehiculo.jpeg', 'desc': '~80 km/día'},
-            {'val': 'CARGA',  'label': 'Carga',       'img': 'carga.jpeg',         'desc': '~120 km/día'},
-        ]
+        context['titulo']       = 'Registrar Nuevo Vehículo'
+        context['es_editar']    = False
+        context['next']         = self.request.GET.get('next', '')
+        context['opciones_uso'] = OPCIONES_USO
         return context
 
     def form_valid(self, form):
         vehiculo = form.save()
         messages.success(self.request, f'Vehículo {vehiculo.placa} registrado con éxito.')
-        next_param = self.request.POST.get('next', '')
-        if next_param == 'orden':
+        if self.request.POST.get('next', '') == 'orden':
             return redirect('app:orden_servicio_create')
         return redirect(self.success_url)
 
 
-# ── 3. EDITAR ─────────────────────────────────────────────────
-class VehiculoUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
+# ── 3. EDITAR — Mecánico puede editar ────────────────────────────
+class VehiculoUpdateView(LoginRequiredMixin, AdminOMecanicoMixin, UpdateView):
     model = Vehiculo
     form_class = VehiculoForm
     template_name = 'vehiculo/crear.html'
@@ -155,27 +155,21 @@ class VehiculoUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo']    = 'Editar Vehículo'
-        context['es_editar'] = True
-        context['next']      = self.request.GET.get('next', '')
-        context['opciones_uso'] = [
-            {'val': 'BAJO',   'label': 'Uso Bajo',   'img': 'ciudadvehiculo.jpeg', 'desc': '~30 km/día'},
-            {'val': 'NORMAL', 'label': 'Uso Normal',  'img': 'vehiculoo.jpeg',     'desc': '~50 km/día'},
-            {'val': 'ALTO',   'label': 'Uso Alto',    'img': 'viajevehiculo.jpeg', 'desc': '~80 km/día'},
-            {'val': 'CARGA',  'label': 'Carga',       'img': 'carga.jpeg',         'desc': '~120 km/día'},
-        ]
+        context['titulo']       = 'Editar Vehículo'
+        context['es_editar']    = True
+        context['next']         = self.request.GET.get('next', '')
+        context['opciones_uso'] = OPCIONES_USO
         return context
 
     def form_valid(self, form):
         vehiculo = form.save()
         messages.success(self.request, f'Vehículo {vehiculo.placa} actualizado correctamente.')
-        next_param = self.request.POST.get('next', '')
-        if next_param == 'orden':
+        if self.request.POST.get('next', '') == 'orden':
             return redirect('app:orden_servicio_create')
         return redirect(self.success_url)
 
 
-# ── 4. ELIMINAR ───────────────────────────────────────────────
+# ── 4. ELIMINAR — Solo Admin ──────────────────────────────────────
 class VehiculoDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
     model = Vehiculo
     template_name = 'vehiculo/eliminar.html'

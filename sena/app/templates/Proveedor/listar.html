@@ -166,7 +166,6 @@
         letter-spacing: .3px;
     }
 
-    /* ══════════ BOTONES DE FILA ══════════ */
     .btn-fila {
         width: 34px;
         height: 34px;
@@ -185,7 +184,6 @@
         box-shadow: 0 4px 12px rgba(0,0,0,.15);
     }
 
-    /* Editar — AZUL como imagen 2 */
     .btn-edit {
         background: var(--azul);
         color: white !important;
@@ -202,7 +200,6 @@
     .btn-del  { background: var(--rojo); color: white !important; }
     .btn-del:hover { background: var(--rojo2); box-shadow: 0 4px 12px rgba(211,47,47,.35); }
 
-    /* ══════════ DATATABLES ══════════ */
     .dataTables_wrapper { padding: 16px 20px; }
     .dataTables_filter input {
         border: 1.5px solid var(--borde) !important;
@@ -273,9 +270,11 @@
             <a href="{% url 'app:reporte_proveedores_excel' %}" class="btn-accion btn-excel">
                 <i class="fas fa-file-excel"></i> Excel
             </a>
+            {% if request.user.cargo != 'MECANICO' %}
             <a href="{{ crear_url }}" class="btn-accion btn-nuevo">
                 <i class="fas fa-plus"></i> Nuevo Proveedor
             </a>
+            {% endif %}
         </div>
     </div>
 
@@ -312,22 +311,25 @@
                         </td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center" style="gap:6px;">
-                                <!-- BOTÓN EDITAR — azul, ícono pen-to-square -->
+                                {% if request.user.cargo != 'MECANICO' %}
                                 <a href="{% url 'app:editar_proveedor' p.id %}"
                                    class="btn-fila btn-edit"
                                    title="Editar">
                                     <i class="fas fa-pen-to-square"></i>
                                 </a>
+                                {% endif %}
                                 <button class="btn-fila btn-view"
                                         title="Ver detalle"
                                         onclick="verDetalle('{{ p.nombre }}','{{ p.nit }}','{{ p.telefono }}','{{ p.direccion|default:'' }}')">
                                     <i class="fas fa-eye"></i>
                                 </button>
+                                {% if request.user.cargo != 'MECANICO' %}
                                 <a href="{% url 'app:eliminar_proveedor' p.id %}"
                                    class="btn-fila btn-del"
                                    title="Eliminar">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>

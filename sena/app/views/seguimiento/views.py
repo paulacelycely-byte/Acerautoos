@@ -10,42 +10,40 @@ from datetime import timedelta
 from app.models import SeguimientoMantenimiento, Vehiculo
 
 
-# ── Intervalos de cambio de aceite según tipo de uso ──────
+# ── Intervalos de cambio de aceite según tipo de uso ──────────────
 INTERVALOS_ACEITE = {
-    'BAJO':   180,   # 6 meses
-    'NORMAL': 120,   # 4 meses
-    'ALTO':   90,    # 3 meses
-    'CARGA':  60,    # 2 meses
+    'BAJO':   180,
+    'NORMAL': 120,
+    'ALTO':   90,
+    'CARGA':  60,
 }
 
 def calcular_fecha_sugerida(vehiculo):
-    """
-    Calcula la fecha sugerida del próximo mantenimiento
-    basada en el tipo de uso del vehículo.
-    Retorna un objeto date.
-    """
     dias = INTERVALOS_ACEITE.get(vehiculo.tipo_uso, 120)
     return timezone.now().date() + timedelta(days=dias)
 
 
+# ── Mixin 1: Solo ADMIN ──────────────────────────────────────────
 class SoloAdminMixin(UserPassesTestMixin):
     def test_func(self):
-        return self.request.user.is_authenticated and (
-            self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
-        )
+        return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
+
     def handle_no_permission(self):
-        messages.error(self.request, "Acceso denegado.")
-        return redirect('app:seguimiento_list')
+        messages.error(self.request, "No tienes permisos de administrador para realizar esta acción.")
+        return redirect('app:dashboard')
 
-
-class AccesoTallerMixin(UserPassesTestMixin):
+# ── Mixin 2: ADMIN o MECANICO ────────────────────────────────────
+class AdminOMecanicoMixin(UserPassesTestMixin):
     def test_func(self):
-        return self.request.user.is_authenticated and self.request.user.cargo is not None
+        return self.request.user.cargo in ('ADMIN', 'MECANICO') or self.request.user.is_superuser
+
     def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos para acceder a este módulo.")
         return redirect('app:dashboard')
 
 
-class SeguimientoListView(LoginRequiredMixin, AccesoTallerMixin, ListView):
+# ── LISTAR — Mecánico puede ver ──────────────────────────────────
+class SeguimientoListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
     model               = SeguimientoMantenimiento
     template_name       = 'seguimiento/seguimiento_list.html'
     context_object_name = 'seguimientos'
@@ -83,7 +81,8 @@ class SeguimientoListView(LoginRequiredMixin, AccesoTallerMixin, ListView):
         return context
 
 
-class SeguimientoCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
+# ── CREAR — Mecánico puede crear ─────────────────────────────────
+class SeguimientoCreateView(LoginRequiredMixin, AdminOMecanicoMixin, CreateView):
     model         = SeguimientoMantenimiento
     template_name = 'seguimiento/seguimiento_form.html'
     success_url   = reverse_lazy('app:seguimiento_list')
@@ -103,7 +102,6 @@ class SeguimientoCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
     def form_valid(self, form):
         seg = form.instance
 
-        # Si no viene fecha, calcularla automáticamente según tipo de uso
         if not seg.fecha_proximo_mantenimiento and seg.vehiculo:
             seg.fecha_proximo_mantenimiento = calcular_fecha_sugerida(seg.vehiculo)
 
@@ -121,7 +119,8 @@ class SeguimientoCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
         return context
 
 
-class SeguimientoUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
+# ── EDITAR — Mecánico puede editar ───────────────────────────────
+class SeguimientoUpdateView(LoginRequiredMixin, AdminOMecanicoMixin, UpdateView):
     model         = SeguimientoMantenimiento
     template_name = 'seguimiento/seguimiento_form.html'
     success_url   = reverse_lazy('app:seguimiento_list')
@@ -132,11 +131,9 @@ class SeguimientoUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
         seg = form.instance
         hoy = timezone.now().date()
 
-        # Si no tienen fecha y hay vehículo, calcular automáticamente
         if not seg.fecha_proximo_mantenimiento and seg.vehiculo:
             seg.fecha_proximo_mantenimiento = calcular_fecha_sugerida(seg.vehiculo)
 
-        # Borrar notificaciones del día para que se regeneren con el nuevo estado
         Notificacion.objects.filter(
             vehiculo=seg.vehiculo,
             origen='SISTEMA',
@@ -149,7 +146,6 @@ class SeguimientoUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Pasar la fecha sugerida al template para mostrarla como referencia
         seg = self.object
         fecha_sugerida = None
         if seg.vehiculo:
@@ -169,6 +165,7 @@ class SeguimientoUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
         return context
 
 
+# ── ELIMINAR — Solo Admin ─────────────────────────────────────────
 class SeguimientoDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
     model         = SeguimientoMantenimiento
     template_name = 'seguimiento/seguimiento_confirm_delete.html'
@@ -179,6 +176,7 @@ class SeguimientoDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
         return super().form_valid(form)
 
 
+# ── COMPLETAR — Solo Admin ────────────────────────────────────────
 class SeguimientoCompletarView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
     model       = SeguimientoMantenimiento
     fields      = []
@@ -193,7 +191,13 @@ class SeguimientoCompletarView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
         return redirect(self.success_url)
 
 
+# ── AJAX — accesible para ambos roles ─────────────────────────────
 def get_servicios_orden(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'servicios': [], 'km_orden': None, 'fecha_sugerida': None}, status=403)
+    if request.user.cargo not in ('ADMIN', 'MECANICO') and not request.user.is_superuser:
+        return JsonResponse({'servicios': [], 'km_orden': None, 'fecha_sugerida': None}, status=403)
+
     orden_id = request.GET.get('orden_id')
     if not orden_id:
         return JsonResponse({'servicios': [], 'km_orden': None, 'fecha_sugerida': None})
@@ -202,7 +206,6 @@ def get_servicios_orden(request):
         orden    = OrdenServicio.objects.select_related('vehiculo').get(pk=orden_id)
         servicios = list(orden.servicios.values('id', 'nombre'))
 
-        # Calcular fecha sugerida según tipo de uso del vehículo de la orden
         fecha_sugerida  = None
         intervalo_label = None
         if orden.vehiculo:

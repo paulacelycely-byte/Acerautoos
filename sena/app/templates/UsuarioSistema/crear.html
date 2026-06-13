@@ -17,7 +17,6 @@
         --muted:  #888;
     }
 
-    /* ── Encabezado ── */
     .taller-header {
         position: relative; background: var(--carbon);
         border-radius: 10px; padding: 28px 32px; margin-bottom: 28px;
@@ -34,21 +33,17 @@
     .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; letter-spacing: .5px; }
     .header-badge { font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; font-weight: 700; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1px; position: relative; }
 
-    /* ── Tarjeta del formulario ── */
     .form-card { background: white; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
     .form-card-header { background: var(--carbon); padding: 14px 24px; display: flex; align-items: center; gap: 10px; }
     .form-card-header svg { width: 16px; height: 16px; stroke: var(--acento); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
     .form-card-header span { font-family: 'Barlow Condensed', sans-serif; font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.7); }
     .modo-chip { margin-left: auto; font-family: 'Barlow Condensed', sans-serif; font-size: .7rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; background: var(--acento); color: white; opacity: .85; }
-
     .form-card-body { padding: 32px; }
 
-    /* ── Separador de sección ── */
     .sec-sep { display: flex; align-items: center; gap: 12px; margin: 4px 0 20px; }
     .sec-sep-label { font-family: 'Barlow Condensed', sans-serif; font-size: .75rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--acento); white-space: nowrap; }
     .sec-sep-line { flex: 1; height: 1px; background: var(--borde); }
 
-    /* ── Campos ── */
     .field-group { margin-bottom: 22px; }
     .field-label { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .9px; color: var(--muted); display: block; margin-bottom: 7px; }
     .field-inner { position: relative; }
@@ -58,7 +53,6 @@
     .field-inner input:focus, .field-inner select:focus { border-color: var(--acento); background: white; box-shadow: 0 0 0 3px var(--acento-ring); }
     .field-inner:focus-within .field-icon { color: var(--acento); }
 
-    /* Campo con botón ojo */
     .field-with-eye { display: flex; }
     .field-with-eye .field-inner { flex: 1; }
     .field-with-eye .field-inner input { border-radius: 10px 0 0 10px; }
@@ -66,7 +60,6 @@
     .btn-eye svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
     .btn-eye:hover { background: white; color: var(--acento); }
 
-    /* Switch activo */
     .switch-row { display: flex; align-items: center; justify-content: space-between; background: var(--gris); border: 1.5px solid var(--borde); border-radius: 10px; padding: 14px 18px; }
     .switch-info { display: flex; flex-direction: column; gap: 2px; }
     .switch-title { font-family: 'DM Sans', sans-serif; font-size: .88rem; font-weight: 600; color: var(--carbon); }
@@ -82,7 +75,6 @@
     .field-hint svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; margin-top: 1px; }
     .field-error { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: #d32f2f; margin-top: 5px; display: flex; align-items: center; gap: 5px; }
 
-    /* ── Footer ── */
     .form-card-footer { background: var(--gris); border-top: 1px solid var(--borde); padding: 20px 32px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
     .btn-cancelar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; padding: 10px 22px; border-radius: 10px; border: 1.5px solid var(--borde); background: white; color: var(--muted); text-decoration: none; transition: .2s; cursor: pointer; display: flex; align-items: center; gap: 8px; }
     .btn-cancelar svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
@@ -90,6 +82,45 @@
     .btn-guardar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 11px 28px; border-radius: 10px; border: none; background: var(--acento); color: white; cursor: pointer; box-shadow: 0 4px 14px var(--acento-glow); transition: .2s; display: flex; align-items: center; gap: 8px; }
     .btn-guardar svg { width: 15px; height: 15px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
     .btn-guardar:hover { background: var(--acento2); transform: translateY(-1px); }
+
+    /* ── FOTO PERFIL ── */
+    .foto-upload-wrap {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        background: var(--gris);
+        border: 1.5px dashed var(--borde);
+        border-radius: 14px;
+        padding: 20px 24px;
+        transition: border-color .2s;
+    }
+    .foto-upload-wrap:hover { border-color: var(--acento); }
+    .foto-preview {
+        width: 80px; height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--acento);
+        background: #ddd;
+        flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 2rem; font-weight: 900; color: white;
+        overflow: hidden;
+    }
+    .foto-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .foto-upload-info { flex: 1; }
+    .foto-upload-title { font-family: 'DM Sans', sans-serif; font-size: .88rem; font-weight: 600; color: var(--carbon); margin-bottom: 4px; }
+    .foto-upload-desc { font-family: 'DM Sans', sans-serif; font-size: .72rem; color: var(--muted); margin-bottom: 12px; }
+    .btn-choose-foto {
+        display: inline-flex; align-items: center; gap: 7px;
+        padding: 8px 16px; border-radius: 8px;
+        background: var(--acento); color: white;
+        font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 700;
+        cursor: pointer; border: none; transition: .2s;
+    }
+    .btn-choose-foto:hover { background: var(--acento2); }
+    .btn-choose-foto svg { width: 13px; height: 13px; stroke: white; fill: none; stroke-width: 2.2; }
+    #id_foto { display: none; }
 </style>
 {% endblock %}
 
@@ -112,7 +143,7 @@
         <span class="header-badge">Acerautos S.A.S</span>
     </div>
 
-    <form method="post" id="formUsuario" novalidate>
+    <form method="post" enctype="multipart/form-data" id="formUsuario" novalidate>
         {% csrf_token %}
 
         <div class="form-card">
@@ -128,6 +159,37 @@
 
             <div class="form-card-body">
                 <div class="row">
+
+                    <!-- ── SECCIÓN: FOTO DE PERFIL ── -->
+                    <div class="col-12">
+                        <div class="sec-sep">
+                            <span class="sec-sep-label">📷 Foto de Perfil</span>
+                            <div class="sec-sep-line"></div>
+                        </div>
+                        <div class="field-group">
+                            <div class="foto-upload-wrap">
+                                <div class="foto-preview" id="fotoPreview">
+                                    {% if object and object.foto %}
+                                        <img id="fotoImg" src="{{ object.foto.url }}" alt="Foto perfil">
+                                    {% else %}
+                                        <span id="fotoInicial">
+                                            {% if object %}{{ object.first_name|slice:':1'|upper }}{% else %}?{% endif %}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <div class="foto-upload-info">
+                                    <div class="foto-upload-title">Foto de perfil <span style="color:var(--muted);font-weight:400;">(opcional)</span></div>
+                                    <div class="foto-upload-desc">JPG, PNG o WEBP · Máximo 2MB · Se mostrará en el perfil y en la barra superior</div>
+                                    <button type="button" class="btn-choose-foto" onclick="document.getElementById('id_foto').click()">
+                                        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                        Elegir foto
+                                    </button>
+                                    {{ form.foto }}
+                                </div>
+                            </div>
+                            {% for e in form.foto.errors %}<div class="field-error">⚠ {{ e }}</div>{% endfor %}
+                        </div>
+                    </div>
 
                     <!-- ── SECCIÓN: DATOS PERSONALES ── -->
                     <div class="col-12">
@@ -324,12 +386,28 @@
 <script>
 $(document).ready(function () {
 
+    // ── Preview foto en tiempo real ──
+    document.getElementById('id_foto').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) {
+            Swal.fire({ icon: 'warning', title: 'Archivo muy grande', text: 'La foto no debe superar 2MB.', confirmButtonColor: '#d32f2f' });
+            this.value = '';
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const preview = document.getElementById('fotoPreview');
+            preview.innerHTML = `<img id="fotoImg" src="${e.target.result}" alt="Preview" style="width:100%;height:100%;object-fit:cover;">`;
+        };
+        reader.readAsDataURL(file);
+    });
+
     // ── Aplicar estilos a campos ──
     document.querySelectorAll('.form-field').forEach(el => {
-        const acento   = getComputedStyle(document.documentElement).getPropertyValue('--acento').trim();
-        const acento2  = getComputedStyle(document.documentElement).getPropertyValue('--acento-ring').trim();
+        const acento = getComputedStyle(document.documentElement).getPropertyValue('--acento').trim();
         const enConOjo = el.closest('.field-with-eye');
-        const radius   = enConOjo ? '10px 0 0 10px' : '10px';
+        const radius = enConOjo ? '10px 0 0 10px' : '10px';
         el.style.cssText = `
             width:100%; padding:12px 14px 12px 40px;
             border:1.5px solid #e0ddd8; border-radius:${radius};
@@ -340,13 +418,13 @@ $(document).ready(function () {
         `;
         el.addEventListener('focus', () => {
             el.style.borderColor = acento;
-            el.style.background  = 'white';
-            el.style.boxShadow   = `0 0 0 3px ${acento}22`;
+            el.style.background = 'white';
+            el.style.boxShadow = `0 0 0 3px ${acento}22`;
         });
         el.addEventListener('blur', () => {
             el.style.borderColor = '#e0ddd8';
-            el.style.background  = '#f2f2f0';
-            el.style.boxShadow   = 'none';
+            el.style.background = '#f2f2f0';
+            el.style.boxShadow = 'none';
         });
     });
 
@@ -354,7 +432,7 @@ $(document).ready(function () {
     function toggleEye(btnId, fieldName) {
         $('#' + btnId).on('click', function () {
             var input = $('[name="' + fieldName + '"]');
-            var svg   = $(this).find('svg');
+            var svg = $(this).find('svg');
             if (input.attr('type') === 'password') {
                 input.attr('type', 'text');
                 svg.html('<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>');
@@ -369,36 +447,35 @@ $(document).ready(function () {
 
     // ── Cancelar ──
     $('#btnCancelar').on('click', function () {
-    Swal.fire({
-        title: '¿Cancelar?',
-        text: 'Los datos no guardados se perderán.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, salir',
-        cancelButtonText: 'Continuar editando',
-        confirmButtonColor: '#d32f2f',
-        cancelButtonColor: '#888'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // FIX — si venía de orden, regresa a orden
-            var next = "{{ request.GET.next|default:'' }}";
-            if (next === 'orden') {
-                window.location.href = "{% url 'app:orden_servicio_create' %}";
-            } else {
-                window.location.href = "{% url 'app:listar_usuario' %}";
+        Swal.fire({
+            title: '¿Cancelar?',
+            text: 'Los datos no guardados se perderán.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'Continuar editando',
+            confirmButtonColor: '#d32f2f',
+            cancelButtonColor: '#888'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var next = "{{ request.GET.next|default:'' }}";
+                if (next === 'orden') {
+                    window.location.href = "{% url 'app:orden_servicio_create' %}";
+                } else {
+                    window.location.href = "{% url 'app:listar_usuario' %}";
+                }
             }
-        }
+        });
     });
-});
 
     // ── Confirmar guardar ──
     $('#formUsuario').on('submit', function (e) {
         e.preventDefault();
         var formulario = this;
-        var esEdicion  = {% if object %}true{% else %}false{% endif %};
+        var esEdicion = {% if object %}true{% else %}false{% endif %};
         Swal.fire({
             title: esEdicion ? '¿Actualizar usuario?' : '¿Registrar usuario?',
-            text:  esEdicion ? 'Se actualizarán los datos del usuario.' : 'Se creará un nuevo usuario con acceso al sistema.',
+            text: esEdicion ? 'Se actualizarán los datos del usuario.' : 'Se creará un nuevo usuario con acceso al sistema.',
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: esEdicion ? '#1565c0' : '#d32f2f',

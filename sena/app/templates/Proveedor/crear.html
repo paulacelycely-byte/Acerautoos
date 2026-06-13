@@ -351,7 +351,7 @@ const PAISES = [
     { code: '+27',  iso: 'za', nombre: 'Sudáfrica',               ejemplo: '812345678'   },
     { code: '+20',  iso: 'eg', nombre: 'Egipto',                  ejemplo: '0101234567'  },
     { code: '+212', iso: 'ma', nombre: 'Marruecos',               ejemplo: '0612345678'  },
-    { code: '+971', iso: 'ae', nombre: 'Emiratos Árabes',         ejemplo: '051234567'  },
+    { code: '+971', iso: 'ae', nombre: 'Emiratos Árabes',         ejemplo: '051234567'   },
     { code: '+966', iso: 'sa', nombre: 'Arabia Saudita',          ejemplo: '0512345678'  },
 ];
 
@@ -364,25 +364,25 @@ const REGLAS_TEL = {
               errPref: 'Colombia: celular empieza por 3 (ej: 3219876543) o fijo por 60–68.' },
     '+1':   { min:10, max:10, prefijos:['2','3','4','5','6','7','8','9'],
               errLen:  'EEUU/Canadá: exactamente 10 dígitos (ej: 2025550173).',
-              errPref: 'EEUU/Canadá: el primer dígito debe ser 2–9 (ej: 2025550173). El 0 y el 1 no son válidos.' },
+              errPref: 'EEUU/Canadá: el primer dígito debe ser 2–9.' },
     '+52':  { min:10, max:10, prefijos:['2','3','4','5','6','7','8','9'],
               errLen:  'México: exactamente 10 dígitos (ej: 5512345678).',
-              errPref: 'México: el primer dígito debe ser 2–9 (ej: 5512345678). No comienza por 0 ni 1.' },
+              errPref: 'México: el primer dígito debe ser 2–9.' },
     '+54':  { min:6,  max:11, prefijos:['9','11','15','2','3'],
               errLen:  'Argentina: 10–11 dígitos para móvil (ej: 91123456789) o 6–10 para fijo.',
-              errPref: 'Argentina: móvil empieza por 9 (ej: 91123456789), fijo por 11/2xx/3xx.' },
+              errPref: 'Argentina: móvil empieza por 9, fijo por 11/2xx/3xx.' },
     '+55':  { min:8,  max:11, prefijos:['1','2','3','4','5','6','7','8','9'],
-              errLen:  'Brasil: móvil 11 dígitos (ej: 11987654321) o fijo 10 dígitos con código de área (11–99).',
-              errPref: 'Brasil: incluya código de área (11–99). No puede empezar por 0 (ej: 11987654321).' },
+              errLen:  'Brasil: móvil 11 dígitos (ej: 11987654321) o fijo 10 dígitos.',
+              errPref: 'Brasil: incluya código de área (11–99). No puede empezar por 0.' },
     '+56':  { min:8,  max:9,  prefijos:['2','3','4','5','6','7','9'],
               errLen:  'Chile: móvil 9 dígitos (ej: 912345678) o fijo 8 dígitos.',
-              errPref: 'Chile: móvil empieza por 9 (ej: 912345678), fijo por 2–7.' },
+              errPref: 'Chile: móvil empieza por 9, fijo por 2–7.' },
     '+51':  { min:7,  max:9,  prefijos:['1','9'],
               errLen:  'Perú: móvil 9 dígitos (ej: 987654321) o fijo 7 dígitos.',
-              errPref: 'Perú: móvil empieza por 9 (ej: 987654321) o fijo por 1.' },
+              errPref: 'Perú: móvil empieza por 9, fijo por 1.' },
     '+58':  { min:7,  max:11, prefijos:['0412','0414','0416','0424','0426','02'],
               errLen:  'Venezuela: móvil 11 dígitos (ej: 04121234567) o fijo empieza por 02.',
-              errPref: 'Venezuela: móvil empieza por 0412/0414/0416/0424/0426 (ej: 04121234567), fijo por 02.' },
+              errPref: 'Venezuela: móvil empieza por 0412/0414/0416/0424/0426, fijo por 02.' },
     '+593': { min:8,  max:9,  prefijos:['09','02','03','04','05','06','07'],
               errLen:  'Ecuador: móvil 9 dígitos (ej: 0987654321) o fijo 8 dígitos.',
               errPref: 'Ecuador: móvil empieza por 09, fijo por 02–07.' },
@@ -433,7 +433,7 @@ const REGLAS_TEL = {
               errPref: '' },
     '+39':  { min:6,  max:11, prefijos:['0','3'],
               errLen:  'Italia: móvil 10 dígitos (ej: 3201234567) o fijo 6–11 dígitos.',
-              errPref: 'Italia: móvil empieza por 3 (ej: 3201234567), fijo por 0.' },
+              errPref: 'Italia: móvil empieza por 3, fijo por 0.' },
     '+351': { min:9,  max:9,  prefijos:['2','9'],
               errLen:  'Portugal: exactamente 9 dígitos (ej: 912345678).',
               errPref: 'Portugal: móvil empieza por 9, fijo por 2.' },
@@ -451,7 +451,7 @@ const REGLAS_TEL = {
               errPref: 'Corea del Sur: móvil empieza por 010, fijo por 02/031/…' },
     '+91':  { min:10, max:10, prefijos:['6','7','8','9'],
               errLen:  'India: exactamente 10 dígitos (ej: 9876543210).',
-              errPref: 'India: debe empezar por 6, 7, 8 o 9. No comienza por 0–5.' },
+              errPref: 'India: debe empezar por 6, 7, 8 o 9.' },
     '+61':  { min:5,  max:9,  prefijos:['2','3','4','7','8'],
               errLen:  'Australia: móvil 9 dígitos (ej: 412345678) o fijo 8 dígitos, sin el 0 inicial.',
               errPref: 'Australia: sin el 0 inicial — móvil empieza por 4, fijo por 2/3/7/8.' },
@@ -471,6 +471,107 @@ const REGLAS_TEL = {
               errLen:  'Arabia Saudita: exactamente 9 dígitos (ej: 0512345678).',
               errPref: 'Arabia Saudita: móvil empieza por 05, fijo por 01/02/03.' },
 };
+
+// ══════════════════════════════════════════════════════════
+//  UTILIDAD: mostrar/limpiar error inline en un campo
+// ══════════════════════════════════════════════════════════
+function setFieldError(inputEl, msg) {
+    const wrap = inputEl.closest('.field-group') || inputEl.parentElement;
+    let errorEl = wrap.querySelector('.field-error-js');
+    if (msg) {
+        if (!errorEl) {
+            errorEl = document.createElement('div');
+            errorEl.className = 'field-error-js';
+            errorEl.style.cssText = 'color:#d32f2f;font-size:.78rem;margin-top:5px;display:flex;align-items:center;gap:5px;font-family:"DM Sans",sans-serif;';
+            const fieldInner = wrap.querySelector('.field-inner') || inputEl.parentElement;
+            fieldInner.insertAdjacentElement('afterend', errorEl);
+        }
+        errorEl.innerHTML = `⚠ ${msg}`;
+        inputEl.style.setProperty('border-color', '#d32f2f', 'important');
+        inputEl.style.setProperty('box-shadow',   '0 0 0 3px rgba(211,47,47,.12)', 'important');
+    } else {
+        if (errorEl) errorEl.remove();
+        inputEl.style.removeProperty('border-color');
+        inputEl.style.removeProperty('box-shadow');
+    }
+}
+
+// ══════════════════════════════════════════════════════════
+//  VALIDACIÓN EN TIEMPO REAL — NOMBRE (solo JS)
+// ══════════════════════════════════════════════════════════
+(function initValidarNombre() {
+    const inputNombre = document.querySelector('[name="nombre"]');
+    if (!inputNombre) return;
+
+    inputNombre.addEventListener('input', function () {
+        // Bloquear números y símbolos en tiempo real
+        const limpio = this.value.replace(/[^a-zA-ZÁÉÍÓÚáéíóúÑñ\s]/g, '');
+        if (this.value !== limpio) this.value = limpio;
+
+        const val = this.value.trim();
+        if (val.length === 0) {
+            setFieldError(this, null);
+        } else if (val.length < 3) {
+            setFieldError(this, 'El nombre debe tener al menos 3 caracteres.');
+        } else {
+            setFieldError(this, null);
+        }
+    });
+
+    inputNombre.addEventListener('blur', function () {
+        const val = this.value.trim();
+        if (val.length > 0 && val.length < 3) {
+            setFieldError(this, 'El nombre debe tener al menos 3 caracteres.');
+        } else {
+            setFieldError(this, null);
+        }
+    });
+})();
+
+// ══════════════════════════════════════════════════════════
+//  VALIDACIÓN AJAX — NIT DUPLICADO
+// ══════════════════════════════════════════════════════════
+(function initValidarNit() {
+    const inputNit = document.querySelector('[name="nit"]');
+    if (!inputNit) return;
+
+    const excludePk = '{{ object.pk|default:"" }}';
+    let timerNit    = null;
+
+    // Solo permitir dígitos mientras escribe
+    inputNit.addEventListener('input', function () {
+        const limpio = this.value.replace(/\D/g, '');
+        if (this.value !== limpio) this.value = limpio;
+        clearTimeout(timerNit);
+        setFieldError(this, null);
+    });
+
+    inputNit.addEventListener('blur', function () {
+        const val = this.value.trim();
+        if (!val) return;
+
+        // Validación local primero (9-10 dígitos)
+        if (val.length < 9 || val.length > 10) {
+            setFieldError(this, 'El NIT debe tener 9 o 10 dígitos.');
+            return;
+        }
+
+        clearTimeout(timerNit);
+        timerNit = setTimeout(() => {
+            const url = `{% url 'app:validar_nit_proveedor' %}?valor=${encodeURIComponent(val)}${excludePk ? '&exclude_pk=' + excludePk : ''}`;
+            fetch(url)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.existe) {
+                        setFieldError(inputNit, 'Ya existe un proveedor registrado con este NIT.');
+                    } else {
+                        setFieldError(inputNit, null);
+                    }
+                })
+                .catch(() => {});
+        }, 300);
+    });
+})();
 
 // ══════════════════════════════════════════════════════════
 //  LÓGICA DROPDOWN / MÁSCARA
@@ -535,7 +636,7 @@ function seleccionar(p) {
     paisBuscar.value = '';
     renderLista('');
     actualizarTelefono();
-    mostrarErrorTel(null); // limpiar error al cambiar país
+    mostrarErrorTel(null);
 }
 
 paisSelected.addEventListener('click', () => {
@@ -569,27 +670,22 @@ function actualizarTelefono() {
 }
 
 // ══════════════════════════════════════════════════════════
-//  VALIDACIÓN POR PAÍS
+//  VALIDACIÓN POR PAÍS — TELÉFONO
 // ══════════════════════════════════════════════════════════
 function validarTelefonoPorPais(indicativo, numero) {
     if (!indicativo) return 'Seleccione el indicativo del país.';
     if (!numero)     return 'Ingrese el número de teléfono.';
     if (!/^\d+$/.test(numero)) return 'Solo se permiten dígitos, sin espacios ni símbolos.';
-
     const regla = REGLAS_TEL[indicativo];
     if (!regla) {
         if (numero.length < 6 || numero.length > 15)
             return `Número inválido para ${indicativo}: entre 6 y 15 dígitos.`;
         return null;
     }
-    // Longitud
-    if (numero.length < regla.min || numero.length > regla.max)
-        return regla.errLen;
-    // Prefijo
+    if (numero.length < regla.min || numero.length > regla.max) return regla.errLen;
     if (regla.prefijos.length > 0) {
         const sorted = [...regla.prefijos].sort((a, b) => b.length - a.length);
-        if (!sorted.some(p => numero.startsWith(p)))
-            return regla.errPref;
+        if (!sorted.some(p => numero.startsWith(p))) return regla.errPref;
     }
     return null;
 }
@@ -611,7 +707,6 @@ function mostrarErrorTel(msg) {
     }
 }
 
-// ── Validar al escribir ──
 if (inputNumero) {
     inputNumero.addEventListener('input', () => {
         aplicarMascara();
@@ -639,7 +734,14 @@ $(function () {
         e.preventDefault();
         actualizarTelefono();
 
-        // Bloquear envío si el teléfono es inválido
+        // Bloquear si hay errores JS visibles
+        const erroresJS = document.querySelectorAll('.field-error-js');
+        if (erroresJS.length > 0) {
+            erroresJS[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        // Bloquear si el teléfono es inválido
         const ind = (hiddenInput ? hiddenInput.value : '').trim();
         const num = ($('[name="numero_telefono"]').val() || '').trim();
         const err = validarTelefonoPorPais(ind, num);

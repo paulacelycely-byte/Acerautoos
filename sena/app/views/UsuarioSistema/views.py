@@ -16,7 +16,7 @@ class PerfilView(LoginRequiredMixin, View):
     def get(self, request):
         usuario = request.user
         ordenes_recientes = OrdenServicio.objects.filter(
-            empleado__correo=usuario.email
+            empleado=usuario
         ).select_related('vehiculo').order_by('-fecha')[:5] if hasattr(OrdenServicio, 'empleado') else []
 
         return render(request, 'UsuarioSistema/perfil.html', {

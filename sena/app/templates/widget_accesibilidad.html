@@ -4,8 +4,8 @@
 ══════════════════════════════════════════ */
 #acc-btn {
   position: fixed;
-  bottom: 156px;
-  right: 28px;
+  bottom: 28px;
+  right: 90px;
   width: 48px; height: 48px;
   background: #1565c0;
   border: none; border-radius: 50%;
@@ -23,7 +23,7 @@
 ══════════════════════════════════════════ */
 #acc-panel {
   position: fixed;
-  bottom: 215px; right: 20px;
+  bottom: 30px; right: 20px;
   width: 330px;
   background: #141414;
   border: 1px solid rgba(255,255,255,.09);
@@ -32,8 +32,22 @@
   overflow: hidden;
   box-shadow: 0 24px 64px rgba(0,0,0,.85);
   display: none; flex-direction: column;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 #acc-panel.abierto { display: flex; }
+
+/* Overlay para cerrar */
+#acc-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 99997;
+  display: none;
+  background: transparent;
+  cursor: default;
+}
+#acc-overlay.visible { display: block; }
 
 #acc-panel-header {
   background: linear-gradient(135deg,#1a47a0,#1565c0);
@@ -147,37 +161,396 @@
 .acc-btn-reset:hover { background:rgba(239,83,80,.12); color:#ef9a9a; border-color:rgba(239,83,80,.5); }
 
 /* ══════════════════════════════════════════
-   MODO CLARO — Reglas específicas y completas
+   MODO CLARO - CORREGIDO
+   Textos NEGROS en fondo claro - TODO LEGIBLE
 ══════════════════════════════════════════ */
-body.acc-modo-claro { background:#eef0f3 !important; }
-body.acc-modo-claro .app-wrapper { background:#eef0f3 !important; }
-body.acc-modo-claro .app-main-bg { background:#eef0f3 !important; }
-body.acc-modo-claro .app-main-bg::before { filter:brightness(0) !important; opacity:.04 !important; }
 
-/* Sidebar */
+/* FONDO CLARO GENERAL */
+body.acc-modo-claro { 
+  background:#eef0f3 !important; 
+}
+body.acc-modo-claro .app-wrapper { 
+  background:#eef0f3 !important; 
+}
+body.acc-modo-claro .app-main-bg { 
+  background:#eef0f3 !important; 
+}
+body.acc-modo-claro .app-main-bg::before { 
+  filter:brightness(0) !important; 
+  opacity:.04 !important; 
+}
+
+/* ── TODOS LOS TEXTOS EN NEGRO ── */
+body.acc-modo-claro,
+body.acc-modo-claro * { 
+  color:#222 !important; 
+}
+
+/* ── TÍTULOS Y ENCABEZADOS ── */
+body.acc-modo-claro h1,
+body.acc-modo-claro h2,
+body.acc-modo-claro h3,
+body.acc-modo-claro h4,
+body.acc-modo-claro h5,
+body.acc-modo-claro h6 { 
+  color:#000 !important; 
+  font-weight:700 !important;
+}
+
+/* ── PÁRRAFOS Y TEXTO ── */
+body.acc-modo-claro p,
+body.acc-modo-claro span,
+body.acc-modo-claro div,
+body.acc-modo-claro label,
+body.acc-modo-claro li,
+body.acc-modo-claro td,
+body.acc-modo-claro th,
+body.acc-modo-claro button,
+body.acc-modo-claro a { 
+  color:#333 !important; 
+}
+
+/* ── SIDEBAR EN MODO CLARO ── */
 body.acc-modo-claro nav#appSidebar,
-body.acc-modo-claro .app-sidebar { background:#ffffff !important; border-right:1px solid #e2e5ea !important; }
-body.acc-modo-claro .sb-brand { background:#f8f9fa !important; border-bottom:1px solid #eee !important; }
-body.acc-modo-claro .sb-brand-name { color:#111 !important; }
-body.acc-modo-claro .sb-brand-name em { color:#c62828 !important; }
-body.acc-modo-claro .sb-brand-sub { color:#aaa !important; }
-body.acc-modo-claro .sb-section-label { color:#bbb !important; }
-body.acc-modo-claro .sb-section-num { color:#c62828 !important; }
-body.acc-modo-claro .sb-section-line { background:linear-gradient(90deg,rgba(198,40,40,.3),transparent) !important; }
-body.acc-modo-claro .sb-item { color:#555 !important; border-color:transparent !important; }
-body.acc-modo-claro .sb-item:hover { background:rgba(0,0,0,.05) !important; color:#111 !important; }
-body.acc-modo-claro .sb-item.active { background:rgba(198,40,40,.08) !important; color:#c62828 !important; border-color:rgba(198,40,40,.2) !important; }
-body.acc-modo-claro .sb-img-icon { filter:brightness(0.25) !important; }
+body.acc-modo-claro .app-sidebar { 
+  background:#ffffff !important; 
+  border-right:1px solid #d0d5dd !important; 
+}
+body.acc-modo-claro .sb-brand { 
+  background:#f8f9fa !important; 
+  border-bottom:1px solid #e2e5ea !important; 
+}
+body.acc-modo-claro .sb-brand-name { 
+  color:#111 !important; 
+  font-weight:900 !important;
+}
+body.acc-modo-claro .sb-brand-name em { 
+  color:#c62828 !important; 
+}
+body.acc-modo-claro .sb-brand-sub { 
+  color:#888 !important; 
+  font-weight:600 !important;
+}
+body.acc-modo-claro .sb-section-label { 
+  color:#666 !important; 
+  font-weight:800 !important;
+}
+body.acc-modo-claro .sb-section-num { 
+  color:#c62828 !important; 
+  font-weight:900 !important;
+}
+body.acc-modo-claro .sb-section-line { 
+  background:linear-gradient(90deg,rgba(198,40,40,.35),transparent) !important; 
+}
+body.acc-modo-claro .sb-item { 
+  color:#222 !important; 
+  border-color:transparent !important; 
+}
+body.acc-modo-claro .sb-item-text { 
+  color:#222 !important; 
+  font-weight:600 !important;
+}
+body.acc-modo-claro .sb-item:hover { 
+  background:rgba(198,40,40,.08) !important; 
+  color:#000 !important; 
+}
+body.acc-modo-claro .sb-item.active { 
+  background:rgba(198,40,40,.12) !important; 
+  color:#000 !important; 
+  border-color:rgba(198,40,40,.3) !important; 
+}
+body.acc-modo-claro .sb-img-icon { 
+  filter:brightness(0.25) !important; 
+  opacity:0.95 !important;
+}
 body.acc-modo-claro .sb-item:hover .sb-img-icon,
-body.acc-modo-claro .sb-item.active .sb-img-icon { filter:none !important; }
-body.acc-modo-claro .sb-step { background:rgba(198,40,40,.07) !important; color:#c62828 !important; border-color:rgba(198,40,40,.18) !important; }
-body.acc-modo-claro .sb-footer { background:#f8f9fa !important; border-top:1px solid #eee !important; }
-body.acc-modo-claro .sb-user-name { color:#111 !important; }
-body.acc-modo-claro .sb-user-role { color:#888 !important; }
-body.acc-modo-claro .sb-logout-btn { background:rgba(0,0,0,.04) !important; border-color:rgba(0,0,0,.1) !important; color:#666 !important; }
-body.acc-modo-claro .sb-avatar-wrap::after { border-color:#f8f9fa !important; }
+body.acc-modo-claro .sb-item.active .sb-img-icon { 
+  filter:brightness(0.1) !important; 
+  opacity:1 !important; 
+}
+body.acc-modo-claro .sb-step { 
+  background:rgba(198,40,40,.15) !important; 
+  color:#c62828 !important; 
+  border:1px solid rgba(198,40,40,.3) !important; 
+  font-weight:900 !important;
+}
+body.acc-modo-claro .sb-item.active .sb-step { 
+  background:rgba(198,40,40,.25) !important; 
+  color:#b71c1c !important; 
+}
+body.acc-modo-claro .sb-footer { 
+  background:#f8f9fa !important; 
+  border-top:1px solid #e2e5ea !important; 
+}
+body.acc-modo-claro .sb-user-name { 
+  color:#111 !important; 
+  font-weight:700 !important; 
+}
+body.acc-modo-claro .sb-user-role { 
+  color:#777 !important; 
+  font-weight:600 !important;
+}
+body.acc-modo-claro .sb-logout-btn { 
+  background:rgba(0,0,0,.06) !important; 
+  border:1px solid rgba(0,0,0,.15) !important; 
+  color:#666 !important; 
+}
+body.acc-modo-claro .sb-logout-btn:hover { 
+  background:#c62828 !important; 
+  color:#fff !important; 
+  border-color:#c62828 !important; 
+}
+body.acc-modo-claro .sb-avatar-wrap::after { 
+  border-color:#ffffff !important; 
+}
 
-/* Header */
+/* ── HEADER EN MODO CLARO ── */
+body.acc-modo-claro .app-header { 
+  background:#ffffff !important; 
+  border-bottom:1px solid #e2e5ea !important; 
+  box-shadow:0 1px 0 rgba(198,40,40,.12),0 2px 16px rgba(0,0,0,.06) !important; 
+}
+body.acc-modo-claro .navbar-brand-text { 
+  color:#111 !important; 
+}
+body.acc-modo-claro .navbar-brand-text span { 
+  color:#c62828 !important; 
+}
+body.acc-modo-claro #header-sub { 
+  color:rgba(0,0,0,.35) !important; 
+}
+body.acc-modo-claro .btn-toggle-menu { 
+  color:#666 !important; 
+}
+body.acc-modo-claro .btn-toggle-menu:hover { 
+  background:rgba(0,0,0,.06) !important; 
+  color:#111 !important; 
+}
+body.acc-modo-claro .nav-vdivider { 
+  background:rgba(0,0,0,.1) !important; 
+}
+body.acc-modo-claro .user-pill { 
+  background:rgba(0,0,0,.04) !important; 
+  border-color:rgba(0,0,0,.09) !important; 
+}
+body.acc-modo-claro .user-pill-name { 
+  color:#111 !important; 
+}
+body.acc-modo-claro .user-pill-role { 
+  color:#777 !important; 
+}
+body.acc-modo-claro .pill-arrow svg { 
+  stroke:#aaa !important; 
+}
+body.acc-modo-claro .user-pill-avatar { 
+  background:#c62828 !important; 
+}
+body.acc-modo-claro .user-dropdown-menu { 
+  background:#fff !important; 
+  border-color:#e2e5ea !important; 
+  box-shadow:0 8px 32px rgba(0,0,0,.1) !important; 
+}
+body.acc-modo-claro .dd-header { 
+  border-bottom-color:#eee !important; 
+}
+body.acc-modo-claro .dd-username { 
+  color:#111 !important; 
+}
+body.acc-modo-claro .dd-role { 
+  color:#888 !important; 
+}
+body.acc-modo-claro .dropdown-item { 
+  color:#444 !important; 
+}
+body.acc-modo-claro .dropdown-item:hover { 
+  background:rgba(0,0,0,.04) !important; 
+  color:#111 !important; 
+}
+body.acc-modo-claro .dropdown-item svg { 
+  stroke:rgba(0,0,0,.3) !important; 
+}
+body.acc-modo-claro .dropdown-divider { 
+  border-color:#eee !important; 
+}
+body.acc-modo-claro .dd-logout { 
+  color:#c62828 !important; 
+}
+
+/* ── CONTENIDO PRINCIPAL ── */
+body.acc-modo-claro .app-main-bg > * { 
+  color:#222 !important; 
+}
+body.acc-modo-claro .app-main-bg h1,
+body.acc-modo-claro .app-main-bg h2,
+body.acc-modo-claro .app-main-bg h3 { 
+  color:#000 !important; 
+}
+body.acc-modo-claro .app-main-bg p,
+body.acc-modo-claro .app-main-bg span,
+body.acc-modo-claro .app-main-bg small,
+body.acc-modo-claro .app-main-bg li { 
+  color:#333 !important; 
+}
+body.acc-modo-claro .app-main-bg a { 
+  color:#1565c0 !important; 
+}
+
+/* ── TARJETAS / MÓDULOS ── */
+body.acc-modo-claro .card,
+body.acc-modo-claro [class*="card"],
+body.acc-modo-claro .modulo-card,
+body.acc-modo-claro [class*="paso"],
+body.acc-modo-claro .app-main-bg [style*="background"],
+body.acc-modo-claro .app-main-bg .bg-dark,
+body.acc-modo-claro .app-main-bg .rounded,
+body.acc-modo-claro .app-main-bg > div > div,
+body.acc-modo-claro .app-main-bg > div > div > div { 
+  background:#ffffff !important; 
+  color:#000 !important;
+  border-color:#e2e5ea !important;
+}
+
+body.acc-modo-claro .card h1,
+body.acc-modo-claro .card h2,
+body.acc-modo-claro .card h3,
+body.acc-modo-claro [class*="card"] h1,
+body.acc-modo-claro [class*="card"] h2,
+body.acc-modo-claro [class*="card"] h3,
+body.acc-modo-claro .modulo-card h1,
+body.acc-modo-claro .modulo-card h2,
+body.acc-modo-claro .modulo-card h3 { 
+  color:#000 !important; 
+  font-weight:700 !important;
+}
+
+body.acc-modo-claro .card *,
+body.acc-modo-claro [class*="card"] *,
+body.acc-modo-claro .modulo-card *,
+body.acc-modo-claro [class*="paso"] * { 
+  color:#000 !important; 
+}
+
+body.acc-modo-claro .app-main-bg > div > div > div * { 
+  color:#000 !important; 
+}
+
+/* ── TABLAS ── */
+body.acc-modo-claro table { 
+  background:#ffffff !important; 
+  color:#000 !important; 
+}
+body.acc-modo-claro thead tr { 
+  background:#f5f6f8 !important; 
+}
+body.acc-modo-claro thead th { 
+  background:#f5f6f8 !important; 
+  color:#000 !important; 
+  border-color:#e2e5ea !important; 
+  font-weight:700 !important; 
+  border:1px solid #d0d5dd !important;
+}
+body.acc-modo-claro tbody tr { 
+  background:#ffffff !important; 
+}
+body.acc-modo-claro tbody tr:hover { 
+  background:#f9fafb !important; 
+}
+body.acc-modo-claro td { 
+  color:#000 !important; 
+  border-color:#e2e5ea !important;
+  border:1px solid #e2e5ea !important;
+  background:#ffffff !important;
+}
+
+/* ── DATABLES ── */
+body.acc-modo-claro .dataTables_wrapper { 
+  color:#333 !important; 
+}
+body.acc-modo-claro .dataTables_wrapper label,
+body.acc-modo-claro .dataTables_wrapper span,
+body.acc-modo-claro .dataTables_wrapper .dataTables_info { 
+  color:#555 !important; 
+}
+body.acc-modo-claro .dataTables_wrapper input,
+body.acc-modo-claro .dataTables_wrapper select { 
+  background:#ffffff !important; 
+  color:#000 !important; 
+  border-color:#ccc !important; 
+}
+body.acc-modo-claro .page-link { 
+  background:#ffffff !important; 
+  color:#444 !important; 
+  border-color:#ddd !important; 
+}
+body.acc-modo-claro .page-item.active .page-link { 
+  background:#c62828 !important; 
+  border-color:#c62828 !important; 
+  color:#fff !important; 
+}
+
+/* ── INPUTS ── */
+body.acc-modo-claro input,
+body.acc-modo-claro select,
+body.acc-modo-claro textarea,
+body.acc-modo-claro .form-control,
+body.acc-modo-claro .form-select { 
+  background:#ffffff !important; 
+  color:#000 !important; 
+  border-color:#ccc !important; 
+}
+body.acc-modo-claro .form-label,
+body.acc-modo-claro label { 
+  color:#333 !important; 
+}
+
+/* ── NOTIFICACIONES ── */
+body.acc-modo-claro .notif-dropdown { 
+  background:#ffffff !important; 
+  border-color:#e2e5ea !important; 
+}
+body.acc-modo-claro .notif-header { 
+  border-bottom-color:#eee !important; 
+}
+body.acc-modo-claro .notif-header-title { 
+  color:#555 !important; 
+}
+body.acc-modo-claro .notif-titulo { 
+  color:#222 !important; 
+}
+body.acc-modo-claro .notif-mensaje { 
+  color:#666 !important; 
+}
+body.acc-modo-claro .notif-fecha { 
+  color:#aaa !important; 
+}
+body.acc-modo-claro .notif-empty { 
+  color:rgba(0,0,0,.3) !important; 
+}
+body.acc-modo-claro .notif-footer { 
+  border-top-color:#eee !important; 
+}
+
+/* ── BADGES Y BOTONES ── */
+body.acc-modo-claro .badge { 
+  color:#fff !important; 
+}
+body.acc-modo-claro .btn-danger { 
+  background:#c62828 !important; 
+  border-color:#c62828 !important; 
+  color:#fff !important; 
+}
+body.acc-modo-claro .btn-primary { 
+  background:#1565c0 !important; 
+  border-color:#1565c0 !important; 
+  color:#fff !important; 
+}
+body.acc-modo-claro .btn-success { 
+  background:#2e7d32 !important; 
+  border-color:#2e7d32 !important; 
+  color:#fff !important; 
+}
+
+/* ── HEADER EN MODO CLARO ── */
 body.acc-modo-claro .app-header { background:#ffffff !important; border-bottom:1px solid #e2e5ea !important; box-shadow:0 1px 0 rgba(198,40,40,.12),0 2px 16px rgba(0,0,0,.06) !important; }
 body.acc-modo-claro .navbar-brand-text { color:#111 !important; }
 body.acc-modo-claro .navbar-brand-text span { color:#c62828 !important; }
@@ -200,7 +573,7 @@ body.acc-modo-claro .dropdown-item svg { stroke:rgba(0,0,0,.3) !important; }
 body.acc-modo-claro .dropdown-divider { border-color:#eee !important; }
 body.acc-modo-claro .dd-logout { color:#c62828 !important; }
 
-/* Contenido principal — forzar todo blanco */
+/* Contenido principal */
 body.acc-modo-claro .app-main-bg > * { color:#222 !important; }
 body.acc-modo-claro .app-main-bg h1,
 body.acc-modo-claro .app-main-bg h2,
@@ -214,40 +587,61 @@ body.acc-modo-claro .app-main-bg small,
 body.acc-modo-claro .app-main-bg li { color:#333 !important; }
 body.acc-modo-claro .app-main-bg a { color:#1565c0 !important; }
 
-/* Cards / cajas con fondo oscuro → blancas */
+/* Cards / tarjetas */
+body.acc-modo-claro .card,
+body.acc-modo-claro [class*="card"],
 body.acc-modo-claro .app-main-bg [style*="background"],
-body.acc-modo-claro .app-main-bg .card,
-body.acc-modo-claro .app-main-bg [class*="card"],
 body.acc-modo-claro .app-main-bg .bg-dark,
 body.acc-modo-claro .app-main-bg .rounded,
-body.acc-modo-claro .app-main-bg [class*="border-"],
 body.acc-modo-claro .app-main-bg > div > div,
-body.acc-modo-claro .app-main-bg > div > div > div { background:#fff !important; color:#222 !important; }
+body.acc-modo-claro .app-main-bg > div > div > div { 
+  background:#ffffff !important; 
+  color:#000 !important;
+  border-color:#e2e5ea !important;
+}
 
-/* Texto dentro de cards */
-body.acc-modo-claro .app-main-bg > div > div > div *,
-body.acc-modo-claro .app-main-bg .card * { color:#222 !important; border-color:#e2e5ea !important; }
+body.acc-modo-claro .card h1,
+body.acc-modo-claro .card h2,
+body.acc-modo-claro .card h3,
+body.acc-modo-claro [class*="card"] h1,
+body.acc-modo-claro [class*="card"] h2,
+body.acc-modo-claro [class*="card"] h3 { 
+  color:#000 !important; 
+  font-weight:700 !important;
+}
 
-/* Badges, pills, etiquetas */
-body.acc-modo-claro .badge { color:#fff !important; }
-body.acc-modo-claro .btn-danger { background:#c62828 !important; border-color:#c62828 !important; color:#fff !important; }
-body.acc-modo-claro .btn-primary { background:#1565c0 !important; border-color:#1565c0 !important; color:#fff !important; }
-body.acc-modo-claro .btn-success { background:#2e7d32 !important; border-color:#2e7d32 !important; color:#fff !important; }
+body.acc-modo-claro .app-main-bg > div > div > div * { color:#000 !important; }
 
-/* Tablas */
-body.acc-modo-claro table { background:#fff !important; color:#222 !important; }
+/* TABLAS */
+body.acc-modo-claro table { 
+  background:#ffffff !important; 
+  color:#000 !important; 
+}
 body.acc-modo-claro thead tr { background:#f5f6f8 !important; }
-body.acc-modo-claro thead th { background:#f5f6f8 !important; color:#333 !important; border-color:#e2e5ea !important; font-weight:700 !important; }
-body.acc-modo-claro tbody tr { background:#fff !important; }
+body.acc-modo-claro thead th { 
+  background:#f5f6f8 !important; 
+  color:#000 !important; 
+  border-color:#e2e5ea !important; 
+  font-weight:700 !important; 
+  border:1px solid #d0d5dd !important;
+}
+body.acc-modo-claro tbody tr { background:#ffffff !important; }
 body.acc-modo-claro tbody tr:hover { background:#f9fafb !important; }
-body.acc-modo-claro td { color:#333 !important; border-color:#eee !important; }
+body.acc-modo-claro td { 
+  color:#000 !important; 
+  border-color:#e2e5ea !important;
+  border:1px solid #e2e5ea !important;
+  background:#ffffff !important;
+}
+
+/* DataTables */
 body.acc-modo-claro .dataTables_wrapper { color:#333 !important; }
 body.acc-modo-claro .dataTables_wrapper label,
 body.acc-modo-claro .dataTables_wrapper span,
 body.acc-modo-claro .dataTables_wrapper .dataTables_info { color:#555 !important; }
 body.acc-modo-claro .dataTables_wrapper input,
-body.acc-modo-claro .dataTables_wrapper select { background:#fff !important; color:#222 !important; border-color:#ccc !important; }
-body.acc-modo-claro .page-link { background:#fff !important; color:#444 !important; border-color:#ddd !important; }
+body.acc-modo-claro .dataTables_wrapper select { background:#ffffff !important; color:#000 !important; border-color:#ccc !important; }
+body.acc-modo-claro .page-link { background:#ffffff !important; color:#444 !important; border-color:#ddd !important; }
 body.acc-modo-claro .page-item.active .page-link { background:#c62828 !important; border-color:#c62828 !important; color:#fff !important; }
 
 /* Inputs */
@@ -255,12 +649,12 @@ body.acc-modo-claro input,
 body.acc-modo-claro select,
 body.acc-modo-claro textarea,
 body.acc-modo-claro .form-control,
-body.acc-modo-claro .form-select { background:#fff !important; color:#222 !important; border-color:#ccc !important; }
+body.acc-modo-claro .form-select { background:#ffffff !important; color:#000 !important; border-color:#ccc !important; }
 body.acc-modo-claro .form-label,
 body.acc-modo-claro label { color:#333 !important; }
 
 /* Notificaciones */
-body.acc-modo-claro .notif-dropdown { background:#fff !important; border-color:#e2e5ea !important; }
+body.acc-modo-claro .notif-dropdown { background:#ffffff !important; border-color:#e2e5ea !important; }
 body.acc-modo-claro .notif-header { border-bottom-color:#eee !important; }
 body.acc-modo-claro .notif-header-title { color:#555 !important; }
 body.acc-modo-claro .notif-titulo { color:#222 !important; }
@@ -268,6 +662,12 @@ body.acc-modo-claro .notif-mensaje { color:#666 !important; }
 body.acc-modo-claro .notif-fecha { color:#aaa !important; }
 body.acc-modo-claro .notif-empty { color:rgba(0,0,0,.3) !important; }
 body.acc-modo-claro .notif-footer { border-top-color:#eee !important; }
+
+/* Badges, pills, botones */
+body.acc-modo-claro .badge { color:#fff !important; }
+body.acc-modo-claro .btn-danger { background:#c62828 !important; border-color:#c62828 !important; color:#fff !important; }
+body.acc-modo-claro .btn-primary { background:#1565c0 !important; border-color:#1565c0 !important; color:#fff !important; }
+body.acc-modo-claro .btn-success { background:#2e7d32 !important; border-color:#2e7d32 !important; color:#fff !important; }
 
 /* ══════════════════════════════════════════
    ALTO CONTRASTE
@@ -323,8 +723,10 @@ body.acc-alto-contraste .user-dropdown-menu,
 body.acc-alto-contraste .notif-dropdown { background-color:#000 !important; border:2px solid #ff0 !important; }
 body.acc-alto-contraste a { color:#ff0 !important; text-decoration:underline !important; }
 
-/* ══ SIN COLOR ══ */
-body.acc-escala-grises { filter:grayscale(100%); }
+/* Proteger panel en alto contraste */
+body.acc-alto-contraste #acc-panel,
+body.acc-alto-contraste #acc-panel * { background-color:#000 !important; border-color:#ff0 !important; color:#fff !important; }
+body.acc-alto-contraste #acc-panel-header { background:#000 !important; border-color:#ff0 !important; }
 
 /* ══ CURSOR GRANDE ══ */
 body.acc-cursor-grande,
@@ -341,13 +743,13 @@ body.acc-subrayar-links a { text-decoration:underline !important; text-underline
 /* ══ TAMAÑOS — moderados ══ */
 body.acc-fuente-md { font-size:108% !important; }
 body.acc-fuente-lg { font-size:118% !important; }
-body.acc-fuente-xl { font-size:130% !important; }
+body.acc-fuente-xl { font-size:120% !important; }
 body.acc-fuente-md .sb-item-text, body.acc-fuente-md td, body.acc-fuente-md th,
 body.acc-fuente-md p, body.acc-fuente-md label, body.acc-fuente-md span { font-size:1.08em !important; }
 body.acc-fuente-lg .sb-item-text, body.acc-fuente-lg td, body.acc-fuente-lg th,
 body.acc-fuente-lg p, body.acc-fuente-lg label, body.acc-fuente-lg span { font-size:1.18em !important; }
 body.acc-fuente-xl .sb-item-text, body.acc-fuente-xl td, body.acc-fuente-xl th,
-body.acc-fuente-xl p, body.acc-fuente-xl label, body.acc-fuente-xl span { font-size:1.3em !important; }
+body.acc-fuente-xl p, body.acc-fuente-xl label, body.acc-fuente-xl span { font-size:1.2em !important; }
 
 /* ══ TIPOGRAFÍAS ══ */
 body.acc-font-sans * { font-family:'DM Sans','Segoe UI',sans-serif !important; }
@@ -357,7 +759,7 @@ body.acc-font-dyslexia * { font-family:'Comic Sans MS','Comic Sans',cursive !imp
 
 /* ══ NARRADOR — toast ══ */
 #acc-narrator-toast {
-  position:fixed; bottom:220px; left:50%; transform:translateX(-50%);
+  position:fixed; bottom:165px; left:50%; transform:translateX(-50%);
   background:rgba(15,15,15,.96); color:#fff;
   font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:600;
   padding:10px 20px; border-radius:30px;
@@ -377,6 +779,9 @@ body.acc-font-dyslexia * { font-family:'Comic Sans MS','Comic Sans',cursive !imp
   <svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
   <span id="acc-narrator-text"></span>
 </div>
+
+<!-- Overlay -->
+<div id="acc-overlay"></div>
 
 <!-- Botón -->
 <button id="acc-btn" aria-label="Abrir panel de accesibilidad" aria-expanded="false" aria-controls="acc-panel">
@@ -414,10 +819,7 @@ body.acc-font-dyslexia * { font-family:'Comic Sans MS','Comic Sans',cursive !imp
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path fill="currentColor" stroke="none" d="M12 3a9 9 0 0 1 0 18z"/></svg>
       Alto contraste
     </button>
-    <button class="acc-opcion" data-acc="acc-escala-grises" aria-pressed="false">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
-      Sin color
-    </button>
+
     <button class="acc-opcion" data-acc="acc-cursor-grande" aria-pressed="false">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l14 9-7 1-4 7z"/></svg>
       Cursor grande
@@ -494,11 +896,12 @@ body.acc-font-dyslexia * { font-family:'Comic Sans MS','Comic Sans',cursive !imp
   var closeBtn   = document.getElementById('acc-close');
   var resetBtn   = document.getElementById('acc-reset');
   var leerBtn    = document.getElementById('acc-leer-pagina');
+  var overlay    = document.getElementById('acc-overlay');
   var toast      = document.getElementById('acc-narrator-toast');
   var toastText  = document.getElementById('acc-narrator-text');
   var STORE      = 'acerautos_acc_v3';
 
-  var clases = ['acc-modo-claro','acc-alto-contraste','acc-escala-grises','acc-cursor-grande','acc-espaciado','acc-subrayar-links','acc-narrador'];
+  var clases = ['acc-modo-claro','acc-alto-contraste','acc-cursor-grande','acc-espaciado','acc-subrayar-links','acc-narrador'];
   var fuenteClases = ['acc-fuente-md','acc-fuente-lg','acc-fuente-xl'];
   var fontClases   = ['acc-font-sans','acc-font-serif','acc-font-mono','acc-font-dyslexia'];
 
@@ -595,11 +998,12 @@ body.acc-font-dyslexia * { font-family:'Comic Sans MS','Comic Sans',cursive !imp
   }
 
   /* ── Abrir / cerrar ── */
-  function abrir() { panel.classList.add('abierto'); btn.setAttribute('aria-expanded','true'); closeBtn.focus(); }
-  function cerrar() { panel.classList.remove('abierto'); btn.setAttribute('aria-expanded','false'); btn.focus(); }
+  function abrir() { panel.classList.add('abierto'); overlay.classList.add('visible'); btn.setAttribute('aria-expanded','true'); closeBtn.focus(); }
+  function cerrar() { panel.classList.remove('abierto'); overlay.classList.remove('visible'); btn.setAttribute('aria-expanded','false'); btn.focus(); }
 
   btn.addEventListener('click', function(){ panel.classList.contains('abierto') ? cerrar() : abrir(); });
   closeBtn.addEventListener('click', cerrar);
+  overlay.addEventListener('click', cerrar);
   document.addEventListener('keydown', function(e){ if (e.key==='Escape' && panel.classList.contains('abierto')) cerrar(); });
 
   /* ── Opciones visuales ── */

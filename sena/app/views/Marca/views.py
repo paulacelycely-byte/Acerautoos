@@ -7,26 +7,33 @@ from django.views import View
 from django.db.models import ProtectedError
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin 
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from app.models import Marca
 from app.forms import MarcaForm
 
 
-# ── MIXIN DE PROTECCIÓN ───────────────────────────────────
+# ── Mixin 1: Solo ADMIN ──────────────────────────────────────────
 class SoloAdminMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
 
     def handle_no_permission(self):
         messages.error(self.request, "No tienes permisos de administrador para gestionar las marcas.")
-        return redirect('app:dashboard') 
+        return redirect('app:dashboard')
+
+# ── Mixin 2: ADMIN o MECANICO ────────────────────────────────────
+class AdminOMecanicoMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.cargo in ('ADMIN', 'MECANICO') or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos para acceder a este módulo.")
+        return redirect('app:dashboard')
 
 
-# ================================
-# LISTAR (Protegido para mecánicos)
-# ================================
-class MarcaListView(LoginRequiredMixin, SoloAdminMixin, ListView):
+# ── LISTAR — Mecánico puede ver ──────────────────────────────────
+class MarcaListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
     model = Marca
     template_name = 'Marca/listar.html'
     context_object_name = 'object_list'
@@ -36,15 +43,13 @@ class MarcaListView(LoginRequiredMixin, SoloAdminMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo']    = 'Listado de Marcas'
-        context['crear_url'] = reverse_lazy('app:crear_marca')
-        context['listar_url']= reverse_lazy('app:listar_marca')
+        context['titulo']     = 'Listado de Marcas'
+        context['crear_url']  = reverse_lazy('app:crear_marca')
+        context['listar_url'] = reverse_lazy('app:listar_marca')
         return context
 
 
-# ================================
-# CREAR (Solo Admin) - Ahora con color Azul
-# ================================
+# ── CREAR — Solo Admin ────────────────────────────────────────────
 class MarcaCreateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, CreateView):
     model = Marca
     form_class = MarcaForm
@@ -60,10 +65,10 @@ class MarcaCreateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, C
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo']    = 'Registro de Marca'
-        context['listar_url']= reverse_lazy('app:listar_marca')
-        context['next']      = self.request.GET.get('next', '')
-        context['btn_color'] = 'primary'  # ← 'primary' en Bootstrap es Azul
+        context['titulo']     = 'Registro de Marca'
+        context['listar_url'] = reverse_lazy('app:listar_marca')
+        context['next']       = self.request.GET.get('next', '')
+        context['btn_color']  = 'primary'
         return context
 
     def form_valid(self, form):
@@ -77,9 +82,7 @@ class MarcaCreateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, C
         return redirect(self.success_url)
 
 
-# ================================
-# EDITAR (Solo Admin) - Ahora con color Azul
-# ================================
+# ── EDITAR — Solo Admin ───────────────────────────────────────────
 class MarcaUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, UpdateView):
     model = Marca
     form_class = MarcaForm
@@ -95,10 +98,10 @@ class MarcaUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, U
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo']    = 'Editar Marca'
-        context['listar_url']= reverse_lazy('app:listar_marca')
-        context['next']      = self.request.GET.get('next', '')
-        context['btn_color'] = 'primary'  # ← 'primary' en Bootstrap es Azul
+        context['titulo']     = 'Editar Marca'
+        context['listar_url'] = reverse_lazy('app:listar_marca')
+        context['next']       = self.request.GET.get('next', '')
+        context['btn_color']  = 'primary'
         return context
 
     def form_valid(self, form):
@@ -112,9 +115,7 @@ class MarcaUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, U
         return redirect(self.success_url)
 
 
-# ================================
-# ELIMINAR / DESACTIVAR (Solo Admin)
-# ================================
+# ── ELIMINAR — Solo Admin ─────────────────────────────────────────
 class MarcaDeleteView(LoginRequiredMixin, SoloAdminMixin, View):
     def get(self, request, pk):
         marca = get_object_or_404(Marca, pk=pk)
@@ -147,13 +148,13 @@ class MarcaDeleteView(LoginRequiredMixin, SoloAdminMixin, View):
         return redirect('app:listar_marca')
 
 
-# ================================
-# CREAR MARCA AJAX (modal desde vehículos)
-# ================================
+# ── CREAR MARCA AJAX — Solo usuarios autenticados con cargo válido ─
 @require_POST
 def crear_marca_ajax(request):
     if not request.user.is_authenticated:
         return JsonResponse({'success': False, 'error': 'Sesión expirada.'})
+    if request.user.cargo not in ('ADMIN', 'MECANICO') and not request.user.is_superuser:
+        return JsonResponse({'success': False, 'error': 'No tienes permisos para crear marcas.'})
 
     nombre = request.POST.get('nombre', '').strip()
     pais   = request.POST.get('pais_origen', '').strip()

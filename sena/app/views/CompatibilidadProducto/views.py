@@ -1,30 +1,37 @@
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView # ← Corregido el nombre aquí
+from django.views.generic import ListView, CreateView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404, render
 from django.views import View
 from django.http import JsonResponse
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # Mixins de seguridad
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from ...models import CompatibilidadProducto, Producto, Marca
 from ...forms import CompatibilidadProductoForm
 
 
-# ── MIXIN DE PROTECCIÓN ───────────────────────────────────
+# ── Mixin 1: Solo ADMIN ──────────────────────────────────────────
 class SoloAdminMixin(UserPassesTestMixin):
     def test_func(self):
-        # Solo permite el acceso si el cargo es ADMIN o es superusuario
         return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
 
     def handle_no_permission(self):
         messages.error(self.request, "No tienes permisos de administrador para este módulo.")
-        # IMPORTANTE: Redirigir al dashboard para evitar el bucle infinito si bloqueamos el listado
+        return redirect('app:dashboard')
+
+# ── Mixin 2: ADMIN o MECANICO ────────────────────────────────────
+class AdminOMecanicoMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.cargo in ('ADMIN', 'MECANICO') or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos para acceder a este módulo.")
         return redirect('app:dashboard')
 
 
-# 1. LISTADO (Bloqueado ahora para que el mecánico no entre)
-class CompatibilidadListView(LoginRequiredMixin, SoloAdminMixin, ListView): # ← Mixin añadido
+# ── 1. LISTADO — Mecánico puede ver ──────────────────────────────
+class CompatibilidadListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
     model = CompatibilidadProducto
     template_name = 'compatibilidadProducto/listar.html'
     context_object_name = 'compatibilidades'
@@ -35,7 +42,7 @@ class CompatibilidadListView(LoginRequiredMixin, SoloAdminMixin, ListView): # �
         return context
 
 
-# 2. CREAR (Solo Admin)
+# ── 2. CREAR — Solo Admin ─────────────────────────────────────────
 class CompatibilidadCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
     model = CompatibilidadProducto
     form_class = CompatibilidadProductoForm
@@ -53,11 +60,12 @@ class CompatibilidadCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Nueva Compatibilidad'
+        context['titulo']    = 'Nueva Compatibilidad'
         context['es_editar'] = False
         return context
 
-# 3. EDITAR (Solo Admin)
+
+# ── 3. EDITAR — Solo Admin ────────────────────────────────────────
 class CompatibilidadUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, UpdateView):
     model = CompatibilidadProducto
     form_class = CompatibilidadProductoForm
@@ -67,19 +75,19 @@ class CompatibilidadUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessag
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Editar Compatibilidad'
-        context['es_editar'] = True  
+        context['titulo']    = 'Editar Compatibilidad'
+        context['es_editar'] = True
         return context
 
 
-# 4. ELIMINAR (Solo Admin)
+# ── 4. ELIMINAR — Solo Admin ──────────────────────────────────────
 class CompatibilidadDeleteView(LoginRequiredMixin, SoloAdminMixin, View):
     def get(self, request, pk):
         comp = get_object_or_404(CompatibilidadProducto, pk=pk)
         return render(request, 'compatibilidadProducto/eliminar.html', {
-            'object': comp,
-            'titulo': 'Eliminar Compatibilidad',
-            'listar_url': reverse_lazy('app:listar_compatibilidad')
+            'object':     comp,
+            'titulo':     'Eliminar Compatibilidad',
+            'listar_url': reverse_lazy('app:listar_compatibilidad'),
         })
 
     def post(self, request, pk):
@@ -89,15 +97,15 @@ class CompatibilidadDeleteView(LoginRequiredMixin, SoloAdminMixin, View):
         return redirect('app:listar_compatibilidad')
 
 
-# ─── Endpoints AJAX (Deben ser accesibles para que el sistema funcione en las órdenes) ───
+# ── AJAX — accesibles para ambos roles ───────────────────────────
 
-class VerificarCompatibilidadView(LoginRequiredMixin, View):
+class VerificarCompatibilidadView(LoginRequiredMixin, AdminOMecanicoMixin, View):
     def get(self, request):
         producto_id = request.GET.get('producto')
-        marca_id    = request.GET.get('marca')
+        marca_id    = request.GET.get('marca')   # ← corregido: era brand_id
         servicio_id = request.GET.get('servicio')
 
-        if not producto_id or not brand_id:
+        if not producto_id or not marca_id:
             return JsonResponse({'compatible': None, 'tiene_reglas': False, 'mensaje': ''})
 
         try:
@@ -106,25 +114,21 @@ class VerificarCompatibilidadView(LoginRequiredMixin, View):
             return JsonResponse({'compatible': None, 'tiene_reglas': False, 'mensaje': ''})
 
         total_reglas = CompatibilidadProducto.objects.filter(producto=producto).count()
-
         if total_reglas == 0:
             return JsonResponse({'compatible': None, 'tiene_reglas': False, 'mensaje': ''})
 
         qs = CompatibilidadProducto.objects.filter(producto=producto, marca_vehiculo_id=marca_id)
 
-        if servicio_id:
-            match_exacto = qs.filter(tipo_servicio_id=servicio_id).exists()
-            if match_exacto:
-                return JsonResponse({
-                    'compatible': True,
-                    'tiene_reglas': True,
-                    'mensaje': f'✓ {producto.nombre} es compatible con esta marca y este servicio.'
-                })
-
-        match_marca = qs.filter(tipo_servicio__isnull=True).exists()
-        if match_marca:
+        if servicio_id and qs.filter(tipo_servicio_id=servicio_id).exists():
             return JsonResponse({
-                'compatible': True,
+                'compatible':  True,
+                'tiene_reglas': True,
+                'mensaje': f'✓ {producto.nombre} es compatible con esta marca y este servicio.'
+            })
+
+        if qs.filter(tipo_servicio__isnull=True).exists():
+            return JsonResponse({
+                'compatible':  True,
                 'tiene_reglas': True,
                 'mensaje': f'✓ {producto.nombre} es compatible con esta marca de vehículo.'
             })
@@ -136,15 +140,14 @@ class VerificarCompatibilidadView(LoginRequiredMixin, View):
             .distinct()
         )
         marcas_str = ', '.join(marcas_ok) if marcas_ok else 'otras marcas'
-
         return JsonResponse({
-            'compatible': False,
+            'compatible':  False,
             'tiene_reglas': True,
             'mensaje': f'⚠ {producto.nombre} no tiene compatibilidad registrada para esta marca. Aplica para: {marcas_str}.'
         })
 
 
-class ProductosCompatiblesView(LoginRequiredMixin, View):
+class ProductosCompatiblesView(LoginRequiredMixin, AdminOMecanicoMixin, View):
     def get(self, request):
         marca_id    = request.GET.get('marca')
         servicio_id = request.GET.get('servicio')
@@ -157,15 +160,13 @@ class ProductosCompatiblesView(LoginRequiredMixin, View):
         ).select_related('producto')
 
         if servicio_id:
-            qs = qs.filter(
-                tipo_servicio_id=servicio_id
-            ) | CompatibilidadProducto.objects.filter(
-                marca_vehiculo_id=marca_id,
-                tipo_servicio__isnull=True
-            ).select_related('producto')
+            qs = qs.filter(tipo_servicio_id=servicio_id) | \
+                 CompatibilidadProducto.objects.filter(
+                     marca_vehiculo_id=marca_id,
+                     tipo_servicio__isnull=True
+                 ).select_related('producto')
 
-        productos = []
-        vistos = set()
+        productos, vistos = [], set()
         for comp in qs:
             if comp.producto_id not in vistos and comp.producto.estado:
                 vistos.add(comp.producto_id)

@@ -5,41 +5,102 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
     :root {
-        --rojo:#d32f2f; --carbon:#1a1a1a; --gris:#f2f2f0; --borde:#e0ddd8;
-        --texto:#2a2a2a; --muted:#888; --verde:#2e7d32;
+        --rojo:    #d32f2f;
+        --rojo2:   #b71c1c;
+        --carbon:  #1a1a1a;
+        --gris:    #f2f2f0;
+        --borde:   #e0ddd8;
+        --texto:   #2a2a2a;
+        --muted:   #888;
     }
 
-    /* ── HEADER ── */
     .taller-header {
-        background:var(--carbon); border-radius:10px; padding:24px 32px;
-        margin-bottom:20px; display:flex; align-items:center;
-        justify-content:space-between; flex-wrap:wrap; gap:16px;
+        position: relative;
+        background: var(--carbon);
+        border-radius: 10px;
+        padding: 28px 32px;
+        margin-bottom: 28px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
     }
-    .header-left { display:flex; align-items:center; gap:16px; }
-    .header-titulo { font-family:'Barlow Condensed',sans-serif; font-size:2rem; font-weight:800; color:white; letter-spacing:1px; text-transform:uppercase; line-height:1; margin:0; }
-    .header-sub { font-family:'DM Sans',sans-serif; font-size:.78rem; color:rgba(255,255,255,.45); margin-top:4px; }
-    .header-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-    .btn-accion { font-family:'DM Sans',sans-serif; font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; padding:9px 18px; border-radius:10px; display:inline-flex; align-items:center; gap:7px; border:none; cursor:pointer; text-decoration:none; transition:.2s; }
-    .btn-accion svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-    .btn-nuevo    { background:var(--rojo); color:white!important; box-shadow:0 4px 14px rgba(211,47,47,.4); }
-    .btn-nuevo:hover { background:#b71c1c; color:white!important; transform:translateY(-1px); }
-    .btn-eliminar-sel { background:rgba(211,47,47,.15); color:#c0392b!important; border:1px solid rgba(211,47,47,.3)!important; display:none; }
-    .btn-eliminar-sel:hover { background:rgba(211,47,47,.25); }
-    .btn-eliminar-todas { background:rgba(255,255,255,.08); color:rgba(255,255,255,.75)!important; border:1px solid rgba(255,255,255,.15)!important; }
-    .btn-eliminar-todas:hover { background:rgba(255,255,255,.15); color:white!important; }
+
+    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
+
+    .header-icon-wrap {
+        width: 56px; height: 56px;
+        background: var(--rojo);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 0 0 4px rgba(211,47,47,.25);
+        flex-shrink: 0;
+    }
+
+    .header-icon-wrap svg {
+        width: 28px; height: 28px;
+        stroke: white; fill: none;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .header-titulo {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 2rem; font-weight: 800;
+        color: white; letter-spacing: 1px;
+        text-transform: uppercase; line-height: 1;
+        margin: 0;
+    }
+
+    .header-sub {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem; color: rgba(255,255,255,.45);
+        margin-top: 15px; letter-spacing: .5px;
+    }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; flex-wrap: wrap; }
+
+    .btn-accion {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px;
+        padding: 10px 18px; border-radius: 10px;
+        display: flex; align-items: center; gap: 8px;
+        border: none; cursor: pointer; text-decoration: none;
+        transition: transform .2s, box-shadow .2s;
+    }
+    .btn-accion:hover { transform: translateY(-2px); }
+    .btn-accion svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .btn-nuevo {
+        background: var(--rojo);
+        color: white !important;
+        box-shadow: 0 4px 16px rgba(211,47,47,.4);
+    }
+    .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
+
+    .btn-eliminar-todas {
+        background: rgba(255,255,255,.08);
+        color: rgba(255,255,255,.75) !important;
+        border: 1px solid rgba(255,255,255,.15) !important;
+    }
+    .btn-eliminar-todas:hover { background: rgba(255,255,255,.15); color: white !important; box-shadow: none; }
 
     /* ── STATS ── */
-    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
     @media(max-width:900px){ .stats-grid { grid-template-columns:repeat(2,1fr); } }
-    @media(max-width:480px){ .stats-grid { grid-template-columns:repeat(2,1fr); } }
     .stat-card {
-        border-radius:12px; padding:16px 18px; display:flex; align-items:center;
-        gap:12px; cursor:pointer; transition:.2s; border:2px solid transparent;
+        border-radius:10px; padding:16px 18px; display:flex; align-items:center;
+        gap:12px; transition:.2s; border:2px solid transparent;
+        cursor: pointer; user-select: none;
     }
     .stat-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.12); }
-    .stat-card.activa { box-shadow:0 0 0 3px white, 0 0 0 5px rgba(0,0,0,.2); }
-    .stat-card.c-total   { background:#1a1a1a; }
-    .stat-card.c-urgente { background:#b71c1c; }
+    .stat-card.activo { border:2px solid rgba(255,255,255,.6) !important; transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.25); }
+    .stat-card.c-total   { background:var(--carbon); }
+    .stat-card.c-urgente { background:var(--rojo2); }
     .stat-card.c-alerta  { background:#e65100; }
     .stat-card.c-mant    { background:#1565c0; }
     .stat-icon { width:38px; height:38px; border-radius:9px; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.15); }
@@ -49,87 +110,162 @@
 
     /* ── FILTROS ── */
     .filtros-card {
-        background:white; border-radius:12px; border:1px solid var(--borde);
-        padding:14px 20px; margin-bottom:16px;
-        display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end;
+        background: white;
+        border-radius: 10px;
+        border: 1px solid var(--borde);
+        padding: 14px 20px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: flex-end;
     }
-    .filtro-g { display:flex; flex-direction:column; gap:4px; flex:1; min-width:130px; }
-    .filtro-lbl { font-family:'DM Sans',sans-serif; font-size:.62rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); }
-    .filtro-ctrl { font-family:'DM Sans',sans-serif; font-size:.82rem; padding:7px 11px; border:1.5px solid var(--borde); border-radius:8px; outline:none; background:var(--gris); color:var(--texto); transition:.18s; }
-    .filtro-ctrl:focus { border-color:var(--rojo); background:white; box-shadow:0 0 0 3px rgba(211,47,47,.07); }
-    .btn-reset { font-family:'DM Sans',sans-serif; font-size:.72rem; font-weight:700; text-transform:uppercase; padding:8px 14px; border-radius:8px; border:1.5px solid var(--borde); background:white; color:var(--muted); cursor:pointer; transition:.18s; white-space:nowrap; }
-    .btn-reset:hover { border-color:#ccc; color:var(--carbon); }
-
-    /* ── TABLA CARD ── */
-    .tabla-card { background:white; border-radius:14px; border:1px solid var(--borde); overflow:hidden; }
-    .tabla-topbar {
-        display:flex; justify-content:space-between; align-items:center;
-        padding:14px 20px; border-bottom:1px solid var(--borde); flex-wrap:wrap; gap:10px;
+    .filtro-g { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 130px; }
+    .filtro-lbl { font-family: 'DM Sans', sans-serif; font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
+    .filtro-ctrl {
+        font-family: 'DM Sans', sans-serif; font-size: .82rem;
+        padding: 7px 11px; border: 1.5px solid var(--borde);
+        border-radius: 8px; outline: none;
+        background: var(--gris); color: var(--texto); transition: .18s;
     }
-    .tabla-titulo { font-family:'Barlow Condensed',sans-serif; font-size:.82rem; font-weight:800; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); }
-    .busq-wrap { position:relative; }
-    .busq-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
-    .busq-icon svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; display:block; }
-    .busq-input { font-family:'DM Sans',sans-serif; font-size:.82rem; padding:7px 14px 7px 34px; border:1.5px solid var(--borde); border-radius:100px; outline:none; width:200px; background:white; transition:.18s; }
-    .busq-input:focus { border-color:var(--rojo); box-shadow:0 0 0 3px rgba(211,47,47,.07); }
+    .filtro-ctrl:focus { border-color: var(--rojo); background: white; box-shadow: 0 0 0 3px rgba(211,47,47,.07); }
+    .btn-reset {
+        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
+        text-transform: uppercase; padding: 8px 14px; border-radius: 8px;
+        border: 1.5px solid var(--borde); background: white; color: var(--muted);
+        cursor: pointer; transition: .18s; white-space: nowrap;
+        align-self: flex-end;
+    }
+    .btn-reset:hover { border-color: #ccc; color: var(--carbon); }
 
     /* ── TABLA ── */
-    #tbl-notif { width:100%; border-collapse:collapse; font-family:'DM Sans',sans-serif; font-size:.84rem; }
-    #tbl-notif thead tr { background:var(--gris); }
-    #tbl-notif thead th { font-family:'Barlow Condensed',sans-serif; font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); padding:12px 14px; border:none; white-space:nowrap; text-align:left; }
-    #tbl-notif thead th.tc { text-align:center; }
-    #tbl-notif tbody tr { border-bottom:1px solid var(--borde); transition:background .13s; }
-    #tbl-notif tbody tr:last-child { border-bottom:none; }
-    #tbl-notif tbody tr:hover { background:#fafaf8; }
-    #tbl-notif tbody tr.seleccionada { background:#fff5f5!important; }
-    #tbl-notif tbody td { padding:11px 14px; color:var(--texto); vertical-align:middle; border:none; }
-    #tbl-notif tbody td.tc { text-align:center; }
-    .cb-notif { width:16px; height:16px; accent-color:var(--rojo); cursor:pointer; }
-    #cb-todos  { width:16px; height:16px; accent-color:var(--rojo); cursor:pointer; }
+    .tabla-wrap {
+        background: white;
+        border-radius: 10px;
+        border: 1px solid var(--borde);
+        overflow: hidden;
+    }
 
-    /* ── BADGES ── */
-    .tipo-badge { font-family:'DM Sans',sans-serif; font-size:.65rem; font-weight:700; padding:3px 9px; border-radius:100px; text-transform:uppercase; letter-spacing:.4px; display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
-    .tipo-badge svg { width:9px; height:9px; stroke:currentColor; fill:none; stroke-width:2.5; stroke-linecap:round; }
+    #tabla_notificaciones {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .875rem;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    #tabla_notificaciones thead tr {
+        background: var(--gris);
+        border-bottom: 2px solid var(--borde);
+    }
+
+    #tabla_notificaciones thead th {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: .78rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1.2px;
+        color: var(--muted); padding: 14px 16px;
+        border: none;
+    }
+
+    #tabla_notificaciones tbody tr {
+        border-bottom: 1px solid var(--borde);
+        transition: background .15s;
+    }
+
+    #tabla_notificaciones tbody tr:hover { background: #fafaf8; }
+    #tabla_notificaciones tbody tr:last-child { border-bottom: none; }
+
+    #tabla_notificaciones tbody td {
+        padding: 13px 16px; color: var(--texto);
+        vertical-align: middle; border: none;
+    }
+
+    /* ── BADGES TIPO ── */
+    .tipo-badge { font-family:'DM Sans',sans-serif; font-size:.7rem; font-weight:700; padding:4px 10px; border-radius:100px; text-transform:uppercase; letter-spacing:.4px; display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
+    .tipo-badge svg { width:10px; height:10px; stroke:currentColor; fill:none; stroke-width:2.5; stroke-linecap:round; }
     .b-urgente { background:#fff3e0; color:#e65100; border:1px solid #ffcc80; }
     .b-alerta  { background:#fff3f3; color:#d32f2f; border:1px solid #ffd0d0; }
     .b-mant    { background:#e3f2fd; color:#1565c0; border:1px solid #90caf9; }
     .b-record  { background:#f3e5f5; color:#6a1b9a; border:1px solid #ce93d8; }
     .b-info    { background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; }
-    .origen-badge { font-size:.63rem; font-weight:600; padding:2px 8px; border-radius:6px; background:var(--gris); color:var(--muted); border:1px solid var(--borde); }
+
+    .origen-badge { font-family:'DM Sans',sans-serif; font-size:.7rem; font-weight:600; padding:3px 9px; border-radius:6px; background:var(--gris); color:var(--muted); border:1px solid var(--borde); text-transform:uppercase; letter-spacing:.4px; }
     .o-sistema { background:#f0f4ff; color:#3949ab; border-color:#c5cae9; }
-    .placa-pill { font-family:'Barlow Condensed',sans-serif; font-size:.82rem; font-weight:800; color:var(--rojo); background:#fff5f5; border:1px solid rgba(211,47,47,.2); border-radius:6px; padding:2px 8px; text-transform:uppercase; letter-spacing:.8px; display:inline-block; }
-    .vehiculo-sub { font-size:.68rem; color:var(--muted); margin-top:2px; }
-    .notif-titulo  { font-weight:600; color:var(--carbon); font-size:.84rem; }
-    .notif-detalle { font-size:.72rem; color:var(--muted); margin-top:1px; line-height:1.4; }
 
-    /* ── PAGINACIÓN ── */
-    .paginacion { display:flex; align-items:center; justify-content:space-between; padding:12px 20px; border-top:1px solid var(--borde); flex-wrap:wrap; gap:8px; }
-    .pag-info { font-family:'DM Sans',sans-serif; font-size:.78rem; color:var(--muted); }
-    .pag-btns { display:flex; gap:4px; }
-    .pag-btn { font-family:'DM Sans',sans-serif; font-size:.78rem; font-weight:600; width:32px; height:32px; border-radius:7px; border:1.5px solid var(--borde); background:white; color:var(--texto); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.15s; }
-    .pag-btn:hover { border-color:#bbb; }
-    .pag-btn.activa { background:var(--rojo); color:white; border-color:var(--rojo); }
-    .pag-btn:disabled { opacity:.4; cursor:not-allowed; }
+    .placa-pill {
+        font-family:'Barlow Condensed',sans-serif; font-size:.85rem; font-weight:800;
+        color:var(--rojo); background:#fff5f5; border:1px solid rgba(211,47,47,.2);
+        border-radius:6px; padding:2px 8px; text-transform:uppercase; letter-spacing:.8px;
+        display:inline-block;
+    }
+    .vehiculo-sub { font-size:.7rem; color:var(--muted); margin-top:2px; }
 
-    /* ── EMPTY ── */
-    .empty-state { padding:50px 20px; text-align:center; }
-    .empty-state svg { width:44px; height:44px; stroke:#ddd; fill:none; stroke-width:1.5; stroke-linecap:round; margin-bottom:10px; }
-    .empty-state p { font-family:'DM Sans',sans-serif; font-size:.88rem; color:var(--muted); margin:0; }
+    .notif-titulo  { font-weight:600; color:var(--carbon); font-size:.9rem; }
+    .notif-detalle { font-size:.75rem; color:var(--muted); margin-top:2px; line-height:1.4; }
 
-    /* ── BOTÓN ELIMINAR ── */
-    .acc-btn { width:28px; height:28px; border-radius:7px; display:inline-flex; align-items:center; justify-content:center; text-decoration:none; border:none; cursor:pointer; transition:.15s; flex-shrink:0; }
-    .acc-btn svg { width:12px; height:12px; stroke:white; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-    .acc-delete { background:var(--rojo); }
-    .acc-delete:hover { background:#b71c1c; }
+    /* ── BOTÓN ELIMINAR FILA ── */
+    .btn-fila {
+        width: 32px; height: 32px; border-radius: 8px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border: none; cursor: pointer;
+        transition: transform .2s, box-shadow .2s;
+        text-decoration: none;
+    }
+    .btn-fila svg {
+        width: 14px; height: 14px;
+        stroke: white; fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        pointer-events: none;
+    }
+    .btn-fila:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,.2); }
+    .btn-del  { background: var(--rojo); }
+
+    /* ── DATATABLES ── */
+    .dataTables_wrapper { padding: 16px 20px; }
+    .dataTables_filter input {
+        border: 1.5px solid var(--borde) !important;
+        border-radius: 8px !important;
+        padding: 6px 12px !important;
+        font-family: 'DM Sans', sans-serif !important;
+        font-size: .85rem !important;
+        outline: none !important;
+        transition: border-color .2s;
+    }
+    .dataTables_filter input:focus { border-color: var(--rojo) !important; }
+    .dataTables_filter label,
+    .dataTables_length label,
+    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
+    .dataTables_length select {
+        border: 1.5px solid var(--borde) !important;
+        border-radius: 8px !important;
+        padding: 4px 8px !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        background: white !important;
+        padding-right: 10px !important;
+    }
+    .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
+    .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
+    .paginate_button.current a, .paginate_button.current a:hover { color: white !important; }
+    .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
+    .paginate_button.disabled { display: inline-block !important; opacity: .4; }
+    .dataTables_paginate { display: block !important; }
 
     /* ══ MODAL CONFIRMACIÓN ══ */
     .modal-overlay {
-        display:none; position:fixed; inset:0; z-index:9999;
+        display:none !important;
+        position:fixed !important;
+        top:0 !important; left:0 !important; right:0 !important; bottom:0 !important;
+        width:100vw !important; height:100vh !important;
+        z-index:99999 !important;
         background:rgba(0,0,0,.6); backdrop-filter:blur(6px);
         align-items:center; justify-content:center;
         padding:20px;
+        margin:0 !important;
     }
-    .modal-overlay.show { display:flex; }
+    .modal-overlay.show { display:flex !important; }
     .modal-box {
         background:#fff; border-radius:20px; padding:36px 32px 28px;
         width:100%; max-width:400px; text-align:center;
@@ -137,12 +273,12 @@
         animation:popIn .22s cubic-bezier(.34,1.56,.64,1);
     }
     @keyframes popIn { from { transform:scale(.88); opacity:0; } to { transform:scale(1); opacity:1; } }
-    .modal-icon-wrap {
+    .modal-icon-wrap-confirm {
         width:60px; height:60px; border-radius:18px; margin:0 auto 20px;
         background:#fff0f0; border:1.5px solid rgba(211,47,47,.2);
         display:flex; align-items:center; justify-content:center;
     }
-    .modal-icon-wrap svg { width:28px; height:28px; stroke:#d32f2f; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .modal-icon-wrap-confirm svg { width:28px; height:28px; stroke:#d32f2f; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
     .modal-title { font-family:'Barlow Condensed',sans-serif; font-size:1.55rem; font-weight:900; color:var(--carbon); margin:0 0 8px; text-transform:uppercase; letter-spacing:.5px; }
     .modal-msg { font-family:'DM Sans',sans-serif; font-size:.84rem; color:var(--muted); margin:0 0 28px; line-height:1.6; }
     .modal-btns { display:flex; gap:10px; }
@@ -167,7 +303,7 @@
 <!-- ══ MODAL ══ -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="modal-box">
-        <div class="modal-icon-wrap">
+        <div class="modal-icon-wrap-confirm">
             <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
         </div>
         <h2 class="modal-title" id="modalTitle">Confirmar</h2>
@@ -184,20 +320,19 @@
     <!-- HEADER -->
     <div class="taller-header">
         <div class="header-left">
-            <svg viewBox="0 0 24 24" style="width:36px;height:36px;stroke:white;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-            </svg>
+            <div class="header-icon-wrap">
+                <svg viewBox="0 0 24 24">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+            </div>
             <div>
-                <h1 class="header-titulo">Notificaciones</h1>
+                <h1 class="header-titulo">{{ titulo|default:"Notificaciones" }}</h1>
                 <div class="header-sub">Alertas, mantenimientos y avisos del sistema</div>
             </div>
         </div>
+
         <div class="header-actions">
-            <button class="btn-accion btn-eliminar-sel" id="btn-eliminar-sel" onclick="confirmarEliminarSel()">
-                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-                Eliminar seleccionadas (<span id="sel-count">0</span>)
-            </button>
             <button class="btn-accion btn-eliminar-todas" onclick="confirmarEliminarTodas()">
                 <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
                 Eliminar todas
@@ -213,37 +348,37 @@
 
     <!-- STATS -->
     <div class="stats-grid">
-        <div class="stat-card c-total activa" id="stat-todos" onclick="filtrarStat('todos',this)">
+        <div class="stat-card c-total" onclick="filtrarTabla('', this)" title="Mostrar todas">
             <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-            <div><div class="stat-num">{{ object_list|length }}</div><div class="stat-lbl">Total</div></div>
+            <div><div class="stat-num">{{ total }}</div><div class="stat-lbl">Total</div></div>
         </div>
-        <div class="stat-card c-urgente" id="stat-urgente" onclick="filtrarStat('urgente',this)">
+        <div class="stat-card c-urgente" onclick="filtrarTabla('Urgente', this)" title="Filtrar urgentes">
             <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg></div>
             <div><div class="stat-num">{{ urgentes }}</div><div class="stat-lbl">Urgentes</div></div>
         </div>
-        <div class="stat-card c-alerta" id="stat-alerta" onclick="filtrarStat('alerta',this)">
+        <div class="stat-card c-alerta" onclick="filtrarTabla('Alerta', this)" title="Filtrar alertas">
             <div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
             <div><div class="stat-num">{{ alertas }}</div><div class="stat-lbl">Alertas</div></div>
         </div>
-        <div class="stat-card c-mant" id="stat-mant" onclick="filtrarStat('mantenimiento',this)">
+        <div class="stat-card c-mant" onclick="filtrarTabla('Mantenimiento', this)" title="Filtrar mantenimientos">
             <div class="stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 115.93 19.07"/><polyline points="20 4 20 9 15 9"/></svg></div>
             <div><div class="stat-num">{{ mantenimientos }}</div><div class="stat-lbl">Mantenimiento</div></div>
         </div>
     </div>
 
-    <!-- FILTROS -->
+    <!-- FILTROS DE FECHA Y ORIGEN -->
     <div class="filtros-card">
         <div class="filtro-g">
             <span class="filtro-lbl">Desde</span>
-            <input type="date" class="filtro-ctrl" id="f-desde" onchange="aplicarFiltros()">
+            <input type="date" class="filtro-ctrl" id="f-desde" onchange="aplicarFiltrosExtra()">
         </div>
         <div class="filtro-g">
             <span class="filtro-lbl">Hasta</span>
-            <input type="date" class="filtro-ctrl" id="f-hasta" onchange="aplicarFiltros()">
+            <input type="date" class="filtro-ctrl" id="f-hasta" onchange="aplicarFiltrosExtra()">
         </div>
         <div class="filtro-g">
             <span class="filtro-lbl">Origen</span>
-            <select class="filtro-ctrl" id="f-origen" onchange="aplicarFiltros()">
+            <select class="filtro-ctrl" id="f-origen" onchange="aplicarFiltrosExtra()">
                 <option value="">Todos</option>
                 <option value="sistema">Sistema</option>
                 <option value="admin">Admin</option>
@@ -253,294 +388,262 @@
     </div>
 
     <!-- TABLA -->
-    <div class="tabla-card">
-        <div class="tabla-topbar">
-            <span class="tabla-titulo" id="lbl-conteo">Cargando...</span>
-            <div class="busq-wrap">
-                <span class="busq-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-                <input type="text" class="busq-input" id="busq" placeholder="Buscar..." oninput="aplicarFiltros()">
-            </div>
-        </div>
+    <div class="tabla-wrap">
+        <div class="table-responsive">
+            <table id="tabla_notificaciones" style="width:100%">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width:46px;">#</th>
+                        <th style="width:130px;">Tipo</th>
+                        <th>Mensaje</th>
+                        <th style="width:150px;">Vehículo</th>
+                        <th style="width:100px;">Origen</th>
+                        <th style="width:100px;">Fecha</th>
+                        <th class="text-center" style="width:70px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for n in object_list %}
+                    <tr data-pk="{{ n.pk }}"
+                        data-tipo="{{ n.tipo }}"
+                        data-origen="{% if n.origen == 'SISTEMA' %}sistema{% else %}admin{% endif %}"
+                        data-fecha="{{ n.fecha|date:'Y-m-d' }}">
 
-        <table id="tbl-notif">
-            <thead>
-                <tr>
-                    <th class="tc" style="width:40px;"><input type="checkbox" id="cb-todos" onchange="toggleTodos(this)"></th>
-                    <th class="tc" style="width:46px;">#</th>
-                    <th style="width:110px;">Tipo</th>
-                    <th>Mensaje</th>
-                    <th style="width:130px;">Vehículo</th>
-                    <th style="width:90px;">Origen</th>
-                    <th style="width:95px;">Fecha</th>
-                    <th class="tc" style="width:60px;">Acción</th>
-                </tr>
-            </thead>
-            <tbody id="tbody">
-                {% for n in object_list %}
-                <tr class="fila"
-                    data-pk="{{ n.pk }}"
-                    data-tipo="{{ n.tipo|lower }}"
-                    data-origen="{% if n.origen == 'SISTEMA' %}sistema{% else %}admin{% endif %}"
-                    data-fecha="{{ n.fecha|date:'Y-m-d' }}"
-                    data-txt="{{ n.titulo|lower }} {{ n.mensaje|lower }} {% if n.vehiculo %}{{ n.vehiculo.placa|lower }}{% endif %}">
+                        <td class="text-center" style="font-weight:700; color:var(--muted); font-size:.8rem;">{{ forloop.counter }}</td>
 
-                    <td class="tc"><input type="checkbox" class="cb-notif" data-pk="{{ n.pk }}" onchange="actualizarSeleccion()"></td>
-                    <td class="tc" style="font-weight:700;color:var(--muted);font-size:.75rem;">{{ forloop.counter }}</td>
+                        <td>
+                            {% if n.tipo == 'Urgente' %}
+                            <span class="tipo-badge b-urgente">
+                                <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
+                                Urgente
+                            </span>
+                            {% elif n.tipo == 'Alerta' %}
+                            <span class="tipo-badge b-alerta">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+                                Alerta
+                            </span>
+                            {% elif n.tipo == 'Mantenimiento' %}
+                            <span class="tipo-badge b-mant">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 115.93 19.07"/></svg>
+                                Mantenimiento
+                            </span>
+                            {% elif n.tipo == 'Recordatorio' %}
+                            <span class="tipo-badge b-record">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                Recordatorio
+                            </span>
+                            {% else %}
+                            <span class="tipo-badge b-info">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                {{ n.tipo }}
+                            </span>
+                            {% endif %}
+                        </td>
 
-                    <td>
-                        {% if n.tipo == 'Urgente' %}
-                        <span class="tipo-badge b-urgente">
-                            <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
-                            Urgente
-                        </span>
-                        {% elif n.tipo == 'Alerta' %}
-                        <span class="tipo-badge b-alerta">
-                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
-                            Alerta
-                        </span>
-                        {% elif n.tipo == 'Mantenimiento' %}
-                        <span class="tipo-badge b-mant">
-                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 115.93 19.07"/></svg>
-                            Mantenimiento
-                        </span>
-                        {% elif n.tipo == 'Recordatorio' %}
-                        <span class="tipo-badge b-record">
-                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            Recordatorio
-                        </span>
-                        {% else %}
-                        <span class="tipo-badge b-info">
-                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                            {{ n.tipo }}
-                        </span>
-                        {% endif %}
-                    </td>
+                        <td style="max-width:280px;">
+                            {% if n.titulo %}
+                                <div class="notif-titulo">{{ n.titulo }}</div>
+                                <div class="notif-detalle">{{ n.mensaje }}</div>
+                            {% else %}
+                                <div class="notif-titulo">{{ n.mensaje }}</div>
+                            {% endif %}
+                        </td>
 
-                    <td style="max-width:280px;">
-                        {% if n.titulo %}
-                            <div class="notif-titulo">{{ n.titulo }}</div>
-                            <div class="notif-detalle">{{ n.mensaje }}</div>
-                        {% else %}
-                            <div class="notif-titulo">{{ n.mensaje }}</div>
-                        {% endif %}
-                    </td>
+                        <td>
+                            {% if n.vehiculo %}
+                                <span class="placa-pill">{{ n.vehiculo.placa }}</span>
+                                <div class="vehiculo-sub">{{ n.vehiculo.marca.nombre }} {{ n.vehiculo.modelo }}</div>
+                            {% else %}
+                                <span style="color:var(--muted);font-size:.8rem;">—</span>
+                            {% endif %}
+                        </td>
 
-                    <td>
-                        {% if n.vehiculo %}
-                            <span class="placa-pill">{{ n.vehiculo.placa }}</span>
-                            <div class="vehiculo-sub">{{ n.vehiculo.marca.nombre }} {{ n.vehiculo.modelo }}</div>
-                        {% else %}
-                            <span style="color:var(--muted);font-size:.8rem;">—</span>
-                        {% endif %}
-                    </td>
+                        <td>
+                            {% if n.origen == 'SISTEMA' %}
+                                <span class="origen-badge o-sistema">Sistema</span>
+                            {% else %}
+                                <span class="origen-badge">Admin</span>
+                            {% endif %}
+                        </td>
 
-                    <td>
-                        {% if n.origen == 'SISTEMA' %}
-                            <span class="origen-badge o-sistema">Sistema</span>
-                        {% else %}
-                            <span class="origen-badge">Admin</span>
-                        {% endif %}
-                    </td>
+                        <td style="color:var(--muted); font-size:.8rem; white-space:nowrap;">{{ n.fecha|date:"d/m/Y" }}</td>
 
-                    <td style="font-size:.78rem;color:var(--muted);white-space:nowrap;">{{ n.fecha|date:"d/m/Y" }}</td>
-
-                    <td class="tc">
-                        <button class="acc-btn acc-delete" title="Eliminar" onclick="confirmarEliminar1({{ n.pk }}, this)">
-                            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-                        </button>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr id="fila-vacia">
-                    <td colspan="8">
-                        <div class="empty-state">
-                            <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                            <p>No hay notificaciones registradas</p>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <div class="paginacion" id="paginacion">
-            <span class="pag-info" id="pag-info"></span>
-            <div class="pag-btns" id="pag-btns"></div>
+                        <td class="text-center">
+                            <button class="btn-fila btn-del" title="Eliminar" onclick="confirmarEliminar1({{ n.pk }}, this)">
+                                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-
 </div>
 {% endblock %}
 
 {% block js %}
 <script>
-const POR_PAGINA = 10;
-let paginaActual = 1;
-let filasFiltradas = [];
-let filtroStat = 'todos';
+    var tabla;
+    var filtroActivo = '';
+    var filtroDesdeFecha = '';
+    var filtroHastaFecha = '';
+    var filtroOrigen = '';
 
-// ══ MODAL ══
-function abrirModal(title, msg, onConfirm) {
-    document.getElementById('modalTitle').textContent   = title;
-    document.getElementById('modalMsg').textContent     = msg;
-    document.getElementById('modalConfirmBtn').onclick  = () => { cerrarModal(); onConfirm(); };
-    document.getElementById('modalOverlay').classList.add('show');
-}
-function cerrarModal() {
-    document.getElementById('modalOverlay').classList.remove('show');
-}
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-    if (e.target === this) cerrarModal();
-});
+    $(document).ready(function () {
+        tabla = $('#tabla_notificaciones').DataTable({
+            responsive: true,
+            autoWidth: false,
+            order: [[0, "desc"]],
+            pagingType: "full_numbers",
+            columnDefs: [
+                { orderable: false, targets: 6 }
+            ],
+            language: {
+                "sProcessing":   "Procesando...",
+                "sLengthMenu":   "Mostrar _MENU_ registros",
+                "sZeroRecords":  "No se encontraron resultados",
+                "sEmptyTable":   "Ningún dato disponible",
+                "sInfo":         "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "sInfoEmpty":    "Mostrando 0 a 0 de 0 registros",
+                "sInfoFiltered": "(filtrado de _MAX_ registros totales)",
+                "sSearch":       "Buscar:",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst":    "«",
+                    "sLast":     "»",
+                    "sNext":     "›",
+                    "sPrevious": "‹"
+                }
+            }
+        });
 
-// ══ STATS ══
-function filtrarStat(tipo, el) {
-    filtroStat = tipo;
-    document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('activa'));
-    el.classList.add('activa');
-    paginaActual = 1;
-    aplicarFiltros();
-}
+        // Filtro custom: combina tipo, fecha (desde/hasta) y origen
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+            var row = tabla.row(dataIndex).node();
+            var $row = $(row);
 
-// ══ FILTROS ══
-function aplicarFiltros() {
-    const busq   = document.getElementById('busq').value.toLowerCase().trim();
-    const desde  = document.getElementById('f-desde').value;
-    const hasta  = document.getElementById('f-hasta').value;
-    const origen = document.getElementById('f-origen').value;
-    const todas  = Array.from(document.querySelectorAll('#tbody tr.fila'));
-    filasFiltradas = todas.filter(tr => {
-        if (filtroStat === 'urgente'       && tr.dataset.tipo !== 'urgente')        return false;
-        if (filtroStat === 'alerta'        && tr.dataset.tipo !== 'alerta')         return false;
-        if (filtroStat === 'mantenimiento' && tr.dataset.tipo !== 'mantenimiento')  return false;
-        if (desde && tr.dataset.fecha < desde) return false;
-        if (hasta && tr.dataset.fecha > hasta) return false;
-        if (origen && tr.dataset.origen !== origen) return false;
-        if (busq && !tr.dataset.txt.includes(busq)) return false;
-        return true;
+            // Filtro por tipo (stat cards)
+            if (filtroActivo) {
+                var tipo = $row.data('tipo') || '';
+                if (tipo !== filtroActivo) return false;
+            }
+
+            // Filtro por fecha desde
+            if (filtroDesdeFecha) {
+                var fechaFila = $row.data('fecha') || '';
+                if (fechaFila < filtroDesdeFecha) return false;
+            }
+
+            // Filtro por fecha hasta
+            if (filtroHastaFecha) {
+                var fechaFila = $row.data('fecha') || '';
+                if (fechaFila > filtroHastaFecha) return false;
+            }
+
+            // Filtro por origen
+            if (filtroOrigen) {
+                var origenFila = $row.data('origen') || '';
+                if (origenFila !== filtroOrigen) return false;
+            }
+
+            return true;
+        });
     });
-    renderPagina(1);
-}
 
-// ══ RENDER ══
-function renderPagina(pagina) {
-    paginaActual = pagina;
-    const todas = Array.from(document.querySelectorAll('#tbody tr.fila'));
-    todas.forEach(tr => tr.style.display = 'none');
-    const inicio = (pagina - 1) * POR_PAGINA;
-    const fin    = inicio + POR_PAGINA;
-    filasFiltradas.slice(inicio, fin).forEach(tr => tr.style.display = '');
-    const vacia = document.getElementById('fila-vacia');
-    const total = filasFiltradas.length;
-    if (total === 0) {
-        if (vacia) vacia.style.display = '';
-        document.getElementById('pag-info').textContent   = '';
-        document.getElementById('pag-btns').innerHTML     = '';
-        document.getElementById('lbl-conteo').textContent = 'Sin resultados';
-        return;
-    }
-    if (vacia) vacia.style.display = 'none';
-    const totalPags = Math.ceil(total / POR_PAGINA);
-    const d = inicio + 1, h = Math.min(fin, total);
-    document.getElementById('pag-info').textContent   = `Mostrando ${d}–${h} de ${total} notificación${total!==1?'es':''}`;
-    document.getElementById('lbl-conteo').textContent = `${total} notificación${total!==1?'es':''}`;
-    let html = `<button class="pag-btn" onclick="renderPagina(${pagina-1})" ${pagina===1?'disabled':''}>‹</button>`;
-    for (let i = 1; i <= totalPags; i++) {
-        if (totalPags > 7 && i > 2 && i < totalPags - 1 && Math.abs(i - pagina) > 1) {
-            if (i === 3 || i === totalPags - 2) html += `<button class="pag-btn" disabled style="border:none;">…</button>`;
-            continue;
+    // ══ FILTRO POR TARJETA STAT ══
+    function filtrarTabla(tipo, card) {
+        document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('activo'));
+
+        // Toggle: clic en la misma tarjeta activa quita el filtro
+        if (filtroActivo === tipo && tipo !== '') {
+            filtroActivo = '';
+            tabla.draw();
+            return;
         }
-        html += `<button class="pag-btn ${i===pagina?'activa':''}" onclick="renderPagina(${i})">${i}</button>`;
+
+        filtroActivo = tipo;
+
+        if (tipo !== '') {
+            card.classList.add('activo');
+        }
+
+        tabla.draw();
     }
-    html += `<button class="pag-btn" onclick="renderPagina(${pagina+1})" ${pagina===totalPags?'disabled':''}>›</button>`;
-    document.getElementById('pag-btns').innerHTML = html;
-    actualizarSeleccion();
-}
 
-// ══ RESET ══
-function resetFiltros() {
-    document.getElementById('f-desde').value  = '';
-    document.getElementById('f-hasta').value  = '';
-    document.getElementById('f-origen').value = '';
-    document.getElementById('busq').value     = '';
-    filtroStat = 'todos';
-    document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('activa'));
-    document.getElementById('stat-todos').classList.add('activa');
-    aplicarFiltros();
-}
+    // ══ FILTROS DE FECHA Y ORIGEN ══
+    function aplicarFiltrosExtra() {
+        filtroDesdeFecha = document.getElementById('f-desde').value;
+        filtroHastaFecha = document.getElementById('f-hasta').value;
+        filtroOrigen     = document.getElementById('f-origen').value;
+        tabla.draw();
+    }
 
-// ══ CHECKBOXES ══
-function toggleTodos(cb) {
-    document.querySelectorAll('#tbody tr.fila:not([style*="display: none"]) .cb-notif').forEach(c => {
-        c.checked = cb.checked;
-        c.closest('tr').classList.toggle('seleccionada', cb.checked);
+    // ══ LIMPIAR FILTROS ══
+    function resetFiltros() {
+        document.getElementById('f-desde').value  = '';
+        document.getElementById('f-hasta').value  = '';
+        document.getElementById('f-origen').value = '';
+        filtroDesdeFecha = '';
+        filtroHastaFecha = '';
+        filtroOrigen     = '';
+        filtroActivo     = '';
+        document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('activo'));
+        tabla.draw();
+    }
+
+    // ══ MODAL ══
+    function abrirModal(title, msg, onConfirm) {
+        document.getElementById('modalTitle').textContent   = title;
+        document.getElementById('modalMsg').textContent     = msg;
+        document.getElementById('modalConfirmBtn').onclick  = () => { cerrarModal(); onConfirm(); };
+        document.getElementById('modalOverlay').classList.add('show');
+    }
+    function cerrarModal() {
+        document.getElementById('modalOverlay').classList.remove('show');
+    }
+    document.getElementById('modalOverlay').addEventListener('click', function(e) {
+        if (e.target === this) cerrarModal();
     });
-    actualizarSeleccion();
-}
-function actualizarSeleccion() {
-    const sel = document.querySelectorAll('.cb-notif:checked');
-    const vis = document.querySelectorAll('#tbody tr.fila:not([style*="display: none"]) .cb-notif');
-    document.getElementById('sel-count').textContent = sel.length;
-    document.getElementById('btn-eliminar-sel').style.display = sel.length > 0 ? 'inline-flex' : 'none';
-    const cbTodos = document.getElementById('cb-todos');
-    cbTodos.indeterminate = sel.length > 0 && sel.length < vis.length;
-    cbTodos.checked = vis.length > 0 && sel.length === vis.length;
-}
 
-// ══ ELIMINAR 1 ══
-function confirmarEliminar1(pk, btn) {
-    abrirModal(
-        'Eliminar notificación',
-        '¿Seguro que quieres eliminar esta notificación? Esta acción no se puede deshacer.',
-        () => {
-            fetch("{% url 'app:eliminar_notificaciones_masivo' %}", {
-                method: 'POST',
-                headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' },
-                body: JSON.stringify({ pks: [String(pk)] })
-            }).then(r => r.json()).then(d => {
-                if (d.ok) { btn.closest('tr').remove(); aplicarFiltros(); }
-            });
-        }
-    );
-}
+    // ══ ELIMINAR 1 ══
+    function confirmarEliminar1(pk, btn) {
+        abrirModal(
+            'Eliminar notificación',
+            '¿Seguro que quieres eliminar esta notificación? Esta acción no se puede deshacer.',
+            () => {
+                fetch("{% url 'app:eliminar_notificaciones_masivo' %}", {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pks: [String(pk)] })
+                }).then(r => r.json()).then(d => {
+                    if (d.ok) {
+                        tabla.row($(btn).closest('tr')).remove().draw();
+                    }
+                });
+            }
+        );
+    }
 
-// ══ ELIMINAR SELECCIONADAS ══
-function confirmarEliminarSel() {
-    const pks = Array.from(document.querySelectorAll('.cb-notif:checked')).map(c => c.dataset.pk);
-    if (!pks.length) return;
-    abrirModal(
-        'Eliminar seleccionadas',
-        `¿Eliminar ${pks.length} notificación${pks.length!==1?'es':''} seleccionada${pks.length!==1?'s':''}? Esta acción no se puede deshacer.`,
-        () => {
-            fetch("{% url 'app:eliminar_notificaciones_masivo' %}", {
-                method: 'POST',
-                headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' },
-                body: JSON.stringify({ pks })
-            }).then(r => r.json()).then(d => {
-                if (d.ok) { pks.forEach(pk => { const tr = document.querySelector(`tr[data-pk="${pk}"]`); if(tr) tr.remove(); }); aplicarFiltros(); }
-            });
-        }
-    );
-}
-
-// ══ ELIMINAR TODAS ══
-function confirmarEliminarTodas() {
-    const total = document.querySelectorAll('#tbody tr.fila').length;
-    if (!total) return;
-    abrirModal(
-        'Eliminar todas',
-        `¿Eliminar las ${total} notificaciones? Esta acción no se puede deshacer.`,
-        () => {
-            fetch("{% url 'app:eliminar_todas_notificaciones' %}", {
-                method: 'POST',
-                headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' }
-            }).then(r => r.json()).then(d => {
-                if (d.ok) { document.querySelectorAll('#tbody tr.fila').forEach(tr => tr.remove()); aplicarFiltros(); }
-            });
-        }
-    );
-}
-
-document.addEventListener('DOMContentLoaded', aplicarFiltros);
+    // ══ ELIMINAR TODAS ══
+    function confirmarEliminarTodas() {
+        const total = tabla.rows().count();
+        if (!total) return;
+        abrirModal(
+            'Eliminar todas',
+            `¿Eliminar las ${total} notificaciones? Esta acción no se puede deshacer.`,
+            () => {
+                fetch("{% url 'app:eliminar_todas_notificaciones' %}", {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' }
+                }).then(r => r.json()).then(d => {
+                    if (d.ok) {
+                        tabla.clear().draw();
+                        resetFiltros();
+                    }
+                });
+            }
+        );
+    }
 </script>
 {% endblock %}

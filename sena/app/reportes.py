@@ -173,10 +173,11 @@ class ExportarCajaExcel(View):
 class ExportarOrdenesPDF(View):
     def get(self, request):
         datos = [(o.id, o.vehiculo.placa, o.vehiculo.cliente.nombre,
-                  o.servicio.nombre, o.estado, o.km_actual,
+                  ', '.join(s.nombre for s in o.servicios.all()),
+                  o.estado, o.km_actual,
                   o.fecha.strftime('%d/%m/%Y'))
                  for o in OrdenServicio.objects.select_related(
-                     'vehiculo__cliente', 'servicio').all()]
+                     'vehiculo__cliente').prefetch_related('servicios').all()]
         return exportar_pdf(
             titulo='REPORTE DE ÓRDENES DE SERVICIO',
             columnas=['ID', 'Placa', 'Cliente', 'Servicio', 'Estado', 'KM', 'Fecha'],
@@ -187,10 +188,11 @@ class ExportarOrdenesPDF(View):
 class ExportarOrdenesExcel(View):
     def get(self, request):
         datos = [(o.id, o.vehiculo.placa, o.vehiculo.cliente.nombre,
-                  o.servicio.nombre, o.estado, o.km_actual,
+                  ', '.join(s.nombre for s in o.servicios.all()),  # ✅ corregido: M2M igual que PDF
+                  o.estado, o.km_actual,
                   o.fecha.strftime('%d/%m/%Y'))
                  for o in OrdenServicio.objects.select_related(
-                     'vehiculo__cliente', 'servicio').all()]
+                     'vehiculo__cliente').prefetch_related('servicios').all()]  # ✅ corregido: prefetch_related
         return exportar_excel(
             titulo='REPORTE DE ÓRDENES DE SERVICIO',
             columnas=['ID', 'Placa', 'Cliente', 'Servicio', 'Estado', 'KM', 'Fecha'],

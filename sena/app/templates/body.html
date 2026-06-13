@@ -105,7 +105,7 @@
 
     .user-pill { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.09) !important; border-radius: 10px !important; padding: 5px 10px 5px 6px; display: flex; align-items: center; gap: 9px; transition: background .2s, border-color .2s; cursor: pointer; }
     .user-pill:hover, .user-pill:focus { background: rgba(211,47,47,.1) !important; border-color: rgba(211,47,47,.35) !important; outline: none; box-shadow: none !important; }
-    .user-pill-avatar { width: 26px; height: 26px; border-radius: 7px; background: #d32f2f; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; font-weight: 900; color: #fff; flex-shrink: 0; }
+    .user-pill-avatar { width: 26px; height: 26px; border-radius: 7px; background: #d32f2f; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; font-weight: 900; color: #fff; flex-shrink: 0; overflow: hidden; }
     .user-pill-name { font-family: 'Barlow Condensed', sans-serif; font-size: .82rem; font-weight: 800; color: #fff; letter-spacing: .5px; text-transform: uppercase; line-height: 1; }
     .user-pill-role { font-size: .62rem; color: rgba(255,255,255,.3); margin-top: 2px; }
     .pill-arrow { color: rgba(255,255,255,.25); transition: transform .25s; flex-shrink: 0; }
@@ -114,7 +114,8 @@
 
     .user-dropdown-menu { background: #141414 !important; border: 1px solid rgba(255,255,255,.07) !important; border-radius: 14px !important; min-width: 215px; box-shadow: 0 20px 56px rgba(0,0,0,.75) !important; padding: 0 !important; overflow: hidden; margin-top: 7px !important; }
     .dd-header { padding: 13px 15px; border-bottom: 1px solid rgba(255,255,255,.05); display: flex; align-items: center; gap: 10px; }
-    .dd-avatar { width: 38px; height: 38px; background: #d32f2f; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 900; color: #fff; flex-shrink: 0; }
+    .dd-avatar { width: 38px; height: 38px; background: #d32f2f; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 900; color: #fff; flex-shrink: 0; overflow: hidden; }
+    .user-pill-avatar img, .dd-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
     .dd-username { color: #fff; font-weight: 700; font-size: .88rem; line-height: 1.2; }
     .dd-role { color: rgba(255,255,255,.3); font-size: .7rem; margin-top: 2px; }
     .user-dropdown-menu .dropdown-item { color: rgba(255,255,255,.55) !important; padding: 9px 15px; display: flex; align-items: center; gap: 10px; font-size: .8rem; transition: background .15s, color .15s; }
@@ -138,15 +139,15 @@
     .leyenda-obligatorio { font-size:.74rem; color:#888; margin-bottom:16px; display:flex; align-items:center; gap:4px; }
     .leyenda-obligatorio::before { content:'* '; color:#d32f2f; font-weight:800; font-size:.85rem; }
 
-    #chatbot-btn {
-      position: fixed; bottom: 28px; right: 28px;
-      width: 52px; height: 52px;
-      background: #d32f2f; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 9999;
-      box-shadow: 0 4px 20px rgba(211,47,47,.5);
-      transition: transform .2s, box-shadow .2s;
-    }
+   #chatbot-btn {
+  position: fixed; bottom: 28px; right: 28px;
+  width: 52px; height: 52px;
+  background: transparent; 
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 9999;
+  box-shadow: 0 4px 20px rgba(255,255,255,.3);  ← SOMBRA BLANCA
+  transition: transform .2s, box-shadow .2s;
+}
     #chatbot-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(211,47,47,.65); }
 
     #chatbot-box {
@@ -258,7 +259,11 @@
           <div class="dropdown">
             <button class="user-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false">
               <div class="user-pill-avatar">
-                {% if user.nombres %}{{ user.nombres|slice:':1'|upper }}{% else %}{{ user.username|slice:':1'|upper }}{% endif %}
+                {% if user.foto %}
+                    <img src="{{ user.foto.url }}" alt="{{ user.username }}">
+                {% else %}
+                    {% if user.nombres %}{{ user.nombres|slice:':1'|upper }}{% else %}{{ user.username|slice:':1'|upper }}{% endif %}
+                {% endif %}
               </div>
               <div class="user-pill-info d-none d-sm-block">
                 <div class="user-pill-name" style="display:flex;align-items:center;gap:6px;">
@@ -273,7 +278,13 @@
             <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu">
               <li>
                 <div class="dd-header">
-                  <div class="dd-avatar">{% if user.nombres %}{{ user.nombres|slice:':1'|upper }}{% else %}{{ user.username|slice:':1'|upper }}{% endif %}</div>
+                  <div class="dd-avatar">
+                    {% if user.foto %}
+                        <img src="{{ user.foto.url }}" alt="{{ user.username }}">
+                    {% else %}
+                        {% if user.nombres %}{{ user.nombres|slice:':1'|upper }}{% else %}{{ user.username|slice:':1'|upper }}{% endif %}
+                    {% endif %}
+                  </div>
                   <div>
                     <div class="dd-username">{% if user.nombres %}{{ user.nombres }} {{ user.apellidos }}{% else %}{{ user.username|capfirst }}{% endif %}</div>
                     <div class="dd-role">{% if user.cargo %}{{ user.get_cargo_display }}{% else %}{{ user.email|default:"Administrador" }}{% endif %}</div>
@@ -317,21 +328,21 @@
     </div>
   </div>
 
-  <div id="chatbot-btn" onclick="toggleChat()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-    </svg>
+  
+    <div id="chatbot-btn" onclick="toggleChat()">
+  <img src="{% static 'imagenes/chatbot.jpeg' %}" alt="Chat" style="width:28px; height:28px; object-fit:contain;">
+</div>
   </div>
 
   <div id="chatbot-box">
     <div id="chatbot-header">
       <div id="chatbot-header-left">
         <div id="chatbot-header-icon">
-          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </div>
+  <img src="{% static 'imagenes/chatbot.jpeg' %}" alt="Chat" style="width:24px; height:24px; object-fit:contain; border-radius:6px;">
+</div>
         <div>
           <div id="chatbot-title">Asistente ACERAUTOS</div>
-          <div id="chatbot-subtitle">Powered by Mistral AI</div>
+          <div id="chatbot-subtitle">chat bot</div>
         </div>
       </div>
       <button id="chatbot-close" onclick="toggleChat()">
@@ -675,10 +686,7 @@ window.addEventListener('resize', function () {
     });
   });
   </script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 {% block js %}{% endblock %}
 {% include 'widget_accesibilidad.html' %} 
