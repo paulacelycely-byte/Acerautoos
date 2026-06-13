@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # ← Mixins para seguridad
 from django.shortcuts import redirect # ← Necesario para la redirección de permisos
-
+from django.http import JsonResponse
 # IMPORTACIÓN ABSOLUTA
 from app.models import Proveedor
 from app.forms import ProveedorForm
@@ -89,3 +89,18 @@ class ProveedorDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
     def post(self, request, *args, **kwargs):
         messages.success(self.request, 'Proveedor eliminado exitosamente.')
         return self.delete(request, *args, **kwargs)
+    
+def validar_nit_proveedor(request):
+    """
+    GET /proveedor/validar-nit/?valor=123456789&exclude_pk=3
+    Devuelve {"existe": true/false}
+    """
+    valor      = request.GET.get('valor', '').strip()
+    exclude_pk = request.GET.get('exclude_pk', None)
+    if not valor:
+        return JsonResponse({'existe': False})
+    qs = Proveedor.objects.filter(nit=valor)
+    if exclude_pk:
+        qs = qs.exclude(pk=exclude_pk)
+    return JsonResponse({'existe': qs.exists()})
+ 

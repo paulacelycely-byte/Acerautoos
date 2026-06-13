@@ -234,6 +234,7 @@
     .phone-input-wrap {
         position: relative;
         flex: 1;
+        min-width: 0;
     }
     .phone-input-wrap [name="numero_telefono"] {
         color: transparent !important;
@@ -251,6 +252,7 @@
     #maskOverlay {
         position: absolute;
         left: 40px;
+        right: 10px;
         top: 0; bottom: 0;
         display: flex;
         align-items: center;
@@ -260,7 +262,6 @@
         font-size: .9rem;
         white-space: nowrap;
         overflow: hidden;
-        padding-right: 10px;
     }
     #maskOverlay .char-typed { color: var(--texto); }
     #maskOverlay .char-hint  { color: #c8c8c8; }
@@ -577,12 +578,10 @@ function validarTelefonoPorPais(indicativo, numero) {
             return `Número inválido para ${indicativo}: entre 6 y 15 dígitos.`;
         return null;
     }
-    if (numero.length < regla.min || numero.length > regla.max)
-        return regla.errLen;
+    if (numero.length < regla.min || numero.length > regla.max) return regla.errLen;
     if (regla.prefijos.length > 0) {
         const sorted = [...regla.prefijos].sort((a, b) => b.length - a.length);
-        if (!sorted.some(p => numero.startsWith(p)))
-            return regla.errPref;
+        if (!sorted.some(p => numero.startsWith(p))) return regla.errPref;
     }
     return null;
 }
@@ -606,6 +605,134 @@ function mostrarErrorTel(msg) {
         }
     }
 }
+
+// ══════════════════════════════════════════════════════════
+//  UTILIDAD: mostrar/limpiar error inline en un campo
+// ══════════════════════════════════════════════════════════
+function setFieldError(inputEl, msg) {
+    const wrap = inputEl.closest('.field-group') || inputEl.parentElement;
+    let errorEl = wrap.querySelector('.field-error-js');
+    if (msg) {
+        if (!errorEl) {
+            errorEl = document.createElement('div');
+            errorEl.className = 'field-error field-error-js';
+            const fieldInner = wrap.querySelector('.field-inner') || inputEl.parentElement;
+            fieldInner.insertAdjacentElement('afterend', errorEl);
+        }
+        errorEl.innerHTML = `⚠ ${msg}`;
+        inputEl.style.setProperty('border-color', '#d32f2f', 'important');
+        inputEl.style.setProperty('box-shadow',   '0 0 0 3px rgba(211,47,47,.12)', 'important');
+    } else {
+        if (errorEl) errorEl.remove();
+        inputEl.style.removeProperty('border-color');
+        inputEl.style.removeProperty('box-shadow');
+    }
+}
+
+// ══════════════════════════════════════════════════════════
+//  VALIDACIÓN EN TIEMPO REAL — NOMBRE
+// ══════════════════════════════════════════════════════════
+(function initValidarNombre() {
+    const inputNombre = document.querySelector('[name="nombre"]');
+    if (!inputNombre) return;
+
+    inputNombre.addEventListener('input', function () {
+        const limpio = this.value.replace(/[^a-zA-ZÁÉÍÓÚáéíóúÑñ\s]/g, '');
+        if (this.value !== limpio) this.value = limpio;
+        const val = this.value.trim();
+        if (val.length === 0) {
+            setFieldError(this, null);
+        } else if (val.length < 3) {
+            setFieldError(this, 'El nombre debe tener al menos 3 caracteres.');
+        } else {
+            setFieldError(this, null);
+        }
+    });
+
+    inputNombre.addEventListener('blur', function () {
+        const val = this.value.trim();
+        if (val.length > 0 && val.length < 3) {
+            setFieldError(this, 'El nombre debe tener al menos 3 caracteres.');
+        } else {
+            setFieldError(this, null);
+        }
+    });
+})();
+
+// ══════════════════════════════════════════════════════════
+//  VALIDACIÓN AJAX — DOCUMENTO DUPLICADO
+// ══════════════════════════════════════════════════════════
+(function initValidarDocumento() {
+    const inputDoc = document.querySelector('[name="numero_documento"]');
+    if (!inputDoc) return;
+
+    const excludePk = '{{ object.pk|default:"" }}';
+    let timerDoc    = null;
+
+    inputDoc.addEventListener('input', function () {
+        clearTimeout(timerDoc);
+        setFieldError(this, null);
+    });
+
+    inputDoc.addEventListener('blur', function () {
+        const val = this.value.trim();
+        if (!val) return;
+        clearTimeout(timerDoc);
+        timerDoc = setTimeout(() => {
+            const url = `{% url 'app:validar_documento_cliente' %}?valor=${encodeURIComponent(val)}${excludePk ? '&exclude_pk=' + excludePk : ''}`;
+            fetch(url)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.existe) {
+                        setFieldError(inputDoc, 'Ya existe un cliente registrado con este número de documento.');
+                    } else {
+                        setFieldError(inputDoc, null);
+                    }
+                })
+                .catch(() => {});
+        }, 300);
+    });
+})();
+
+// ══════════════════════════════════════════════════════════
+//  VALIDACIÓN AJAX — EMAIL
+// ══════════════════════════════════════════════════════════
+(function initValidarEmail() {
+    const inputEmail = document.querySelector('[name="email"]');
+    if (!inputEmail) return;
+
+    const excludePk = '{{ object.pk|default:"" }}';
+    let timerEmail  = null;
+
+    inputEmail.addEventListener('input', function () {
+        clearTimeout(timerEmail);
+        setFieldError(this, null);
+    });
+
+    inputEmail.addEventListener('blur', function () {
+        const val = this.value.trim();
+        if (!val) return;
+        const formatoOk = /^[\w\.\+\-]+@[\w\-]+\.[a-zA-Z]{2,}$/.test(val);
+        if (!formatoOk) {
+            setFieldError(this, 'El email no tiene un formato válido. Ej: correo@dominio.com');
+            return;
+        }
+        clearTimeout(timerEmail);
+        timerEmail = setTimeout(() => {
+            const url = `{% url 'app:validar_email_cliente' %}?valor=${encodeURIComponent(val)}${excludePk ? '&exclude_pk=' + excludePk : ''}`;
+            fetch(url)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.existe) {
+                        setFieldError(inputEmail, 'Ya existe un cliente registrado con este email.');
+                    } else {
+                        setFieldError(inputEmail, null);
+                    }
+                })
+                .catch(() => {});
+        }, 300);
+    });
+})();
 
 // ══════════════════════════════════════════════════════════
 //  DATOS DE PAÍSES
@@ -738,6 +865,9 @@ renderLista('');
 
 if (inputNumero) {
     inputNumero.addEventListener('input', () => {
+        // Solo permitir dígitos
+        const soloDigitos = inputNumero.value.replace(/\D/g, '');
+        if (inputNumero.value !== soloDigitos) inputNumero.value = soloDigitos;
         aplicarMascara();
         actualizarTelefono();
         const num = inputNumero.value.trim();
@@ -770,9 +900,13 @@ document.querySelectorAll('.form-field').forEach(el => {
         el.style.boxShadow   = `0 0 0 3px ${acento}22`;
     });
     el.addEventListener('blur', () => {
-        el.style.borderColor = '#e0ddd8';
-        el.style.background  = '#f2f2f0';
-        el.style.boxShadow   = 'none';
+        if (!el.style.getPropertyValue('border-color').includes('#d32f2f')) {
+            el.style.borderColor = '#e0ddd8';
+            el.style.background  = '#f2f2f0';
+            el.style.boxShadow   = 'none';
+        } else {
+            el.style.background  = '#f2f2f0';
+        }
     });
 });
 
@@ -809,7 +943,12 @@ $(function () {
         e.preventDefault();
         actualizarTelefono();
 
-        // Bloquear envío si el teléfono es inválido
+        const erroresJS = document.querySelectorAll('.field-error-js');
+        if (erroresJS.length > 0) {
+            erroresJS[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
         const ind = (hiddenInput ? hiddenInput.value : '').trim();
         const num = ($('[name="numero_telefono"]').val() || '').trim();
         const err = validarTelefonoPorPais(ind, num);
