@@ -13,64 +13,239 @@
         --texto:  #2a2a2a;
         --muted:  #888;
     }
-    .taller-header { position:relative; background:var(--carbon); border-radius:10px; padding:28px 32px; margin-bottom:28px; overflow:hidden; display:flex; align-items:center; justify-content:space-between; }
-    .header-left { display:flex; align-items:center; gap:18px; position:relative; }
-    .header-icon-wrap { width:56px; height:56px; background:var(--rojo); border-radius:12px; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 4px rgba(211,47,47,.25); flex-shrink:0; }
-    .header-icon-wrap svg { width:28px; height:28px; stroke:white; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
-    .header-titulo { font-family:'Barlow Condensed',sans-serif; font-size:2rem; font-weight:800; color:white; letter-spacing:1px; text-transform:uppercase; line-height:1; margin:0; }
-    .header-sub { font-family:'DM Sans',sans-serif; font-size:.78rem; color:rgba(255,255,255,.45); margin-top:4px; display:flex; align-items:center; flex-wrap:wrap; gap:0; }
-    .header-actions { display:flex; align-items:center; gap:10px; position:relative; }
-    .badge-alerta { position:relative; }
-    .badge-alerta:hover { opacity:0.85; }
-    .tooltip-flotante { position:fixed; background:var(--carbon); color:white; padding:10px 14px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:.8rem; font-weight:600; z-index:9999; pointer-events:none; white-space:nowrap; box-shadow:0 4px 20px rgba(0,0,0,.3); display:none; animation:fadeIn .2s ease-in-out; }
-    .tooltip-flotante.mostrar { display:block; }
+
+    /* ── HEADER ── */
+    .taller-header {
+        position: relative;
+        background: var(--carbon);
+        border-radius: 10px;
+        padding: 20px 20px;
+        margin-bottom: 28px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
+
+    .header-icon-wrap {
+        width: 56px; height: 56px;
+        background: var(--rojo);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 0 0 4px rgba(211,47,47,.25);
+        flex-shrink: 0;
+    }
+
+    .header-icon-wrap svg {
+        width: 28px; height: 28px;
+        stroke: white; fill: none;
+        stroke-width: 1.6;
+        stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .header-titulo {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 2rem; font-weight: 800;
+        color: white; letter-spacing: 1px;
+        text-transform: uppercase; line-height: 1; margin: 0;
+    }
+
+    .header-sub {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem; color: rgba(255,255,255,.45);
+        margin-top: 6px; letter-spacing: .5px;
+        display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+    }
+
+    .badge-estado {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 4px 10px; border-radius: 6px;
+        font-size: .72rem; font-weight: 700; cursor: pointer;
+    }
+    .badge-vencido { background: #fff0f0; color: #b71c1c; }
+    .badge-alerta-km { background: #fff8e1; color: #b45309; }
+    .badge-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .badge-dot-rojo { background: #d32f2f; }
+    .badge-dot-naranja { background: #f59e0b; }
+
+    /* tooltip */
+    .tooltip-flotante {
+        position: fixed; background: var(--carbon); color: white;
+        padding: 10px 14px; border-radius: 8px;
+        font-family: 'DM Sans', sans-serif; font-size: .8rem; font-weight: 600;
+        z-index: 9999; pointer-events: none;
+        white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,.3);
+        display: none; animation: fadeIn .2s ease-in-out;
+    }
+    .tooltip-flotante.mostrar { display: block; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
-    .btn-accion { font-family:'DM Sans',sans-serif; font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; padding:10px 18px; border-radius:10px; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; text-decoration:none; transition:transform .2s, box-shadow .2s; }
-    .btn-accion svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-    .btn-accion:hover { transform:translateY(-2px); }
-    .btn-pdf   { background:#c0392b; color:white !important; }
-    .btn-excel { background:#1e7e45; color:white !important; }
-    .btn-nuevo { background:var(--rojo); color:white !important; box-shadow:0 4px 16px rgba(211,47,47,.4); }
-    .btn-nuevo:hover { box-shadow:0 6px 20px rgba(211,47,47,.5); color:white !important; }
-    .tabla-wrap { background:white; border-radius:10px; border:1px solid var(--borde); overflow:hidden; }
-    #tabla_vehiculos { font-family:'DM Sans',sans-serif; font-size:.875rem; border-collapse:collapse; width:100%; }
-    #tabla_vehiculos thead tr { background:var(--gris); border-bottom:2px solid var(--borde); }
-    #tabla_vehiculos thead th { font-family:'Barlow Condensed',sans-serif; font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); padding:14px 16px; border:none; }
-    #tabla_vehiculos tbody tr { border-bottom:1px solid var(--borde); transition:background .15s; }
-    #tabla_vehiculos tbody tr:hover { background:#fafaf8; }
-    #tabla_vehiculos tbody tr:last-child { border-bottom:none; }
-    #tabla_vehiculos tbody td { padding:13px 16px; color:var(--texto); vertical-align:middle; border:none; }
-    .placa-box { font-family:'Barlow Condensed',sans-serif; font-size:.95rem; font-weight:800; color:var(--rojo); background:#fff5f5; border:1px solid rgba(211,47,47,.2); border-radius:8px; padding:4px 12px; text-transform:uppercase; letter-spacing:1px; display:inline-block; }
-    .cliente-avatar { width:38px; height:38px; background:var(--carbon); color:white; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:800; flex-shrink:0; }
-    .cliente-nombre { font-weight:600; color:var(--carbon); font-size:.9rem; }
-    .badge-marca { font-family:'DM Sans',sans-serif; font-size:.7rem; font-weight:600; background:var(--gris); color:var(--texto); border:1px solid var(--borde); border-radius:6px; padding:3px 9px; text-transform:uppercase; letter-spacing:.4px; }
+
+    /* ── HEADER ACTIONS ── */
+    .header-actions {
+        display: flex; align-items: center; gap: 8px;
+        position: relative; flex-wrap: wrap;
+    }
+
+    .btn-accion {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px;
+        padding: 10px 16px; border-radius: 10px;
+        display: flex; align-items: center; gap: 6px;
+        border: none; cursor: pointer; text-decoration: none;
+        transition: transform .2s, box-shadow .2s;
+        white-space: nowrap;
+    }
+    .btn-accion:hover { transform: translateY(-2px); }
+    .btn-accion svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+    .btn-pdf   { background: #c0392b; color: white !important; }
+    .btn-excel { background: #1e7e45; color: white !important; }
+    .btn-nuevo { background: var(--rojo); color: white !important; box-shadow: 0 4px 16px rgba(211,47,47,.4); }
+    .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
+
+    /* ── TABLA ── */
+    .tabla-wrap {
+        background: white; border-radius: 10px;
+        border: 1px solid var(--borde); overflow: hidden;
+    }
+
+    .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+    #tabla_vehiculos {
+        font-family: 'DM Sans', sans-serif; font-size: .875rem;
+        border-collapse: collapse; width: 100%;
+        min-width: 700px;
+    }
+
+    #tabla_vehiculos thead tr { background: var(--gris); border-bottom: 2px solid var(--borde); }
+    #tabla_vehiculos thead th {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: .78rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1.2px;
+        color: var(--muted); padding: 14px 12px; border: none;
+    }
+
+    #tabla_vehiculos tbody tr { border-bottom: 1px solid var(--borde); transition: background .15s; }
+    #tabla_vehiculos tbody tr:hover { background: #fafaf8; }
+    #tabla_vehiculos tbody tr:last-child { border-bottom: none; }
+    #tabla_vehiculos tbody td { padding: 12px 12px; color: var(--texto); vertical-align: middle; border: none; }
+
+    .placa-box {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: .95rem; font-weight: 800; color: var(--rojo);
+        background: #fff5f5; border: 1px solid rgba(211,47,47,.2);
+        border-radius: 8px; padding: 4px 12px;
+        text-transform: uppercase; letter-spacing: 1px; display: inline-block;
+    }
+
+    .cliente-avatar {
+        width: 36px; height: 36px; background: var(--carbon);
+        color: white; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 1rem; font-weight: 900; flex-shrink: 0;
+    }
+
+    .cliente-nombre { font-weight: 600; color: var(--carbon); font-size: .88rem; }
+
+    .badge-marca {
+        font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 600;
+        background: var(--gris); color: var(--texto);
+        border: 1px solid var(--borde); border-radius: 6px;
+        padding: 3px 8px; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap;
+    }
+
+    /* estados mantenimiento */
     .mant-ok      { display:inline-flex; align-items:center; gap:6px; font-size:.78rem; font-weight:700; color:#16a34a; background:#dcfce7; border-radius:8px; padding:4px 10px; }
     .mant-alerta  { display:inline-flex; align-items:center; gap:6px; font-size:.78rem; font-weight:700; color:#b45309; background:#fff8e1; border-radius:8px; padding:4px 10px; }
     .mant-vencido { display:inline-flex; align-items:center; gap:6px; font-size:.78rem; font-weight:700; color:#b71c1c; background:#fff0f0; border-radius:8px; padding:4px 10px; }
     .mant-sin     { display:inline-flex; align-items:center; gap:6px; font-size:.78rem; font-weight:600; color:var(--muted); background:var(--gris); border-radius:8px; padding:4px 10px; }
-    .mant-km      { display:inline-flex; align-items:center; gap:6px; font-size:.78rem; font-weight:600; color:#0369a1; background:#e0f2fe; border-radius:8px; padding:4px 10px; }
-    .mant-dot     { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-    .dot-ok       { background:#16a34a; }
-    .dot-alerta   { background:#f59e0b; }
-    .dot-vencido  { background:#d32f2f; }
-    .dot-sin      { background:#bbb; }
-    .dot-km       { background:#0284c7; }
-    .km-sub       { font-size:.7rem; color:var(--muted); margin-top:2px; display:block; }
-    .btn-fila { width:32px; height:32px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; border:none; cursor:pointer; transition:transform .2s, box-shadow .2s; text-decoration:none; }
+    .mant-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .dot-ok      { background:#16a34a; }
+    .dot-alerta  { background:#f59e0b; }
+    .dot-vencido { background:#d32f2f; }
+    .dot-sin     { background:#bbb; }
+    .km-sub { font-size:.7rem; color:var(--muted); margin-top:2px; display:block; }
+
+    .btn-fila {
+        width: 32px; height: 32px; border-radius: 8px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border: none; cursor: pointer;
+        transition: transform .2s, box-shadow .2s; text-decoration: none;
+    }
     .btn-fila svg { width:14px; height:14px; stroke:white; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; pointer-events:none; }
-    .btn-fila:hover { transform:translateY(-2px); box-shadow:0 4px 10px rgba(0,0,0,.2); }
-    .btn-edit { background:#1565c0; margin-right:4px; }
-    .btn-del  { background:var(--rojo); }
-    .dataTables_wrapper { padding:16px 20px; }
-    .dataTables_filter input { border:1.5px solid var(--borde) !important; border-radius:8px !important; padding:6px 12px !important; font-family:'DM Sans',sans-serif !important; font-size:.85rem !important; outline:none !important; transition:border-color .2s; }
-    .dataTables_filter input:focus { border-color:var(--rojo) !important; }
-    .dataTables_filter label, .dataTables_length label, .dataTables_info { font-family:'DM Sans',sans-serif; font-size:.8rem; color:var(--muted); }
-    .dataTables_length select { border:1.5px solid var(--borde) !important; border-radius:8px !important; padding:4px 8px !important; appearance:none !important; background:white !important; }
-    .page-item.active .page-link { background:var(--rojo) !important; border-color:var(--rojo) !important; color:white !important; font-weight:700 !important; }
-    .page-link { color:var(--rojo) !important; font-family:'DM Sans',sans-serif; font-size:.85rem; font-weight:600; }
-    .paginate_button { border-radius:7px !important; font-family:'DM Sans',sans-serif !important; font-size:.82rem !important; font-weight:600 !important; }
-    .paginate_button.disabled { display:inline-block !important; opacity:.4; }
-    .dataTables_paginate { display:block !important; }
+    .btn-fila:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,.2); }
+    .btn-edit { background: #1565c0; margin-right: 4px; }
+    .btn-del  { background: var(--rojo); }
+
+    /* DataTables */
+    .dataTables_wrapper { padding: 12px 16px; }
+    .dataTables_filter input {
+        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
+        padding: 6px 12px !important; font-family: 'DM Sans', sans-serif !important;
+        font-size: .85rem !important; outline: none !important; transition: border-color .2s;
+        max-width: 160px;
+    }
+    .dataTables_filter input:focus { border-color: var(--rojo) !important; }
+    .dataTables_filter label,
+    .dataTables_length label,
+    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
+    .dataTables_length select {
+        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
+        padding: 4px 8px !important; appearance: none !important; background: white !important;
+    }
+    .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
+    .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
+    .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
+    .paginate_button.disabled { display: inline-block !important; opacity: .4; }
+    .dataTables_paginate { display: block !important; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 767px) {
+        .taller-header {
+            padding: 16px;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header-actions { width: 100%; }
+
+        .btn-accion {
+            flex: 1;
+            justify-content: center;
+            font-size: .7rem;
+            padding: 9px 10px;
+        }
+
+        .header-titulo { font-size: 1.5rem; }
+
+        #tabla_vehiculos { min-width: 560px; }
+
+        #tabla_vehiculos thead th,
+        #tabla_vehiculos tbody td { padding: 10px 8px; }
+
+        /* Ocultar Propietario en tablet pequeña */
+        #tabla_vehiculos th:nth-child(5),
+        #tabla_vehiculos td:nth-child(5) { display: none; }
+
+        .dataTables_wrapper { padding: 8px 10px; }
+        .dataTables_filter,
+        .dataTables_length { float: none !important; text-align: left !important; margin-bottom: 6px; }
+        .dataTables_filter input { max-width: 100%; width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+        .header-titulo { font-size: 1.3rem; }
+
+        /* Ocultar también Mantenimiento en móvil muy pequeño */
+        #tabla_vehiculos th:nth-child(6),
+        #tabla_vehiculos td:nth-child(6) { display: none; }
+    }
 </style>
 {% endblock %}
 
@@ -79,28 +254,40 @@
 
     <div class="taller-header">
         <div class="header-left">
-            <div class="header-icon-wrap" style="background:transparent;box-shadow:none;">
-                <img src="{% static 'imagenes/listvehiculos.jpeg' %}" style="width:56px;height:56px;object-fit:contain;border-radius:12px;" onerror="this.src='{% static 'imagenes/default-car.png' %}'">
+            <div class="header-icon-wrap" style="background:transparent; box-shadow:none;">
+                <img src="{% static 'imagenes/listvehiculos.jpeg' %}"
+                     style="width:56px;height:56px;object-fit:contain;border-radius:12px;"
+                     onerror="this.style.display='none'">
             </div>
             <div>
                 <h1 class="header-titulo">{{ titulo|default:"Vehículos" }}</h1>
                 <div class="header-sub">
                     <span>Registro de vehículos de Acerautos</span>
-                    {% if total_vencidos %}<span class="badge-alerta badge-vencido" style="display:inline-flex;align-items:center;gap:5px;background:#fff0f0;color:#b71c1c;padding:4px 10px;border-radius:6px;font-size:.75rem;font-weight:700;margin-left:12px;cursor:pointer;"><span style="width:7px;height:7px;background:#d32f2f;border-radius:50%;"></span>{{ total_vencidos }} vencido{{ total_vencidos|pluralize }}</span>{% endif %}
-                    {% if total_alertas %}<span class="badge-alerta badge-alerta-km" style="display:inline-flex;align-items:center;gap:5px;background:#fff8e1;color:#b45309;padding:4px 10px;border-radius:6px;font-size:.75rem;font-weight:700;margin-left:8px;cursor:pointer;"><span style="width:7px;height:7px;background:#f59e0b;border-radius:50%;"></span>{{ total_alertas }} en alerta</span>{% endif %}
+                    {% if total_vencidos %}
+                    <span class="badge-estado badge-vencido">
+                        <span class="badge-dot badge-dot-rojo"></span>
+                        {{ total_vencidos }} vencido{{ total_vencidos|pluralize }}
+                    </span>
+                    {% endif %}
+                    {% if total_alertas %}
+                    <span class="badge-estado badge-alerta-km">
+                        <span class="badge-dot badge-dot-naranja"></span>
+                        {{ total_alertas }} en alerta
+                    </span>
+                    {% endif %}
                 </div>
             </div>
         </div>
+
         <div class="header-actions">
             <a href="{% url 'app:reporte_vehiculos_pdf' %}" class="btn-accion btn-pdf">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
                 PDF
             </a>
             <a href="{% url 'app:reporte_vehiculos_excel' %}" class="btn-accion btn-excel">
                 <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
                 Excel
             </a>
-            <!-- CAMBIO 1: mecánico también puede crear vehículos -->
             {% if request.user.is_superuser or request.user.cargo == 'ADMIN' or request.user.cargo == 'MECANICO' %}
             <a href="{% url 'app:crear_vehiculo' %}" class="btn-accion btn-nuevo">
                 <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -121,7 +308,6 @@
                         <th>Modelo / Año</th>
                         <th>Propietario</th>
                         <th>Mantenimiento</th>
-                        <!-- CAMBIO 2: mecánico también ve la columna Acciones -->
                         {% if request.user.is_superuser or request.user.cargo == 'ADMIN' or request.user.cargo == 'MECANICO' %}
                         <th class="text-center">Acciones</th>
                         {% endif %}
@@ -131,37 +317,34 @@
                     {% for item in vehiculos_con_estado %}
                     {% with v=item.vehiculo %}
                     <tr>
-                        <td class="text-center" style="font-weight:700;color:var(--muted);font-size:.8rem;">{{ v.id }}</td>
+                        <td class="text-center" style="font-weight:700; color:var(--muted); font-size:.8rem;">{{ v.id }}</td>
                         <td><span class="placa-box">{{ v.placa }}</span></td>
                         <td><span class="badge-marca">{{ v.marca.nombre|default:"S/M" }}</span></td>
                         <td>
-                            <span style="font-weight:600;color:var(--carbon);">{{ v.modelo|default:"-" }}</span>
+                            <span style="font-weight:600; color:var(--carbon);">{{ v.modelo|default:"-" }}</span>
+                            {% if v.anio %}<small style="color:var(--muted); font-size:.75rem; display:block;">{{ v.anio }}</small>{% endif %}
                         </td>
                         <td>
                             <div class="d-flex align-items-center" style="gap:10px;">
                                 <div class="cliente-avatar">{{ v.cliente.nombre|first|upper|default:"?" }}</div>
                                 <div>
                                     <span class="cliente-nombre d-block">{{ v.cliente.nombre }}</span>
-                                    <small style="color:var(--muted);font-size:.75rem;">Doc: {{ v.cliente.numero_documento }}</small>
+                                    <small style="color:var(--muted); font-size:.75rem;">Doc: {{ v.cliente.numero_documento }}</small>
                                 </div>
                             </div>
                         </td>
                         <td>
                             {% if item.estado_mant == 'vencido' %}
                                 <span class="mant-vencido">
-                                    <span class="mant-dot dot-vencido"></span>
-                                    Vencido
+                                    <span class="mant-dot dot-vencido"></span>Vencido
                                 </span>
                                 <span class="km-sub">
                                     {% if item.km_restantes %}{{ item.km_restantes|floatformat:0 }} km excedidos{% endif %}
-                                    {% if item.dias_restantes and item.dias_restantes <= 0 %}
-                                         · hace {% widthratio item.dias_restantes 1 -1 %} días
-                                    {% endif %}
+                                    {% if item.dias_restantes and item.dias_restantes <= 0 %} · hace {% widthratio item.dias_restantes 1 -1 %} días{% endif %}
                                 </span>
                             {% elif item.estado_mant == 'alerta' %}
                                 <span class="mant-alerta">
-                                    <span class="mant-dot dot-alerta"></span>
-                                    Próximo
+                                    <span class="mant-dot dot-alerta"></span>Próximo
                                 </span>
                                 <span class="km-sub">
                                     {% if item.km_restantes %}~{{ item.km_restantes|floatformat:0 }} km restantes{% endif %}
@@ -169,8 +352,7 @@
                                 </span>
                             {% elif item.estado_mant == 'ok' %}
                                 <span class="mant-ok">
-                                    <span class="mant-dot dot-ok"></span>
-                                    Al día
+                                    <span class="mant-dot dot-ok"></span>Al día
                                 </span>
                                 <span class="km-sub">
                                     {% if item.km_restantes %}~{{ item.km_restantes|floatformat:0 }} km restantes{% endif %}
@@ -178,21 +360,27 @@
                                 </span>
                             {% else %}
                                 <span class="mant-sin">
-                                    <span class="mant-dot dot-sin"></span>
-                                    Sin datos
+                                    <span class="mant-dot dot-sin"></span>Sin datos
                                 </span>
                                 <span class="km-sub">No hay registros activos</span>
                             {% endif %}
                         </td>
-                        <!-- CAMBIO 3: mecánico ve editar pero NO eliminar -->
                         {% if request.user.is_superuser or request.user.cargo == 'ADMIN' or request.user.cargo == 'MECANICO' %}
                         <td class="text-center">
                             <a href="{% url 'app:editar_vehiculo' v.id %}" class="btn-fila btn-edit" title="Editar">
-                                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
                             </a>
                             {% if request.user.cargo != 'MECANICO' %}
                             <a href="{% url 'app:eliminar_vehiculo' v.id %}" class="btn-fila btn-del" title="Eliminar">
-                                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                <svg viewBox="0 0 24 24">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                    <path d="M10 11v6M14 11v6"/>
+                                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                                </svg>
                             </a>
                             {% endif %}
                         </td>
@@ -201,7 +389,9 @@
                     {% endwith %}
                     {% empty %}
                     <tr>
-                        <td colspan="7" class="text-center py-4 text-muted">No hay vehículos registrados.</td>
+                        <td colspan="7" class="text-center py-4" style="color:var(--muted); font-family:'DM Sans',sans-serif;">
+                            No hay vehículos registrados.
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -217,38 +407,53 @@
 <script>
 $(document).ready(function () {
     $('#tabla_vehiculos').DataTable({
-        responsive: true, autoWidth: false,
-        order: [[0, "desc"]], 
+        responsive: true,
+        autoWidth: false,
+        order: [[0, "desc"]],
         pagingType: "full_numbers",
+        columnDefs: [
+            { orderable: false, targets: -1 }
+        ],
         language: {
-            "sProcessing":"Procesando...", "sLengthMenu":"Mostrar _MENU_ registros",
-            "sZeroRecords":"No se encontraron resultados", "sEmptyTable":"Ningún dato disponible",
-            "sInfo":"Mostrando _START_ a _END_ de _TOTAL_ registros",
-            "sInfoEmpty":"Mostrando 0 a 0 de 0 registros",
-            "sInfoFiltered":"(filtrado de _MAX_ registros totales)",
-            "sSearch":"Buscar:", "sLoadingRecords":"Cargando...",
-            "oPaginate":{"sFirst":"«","sLast":"»","sNext":"›","sPrevious":"‹"}
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible",
+            "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando 0 a 0 de 0 registros",
+            "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
+            "sSearch":         "Buscar:",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "«",
+                "sLast":     "»",
+                "sNext":     "›",
+                "sPrevious": "‹"
+            }
         }
     });
 
+    // Tooltip para badges de alerta
     const tooltip = $('#tooltip');
     const mensajes = {
-        'badge-vencido':   'Ha superado el tiempo estimado para mantenimiento.',
-        'badge-alerta-km': 'Próximo a la fecha estimada. Agende el servicio pronto.'
+        'badge-vencido':    'Este vehículo ha superado el tiempo estimado para mantenimiento.',
+        'badge-alerta-km':  'Próximo a la fecha estimada. Agende el servicio pronto.'
     };
-    $(document).on('click', '.badge-alerta', function(e) {
-        const clase = $(this).attr('class').split(' ').find(c => c.startsWith('badge-') && c !== 'badge-alerta');
+
+    $(document).on('click', '.badge-estado', function (e) {
+        const clase = $(this).hasClass('badge-vencido') ? 'badge-vencido' : 'badge-alerta-km';
         const mensaje = mensajes[clase];
-        if(!mensaje) return;
+        if (!mensaje) return;
         const rect = this.getBoundingClientRect();
         tooltip.text(mensaje).addClass('mostrar').css({
-            left: (rect.left + rect.width/2 - tooltip.outerWidth()/2) + 'px',
-            top:  (rect.top - tooltip.outerHeight() - 10) + 'px'
+            left: (rect.left + rect.width / 2 - tooltip.outerWidth() / 2) + 'px',
+            top:  (rect.top - tooltip.outerHeight() - 10 + window.scrollY) + 'px'
         });
         setTimeout(() => tooltip.removeClass('mostrar'), 4000);
     });
-    $(document).on('click', function(e) {
-        if (!$(e.target).closest('.badge-alerta').length) tooltip.removeClass('mostrar');
+
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest('.badge-estado').length) tooltip.removeClass('mostrar');
     });
 });
 </script>
