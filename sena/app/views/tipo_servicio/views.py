@@ -9,18 +9,27 @@ from app.models import TipoServicio
 from app.forms import TipoServicioForm
 
 
-# ── MIXIN DE PROTECCIÓN ───────────────────────────────────
+# ── Mixin 1: Solo ADMIN ──────────────────────────────────────────
 class SoloAdminMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
 
     def handle_no_permission(self):
         messages.error(self.request, "No tienes permisos de administrador para gestionar los servicios.")
-        return redirect('app:tipo_servicio_list')
+        return redirect('app:dashboard')
+
+# ── Mixin 2: ADMIN o MECANICO ────────────────────────────────────
+class AdminOMecanicoMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.cargo in ('ADMIN', 'MECANICO') or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos para acceder a este módulo.")
+        return redirect('app:dashboard')
 
 
-# 1. LISTADO
-class TipoServicioListView(LoginRequiredMixin, ListView):
+# ── 1. LISTADO — Mecánico puede ver ──────────────────────────────
+class TipoServicioListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
     model = TipoServicio
     template_name = 'TipoServicio/listar.html'
     context_object_name = 'servicios'
@@ -29,12 +38,11 @@ class TipoServicioListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['titulo']        = 'Listado de Tipos de Servicio'
         context['crear_url']     = reverse_lazy('app:create_servico')
-        # Conteo real de activos desde la BD
         context['total_activos'] = TipoServicio.objects.filter(estado=True).count()
         return context
 
 
-# 2. CREAR
+# ── 2. CREAR — Solo Admin ─────────────────────────────────────────
 class TipoServicioCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
     model         = TipoServicio
     form_class    = TipoServicioForm
@@ -52,8 +60,7 @@ class TipoServicioCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
     def form_valid(self, form):
         form.save()
         messages.success(self.request, 'Tipo de servicio creado exitosamente en Acerautos.')
-        next_param = self.request.POST.get('next', '')
-        if next_param == 'orden':
+        if self.request.POST.get('next', '') == 'orden':
             return redirect(reverse_lazy('app:orden_servicio_create'))
         return redirect(self.success_url)
 
@@ -62,7 +69,7 @@ class TipoServicioCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
         return super().form_invalid(form)
 
 
-# 3. EDITAR
+# ── 3. EDITAR — Solo Admin ────────────────────────────────────────
 class TipoServicioUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
     model         = TipoServicio
     form_class    = TipoServicioForm
@@ -80,8 +87,7 @@ class TipoServicioUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
     def form_valid(self, form):
         form.save()
         messages.success(self.request, 'Tipo de servicio actualizado exitosamente.')
-        next_param = self.request.POST.get('next', '')
-        if next_param == 'orden':
+        if self.request.POST.get('next', '') == 'orden':
             return redirect(reverse_lazy('app:orden_servicio_create'))
         return redirect(self.success_url)
 
@@ -90,7 +96,7 @@ class TipoServicioUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
         return super().form_invalid(form)
 
 
-# 4. ELIMINAR
+# ── 4. ELIMINAR — Solo Admin ──────────────────────────────────────
 class TipoServicioDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
     model         = TipoServicio
     template_name = 'TipoServicio/eliminar.html'

@@ -564,10 +564,12 @@
 
                         
 
+                            {% if request.user.cargo != 'MECANICO' %}
                             <button type="button"
-                                    class="btn-fila btn-delete"
-                                    title="Eliminar"
-                                    onclick="confirmarEliminar({{ s.pk }}, '{{ s.vehiculo.placa }}')">
+                            class="btn-fila btn-delete"
+                            title="Eliminar"
+                            onclick="confirmarEliminar({{ s.pk }}, '{{ s.vehiculo.placa }}')">
+
 
                                 <svg viewBox="0 0 24 24">
                                     <polyline points="3 6 5 6 21 6"/>
@@ -578,7 +580,7 @@
                                 </svg>
 
                             </button>
-
+                            {% endif %}
                         </td>
 
                     </tr>

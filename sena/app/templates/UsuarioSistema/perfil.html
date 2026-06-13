@@ -67,6 +67,14 @@
         flex-shrink: 0;
         position: relative;
         animation: float 3s ease-in-out infinite;
+        overflow: hidden;
+    }
+
+    .perfil-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 24px;
     }
 
     @keyframes float {
@@ -450,7 +458,11 @@
     <div class="perfil-header">
         <div class="perfil-header-content">
             <div class="perfil-avatar">
-                {% if usuario.first_name %}{{ usuario.first_name|slice:':1'|upper }}{% else %}{{ usuario.username|slice:':1'|upper }}{% endif %}
+                {% if usuario.foto %}
+                    <img src="{{ usuario.foto.url }}" alt="Foto de {{ usuario.username }}">
+                {% else %}
+                    {% if usuario.first_name %}{{ usuario.first_name|slice:':1'|upper }}{% else %}{{ usuario.username|slice:':1'|upper }}{% endif %}
+                {% endif %}
             </div>
             <div class="perfil-header-text">
                 <h1>
@@ -524,11 +536,13 @@
                     </div>
                 </div>
 
+                {% if request.user.cargo != 'MECANICO' %}
                 <div class="sidebar-section">
                     <a href="{% url 'app:editar_usuario' usuario.pk %}" class="btn-editar">
-                        <i class="fas fa-pen-fancy"></i> Editar Perfil
-                    </a>
-                </div>
+                    <i class="fas fa-pen-fancy"></i> Editar Perfil
+                     </a>
+                    </div>
+                {% endif %}
 
             </div>
         </div>

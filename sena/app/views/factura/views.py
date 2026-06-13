@@ -4,19 +4,37 @@ from django.contrib import messages
 from django.utils import timezone
 from django.views import View
 from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from decimal import Decimal
 
 from app.models import Factura, OrdenServicio, Producto, Caja
 from app.forms import FacturaForm
-# --- IMPORTANTE: IMPORTAR EL MIXIN ---
-from app.mixins import AdminRequeridoMixin 
 
-# ─── LISTAR ───────────────────────────────────────────────
-class FacturaListView(AdminRequeridoMixin, ListView): # <--- Candado puesto
+
+# ── Mixin 1: Solo ADMIN ──────────────────────────────────────────
+class SoloAdminMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos de administrador para realizar esta acción.")
+        return redirect('app:dashboard')
+
+# ── Mixin 2: ADMIN o MECANICO ────────────────────────────────────
+class AdminOMecanicoMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.cargo in ('ADMIN', 'MECANICO') or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos para acceder a este módulo.")
+        return redirect('app:dashboard')
+
+
+# ── LISTAR — Mecánico puede ver ──────────────────────────────────
+class FacturaListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
     model = Factura
     template_name = 'factura/listar.html'
     context_object_name = 'factura'
-    login_url = 'login:login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -24,13 +42,12 @@ class FacturaListView(AdminRequeridoMixin, ListView): # <--- Candado puesto
         return context
 
 
-# ─── CREAR ────────────────────────────────────────────────
-class FacturaCreateView(AdminRequeridoMixin, CreateView): # <--- Candado puesto
+# ── CREAR — Solo Admin ────────────────────────────────────────────
+class FacturaCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
     model = Factura
     form_class = FacturaForm
     template_name = 'factura/crear.html'
     success_url = reverse_lazy('app:listar_factura')
-    login_url = 'login:login'
 
     def form_valid(self, form):
         factura = form.save(commit=False)
@@ -60,20 +77,18 @@ class FacturaCreateView(AdminRequeridoMixin, CreateView): # <--- Candado puesto
         return redirect(self.success_url)
 
 
-# ─── DETALLE ──────────────────────────────────────────────
-class FacturaDetailView(AdminRequeridoMixin, DetailView): # <--- Candado puesto
+# ── DETALLE — Mecánico puede ver ─────────────────────────────────
+class FacturaDetailView(LoginRequiredMixin, AdminOMecanicoMixin, DetailView):
     model = Factura
     template_name = 'factura/detalle.html'
     context_object_name = 'factura'
-    login_url = 'login:login'
 
 
-# ─── ELIMINAR ─────────────────────────────────────────────
-class FacturaDeleteView(AdminRequeridoMixin, DeleteView): # <--- Candado puesto
+# ── ELIMINAR — Solo Admin ─────────────────────────────────────────
+class FacturaDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
     model = Factura
     template_name = 'factura/eliminar.html'
     success_url = reverse_lazy('app:listar_factura')
-    login_url = 'login:login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -85,10 +100,8 @@ class FacturaDeleteView(AdminRequeridoMixin, DeleteView): # <--- Candado puesto
         return super().form_valid(form)
 
 
-# ─── PAGAR (POST) ─────────────────────────────────────────
-class PagarFacturaView(AdminRequeridoMixin, View): # <--- Candado puesto
-    login_url = 'login:login'
-
+# ── PAGAR — Solo Admin ────────────────────────────────────────────
+class PagarFacturaView(LoginRequiredMixin, SoloAdminMixin, View):
     def post(self, request, pk):
         factura = get_object_or_404(Factura, pk=pk)
         metodo  = request.POST.get('metodo_pago', '').strip()
@@ -127,5 +140,5 @@ class PagarFacturaView(AdminRequeridoMixin, View): # <--- Candado puesto
                 orden.estado = 'Terminado'
                 orden.save()
 
-        messages.success(request, f"Pago registrado correctamente.")
+        messages.success(request, "Pago registrado correctamente.")
         return redirect('app:listar_factura')

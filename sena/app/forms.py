@@ -497,13 +497,16 @@ class UsuarioSistemaForm(forms.ModelForm):
 
     class Meta:
         model  = UsuarioSistema
-        fields = ['username', 'first_name', 'last_name', 'email', 'tipo_documento', 'cedula', 'telefono', 'cargo', 'is_active']
+        fields = ['username', 'first_name', 'last_name', 'email',
+                  'tipo_documento', 'cedula', 'telefono', 'cargo',
+                  'is_active', 'foto']  # ← foto agregado
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['first_name'].required = True
         self.fields['last_name'].required  = True
         self.fields['email'].required      = True
+        self.fields['foto'].required       = False  # opcional
         if self.instance.pk:
             self.fields['password1'].help_text = "Dejar vacío para no cambiar la contraseña."
 

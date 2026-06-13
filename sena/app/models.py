@@ -22,6 +22,7 @@ class UsuarioSistema(AbstractUser):
     telefono       = models.CharField(max_length=20, null=True, blank=True)
     cargo          = models.CharField(max_length=20, choices=CARGOS, default='ADMIN')
     activo         = models.BooleanField(default=True)
+    foto           = models.ImageField(upload_to='usuarios/fotos/', blank=True, null=True)
 
     @property
     def nombre_completo(self):

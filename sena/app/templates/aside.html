@@ -183,63 +183,35 @@ body.sidebar-mini .sb-item::after {
 }
 body.sidebar-mini .sb-item:hover::after { opacity: 1; }
 
-/* ══ MÓVIL ══
-   El aside maneja position:fixed + transform.
-   body.html NO debe poner width:0 al sidebar en móvil,
-   solo debe omitir el ancho (o poner display:none) para
-   que el aside tome el control total con position:fixed.
-*/
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .app-sidebar {
         position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        bottom: 0 !important;
-        width: 270px !important;
-        min-width: 270px !important;
-        /* Cerrado por defecto: fuera de pantalla */
+        top: 0 !important; left: 0 !important; bottom: 0 !important;
+        width: 270px !important; min-width: 270px !important;
+        height: 100vh !important;
         transform: translateX(-100%) !important;
         transition: transform .3s cubic-bezier(.4,0,.2,1) !important;
         z-index: 1030 !important;
-        height: 100vh !important;
+        border-right: 1px solid rgba(255,255,255,.05) !important;
     }
-
-    /* Abierto: body.sidebar-open añadido por JS de body.html */
-    body.sidebar-open .app-sidebar {
-        transform: translateX(0) !important;
-    }
-
-    .app-main-container {
-        margin-left: 0 !important;
-        width: 100% !important;
-        border-left: none !important;
-    }
-
-    /* Texto siempre visible en móvil (no modo mini) */
-    .sb-brand-name, .sb-brand-sub,
-    .sb-item-text, .sb-user-info, .sb-step {
-        opacity: 1 !important;
-        pointer-events: auto !important;
-    }
-    .sb-section {
-        opacity: 1 !important;
-        height: auto !important;
-        padding: 18px 16px 6px !important;
-        overflow: visible !important;
-    }
-    /* Sin tooltips en móvil */
+    body.sidebar-open .app-sidebar { transform: translateX(0) !important; }
+    .sb-brand-name, .sb-brand-sub, .sb-item-text, .sb-user-info, .sb-step { opacity: 1 !important; pointer-events: auto !important; }
+    .sb-section { opacity: 1 !important; height: auto !important; padding: 18px 16px 6px !important; overflow: visible !important; }
     .sb-item::after { display: none !important; }
+    body.sidebar-mini .sb-brand-name, body.sidebar-mini .sb-brand-sub,
+    body.sidebar-mini .sb-item-text, body.sidebar-mini .sb-user-info,
+    body.sidebar-mini .sb-step { opacity: 1 !important; pointer-events: auto !important; }
+    body.sidebar-mini .sb-section { opacity: 1 !important; height: auto !important; padding: 18px 16px 6px !important; }
 }
 </style>
 
-<!-- Overlay: toca fuera para cerrar -->
 <div id="sb-overlay"></div>
 
 <nav class="app-sidebar" id="appSidebar">
 
     <a href="{% url 'app:dashboard' %}" class="sb-brand">
         <div class="sb-logo">
-            <img src="{% static 'imagenes/logoempresa.jpeg' %}" alt="Logo">
+            <img src="{% static 'imagenes/logoempresa.jpeg' %}" alt="Logo Acerautos">
         </div>
         <div style="flex:1;min-width:0;">
             <div class="sb-brand-name">Acer<em>autos</em></div>
@@ -249,17 +221,20 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
 
     <div class="sb-scroll">
 
+        <!-- General -->
         <div class="sb-section">
             <span class="sb-section-label">General</span>
             <div class="sb-section-line"></div>
         </div>
         <a href="{% url 'app:dashboard' %}"
            class="sb-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
-           data-tip="Panel de control">
-            <img src="{% static 'imagenes/paneldecontrol.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Panel de control"
+           title="Panel de control">
+            <img src="{% static 'imagenes/paneldecontrol.jpeg' %}" class="sb-img-icon" alt="Panel de control">
             <span class="sb-item-text">Panel de control</span>
         </a>
 
+        <!-- Sección 01 -->
         <div class="sb-section">
             <span class="sb-section-num">01</span>
             <div class="sb-section-line"></div>
@@ -269,37 +244,53 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
         {% if user.cargo == 'ADMIN' %}
         <a href="{% url 'app:listar_clientes' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_clientes' %}active{% endif %}"
-           data-tip="Clientes">
-            <img src="{% static 'imagenes/usurioss.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Clientes"
+           title="Clientes">
+            <img src="{% static 'imagenes/usurioss.jpeg' %}" class="sb-img-icon" alt="Clientes">
             <span class="sb-item-text">Clientes</span>
             <span class="sb-step">P1</span>
         </a>
         {% endif %}
 
+        {% if user.cargo == 'MECANICO' %}
+        <a href="{% url 'app:listar_clientes' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_clientes' %}active{% endif %}"
+           data-tip="Clientes"
+           title="Clientes">
+            <img src="{% static 'imagenes/usurioss.jpeg' %}" class="sb-img-icon" alt="Clientes">
+            <span class="sb-item-text">Clientes</span>
+            <span class="sb-step">M1</span>
+        </a>
+        {% endif %}
+
         <a href="{% url 'app:listar_vehiculos' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_vehiculos' %}active{% endif %}"
-           data-tip="Vehículos">
-            <img src="{% static 'imagenes/carro.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Vehículos"
+           title="Vehículos">
+            <img src="{% static 'imagenes/carro.jpeg' %}" class="sb-img-icon" alt="Vehículos">
             <span class="sb-item-text">Vehículos</span>
-            <span class="sb-step">{% if user.cargo == 'MECANICO' %}M1{% else %}P2{% endif %}</span>
+            <span class="sb-step">{% if user.cargo == 'MECANICO' %}M2{% else %}P2{% endif %}</span>
         </a>
 
         <a href="{% url 'app:orden_servicio_list' %}"
            class="sb-item {% if request.resolver_match.url_name == 'orden_servicio_list' %}active{% endif %}"
-           data-tip="Órdenes">
-            <img src="{% static 'imagenes/orden.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Órdenes de Servicio"
+           title="Órdenes de Servicio">
+            <img src="{% static 'imagenes/orden.jpeg' %}" class="sb-img-icon" alt="Órdenes de Servicio">
             <span class="sb-item-text">Órdenes de Servicio</span>
-            <span class="sb-step">{% if user.cargo == 'MECANICO' %}M2{% else %}P3{% endif %}</span>
+            <span class="sb-step">{% if user.cargo == 'MECANICO' %}M3{% else %}P3{% endif %}</span>
         </a>
 
         <a href="{% url 'app:tipo_servicio_list' %}"
            class="sb-item {% if request.resolver_match.url_name == 'tipo_servicio_list' %}active{% endif %}"
-           data-tip="Servicios">
-            <img src="{% static 'imagenes/servicios.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Servicios"
+           title="Servicios">
+            <img src="{% static 'imagenes/servicios.jpeg' %}" class="sb-img-icon" alt="Servicios">
             <span class="sb-item-text">Servicios</span>
-            <span class="sb-step">{% if user.cargo == 'MECANICO' %}M3{% else %}P4{% endif %}</span>
+            <span class="sb-step">{% if user.cargo == 'MECANICO' %}M4{% else %}P4{% endif %}</span>
         </a>
 
+        <!-- ══ MÓDULOS EXCLUSIVOS ADMIN ══ -->
         {% if user.cargo == 'ADMIN' %}
         <div class="sb-section">
             <span class="sb-section-num">02</span>
@@ -308,29 +299,33 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
         </div>
         <a href="{% url 'app:detalle_orden_list' %}"
            class="sb-item {% if request.resolver_match.url_name == 'detalle_orden_list' %}active{% endif %}"
-           data-tip="Análisis de consumo">
-            <img src="{% static 'imagenes/analisis.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Análisis de consumo"
+           title="Análisis de consumo">
+            <img src="{% static 'imagenes/analisis.jpeg' %}" class="sb-img-icon" alt="Análisis de consumo">
             <span class="sb-item-text">Análisis De Consumo</span>
             <span class="sb-step">P5</span>
         </a>
         <a href="{% url 'app:listar_producto' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_producto' %}active{% endif %}"
-           data-tip="Productos">
-            <img src="{% static 'imagenes/productos.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Productos"
+           title="Productos">
+            <img src="{% static 'imagenes/productos.jpeg' %}" class="sb-img-icon" alt="Productos">
             <span class="sb-item-text">Productos</span>
             <span class="sb-step">P6</span>
         </a>
         <a href="{% url 'app:listar_marca' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_marca' %}active{% endif %}"
-           data-tip="Marcas">
-            <img src="{% static 'imagenes/marcas.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Marcas"
+           title="Marcas">
+            <img src="{% static 'imagenes/marcas.jpeg' %}" class="sb-img-icon" alt="Marcas">
             <span class="sb-item-text">Marcas</span>
             <span class="sb-step">P7</span>
         </a>
         <a href="{% url 'app:listar_compatibilidad' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_compatibilidad' %}active{% endif %}"
-           data-tip="Compatibilidad">
-            <img src="{% static 'imagenes/compatibilidad.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Compatibilidad"
+           title="Compatibilidad">
+            <img src="{% static 'imagenes/compatibilidad.jpeg' %}" class="sb-img-icon" alt="Compatibilidad">
             <span class="sb-item-text">Compatibilidad</span>
             <span class="sb-step">P8</span>
         </a>
@@ -342,15 +337,17 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
         </div>
         <a href="{% url 'app:listar_proveedores' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_proveedores' %}active{% endif %}"
-           data-tip="Proveedores">
-            <img src="{% static 'imagenes/proveedor.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Proveedores"
+           title="Proveedores">
+            <img src="{% static 'imagenes/proveedor.jpeg' %}" class="sb-img-icon" alt="Proveedores">
             <span class="sb-item-text">Proveedores</span>
             <span class="sb-step">P9</span>
         </a>
         <a href="{% url 'app:lista_compras' %}"
            class="sb-item {% if request.resolver_match.url_name == 'lista_compras' %}active{% endif %}"
-           data-tip="Compras">
-            <img src="{% static 'imagenes/compras.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Compras"
+           title="Compras">
+            <img src="{% static 'imagenes/compras.jpeg' %}" class="sb-img-icon" alt="Compras">
             <span class="sb-item-text">Compras</span>
             <span class="sb-step">P10</span>
         </a>
@@ -362,8 +359,9 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
         </div>
         <a href="{% url 'app:seguimiento_list' %}"
            class="sb-item {% if request.resolver_match.url_name == 'seguimiento_list' %}active{% endif %}"
-           data-tip="Seguimiento">
-            <img src="{% static 'imagenes/seguimientoo.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Seguimiento"
+           title="Seguimiento">
+            <img src="{% static 'imagenes/seguimientoo.jpeg' %}" class="sb-img-icon" alt="Seguimiento">
             <span class="sb-item-text">Seguimiento</span>
             <span class="sb-step">P11</span>
         </a>
@@ -375,15 +373,17 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
         </div>
         <a href="{% url 'app:caja_listar' %}"
            class="sb-item {% if request.resolver_match.url_name == 'caja_listar' %}active{% endif %}"
-           data-tip="Caja">
-            <img src="{% static 'imagenes/caja.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Caja"
+           title="Caja">
+            <img src="{% static 'imagenes/caja.jpeg' %}" class="sb-img-icon" alt="Caja">
             <span class="sb-item-text">Caja</span>
             <span class="sb-step">P12</span>
         </a>
         <a href="{% url 'app:listar_factura' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_factura' %}active{% endif %}"
-           data-tip="Facturación">
-            <img src="{% static 'imagenes/factura.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Facturación"
+           title="Facturación">
+            <img src="{% static 'imagenes/factura.jpeg' %}" class="sb-img-icon" alt="Facturación">
             <span class="sb-item-text">Facturación</span>
             <span class="sb-step">P13</span>
         </a>
@@ -395,24 +395,66 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
         </div>
         <a href="{% url 'app:listar_usuario' %}"
            class="sb-item {% if request.resolver_match.url_name == 'listar_usuario' %}active{% endif %}"
-           data-tip="Usuarios">
-            <img src="{% static 'imagenes/usurios.jpeg' %}" class="sb-img-icon" alt="">
+           data-tip="Usuarios"
+           title="Usuarios">
+            <img src="{% static 'imagenes/usurios.jpeg' %}" class="sb-img-icon" alt="Usuarios">
             <span class="sb-item-text">Usuarios</span>
             <span class="sb-step">P14</span>
         </a>
         {% endif %}
 
+        <!-- ══ MÓDULOS EXCLUSIVOS MECÁNICO ══ -->
         {% if user.cargo == 'MECANICO' %}
         <div class="sb-section">
             <span class="sb-section-num">02</span>
             <div class="sb-section-line"></div>
-            <span class="sb-section-label">Alertas</span>
+            <span class="sb-section-label">Seguimiento</span>
         </div>
-        <a href="{% url 'app:listar_notificacion' %}"
-           class="sb-item {% if request.resolver_match.url_name == 'listar_notificacion' %}active{% endif %}"
-           data-tip="Notificaciones">
-            <img src="{% static 'imagenes/notificaiones.jpeg' %}" class="sb-img-icon" alt="">
-            <span class="sb-item-text">Notificaciones</span>
+        <a href="{% url 'app:seguimiento_list' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'seguimiento_list' %}active{% endif %}"
+           data-tip="Seguimiento"
+           title="Seguimiento">
+            <img src="{% static 'imagenes/seguimientoo.jpeg' %}" class="sb-img-icon" alt="Seguimiento">
+            <span class="sb-item-text">Seguimiento</span>
+            <span class="sb-step">M5</span>
+        </a>
+
+        <div class="sb-section">
+            <span class="sb-section-num">03</span>
+            <div class="sb-section-line"></div>
+            <span class="sb-section-label">Consulta</span>
+        </div>
+        <a href="{% url 'app:listar_producto' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_producto' %}active{% endif %}"
+           data-tip="Productos"
+           title="Productos">
+            <img src="{% static 'imagenes/productos.jpeg' %}" class="sb-img-icon" alt="Productos">
+            <span class="sb-item-text">Productos</span>
+            <span class="sb-step">M6</span>
+        </a>
+        <a href="{% url 'app:listar_factura' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_factura' %}active{% endif %}"
+           data-tip="Facturas"
+           title="Facturas">
+            <img src="{% static 'imagenes/factura.jpeg' %}" class="sb-img-icon" alt="Facturas">
+            <span class="sb-item-text">Facturas</span>
+            <span class="sb-step">M7</span>
+        </a>
+        <a href="{% url 'app:listar_marca' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_marca' %}active{% endif %}"
+           data-tip="Marcas"
+           title="Marcas">
+            <img src="{% static 'imagenes/marcas.jpeg' %}" class="sb-img-icon" alt="Marcas">
+            <span class="sb-item-text">Marcas</span>
+            <span class="sb-step">M8</span>
+        </a>
+        <a href="{% url 'app:listar_proveedores' %}"
+           class="sb-item {% if request.resolver_match.url_name == 'listar_proveedores' %}active{% endif %}"
+           data-tip="Proveedores"
+           title="Proveedores">
+            <img src="{% static 'imagenes/proveedor.jpeg' %}" class="sb-img-icon" alt="Proveedores">
+            <span class="sb-item-text">Proveedores</span>
+            <span class="sb-step">M9</span>
         </a>
         {% endif %}
 
@@ -421,7 +463,7 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
     <div class="sb-footer">
         <div class="sb-avatar-wrap">
             <img src="https://ui-avatars.com/api/?name={{ user.first_name|default:user.username }}+{{ user.last_name }}&background=d32f2f&color=fff&bold=true"
-                 class="sb-avatar" alt="avatar">
+                 class="sb-avatar" alt="Avatar de {{ user.nombre_completo }}">
         </div>
         <div class="sb-user-info">
             <div class="sb-user-name">{{ user.nombre_completo }}</div>
@@ -444,49 +486,44 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
 <script>
 (function () {
     var overlay = document.getElementById('sb-overlay');
+    var body = document.body;
 
-    function isMobile() { return window.innerWidth <= 768; }
+    function isMobile() { return window.matchMedia('(max-width: 900px)').matches; }
 
     function closeSidebar() {
-        document.body.classList.remove('sidebar-open');
+        body.classList.remove('sidebar-open');
         overlay.classList.remove('active');
-        document.body.style.overflow = '';
+        body.style.overflow = '';
     }
 
-    /* ── Al cargar la página: en móvil siempre cerrado ── */
-    if (isMobile()) {
-        closeSidebar();
-    }
+    if (isMobile()) { closeSidebar(); }
 
-    /* ── Observar body.sidebar-open para sincronizar overlay ── */
     var observer = new MutationObserver(function () {
         if (isMobile()) {
-            if (document.body.classList.contains('sidebar-open')) {
+            if (body.classList.contains('sidebar-open')) {
                 overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
+                body.style.overflow = 'hidden';
             } else {
                 overlay.classList.remove('active');
-                document.body.style.overflow = '';
+                body.style.overflow = '';
             }
         }
     });
-    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    observer.observe(body, { attributes: true, attributeFilter: ['class'] });
 
-    /* ── Tocar el overlay cierra el sidebar ── */
     overlay.addEventListener('click', closeSidebar);
 
-    /* ── Tocar un ítem en móvil cierra el sidebar antes de navegar ── */
     document.querySelectorAll('#appSidebar .sb-item').forEach(function (item) {
         item.addEventListener('click', function () {
-            if (isMobile()) closeSidebar();
+            if (isMobile()) { closeSidebar(); }
         });
     });
 
-    /* ── Al rotar / redimensionar a desktop, limpiar estado móvil ── */
     window.addEventListener('resize', function () {
         if (!isMobile()) {
             overlay.classList.remove('active');
-            document.body.style.overflow = '';
+            body.style.overflow = '';
+            body.classList.remove('sidebar-open');
         }
     });
 })();

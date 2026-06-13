@@ -1,22 +1,43 @@
+import json
 import threading
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 from django.utils import timezone
+from django.db.models import Count, Case, When, Q
 
 from app.models import Notificacion, Vehiculo, SeguimientoMantenimiento, Cliente
 from app.forms import NotificacionForm
 
 
-# ── HELPER: correo para notificaciones de vehículo ────────
+# ── Mixin 1: Solo ADMIN ──────────────────────────────────────────
+class SoloAdminMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos de administrador para realizar esta acción.")
+        return redirect('app:dashboard')
+
+# ── Mixin 2: ADMIN o MECANICO ────────────────────────────────────
+class AdminOMecanicoMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.cargo in ('ADMIN', 'MECANICO') or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos para acceder a este módulo.")
+        return redirect('app:dashboard')
+
+
+# ── HELPER: correo para notificaciones de vehículo ────────────────
 def _enviar_correo_notificacion(cliente, vehiculo, tipo, mensaje):
     destinatarios = []
     if cliente and cliente.email:
@@ -89,7 +110,7 @@ def _enviar_correo_notificacion(cliente, vehiculo, tipo, mensaje):
         print(f"[ACERAUTOS] ❌ Error enviando correo para {vehiculo.placa}: {e}")
 
 
-# ── HELPER: correo masivo tipo Información ────────────────
+# ── HELPER: correo masivo tipo Información ────────────────────────
 def _enviar_correo_informacion(cliente, titulo, mensaje):
     if not cliente.email:
         return
@@ -134,7 +155,7 @@ def _enviar_correo_informacion(cliente, titulo, mensaje):
         print(f"[ACERAUTOS] ❌ Error enviando info a {cliente.email}: {e}")
 
 
-# ── GENERAR NOTIFICACIONES AUTOMÁTICAS ────────────────────
+# ── GENERAR NOTIFICACIONES AUTOMÁTICAS ────────────────────────────
 def generar_notificaciones_automaticas():
     hoy = timezone.now().date()
 
@@ -191,39 +212,71 @@ def generar_notificaciones_automaticas():
                 _enviar_correo_notificacion(v.cliente, v, tipo, mensaje)
 
 
-# ── LISTADO ────────────────────────────────────────────────
-class NotificacionListView(LoginRequiredMixin, ListView):
+# ── LISTADO — Mecánico puede ver ─────────────────────────────────
+class NotificacionListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
     model = Notificacion
     template_name = 'Notificacion/listar.html'
     context_object_name = 'object_list'
-    login_url = 'login:login'
+    # ✅ Sin paginate_by — DataTables maneja toda la paginación en el frontend
 
     def get(self, request, *args, **kwargs):
-        generar_notificaciones_automaticas()
-        Notificacion.objects.filter(leido=False).update(leido=True)
+        def _generar_en_background():
+            try:
+                generar_notificaciones_automaticas()
+            except Exception as e:
+                print(f"[ACERAUTOS] ❌ Error generando notificaciones: {e}")
+
+        t = threading.Thread(target=_generar_en_background)
+        t.daemon = True
+        t.start()
+
+        def _marcar_en_background():
+            try:
+                Notificacion.objects.filter(leido=False).update(leido=True)
+            except Exception as e:
+                print(f"[ACERAUTOS] ❌ Error marcando leídas: {e}")
+
+        t2 = threading.Thread(target=_marcar_en_background)
+        t2.daemon = True
+        t2.start()
+
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        return Notificacion.objects.all().order_by('leido', '-id')
+        return Notificacion.objects.select_related(
+            'vehiculo',
+            'vehiculo__marca',
+            'vehiculo__cliente'
+        ).order_by('leido', '-id')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo']        = 'Listado de Notificaciones'
-        context['crear_url']     = reverse_lazy('app:crear_notificacion')
-        context['no_leidas']     = Notificacion.objects.filter(leido=False).count()
-        context['urgentes']      = Notificacion.objects.filter(tipo='Urgente').count()
-        context['alertas']       = Notificacion.objects.filter(tipo='Alerta').count()
-        context['mantenimientos'] = Notificacion.objects.filter(tipo='Mantenimiento').count()
+        context['titulo']    = 'Listado de Notificaciones'
+        context['crear_url'] = reverse_lazy('app:crear_notificacion')
+
+        stats = Notificacion.objects.aggregate(
+            total=Count('id'),
+            no_leidas=Count('id', filter=Q(leido=False)),
+            urgentes=Count('id', filter=Q(tipo='Urgente')),
+            alertas=Count('id', filter=Q(tipo='Alerta')),
+            mantenimientos=Count('id', filter=Q(tipo='Mantenimiento'))
+        )
+
+        context['total']          = stats['total']
+        context['no_leidas']      = stats['no_leidas']
+        context['urgentes']       = stats['urgentes']
+        context['alertas']        = stats['alertas']
+        context['mantenimientos'] = stats['mantenimientos']
+
         return context
 
 
-# ── CREAR ──────────────────────────────────────────────────
-class NotificacionCreateView(LoginRequiredMixin, CreateView):
+# ── CREAR — Solo Admin ────────────────────────────────────────────
+class NotificacionCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
     model = Notificacion
     form_class = NotificacionForm
     template_name = 'Notificacion/crear.html'
     success_url = reverse_lazy('app:listar_notificacion')
-    login_url = 'login:login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -238,7 +291,6 @@ class NotificacionCreateView(LoginRequiredMixin, CreateView):
         notificacion.save()
 
         if notificacion.tipo == 'Informacion':
-            # Enviar a todos los clientes con email en background
             def _enviar_masivo():
                 clientes = Cliente.objects.filter(
                     email__isnull=False
@@ -260,14 +312,13 @@ class NotificacionCreateView(LoginRequiredMixin, CreateView):
         return redirect(self.success_url)
 
 
-# ── EDITAR ─────────────────────────────────────────────────
-class NotificacionUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+# ── EDITAR — Solo Admin ───────────────────────────────────────────
+class NotificacionUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, UpdateView):
     model = Notificacion
     form_class = NotificacionForm
     template_name = 'Notificacion/crear.html'
     success_url = reverse_lazy('app:listar_notificacion')
     success_message = "Notificación actualizada correctamente."
-    login_url = 'login:login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -277,20 +328,19 @@ class NotificacionUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView
         return context
 
 
-# ── ELIMINAR ───────────────────────────────────────────────
-class NotificacionDeleteView(LoginRequiredMixin, DeleteView):
+# ── ELIMINAR — Solo Admin ─────────────────────────────────────────
+class NotificacionDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
     model = Notificacion
     template_name = 'Notificacion/eliminar.html'
     success_url = reverse_lazy('app:listar_notificacion')
-    login_url = 'login:login'
 
     def form_valid(self, form):
         messages.success(self.request, 'Notificación eliminada correctamente.')
         return super().form_valid(form)
 
 
-# ── MARCAR UNA COMO LEÍDA ──────────────────────────────────
-class MarcarLeidaView(LoginRequiredMixin, View):
+# ── MARCAR UNA COMO LEÍDA — Mecánico puede ────────────────────────
+class MarcarLeidaView(LoginRequiredMixin, AdminOMecanicoMixin, View):
     def post(self, request, pk):
         try:
             notificacion = get_object_or_404(Notificacion, pk=pk)
@@ -301,8 +351,8 @@ class MarcarLeidaView(LoginRequiredMixin, View):
             return JsonResponse({'ok': False, 'mensaje': str(e)}, status=400)
 
 
-# ── MARCAR TODAS COMO LEÍDAS ───────────────────────────────
-class MarcarTodasLeidasView(LoginRequiredMixin, View):
+# ── MARCAR TODAS COMO LEÍDAS — Mecánico puede ─────────────────────
+class MarcarTodasLeidasView(LoginRequiredMixin, AdminOMecanicoMixin, View):
     def post(self, request):
         try:
             cantidad = Notificacion.objects.filter(leido=False).update(leido=True)
@@ -311,8 +361,8 @@ class MarcarTodasLeidasView(LoginRequiredMixin, View):
             return JsonResponse({'ok': False, 'mensaje': str(e)}, status=400)
 
 
-# ── LIMPIAR NOTIFICACIONES ANTIGUAS ───────────────────────
-class LimpiarNotificacionesAntiguasView(LoginRequiredMixin, View):
+# ── LIMPIAR ANTIGUAS — Solo Admin ─────────────────────────────────
+class LimpiarNotificacionesAntiguasView(LoginRequiredMixin, SoloAdminMixin, View):
     def post(self, request):
         hoy = timezone.now().date()
         Notificacion.objects.filter(
@@ -324,12 +374,20 @@ class LimpiarNotificacionesAntiguasView(LoginRequiredMixin, View):
         return redirect('app:listar_notificacion')
 
 
-# ── API PARA EL NAVBAR ─────────────────────────────────────
+# ── API NAVBAR — Mecánico puede ───────────────────────────────────
 @login_required(login_url='login:login')
 def notificaciones_no_leidas(request):
-    qs_no_leidas = Notificacion.objects.filter(leido=False).order_by('-id')
+    if request.user.cargo not in ('ADMIN', 'MECANICO') and not request.user.is_superuser:
+        return JsonResponse({'count': 0, 'results': []}, status=403)
+
+    qs_no_leidas = Notificacion.objects.select_related(
+        'vehiculo',
+        'vehiculo__marca',
+        'vehiculo__cliente'
+    ).filter(leido=False).order_by('-id')[:5]
+
     results = []
-    for n in qs_no_leidas[:5]:
+    for n in qs_no_leidas:
         subtitulo = ''
         if n.vehiculo:
             try:
@@ -343,12 +401,17 @@ def notificaciones_no_leidas(request):
             'subtitulo': subtitulo,
             'fecha':     n.fecha.strftime('%d/%m/%Y') if n.fecha else '',
         })
+
+    total_no_leidas = Notificacion.objects.filter(leido=False).count()
+
     return JsonResponse({
-        'count':   qs_no_leidas.count(),
+        'count':   total_no_leidas,
         'results': results,
     })
-    
-class EliminarNotificacionesMasivoView(LoginRequiredMixin, View):
+
+
+# ── ELIMINACIÓN MASIVA — Solo Admin ───────────────────────────────
+class EliminarNotificacionesMasivoView(LoginRequiredMixin, SoloAdminMixin, View):
     def post(self, request):
         try:
             pks = json.loads(request.body).get('pks', [])
@@ -358,7 +421,8 @@ class EliminarNotificacionesMasivoView(LoginRequiredMixin, View):
             return JsonResponse({'ok': False, 'mensaje': str(e)}, status=400)
 
 
-class EliminarTodasNotificacionesView(LoginRequiredMixin, View):
+# ── ELIMINAR TODAS — Solo Admin ───────────────────────────────────
+class EliminarTodasNotificacionesView(LoginRequiredMixin, SoloAdminMixin, View):
     def post(self, request):
         try:
             eliminadas, _ = Notificacion.objects.all().delete()

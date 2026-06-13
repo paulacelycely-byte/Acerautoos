@@ -26,42 +26,29 @@ from app.models import (
 
 # ══════════════════════════════════════════════════════════
 #  CONFIGURACIÓN DE MANTENIMIENTO POR TIPO DE USO
-#  Basado en valores reales de la industria automotriz
 # ══════════════════════════════════════════════════════════
 CONFIG_MANTENIMIENTO = {
-    # tipo_uso: (km_diarios, km_por_cambio_aceite)
-    'BAJO':   (30,  5000),   # Auto familiar ciudad → 5.000 km cada ~167 días
-    'NORMAL': (50,  5000),   # Auto uso diario      → 5.000 km cada ~100 días
-    'ALTO':   (200, 8000),   # Bus intermunicipal   → 8.000 km cada ~40 días
-    'CARGA':  (400, 15000),  # Camión/tractomula    → 15.000 km cada ~37 días
+    'BAJO':   (30,  5000),
+    'NORMAL': (50,  5000),
+    'ALTO':   (200, 8000),
+    'CARGA':  (400, 15000),
 }
 
 def _calcular_fecha_sugerida(vehiculo, km_actual=None):
-    """
-    Calcula la fecha del próximo mantenimiento basándose en:
-    - km actuales del vehículo
-    - km diarios estimados según tipo de uso
-    - km que faltan para el próximo cambio de aceite
-    """
     config = CONFIG_MANTENIMIENTO.get(vehiculo.tipo_uso, (50, 5000))
     km_diarios, km_por_cambio = config
-
     km_base = km_actual if km_actual else (vehiculo.km_ultimo_servicio or 0)
-
-    # Calcular próximo km de mantenimiento
     if km_base > 0:
-        # Próximo múltiplo de km_por_cambio
         km_proximo = ((km_base // km_por_cambio) + 1) * km_por_cambio
         km_faltan  = km_proximo - km_base
     else:
         km_faltan  = km_por_cambio
-
+        km_proximo = km_por_cambio
     dias = max(1, km_faltan // km_diarios)
-    return date.today() + timedelta(days=dias), km_proximo if km_base > 0 else km_por_cambio
+    return date.today() + timedelta(days=dias), km_proximo
 
 
 def _info_mantenimiento(vehiculo, km_actual=None):
-    """Devuelve info completa del cálculo para mostrar al usuario."""
     config = CONFIG_MANTENIMIENTO.get(vehiculo.tipo_uso, (50, 5000))
     km_diarios, km_por_cambio = config
     fecha, km_proximo = _calcular_fecha_sugerida(vehiculo, km_actual)
@@ -79,13 +66,23 @@ def _info_mantenimiento(vehiculo, km_actual=None):
     }
 
 
+# ── Mixin 1: Solo ADMIN ──────────────────────────────────────────
 class SoloAdminMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
 
     def handle_no_permission(self):
-        messages.error(self.request, "No tienes permisos de administrador para modificar órdenes.")
-        return redirect('app:orden_servicio_list')
+        messages.error(self.request, "No tienes permisos de administrador para realizar esta acción.")
+        return redirect('app:dashboard')
+
+# ── Mixin 2: ADMIN o MECANICO ────────────────────────────────────
+class AdminOMecanicoMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.cargo in ('ADMIN', 'MECANICO') or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "No tienes permisos para acceder a este módulo.")
+        return redirect('app:dashboard')
 
 
 def _verificar_compat(producto, marca_id, servicio_id=None):
@@ -144,7 +141,7 @@ def _hay_incompatibles(request, marca_id, servicio_ids):
             prod = Producto.objects.get(pk=pid, estado=True)
             total_reglas = CompatibilidadProducto.objects.filter(producto=prod).count()
             if total_reglas == 0:
-                return True
+                continue
             es_compatible = False
             for sid in servicio_ids:
                 status, _ = _verificar_compat(prod, marca_id, sid)
@@ -159,35 +156,25 @@ def _hay_incompatibles(request, marca_id, servicio_ids):
 
 
 def _crear_seguimientos(request, orden):
-    """
-    Crea seguimientos automáticos.
-    La fecha se calcula con km reales de la orden + tipo de uso del vehículo.
-    Si el usuario la modificó manualmente en el form, se respeta.
-    """
     servicios_con_seguimiento = orden.servicios.filter(requiere_seguimiento=True)
     if not servicios_con_seguimiento.exists():
         return
 
-    # Fecha del formulario (el usuario puede haberla ajustado)
     fecha_form = request.POST.get('fecha_proximo_mantenimiento') or None
-
     if fecha_form:
         try:
             fecha_proximo = date.fromisoformat(fecha_form)
         except ValueError:
             fecha_proximo, _ = _calcular_fecha_sugerida(orden.vehiculo, orden.km_actual)
     else:
-        # Calcular automáticamente con km reales de la orden
         fecha_proximo, _ = _calcular_fecha_sugerida(orden.vehiculo, orden.km_actual)
 
-    # Calcular km del próximo mantenimiento
     _, km_proximo = _calcular_fecha_sugerida(orden.vehiculo, orden.km_actual)
     config = CONFIG_MANTENIMIENTO.get(orden.vehiculo.tipo_uso, (50, 5000))
     km_diarios, km_por_cambio = config
     km_faltan = max(0, km_proximo - orden.km_actual)
     dias = max(1, km_faltan // km_diarios)
 
-    # Desactivar seguimientos activos anteriores
     SeguimientoMantenimiento.objects.filter(
         vehiculo=orden.vehiculo,
         activo=True
@@ -218,10 +205,9 @@ def _crear_seguimientos(request, orden):
 
 
 # ══════════════════════════════════════════════════════════
-#  LISTAR
+#  LISTAR — Mecánico puede ver
 # ══════════════════════════════════════════════════════════
-
-class OrdenServicioListView(LoginRequiredMixin, ListView):
+class OrdenServicioListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
     model = OrdenServicio
     template_name = 'OrdenServicio/listar.html'
     context_object_name = 'ordenes'
@@ -236,12 +222,14 @@ class OrdenServicioListView(LoginRequiredMixin, ListView):
             servicio_ids = list(orden.servicios.values_list('id', flat=True))
             tiene_warn   = False
             for detalle in orden.productos_usados.all():
+                es_compat = False
                 for sid in servicio_ids:
                     status, _ = _verificar_compat(detalle.producto, marca_id, sid)
-                    if status == 'warn':
-                        tiene_warn = True
+                    if status in ('ok', 'neutral'):
+                        es_compat = True
                         break
-                if tiene_warn:
+                if not es_compat:
+                    tiene_warn = True
                     break
             orden.tiene_incompatibles = tiene_warn
         return qs
@@ -253,10 +241,9 @@ class OrdenServicioListView(LoginRequiredMixin, ListView):
 
 
 # ══════════════════════════════════════════════════════════
-#  CAMBIAR ESTADO
+#  CAMBIAR ESTADO — Mecánico puede cambiar estado
 # ══════════════════════════════════════════════════════════
-
-class CambiarEstadoOrdenView(LoginRequiredMixin, View):
+class CambiarEstadoOrdenView(LoginRequiredMixin, AdminOMecanicoMixin, View):
     def post(self, request, pk):
         orden = get_object_or_404(OrdenServicio, pk=pk)
         if orden.estado == 'Terminado':
@@ -279,18 +266,24 @@ class CambiarEstadoOrdenView(LoginRequiredMixin, View):
 
 
 # ══════════════════════════════════════════════════════════
-#  DETALLE
+#  DETALLE — Mecánico puede ver
 # ══════════════════════════════════════════════════════════
-
-class OrdenServicioDetailView(LoginRequiredMixin, View):
+class OrdenServicioDetailView(LoginRequiredMixin, AdminOMecanicoMixin, View):
     def get(self, request, pk):
         orden    = get_object_or_404(OrdenServicio, pk=pk)
         detalles = DetalleOrdenProducto.objects.filter(orden=orden).select_related('producto')
         marca_id     = orden.vehiculo.marca_id
         servicio_ids = list(orden.servicios.values_list('id', flat=True))
         for d in detalles:
-            sid = servicio_ids[0] if servicio_ids else None
-            d.compat_status, d.compat_mensaje = _verificar_compat(d.producto, marca_id, sid)
+            best_status = 'warn'
+            best_msg    = ''
+            for sid in servicio_ids:
+                s, m = _verificar_compat(d.producto, marca_id, sid)
+                if s in ('ok', 'neutral'):
+                    best_status = s
+                    best_msg    = m
+                    break
+            d.compat_status, d.compat_mensaje = best_status, best_msg
         mano_obra = sum(d.precio_mano_obra for d in orden.servicios_detalle.all())
         subtotal_productos = sum(d.precio_unitario * d.cantidad for d in detalles)
         total = subtotal_productos + mano_obra
@@ -306,10 +299,9 @@ class OrdenServicioDetailView(LoginRequiredMixin, View):
 
 
 # ══════════════════════════════════════════════════════════
-#  AJAX
+#  AJAX — accesibles para ambos roles
 # ══════════════════════════════════════════════════════════
-
-class VehiculoKmView(LoginRequiredMixin, View):
+class VehiculoKmView(LoginRequiredMixin, AdminOMecanicoMixin, View):
     def get(self, request, pk):
         try:
             v = Vehiculo.objects.select_related('marca').get(pk=pk)
@@ -333,7 +325,7 @@ class VehiculoKmView(LoginRequiredMixin, View):
             return JsonResponse({'km': 0}, status=404)
 
 
-class VerificarCompatibilidadView(LoginRequiredMixin, View):
+class VerificarCompatibilidadView(LoginRequiredMixin, AdminOMecanicoMixin, View):
     def get(self, request):
         producto_id = request.GET.get('producto')
         marca_id    = request.GET.get('marca')
@@ -353,7 +345,7 @@ class VerificarCompatibilidadView(LoginRequiredMixin, View):
             return JsonResponse({'compatible': False, 'tiene_reglas': True,  'mensaje': mensaje})
 
 
-class ProductosCompatiblesView(LoginRequiredMixin, View):
+class ProductosCompatiblesView(LoginRequiredMixin, AdminOMecanicoMixin, View):
     def get(self, request):
         marca_id    = request.GET.get('marca')
         servicio_id = request.GET.get('servicio')
@@ -378,10 +370,9 @@ class ProductosCompatiblesView(LoginRequiredMixin, View):
 
 
 # ══════════════════════════════════════════════════════════
-#  CREAR
+#  CREAR — Mecánico puede crear
 # ══════════════════════════════════════════════════════════
-
-class OrdenServicioCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
+class OrdenServicioCreateView(LoginRequiredMixin, AdminOMecanicoMixin, CreateView):
     model         = OrdenServicio
     form_class    = OrdenServicioForm
     template_name = 'OrdenServicio/crear.html'
@@ -433,10 +424,9 @@ class OrdenServicioCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
 
 
 # ══════════════════════════════════════════════════════════
-#  EDITAR
+#  EDITAR — Mecánico puede editar
 # ══════════════════════════════════════════════════════════
-
-class OrdenServicioUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
+class OrdenServicioUpdateView(LoginRequiredMixin, AdminOMecanicoMixin, UpdateView):
     model         = OrdenServicio
     form_class    = OrdenServicioForm
     template_name = 'OrdenServicio/crear.html'
@@ -490,9 +480,8 @@ class OrdenServicioUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
 
 
 # ══════════════════════════════════════════════════════════
-#  ELIMINAR
+#  ELIMINAR — Solo Admin
 # ══════════════════════════════════════════════════════════
-
 class OrdenServicioDeleteView(LoginRequiredMixin, SoloAdminMixin, View):
     def get(self, request, pk):
         orden = get_object_or_404(OrdenServicio, pk=pk)
@@ -504,9 +493,8 @@ class OrdenServicioDeleteView(LoginRequiredMixin, SoloAdminMixin, View):
 
     def post(self, request, pk):
         orden = get_object_or_404(OrdenServicio, pk=pk)
-    
         SeguimientoMantenimiento.objects.filter(
-        orden_servicio=orden
+            orden_servicio=orden
         ).update(activo=False, estado='Completado')
         orden.delete()
         messages.success(request, 'Orden de servicio eliminada correctamente.')

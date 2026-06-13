@@ -17,11 +17,11 @@ from datetime import datetime
 # ══════════════════════════════════════════════════════════
 
 LOGO_PATH = 'file:///' + os.path.join(
-    settings.BASE_DIR, 'app', 'static', 'imagenes', 'logo empresa.jpeg'
+    settings.BASE_DIR, 'app', 'static', 'imagenes', 'logoempresa.jpeg'
 ).replace('\\', '/')
 
 LOGO_PATH_EXCEL = os.path.join(
-    settings.BASE_DIR, 'app', 'static', 'imagenes', 'logo empresa.jpeg'
+    settings.BASE_DIR, 'app', 'static', 'imagenes', 'logoempresa.jpeg'
 )
 
 # ══════════════════════════════════════════════════════════

@@ -201,7 +201,6 @@
                         <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                         En Proceso
                     </button>
-                    
                 </div>
             </div>
 
@@ -300,7 +299,6 @@
                                             <span class="fi-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
                                             {{ field|add_class:'form-field' }}
                                         </div>
-                                        <!-- FIX: sin target="_blank", navega en la misma pestaña -->
                                         <a href="{% url 'app:crear_usuario' %}?next=orden" class="btn-add-inline" data-tip="Nuevo empleado">
                                             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                                         </a>
@@ -347,7 +345,6 @@
                         <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Agregar Producto
                     </button>
-                    <!-- FIX: quitado target="_blank" para que NO abra pestañas nuevas -->
                     <a href="{% url 'app:crear_compatibilidad' %}?next=orden"
                        style="font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:9px 18px;border-radius:9px;border:1.5px solid #e0ddd8;background:white;color:#888;display:inline-flex;align-items:center;gap:7px;text-decoration:none;transition:.18s;"
                        onmouseover="this.style.borderColor='#d32f2f';this.style.color='#d32f2f';"
@@ -401,12 +398,12 @@ let srvSeleccionados = [
     {% endif %}
 ];
 
+/* ─── Seguimiento ─── */
 function actualizarBloqueSeguimiento() {
     var requiere = srvSeleccionados.some(function(s) { return s.seguimiento; });
     var bloque   = document.getElementById('bloque-seguimiento');
     var campo    = document.getElementById('id_fecha_proximo_mantenimiento');
     var campoKmWrap = document.getElementById('id_km_actual').closest('.col-md-6');
-
     if (requiere) {
         bloque.classList.add('visible');
         if (campo) campo.required = true;
@@ -439,6 +436,7 @@ function calcularFechaPorKm(km) {
         .catch(function() {});
 }
 
+/* ─── Servicios ─── */
 function srvRenderTags() {
     var wrap = document.getElementById('servicios-tags');
     wrap.innerHTML = '';
@@ -449,6 +447,7 @@ function srvRenderTags() {
         wrap.appendChild(tag);
     });
 }
+
 function srvRenderHidden() {
     document.querySelectorAll('input.srv-dyn').forEach(function(i){ i.remove(); });
     var wrap = document.getElementById('servicios-hidden');
@@ -458,6 +457,7 @@ function srvRenderHidden() {
         wrap.appendChild(inp);
     });
 }
+
 function srvRenderDropdown(q) {
     q = (q || '').toLowerCase();
     var dd = document.getElementById('servicios-dropdown');
@@ -470,14 +470,17 @@ function srvRenderDropdown(q) {
              + '<span>' + s.nombre + icono + '</span><span class="chk">' + (sel ? '✓' : '') + '</span></div>';
     }).join('');
 }
+
 function abrirServicioDropdown() {
     srvRenderDropdown(document.getElementById('servicios-search').value);
     document.getElementById('servicios-dropdown').classList.add('open');
 }
+
 function filtrarServicioDropdown(q) {
     document.getElementById('servicios-dropdown').classList.add('open');
     srvRenderDropdown(q);
 }
+
 function srvToggle(id, nombre, seguimiento) {
     var idx = srvSeleccionados.findIndex(function(x){ return x.id === id; });
     if (idx === -1) srvSeleccionados.push({ id: id, nombre: nombre, seguimiento: !!seguimiento });
@@ -487,6 +490,7 @@ function srvToggle(id, nombre, seguimiento) {
     actualizarBloqueSeguimiento();
     revalidarTodosLosProductos();
 }
+
 function srvQuitar(id) {
     srvSeleccionados = srvSeleccionados.filter(function(x){ return x.id !== id; });
     srvRenderTags(); srvRenderHidden();
@@ -502,6 +506,7 @@ document.addEventListener('click', function(e) {
     }
 });
 
+/* ─── DOMContentLoaded ─── */
 document.addEventListener('DOMContentLoaded', function () {
     srvRenderTags();
     srvRenderHidden();
@@ -512,14 +517,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (campoKmWrap) campoKmWrap.style.display = 'none';
     }
 
+    /* Reloj */
     var reloj = document.getElementById('reloj-live');
     function actualizarFechaAhora() {
         var ahora = new Date();
-        var dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+        var dias  = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
         var meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-        var pad = function(n){ return String(n).padStart(2,'0'); };
+        var pad   = function(n){ return String(n).padStart(2,'0'); };
         var horas = ahora.getHours();
-        var ampm = horas >= 12 ? 'p.m.' : 'a.m.';
+        var ampm  = horas >= 12 ? 'p.m.' : 'a.m.';
         horas = horas % 12 || 12;
         var txt = dias[ahora.getDay()] + ' ' + ahora.getDate() + ' ' + meses[ahora.getMonth()]
             + ' ' + ahora.getFullYear()
@@ -534,12 +540,14 @@ document.addEventListener('DOMContentLoaded', function () {
     actualizarFechaAhora();
     setInterval(actualizarFechaAhora, 1000);
 
+    /* Fecha próximo mantenimiento: mínimo hoy */
     var campoPrxMant = document.getElementById('id_fecha_proximo_mantenimiento');
     if (campoPrxMant) {
         var hoy2 = new Date(), pad2 = function(n){ return String(n).padStart(2,'0'); };
         campoPrxMant.min = hoy2.getFullYear()+'-'+pad2(hoy2.getMonth()+1)+'-'+pad2(hoy2.getDate());
     }
 
+    /* Vehículo */
     var selectVehiculo = document.getElementById('id_vehiculo');
     var campoKm        = document.getElementById('id_km_actual');
     var badgeKm        = document.getElementById('badge-km');
@@ -592,12 +600,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    /* Estado inicial */
     var estadoInicial = document.getElementById('campo-estado').value;
     document.querySelectorAll('.estado-btn').forEach(function(btn) {
         if (btn.dataset.estado === estadoInicial)
             btn.classList.add('activo-' + estadoInicial.replace(' ', ''));
     });
 
+    /* Estilos campos */
     var acento = getComputedStyle(document.documentElement).getPropertyValue('--acento').trim();
     document.querySelectorAll('.form-field').forEach(function(el) {
         if (el.classList.contains('fecha-auto')) return;
@@ -608,11 +618,13 @@ document.addEventListener('DOMContentLoaded', function () {
         el.addEventListener('blur',  function() { el.style.borderColor = '#e0ddd8'; el.style.background = '#f2f2f0'; el.style.boxShadow = 'none'; });
     });
 
+    /* Cargar productos en modo editar */
     {% if es_editar %}
     [{% for detalle in form.instance.productos_usados.all %}{ productoId: '{{ detalle.producto.pk }}', cantidad: {{ detalle.cantidad }} },{% endfor %}]
     .forEach(function(d) { agregarFilaProducto(d.productoId, d.cantidad); });
     {% endif %}
 
+    /* Submit */
     document.getElementById('formOrden').addEventListener('submit', function(e) {
         e.preventDefault();
         if (srvSeleccionados.length === 0) {
@@ -641,6 +653,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+/* ─── Helpers globales ─── */
 function actualizarInfoStrip(placa, marcaNombre) {
     var strip = document.getElementById('vehiculo-info-strip');
     var texto = document.getElementById('vehiculo-info-texto');
@@ -700,23 +713,27 @@ function quitarFila(id) {
     revalidarAvisoGeneral();
 }
 
+/* ─── Compatibilidad: verifica contra TODOS los servicios ─── */
 function onProductoChange(sel, filaId) {
     var productoId = sel.value;
     var pill = document.getElementById('pill-' + filaId);
     if (!productoId) { setPill(pill, 'neutral', 'Sin verificar'); revalidarAvisoGeneral(); return; }
     if (!marcaVehiculo) { setPill(pill, 'neutral', 'Selecciona un vehículo'); return; }
     setPill(pill, 'loading', 'Verificando…');
-    var params = new URLSearchParams({ producto: productoId, marca: marcaVehiculo });
-    if (srvSeleccionados.length) params.append('servicio', srvSeleccionados[0].id);
-    fetch(URL_COMPAT + '?' + params.toString())
-        .then(function(r){ return r.json(); })
-        .then(function(data) {
-            if (data.compatible === true)       setPill(pill, 'ok',   'Compatible');
-            else if (data.compatible === false) setPill(pill, 'warn', 'Revisar');
-            else                                setPill(pill, 'neutral', 'Sin restricción');
-            revalidarAvisoGeneral();
-        })
-        .catch(function(){ setPill(pill, 'neutral', 'Sin verificar'); });
+    var serviciosAVerificar = srvSeleccionados.length ? srvSeleccionados : [null];
+    var promises = serviciosAVerificar.map(function(srv) {
+        var p = new URLSearchParams({ producto: productoId, marca: marcaVehiculo });
+        if (srv) p.append('servicio', srv.id);
+        return fetch(URL_COMPAT + '?' + p.toString()).then(function(r){ return r.json(); });
+    });
+    Promise.all(promises).then(function(results) {
+        var esCompatible = results.some(function(d){ return d.compatible === true; });
+        var tieneReglas  = results.some(function(d){ return d.compatible === false; });
+        if (esCompatible)     setPill(pill, 'ok',      'Compatible');
+        else if (tieneReglas) setPill(pill, 'warn',     'Revisar');
+        else                  setPill(pill, 'neutral',  'Sin restricción');
+        revalidarAvisoGeneral();
+    }).catch(function(){ setPill(pill, 'neutral', 'Sin verificar'); });
 }
 
 var PILL_ICONS = {
