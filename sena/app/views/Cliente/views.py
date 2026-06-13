@@ -5,8 +5,8 @@ from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin 
 from app.models import Cliente
 from app.forms import ClienteForm
-
-# ── Mixin 1: Solo ADMIN ──────────────────────────────────────────
+from django.http import JsonResponse
+# MIXIN PERSONALIZADO PARA ADMINISTRADORES
 class SoloAdminMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
@@ -93,3 +93,36 @@ class ClienteDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Eliminar Cliente'
         return context
+# ══════════════════════════════════════════════════════════
+#  AGREGAR AL FINAL DE views/Cliente/views.py
+# ══════════════════════════════════════════════════════════
+
+
+def validar_documento_cliente(request):
+    """
+    GET /clientes/validar-documento/?valor=12345&exclude_pk=5
+    Devuelve {"existe": true/false}
+    """
+    valor      = request.GET.get('valor', '').strip()
+    exclude_pk = request.GET.get('exclude_pk', None)
+    if not valor:
+        return JsonResponse({'existe': False})
+    qs = Cliente.objects.filter(numero_documento=valor)
+    if exclude_pk:
+        qs = qs.exclude(pk=exclude_pk)
+    return JsonResponse({'existe': qs.exists()})
+
+
+def validar_email_cliente(request):
+    """
+    GET /clientes/validar-email/?valor=correo@x.com&exclude_pk=5
+    Devuelve {"existe": true/false}
+    """
+    valor      = request.GET.get('valor', '').strip().lower()
+    exclude_pk = request.GET.get('exclude_pk', None)
+    if not valor:
+        return JsonResponse({'existe': False})
+    qs = Cliente.objects.filter(email__iexact=valor)
+    if exclude_pk:
+        qs = qs.exclude(pk=exclude_pk)
+    return JsonResponse({'existe': qs.exists()})

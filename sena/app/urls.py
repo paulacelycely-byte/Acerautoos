@@ -41,7 +41,8 @@ urlpatterns = [
     path('clientes/crear/',             cli.ClienteCreateView.as_view(), name='crear_cliente'),
     path('clientes/editar/<int:pk>/',   cli.ClienteUpdateView.as_view(), name='editar_cliente'),
     path('clientes/eliminar/<int:pk>/', cli.ClienteDeleteView.as_view(), name='eliminar_cliente'),
-
+    path('clientes/validar-documento/', cli.validar_documento_cliente, name='validar_documento_cliente'),
+    path('clientes/validar-email/',     cli.validar_email_cliente,     name='validar_email_cliente'),
     # ── VEHÍCULOS
     path('vehiculos/listar/',            veh.VehiculoListView.as_view(),   name='listar_vehiculos'),
     path('vehiculos/crear/',             veh.VehiculoCreateView.as_view(), name='crear_vehiculo'),
@@ -60,7 +61,8 @@ urlpatterns = [
     path('proveedor/crear/',             prov.ProveedorCreateView.as_view(), name='crear_proveedor'),
     path('proveedor/editar/<int:pk>/',   prov.ProveedorUpdateView.as_view(), name='editar_proveedor'),
     path('proveedor/eliminar/<int:pk>/', prov.ProveedorDeleteView.as_view(), name='eliminar_proveedor'),
-
+    path('proveedor/validar-nit/', prov.validar_nit_proveedor, name='validar_nit_proveedor'),
+ 
     # ── PRODUCTOS
     path('producto/listar/',            prod.ProductoListView.as_view(),   name='listar_producto'),
     path('producto/crear/',             prod.ProductoCreateView.as_view(), name='crear_producto'),
