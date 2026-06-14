@@ -17,64 +17,111 @@
 
     /* ── HEADER ── */
     .taller-header {
-        position: relative; background: var(--carbon); border-radius: 10px;
-        padding: 28px 32px; margin-bottom: 20px; overflow: hidden;
-        display: flex; align-items: center; justify-content: space-between;
+        position: relative;
+        background: var(--carbon);
+        border-radius: 10px;
+        padding: 20px 20px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;        /* ← se envuelve en móvil */
+        gap: 16px;
     }
     .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
-    .header-icon-wrap {
-        width: 56px; height: 56px; background: var(--rojo); border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0;
+    .header-titulo {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 2rem; font-weight: 800;
+        color: white; letter-spacing: 1px;
+        text-transform: uppercase; line-height: 1; margin: 0;
     }
-    .header-icon-wrap svg { width: 28px; height: 28px; stroke: white; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-    .header-titulo { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0; }
-    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 4px; display: flex; align-items: center; flex-wrap: wrap; gap: 0; }
-    .header-actions { display: flex; align-items: center; gap: 10px; position: relative; }
-    .btn-accion { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 10px 18px; border-radius: 10px; display: flex; align-items: center; gap: 8px; border: none; cursor: pointer; text-decoration: none; transition: transform .2s, box-shadow .2s; }
-    .btn-accion svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .header-sub {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem; color: rgba(255,255,255,.45);
+        margin-top: 6px; letter-spacing: .5px;
+    }
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+        flex-wrap: wrap;        /* ← botones se envuelven */
+    }
+    .btn-accion {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .75rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px;
+        padding: 10px 16px; border-radius: 10px;
+        display: flex; align-items: center; gap: 6px;
+        border: none; cursor: pointer; text-decoration: none;
+        transition: transform .2s, box-shadow .2s;
+        white-space: nowrap;    /* ← texto no se parte */
+    }
+    .btn-accion svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
     .btn-accion:hover { transform: translateY(-2px); }
     .btn-pdf   { background: #c0392b; color: white !important; }
     .btn-excel { background: #1e7e45; color: white !important; }
 
     /* ── STATS ── */
-    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
-    @media(max-width:768px){ .stats-grid { grid-template-columns: repeat(2,1fr); } }
-    .stat-card { background: var(--carbon); border-radius: 16px; padding: 22px 24px; display: flex; align-items: center; gap: 18px; transition: transform .2s, box-shadow .2s; }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+    .stat-card {
+        background: var(--carbon); border-radius: 16px;
+        padding: 22px 24px; display: flex; align-items: center;
+        gap: 14px; transition: transform .2s, box-shadow .2s;
+        min-width: 0; overflow: hidden;
+    }
     .stat-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,.25); }
     .stat-icon { width: 50px; height: 50px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.1); }
     .stat-icon svg { width: 24px; height: 24px; stroke: white; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-    .stat-num { font-family: 'Bebas Neue', 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 400; color: white; line-height: 1; letter-spacing: 1px; }
+    .stat-num { font-family: 'Bebas Neue', 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 400; color: white; line-height: 1; letter-spacing: 1px; white-space: nowrap; }
     .stat-num.verde    { color: #4ade80; }
     .stat-num.rojo-num { color: #f87171; }
-    .stat-label { font-family: 'DM Sans', sans-serif; font-size: .63rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,.55); margin-top: 3px; }
+    .stat-label { font-family: 'DM Sans', sans-serif; font-size: .63rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,.55); margin-top: 3px; white-space: normal; line-height: 1.3; }
 
     /* ── FILTROS ── */
-    .filtro-wrap { background: white; border-radius: 10px; border: 1px solid var(--borde); padding: 16px 20px; margin-bottom: 18px; display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .filtro-wrap {
+        background: white; border-radius: 10px; border: 1px solid var(--borde);
+        padding: 16px 20px; margin-bottom: 18px;
+        display: flex; align-items: center; flex-wrap: wrap; gap: 12px;
+    }
     .filtro-group { display: flex; flex-direction: column; gap: 4px; }
     .filtro-label { font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
-   .filtro-input { border: 1.5px solid var(--borde); border-radius: 8px; padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: .83rem; color: var(--texto); outline: none; background: var(--gris); transition: border-color .2s; min-width: 140px; color-scheme: light; }
+    .filtro-input { border: 1.5px solid var(--borde); border-radius: 8px; padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: .83rem; color: var(--texto); outline: none; background: var(--gris); transition: border-color .2s; min-width: 140px; color-scheme: light; }
     .filtro-input:focus { border-color: var(--rojo); background: white; }
     .btn-limpiar { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; text-transform: uppercase; padding: 9px 16px; border-radius: 8px; border: 1.5px solid var(--borde); background: white; color: var(--muted); cursor: pointer; transition: .2s; align-self: flex-end; }
     .btn-limpiar:hover { border-color: var(--carbon); color: var(--carbon); }
-    .chips-tipo { display: flex; gap: 6px; align-self: flex-end; }
-    .chip-tipo { font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: 8px 16px; border-radius: 8px; border: 1.5px solid var(--borde); background: white; color: var(--muted); cursor: pointer; transition: .15s; }
+    .chips-tipo { display: flex; gap: 6px; align-self: flex-end; flex-wrap: wrap; }
+    .chip-tipo { font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: 8px 16px; border-radius: 8px; border: 1.5px solid var(--borde); background: white; color: var(--muted); cursor: pointer; transition: .15s; white-space: nowrap; }
     .chip-tipo:hover { border-color: var(--carbon); color: var(--carbon); }
     .chip-tipo.active-todos   { background: var(--carbon); color: white; border-color: var(--carbon); }
     .chip-tipo.active-ingreso { background: var(--verde);  color: white; border-color: var(--verde); }
     .chip-tipo.active-egreso  { background: var(--rojo);   color: white; border-color: var(--rojo); }
 
-    /* ── TABLA (idéntica a vehículos) ── */
+    /* ── TABLA ── */
     .tabla-wrap { background: white; border-radius: 10px; border: 1px solid var(--borde); overflow: hidden; }
-    #tabla_caja { font-family: 'DM Sans', sans-serif; font-size: .875rem; border-collapse: collapse; width: 100%; }
+
+    /* Scroll horizontal en pantallas pequeñas */
+    .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+    #tabla_caja {
+        font-family: 'DM Sans', sans-serif; font-size: .875rem;
+        border-collapse: collapse; width: 100%;
+        min-width: 620px;       /* ← evita comprimir demasiado */
+    }
     #tabla_caja thead tr { background: var(--gris); border-bottom: 2px solid var(--borde); }
-    #tabla_caja thead th { font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 14px 16px; border: none; }
+    #tabla_caja thead th { font-family: 'Barlow Condensed', sans-serif; font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 14px 12px; border: none; }
     #tabla_caja tbody tr { border-bottom: 1px solid var(--borde); transition: background .15s; }
     #tabla_caja tbody tr:hover { background: #fafaf8; }
     #tabla_caja tbody tr:last-child { border-bottom: none; }
-    #tabla_caja tbody td { padding: 13px 16px; color: var(--texto); vertical-align: middle; border: none; }
+    #tabla_caja tbody td { padding: 12px 12px; color: var(--texto); vertical-align: middle; border: none; }
 
-    /* Badges / íconos de fila */
+    /* ── CELDAS ── */
     .tipo-avatar { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .tipo-avatar svg { width: 15px; height: 15px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
     .av-ingreso { background: var(--verde); }
@@ -86,17 +133,91 @@
     .monto-ingreso { font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 800; color: var(--verde); }
     .monto-egreso  { font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 800; color: var(--rojo); }
 
-    /* ── DataTables override (igual que vehículos) ── */
-    .dataTables_wrapper { padding: 16px 20px; }
-    .dataTables_filter input { border: 1.5px solid var(--borde) !important; border-radius: 8px !important; padding: 6px 12px !important; font-family: 'DM Sans', sans-serif !important; font-size: .85rem !important; outline: none !important; transition: border-color .2s; }
+    /* ── DATATABLES ── */
+    .dataTables_wrapper { padding: 12px 16px; }
+    .dataTables_filter input {
+        border: 1.5px solid var(--borde) !important; border-radius: 8px !important;
+        padding: 6px 12px !important; font-family: 'DM Sans', sans-serif !important;
+        font-size: .85rem !important; outline: none !important; transition: border-color .2s;
+        max-width: 160px;
+    }
     .dataTables_filter input:focus { border-color: var(--rojo) !important; }
     .dataTables_filter label, .dataTables_length label, .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
-    .dataTables_length select { border: 1.5px solid var(--borde) !important; border-radius: 8px !important; padding: 4px 8px !important; appearance: none !important; background: white !important; }
+    .dataTables_length select { border: 1.5px solid var(--borde) !important; border-radius: 8px !important; padding: 4px 8px !important; -webkit-appearance: none !important; -moz-appearance: none !important; appearance: none !important; background: white !important; }
     .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
     .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
+    .paginate_button.current a, .paginate_button.current a:hover { color: white !important; }
     .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
     .paginate_button.disabled { display: inline-block !important; opacity: .4; }
     .dataTables_paginate { display: block !important; }
+
+    /* ── BREAKPOINTS RESPONSIVOS ── */
+    @media (max-width: 767px) {
+        .taller-header {
+            padding: 16px;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header-actions {
+            width: 100%;
+        }
+
+        .btn-accion {
+            flex: 1;
+            justify-content: center;
+            font-size: .7rem;
+            padding: 9px 10px;
+        }
+
+        .header-titulo { font-size: 1.5rem; }
+
+        /* Stats: 2 columnas en móvil - cards verticales */
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        .stat-card { flex-direction: column; align-items: flex-start; padding: 16px; gap: 8px; }
+        .stat-icon img { width: 40px !important; height: 40px !important; }
+        .stat-num { font-size: 1.5rem; }
+        .stat-label { font-size: .6rem; letter-spacing: .8px; }
+
+        /* Filtros: apilados */
+        .filtro-wrap { flex-direction: column; align-items: stretch; }
+        .filtro-group { width: 100%; }
+        .filtro-input { min-width: unset; width: 100%; }
+        .chips-tipo { width: 100%; }
+        .chip-tipo { flex: 1; justify-content: center; text-align: center; }
+        .btn-limpiar { width: 100%; }
+
+        #tabla_caja { min-width: 540px; }
+
+        #tabla_caja thead th,
+        #tabla_caja tbody td { padding: 10px 8px; }
+
+        /* Ocultar columna Método en móvil */
+        #tabla_caja th:nth-child(6),
+        #tabla_caja td:nth-child(6) { display: none; }
+
+        .dataTables_wrapper { padding: 8px 10px; }
+
+        .dataTables_filter,
+        .dataTables_length {
+            float: none !important;
+            text-align: left !important;
+            margin-bottom: 6px;
+        }
+
+        .dataTables_filter input { max-width: 100%; width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+        .header-titulo { font-size: 1.3rem; }
+
+        .stats-grid { gap: 8px; }
+        .stat-num { font-size: 1.3rem; }
+
+        /* Ocultar también Categoría */
+        #tabla_caja th:nth-child(4),
+        #tabla_caja td:nth-child(4) { display: none; }
+    }
 </style>
 {% endblock %}
 
@@ -116,10 +237,12 @@
         </div>
         <div class="header-actions">
             <a href="{% url 'app:reporte_caja_pdf' %}" class="btn-accion btn-pdf">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> PDF
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+                PDF
             </a>
             <a href="{% url 'app:reporte_caja_excel' %}" class="btn-accion btn-excel">
-                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg> Excel
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+                Excel
             </a>
         </div>
     </div>
@@ -164,7 +287,7 @@
         </div>
     </div>
 
-    <!-- FILTROS (chips + fechas — siguen funcionando sobre DataTables) -->
+    <!-- FILTROS -->
     <div class="filtro-wrap">
         <div class="filtro-group">
             <label class="filtro-label">Desde</label>
@@ -242,11 +365,11 @@
 <script>
 $(document).ready(function () {
 
-    /* ── 1. Inicializar DataTables (igual que vehículos) ── */
+    /* ── 1. Inicializar DataTables ── */
     var dt = $('#tabla_caja').DataTable({
         responsive: true,
         autoWidth: false,
-        order: [[6, 'desc']],   /* ordenar por Fecha desc por defecto */
+        order: [[6, 'desc']],
         pagingType: 'full_numbers',
         language: {
             sProcessing:    'Procesando...',
@@ -284,7 +407,7 @@ $(document).ready(function () {
     $('.chip-tipo').on('click', function () {
         $('.chip-tipo').removeClass('active-todos active-ingreso active-egreso');
         tipoActivo = $(this).data('tipo');
-        if (!tipoActivo)                 $(this).addClass('active-todos');
+        if (!tipoActivo)                   $(this).addClass('active-todos');
         else if (tipoActivo === 'INGRESO') $(this).addClass('active-ingreso');
         else                               $(this).addClass('active-egreso');
         dt.draw();
@@ -311,7 +434,6 @@ $(document).ready(function () {
     function recalcularStats() {
         var ing = 0, egr = 0, total = 0;
 
-        /* Recorre TODAS las filas que pasan el filtro actual (no solo la página) */
         dt.rows({ search: 'applied' }).every(function () {
             var row   = $(this.node());
             var tipo  = row.data('tipo');
@@ -333,7 +455,7 @@ $(document).ready(function () {
     /* Recalcular también después de cada redibujado de DataTables */
     $('#tabla_caja').on('draw.dt', recalcularStats);
 
-    /* ── 7. Formato de moneda (igual que el original) ── */
+    /* ── 7. Formato de moneda ── */
     function fmt(n) {
         if (n >= 1000000) {
             var m = n / 1000000;
