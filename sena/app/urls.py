@@ -17,6 +17,7 @@ from .views.CompatibilidadProducto import views as comp
 from .views.factura                import views as factura
 from .views.backup                 import views as backup
 from .views.seguimiento            import views as seguimiento
+from .views.ayuda                  import views as ayuda   # ← NUEVO
 from app                           import reportes as rep
 from .views.chatbot                import views as chatbot
 
@@ -27,6 +28,9 @@ urlpatterns = [
 
     # ── DASHBOARD
     path('dashboard/', dash.DashboardView.as_view(), name='dashboard'),
+
+    # ── AYUDA  ← NUEVO
+    path('ayuda/', ayuda.AyudaView.as_view(), name='ayuda'),
 
     # ── USUARIOS
     path('usuarios/perfil/',                  usr.PerfilView.as_view(),              name='mi_perfil'),
@@ -41,8 +45,7 @@ urlpatterns = [
     path('clientes/crear/',             cli.ClienteCreateView.as_view(), name='crear_cliente'),
     path('clientes/editar/<int:pk>/',   cli.ClienteUpdateView.as_view(), name='editar_cliente'),
     path('clientes/eliminar/<int:pk>/', cli.ClienteDeleteView.as_view(), name='eliminar_cliente'),
-    path('clientes/validar-documento/', cli.validar_documento_cliente, name='validar_documento_cliente'),
-    path('clientes/validar-email/',     cli.validar_email_cliente,     name='validar_email_cliente'),
+
     # ── VEHÍCULOS
     path('vehiculos/listar/',            veh.VehiculoListView.as_view(),   name='listar_vehiculos'),
     path('vehiculos/crear/',             veh.VehiculoCreateView.as_view(), name='crear_vehiculo'),
@@ -61,8 +64,7 @@ urlpatterns = [
     path('proveedor/crear/',             prov.ProveedorCreateView.as_view(), name='crear_proveedor'),
     path('proveedor/editar/<int:pk>/',   prov.ProveedorUpdateView.as_view(), name='editar_proveedor'),
     path('proveedor/eliminar/<int:pk>/', prov.ProveedorDeleteView.as_view(), name='eliminar_proveedor'),
-    path('proveedor/validar-nit/', prov.validar_nit_proveedor, name='validar_nit_proveedor'),
- 
+
     # ── PRODUCTOS
     path('producto/listar/',            prod.ProductoListView.as_view(),   name='listar_producto'),
     path('producto/crear/',             prod.ProductoCreateView.as_view(), name='crear_producto'),
@@ -99,12 +101,11 @@ urlpatterns = [
     path('detalles/delete/<int:pk>/', detalles.DetalleOrdenDeleteView.as_view(), name='detalle_orden_delete'),
 
     # ── SEGUIMIENTO MANTENIMIENTO
-    path('seguimiento/',                     seguimiento.SeguimientoListView.as_view(),     name='seguimiento_list'),
-    #path('seguimiento/nuevo/',               seguimiento.SeguimientoCreateView.as_view(),   name='seguimiento_crear'),
-    # path('seguimiento/editar/<int:pk>/',     seguimiento.SeguimientoUpdateView.as_view(),   name='seguimiento_editar'),
-    path('seguimiento/eliminar/<int:pk>/',   seguimiento.SeguimientoDeleteView.as_view(),   name='seguimiento_eliminar'),
-    path('seguimiento/completar/<int:pk>/',  seguimiento.SeguimientoCompletarView.as_view(),name='seguimiento_completar'),
-    path('seguimiento/servicios-orden/', seguimiento.get_servicios_orden, name='servicios_orden'),
+    path('seguimiento/',                     seguimiento.SeguimientoListView.as_view(),      name='seguimiento_list'),
+    path('seguimiento/eliminar/<int:pk>/',   seguimiento.SeguimientoDeleteView.as_view(),    name='seguimiento_eliminar'),
+    path('seguimiento/completar/<int:pk>/',  seguimiento.SeguimientoCompletarView.as_view(), name='seguimiento_completar'),
+    path('seguimiento/servicios-orden/',     seguimiento.get_servicios_orden,                name='servicios_orden'),
+
     # ── COMPRAS
     path('compras/listar/',            compra.CompraListView.as_view(),   name='lista_compras'),
     path('compras/crear/',             compra.CompraCreateView.as_view(), name='crear_compra'),
@@ -122,14 +123,14 @@ urlpatterns = [
     path('factura/pagar/<int:pk>/',    factura.PagarFacturaView.as_view(),  name='pagar_factura'),
 
     # ── NOTIFICACIONES
-    path('notificaciones/listar/',                notif.NotificacionListView.as_view(),   name='listar_notificacion'),
-    path('notificaciones/crear/',                 notif.NotificacionCreateView.as_view(), name='crear_notificacion'),
-    path('notificaciones/marcar-leida/<int:pk>/', notif.MarcarLeidaView.as_view(),        name='marcar_notificacion_leida'),
-    path('notificaciones/marcar-todas-leidas/',   notif.MarcarTodasLeidasView.as_view(),  name='marcar_todas_leidas'),
-    path('notificaciones/no-leidas/',             notif.notificaciones_no_leidas,         name='notificaciones_no_leidas'),
-    path('notificaciones/eliminar/<int:pk>/', notif.NotificacionDeleteView.as_view(), name='eliminar_notificacion'),
-    path('notificaciones/eliminar-masivo/',       notif.EliminarNotificacionesMasivoView.as_view(), name='eliminar_notificaciones_masivo'),
-    path('notificaciones/eliminar-todas/',        notif.EliminarTodasNotificacionesView.as_view(),  name='eliminar_todas_notificaciones'),
+    path('notificaciones/listar/',                notif.NotificacionListView.as_view(),                    name='listar_notificacion'),
+    path('notificaciones/crear/',                 notif.NotificacionCreateView.as_view(),                  name='crear_notificacion'),
+    path('notificaciones/marcar-leida/<int:pk>/', notif.MarcarLeidaView.as_view(),                         name='marcar_notificacion_leida'),
+    path('notificaciones/marcar-todas-leidas/',   notif.MarcarTodasLeidasView.as_view(),                   name='marcar_todas_leidas'),
+    path('notificaciones/no-leidas/',             notif.notificaciones_no_leidas,                          name='notificaciones_no_leidas'),
+    path('notificaciones/eliminar/<int:pk>/',     notif.NotificacionDeleteView.as_view(),                  name='eliminar_notificacion'),
+    path('notificaciones/eliminar-masivo/',        notif.EliminarNotificacionesMasivoView.as_view(),        name='eliminar_notificaciones_masivo'),
+    path('notificaciones/eliminar-todas/',         notif.EliminarTodasNotificacionesView.as_view(),         name='eliminar_todas_notificaciones'),
 
     # ── REPORTES PDF
     path('reportes/clientes/pdf/',    rep.ExportarClientesPDF.as_view(),    name='reporte_clientes_pdf'),

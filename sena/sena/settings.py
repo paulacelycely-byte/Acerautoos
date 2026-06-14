@@ -57,13 +57,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sena.wsgi.application'
 
+
 # ========== BASE DE DATOS MySQL ==========
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.mysql',
-        'NAME':     'proyectooooo',
+        'NAME':     'proyecto_acerautos',
         'USER':     'root',
-        'PASSWORD': '12345678',
+        'PASSWORD': 'Acerautos2026*',
         'HOST':     'localhost',
         'PORT':     '3306',
         'OPTIONS': {

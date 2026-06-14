@@ -1,0 +1,410 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acerautos — Crear cuenta</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --rojo: #c0392b; --rojo2: #e74c3c; --negro: #0a0a0a; --blanco: #f5f5f5; }
+  body { min-height: 100vh; font-family: 'Exo 2', sans-serif; overflow-x: hidden; background: var(--negro); }
+
+  .bg {
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("{% static 'imagenes/imagen_fondo_login.jpeg' %}");
+    background-size: cover; background-position: center 40%;
+    filter: brightness(0.52) saturate(0.7) contrast(1.1);
+  }
+  .overlay {
+    position: fixed; inset: 0; z-index: 1;
+    background: linear-gradient(135deg, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.7) 100%);
+  }
+  .watermark {
+    position: fixed; bottom: 28px; right: 28px; z-index: 3;
+    opacity: 0.05; font-family: 'Bebas Neue', sans-serif;
+    font-size: 7rem; color: white; letter-spacing: 8px; pointer-events: none;
+  }
+
+  .page {
+    position: relative; z-index: 10;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 40px 20px;
+  }
+
+  .card {
+    width: 100%; max-width: 640px;
+    background: rgba(10,10,10,0.88); border: 1px solid rgba(192,57,43,0.18);
+    border-radius: 12px; padding: 48px 52px;
+    backdrop-filter: blur(22px);
+    animation: fadeIn 0.7s cubic-bezier(.16,1,.3,1) both;
+  }
+
+  .brand-header { display: flex; align-items: center; gap: 18px; margin-bottom: 36px; }
+  .brand-logo {
+    width: 60px; height: 60px; object-fit: cover; border-radius: 10px;
+    box-shadow: 0 0 0 2px rgba(211,47,47,.4);
+  }
+  .brand-name { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px; color: var(--blanco); line-height: 1; }
+  .brand-name em { font-style: normal; color: var(--rojo2); }
+  .brand-sub { font-family: 'Rajdhani', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: var(--rojo2); }
+
+  .form-eyebrow {
+    font-family: 'Rajdhani', sans-serif; font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 4px; text-transform: uppercase; color: var(--rojo2);
+    margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
+  }
+  .form-eyebrow::before { content: ''; display: block; width: 22px; height: 2px; background: var(--rojo2); }
+  .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; letter-spacing: 3px; color: var(--blanco); margin-bottom: 28px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field { margin-bottom: 18px; }
+  .field.full { grid-column: 1 / -1; }
+
+  .field label {
+    display: block; font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase;
+    color: rgba(245,245,245,0.45); margin-bottom: 7px;
+  }
+  .input-wrap { position: relative; display: flex; align-items: center; }
+  .input-wrap .ico { position: absolute; left: 14px; color: rgba(245,245,245,0.25); font-size: 0.8rem; pointer-events: none; }
+
+  .f-input, .f-select {
+    width: 100%; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;
+    padding: 12px 14px 12px 40px; color: var(--blanco);
+    font-family: 'Exo 2', sans-serif; font-size: 0.9rem; outline: none; transition: all 0.25s;
+  }
+
+  /* ── Dropdown oscuro ── */
+  .f-select {
+    padding-left: 40px;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    background-color: #111;       /* fondo oscuro */
+    color: var(--blanco);
+  }
+  /* Opciones dentro del select */
+  .f-select option {
+    background-color: #1a1a1a;
+    color: var(--blanco);
+  }
+  .f-select option:checked,
+  .f-select option:hover {
+    background-color: var(--rojo);
+    color: var(--blanco);
+  }
+
+  .f-input::placeholder { color: rgba(245,245,245,0.2); }
+  .f-input:focus, .f-select:focus {
+    background: rgba(192,57,43,0.07); border-color: var(--rojo2);
+    box-shadow: 0 0 0 3px rgba(192,57,43,0.12);
+  }
+  .f-select:focus { background-color: #111; }
+  .f-input.error, .f-select.error { border-color: var(--rojo2); }
+
+  .eye-btn {
+    position: absolute; right: 12px; background: none; border: none; cursor: pointer;
+    color: rgba(245,245,245,0.25); font-size: 0.8rem; transition: color 0.2s;
+  }
+  .eye-btn:hover { color: var(--rojo2); }
+
+  .field-error { font-size: 0.75rem; color: var(--rojo2); margin-top: 5px; }
+
+  .divider {
+    border: none; border-top: 1px solid rgba(255,255,255,0.07);
+    margin: 8px 0 20px;
+  }
+  .section-label {
+    font-family: 'Rajdhani', sans-serif; font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase; color: rgba(245,245,245,0.25);
+    margin-bottom: 14px;
+  }
+
+  /* ── Foto de perfil ── */
+  .foto-upload-wrap {
+    display: flex; align-items: center; gap: 16px;
+  }
+  .foto-preview {
+    width: 64px; height: 64px; border-radius: 50%;
+    object-fit: cover; border: 2px solid rgba(192,57,43,0.4);
+    background: rgba(255,255,255,0.04);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .foto-preview i { font-size: 1.6rem; color: rgba(245,245,245,0.15); }
+  .foto-label-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px; padding: 10px 18px; cursor: pointer;
+    font-family: 'Rajdhani', sans-serif; font-weight: 600;
+    font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
+    color: rgba(245,245,245,0.5); transition: all 0.25s;
+  }
+  .foto-label-btn:hover {
+    border-color: var(--rojo2); color: var(--rojo2);
+    background: rgba(192,57,43,0.07);
+  }
+  .foto-nombre {
+    font-size: 0.75rem; color: rgba(245,245,245,0.3);
+    margin-top: 5px; font-family: 'Exo 2', sans-serif;
+  }
+  /* Ocultar el input file nativo */
+  #id_foto { display: none; }
+
+  .btn-submit {
+    width: 100%; margin-top: 8px;
+    background: linear-gradient(135deg, var(--rojo) 0%, var(--rojo2) 100%);
+    border: none; border-radius: 6px; padding: 15px;
+    color: var(--blanco); font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s;
+    box-shadow: 0 4px 24px rgba(192,57,43,0.35);
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(192,57,43,0.5); }
+
+  .back-link {
+    display: block; text-align: center; margin-top: 18px;
+    font-family: 'Rajdhani', sans-serif; font-size: 0.78rem;
+    font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    color: rgba(245,245,245,0.3); text-decoration: none; transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--rojo2); }
+
+  @keyframes fadeIn { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+
+  @media (max-width: 600px) {
+    .card { padding: 32px 24px; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .field.full { grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="overlay"></div>
+<div class="watermark">ACERAUTOS</div>
+
+<div class="page">
+  <div class="card">
+
+    <div class="brand-header">
+      <img class="brand-logo" src="{% static 'imagenes/logoempresa.jpeg' %}" alt="Logo">
+      <div>
+        <div class="brand-name">Acer<em>autos</em></div>
+        <div class="brand-sub">Centro Integral Automotriz</div>
+      </div>
+    </div>
+
+    <div class="form-eyebrow">Gestión de usuarios</div>
+    <div class="form-title">Crear cuenta</div>
+
+    <form method="post" enctype="multipart/form-data" autocomplete="off">
+      {% csrf_token %}
+
+      <p class="section-label">Información personal</p>
+      <div class="grid-2">
+
+        <div class="field">
+          <label>Nombre</label>
+          <div class="input-wrap">
+            <i class="fas fa-user ico"></i>
+            {{ form.first_name|add_class:"f-input"|attr:"placeholder:Nombre" }}
+          </div>
+          {% for e in form.first_name.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="field">
+          <label>Apellido</label>
+          <div class="input-wrap">
+            <i class="fas fa-user ico"></i>
+            {{ form.last_name|add_class:"f-input"|attr:"placeholder:Apellido" }}
+          </div>
+          {% for e in form.last_name.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="field">
+          <label>Tipo de documento</label>
+          <div class="input-wrap">
+            <i class="fas fa-id-card ico"></i>
+            {{ form.tipo_documento|add_class:"f-select" }}
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Número de documento</label>
+          <div class="input-wrap">
+            <i class="fas fa-hashtag ico"></i>
+            {{ form.cedula|add_class:"f-input"|attr:"placeholder:1234567890" }}
+          </div>
+          {% for e in form.cedula.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="field full">
+          <label>Correo electrónico</label>
+          <div class="input-wrap">
+            <i class="fas fa-envelope ico"></i>
+            {{ form.email|add_class:"f-input"|attr:"placeholder:correo@dominio.com" }}
+          </div>
+          {% for e in form.email.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="field">
+          <label>Teléfono</label>
+          <div class="input-wrap">
+            <i class="fas fa-phone ico"></i>
+            {{ form.telefono|add_class:"f-input"|attr:"placeholder:3101234567" }}
+          </div>
+          {% for e in form.telefono.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="field">
+          <label>Cargo</label>
+          <div class="input-wrap">
+            <i class="fas fa-briefcase ico"></i>
+            {{ form.cargo|add_class:"f-select" }}
+          </div>
+        </div>
+
+      </div>
+
+      <hr class="divider">
+      <p class="section-label">Acceso al sistema</p>
+      <div class="grid-2">
+
+        <div class="field full">
+          <label>Nombre de usuario</label>
+          <div class="input-wrap">
+            <i class="fas fa-at ico"></i>
+            {{ form.username|add_class:"f-input"|attr:"placeholder:usuario123" }}
+          </div>
+          {% for e in form.username.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="field">
+          <label>Contraseña</label>
+          <div class="input-wrap">
+            <i class="fas fa-lock ico"></i>
+            {{ form.password1|add_class:"f-input"|attr:"placeholder:••••••••" }}
+            <button type="button" class="eye-btn" onclick="togglePass('id_password1','eye1')">
+              <i class="fas fa-eye" id="eye1"></i>
+            </button>
+          </div>
+          {% for e in form.password1.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="field">
+          <label>Confirmar contraseña</label>
+          <div class="input-wrap">
+            <i class="fas fa-lock ico"></i>
+            {{ form.password2|add_class:"f-input"|attr:"placeholder:••••••••" }}
+            <button type="button" class="eye-btn" onclick="togglePass('id_password2','eye2')">
+              <i class="fas fa-eye" id="eye2"></i>
+            </button>
+          </div>
+          {% for e in form.password2.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+
+      </div>
+
+      <!-- ── Foto de perfil ── -->
+      <hr class="divider">
+      <p class="section-label">Foto de perfil (opcional)</p>
+      <div class="field full">
+        <div class="foto-upload-wrap">
+          <!-- Vista previa circular -->
+          <div class="foto-preview" id="fotoPreview">
+            <i class="fas fa-user"></i>
+          </div>
+          <div>
+            <!-- Botón personalizado que dispara el input oculto -->
+            <label for="id_foto" class="foto-label-btn">
+              <i class="fas fa-camera"></i> Elegir foto
+            </label>
+            <div class="foto-nombre" id="fotoNombre">Ningún archivo seleccionado</div>
+          </div>
+        </div>
+        {{ form.foto }}
+        {% for e in form.foto.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+      </div>
+
+      <button type="submit" class="btn-submit">
+        <i class="fas fa-user-plus"></i> Crear cuenta
+      </button>
+    </form>
+
+    <a href="{% url 'login:login' %}" class="back-link">
+      <i class="fas fa-arrow-left"></i> Volver al inicio de sesión
+    </a>
+
+  </div>
+</div>
+
+<script>
+  function togglePass(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon  = document.getElementById(iconId);
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+  }
+
+  /* ── Vista previa de foto ── */
+  document.getElementById('id_foto').addEventListener('change', function () {
+    const file = this.files[0];
+    const nombre = document.getElementById('fotoNombre');
+    const preview = document.getElementById('fotoPreview');
+
+    if (file) {
+      nombre.textContent = file.name;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      nombre.textContent = 'Ningún archivo seleccionado';
+      preview.innerHTML = '<i class="fas fa-user"></i>';
+    }
+  });
+
+  {% if form.errors %}
+  document.addEventListener('DOMContentLoaded', function () {
+    Swal.fire({
+      icon: 'error',
+      title: 'Errores en el formulario',
+      text: 'Revisa los campos marcados en rojo.',
+      background: '#1a1a1a', color: '#f5f5f5',
+      confirmButtonColor: '#c0392b',
+      confirmButtonText: 'Corregir'
+    });
+  });
+  {% endif %}
+
+  {% if messages %}
+  document.addEventListener('DOMContentLoaded', function () {
+    {% for msg in messages %}
+    Swal.fire({
+      icon: '{{ msg.tags }}' === 'success' ? 'success' : 'info',
+      title: '{{ msg|escapejs }}',
+      background: '#1a1a1a', color: '#f5f5f5',
+      confirmButtonColor: '#c0392b',
+      timer: 2500, showConfirmButton: false
+    });
+    {% endfor %}
+  });
+  {% endif %}
+</script>
+</body>
+</html>

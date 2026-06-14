@@ -7,24 +7,6 @@
 
 :root { --red: #d31414; --border: rgba(255,255,255,0.09); }
 
-.app-header { position: fixed !important; top: 0; width: calc(100% - 260px); }
-body.sidebar-mini .app-header { width: calc(100% - 72px); }
-body.sidebar-hidden .app-header { width: 100%; }
-.app-main-bg { padding-top: 60px !important; }
-
-/* ── FIX SIDEBAR OVERLAP ── */
-.dash-wrapper { margin-left: 0; transition: margin-left .3s ease; }
-.app-sidebar { z-index: 1050 !important; }
-.app-main-outer { overflow-x: hidden !important; }
-.app-main-inner { overflow-x: hidden !important; }
-
-.dash-wrapper {
-    min-height: 100vh;
-    overflow-x: hidden;
-    background: linear-gradient(rgba(37,36,36,.78), rgba(40,40,40,.85)),
-                url("{% static 'imagenes/fondo2.jpg' %}") center/cover no-repeat fixed;
-}
-
 /* ── DIVISOR ── */
 .sdiv { display: flex; align-items: center; gap: 14px; margin: 1.8rem 0 1rem; }
 .sdiv-num { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 900; color: var(--red); line-height: 1; }
@@ -51,7 +33,6 @@ body.sidebar-hidden .app-header { width: 100%; }
 }
 
 @media (max-width: 991px) {
-    .app-header { width: 100% !important; }
     .col-xl-3, .col-md-6 { flex: 0 0 50%; max-width: 50%; }
 }
 
@@ -74,7 +55,6 @@ body.sidebar-hidden .app-header { width: 100%; }
 {% endblock %}
 
 {% block contenido %}
-<div class="dash-wrapper">
 <div class="container-fluid py-3 px-4">
 
     <!-- ── 01 RECEPCIÓN ── -->
@@ -291,27 +271,10 @@ body.sidebar-hidden .app-header { width: 100%; }
 
     <div style="height:2rem;"></div>
 </div>
-</div>
 {% endblock %}
 
 {% block js %}
 <script>
-console.log('Dashboard cargado correctamente');
-
-// Fix sidebar overlap on toggle
-(function() {
-    function fixOverflow() {
-        var mainOuter = document.querySelector('.app-main-outer');
-        var mainInner = document.querySelector('.app-main-inner');
-        if (mainOuter) mainOuter.style.overflowX = 'hidden';
-        if (mainInner) mainInner.style.overflowX = 'hidden';
-    }
-    fixOverflow();
-    // Re-apply after sidebar animations
-    document.addEventListener('click', function(e) {
-        var btn = e.target.closest('[data-trigger="sidebar-toggle"], .hamburger, .sidebar-toggle');
-        if (btn) setTimeout(fixOverflow, 350);
-    });
-})();
+console.log('Dashboard ADMIN cargado correctamente');
 </script>
 {% endblock %}

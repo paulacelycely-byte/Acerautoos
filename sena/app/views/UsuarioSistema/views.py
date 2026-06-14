@@ -6,8 +6,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 
 from app.models import UsuarioSistema, OrdenServicio
-from app.forms import UsuarioSistemaForm
-from app.mixins import SoloSuperAdminMixin
+from app.forms import UsuarioSistemaForm, RegistroUsuarioSistemaForm
+from app.mixins import AdminRequeridoMixin  # ← solo este
 
 
 class PerfilView(LoginRequiredMixin, View):
@@ -26,7 +26,7 @@ class PerfilView(LoginRequiredMixin, View):
         })
 
 
-class UsuarioListView(SoloSuperAdminMixin, ListView):
+class UsuarioListView(AdminRequeridoMixin, ListView):
     model               = UsuarioSistema
     template_name       = 'UsuarioSistema/listar.html'
     context_object_name = 'usuarios'
@@ -43,13 +43,12 @@ class UsuarioListView(SoloSuperAdminMixin, ListView):
         return context
 
 
-class UsuarioCreateView(SoloSuperAdminMixin, CreateView):
+class UsuarioCreateView(AdminRequeridoMixin, CreateView):
     model         = UsuarioSistema
     form_class    = UsuarioSistemaForm
     template_name = 'UsuarioSistema/crear.html'
     login_url     = 'login:login'
 
-    # FIX — redirige a la orden si viene con ?next=orden
     def get_success_url(self):
         next_param = self.request.POST.get('next') or self.request.GET.get('next')
         if next_param == 'orden':
@@ -68,7 +67,7 @@ class UsuarioCreateView(SoloSuperAdminMixin, CreateView):
         return super().form_valid(form)
 
 
-class UsuarioUpdateView(SoloSuperAdminMixin, UpdateView):
+class UsuarioUpdateView(AdminRequeridoMixin, UpdateView):
     model         = UsuarioSistema
     form_class    = UsuarioSistemaForm
     template_name = 'UsuarioSistema/crear.html'
@@ -87,7 +86,7 @@ class UsuarioUpdateView(SoloSuperAdminMixin, UpdateView):
         return super().form_valid(form)
 
 
-class UsuarioDeleteView(SoloSuperAdminMixin, DeleteView):
+class UsuarioDeleteView(AdminRequeridoMixin, DeleteView):
     model         = UsuarioSistema
     template_name = 'UsuarioSistema/eliminar.html'
     success_url   = reverse_lazy('app:listar_usuario')
@@ -104,7 +103,7 @@ class UsuarioDeleteView(SoloSuperAdminMixin, DeleteView):
         return super().form_valid(form)
 
 
-class CambiarEstadoUsuarioView(SoloSuperAdminMixin, View):
+class CambiarEstadoUsuarioView(AdminRequeridoMixin, View):
     login_url = 'login:login'
 
     def post(self, request, pk):
@@ -117,3 +116,28 @@ class CambiarEstadoUsuarioView(SoloSuperAdminMixin, View):
         estado = 'activado' if usuario.is_active else 'desactivado'
         messages.success(request, f'Usuario {usuario.username} {estado} correctamente.')
         return redirect('app:listar_usuario')
+
+
+class RegistroUsuarioView(CreateView):
+    model         = UsuarioSistema
+    form_class    = RegistroUsuarioSistemaForm
+    template_name = 'UsuarioSistema/registro.html'
+    success_url   = reverse_lazy('login:login')
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('app:dashboard')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Crear cuenta'
+        return context
+
+    def form_valid(self, form):
+        self.request.session['registro_exitoso'] = True
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Corrige los errores del formulario.')
+        return super().form_invalid(form)

@@ -145,7 +145,7 @@
   background: transparent; 
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; z-index: 9999;
-  box-shadow: 0 4px 20px rgba(255,255,255,.3);  ← SOMBRA BLANCA
+  box-shadow: 0 4px 20px rgba(255,255,255,.3);
   transition: transform .2s, box-shadow .2s;
 }
     #chatbot-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(211,47,47,.65); }
@@ -370,56 +370,69 @@
 {% block js_base %}
   <script>
   document.addEventListener('DOMContentLoaded', function () {
-
     var trigger = document.getElementById('sidebar-trigger');
-var body    = document.body;
-var MINI    = 'sidebar-mini';
-var HIDDEN  = 'sidebar-hidden';
-var OPEN    = 'sidebar-open';
+    var body    = document.body;
+    var MINI    = 'sidebar-mini';
+    var HIDDEN  = 'sidebar-hidden';
+    var OPEN    = 'sidebar-open';
 
-if (trigger) {
-  trigger.addEventListener('click', function () {
-    if (window.innerWidth <= 768) {
-      // Móvil: abrir/cerrar drawer
-      body.classList.toggle(OPEN);
-    } else {
-      // Desktop: ciclo full → mini → hidden → full
-      if (!body.classList.contains(MINI) && !body.classList.contains(HIDDEN)) {
-        body.classList.add(MINI); localStorage.setItem('sb_state', 'mini');
-      } else if (body.classList.contains(MINI)) {
-        body.classList.remove(MINI); body.classList.add(HIDDEN); localStorage.setItem('sb_state', 'hidden');
+    // ── INICIALIZAR ESTADO DEL SIDEBAR ──
+    function initSidebarState() {
+      // En móvil: cerrado por defecto
+      if (window.innerWidth <= 768) {
+        body.classList.remove(MINI, HIDDEN, OPEN);
       } else {
-        body.classList.remove(HIDDEN); localStorage.setItem('sb_state', 'full');
-      }
-    }
-  });
-}
-// Sincronizar estado al redimensionar
-window.addEventListener('resize', function () {
-  if (window.innerWidth <= 768) {
-    body.classList.remove(MINI, HIDDEN, OPEN);
-  } else {
-    body.classList.remove(OPEN);
-    var state = localStorage.getItem('sb_state');
-    body.classList.remove(MINI, HIDDEN);
-    if (state === 'mini')   body.classList.add(MINI);
-    if (state === 'hidden') body.classList.add(HIDDEN);
-  }
-});
-    // Sincronizar estado del sidebar al redimensionar ventana
-    window.addEventListener('resize', function () {
-        if (window.innerWidth <= 768) {
-        // En móvil, forzar sidebar oculto sin tocar localStorage
-        body.classList.remove(MINI);
-      } else {
-        // Al volver a desktop, restaurar estado guardado
+        // En desktop: restaurar estado anterior
+        body.classList.remove(OPEN);
         var state = localStorage.getItem('sb_state');
-        body.classList.remove(MINI, HIDDEN, 'sidebar-open');
+        body.classList.remove(MINI, HIDDEN);
         if (state === 'mini')   body.classList.add(MINI);
         if (state === 'hidden') body.classList.add(HIDDEN);
+      }
     }
-});
 
+    // Inicializar al cargar la página
+    initSidebarState();
+
+    // ── TOGGLE DEL SIDEBAR ──
+    if (trigger) {
+      trigger.addEventListener('click', function () {
+        if (window.innerWidth <= 768) {
+          // Móvil: abrir/cerrar drawer
+          body.classList.toggle(OPEN);
+        } else {
+          // Desktop: ciclo full → mini → hidden → full
+          if (!body.classList.contains(MINI) && !body.classList.contains(HIDDEN)) {
+            body.classList.add(MINI);
+            localStorage.setItem('sb_state', 'mini');
+          } else if (body.classList.contains(MINI)) {
+            body.classList.remove(MINI);
+            body.classList.add(HIDDEN);
+            localStorage.setItem('sb_state', 'hidden');
+          } else {
+            body.classList.remove(HIDDEN);
+            localStorage.setItem('sb_state', 'full');
+          }
+        }
+      });
+    }
+
+    // ── SINCRONIZAR AL REDIMENSIONAR ──
+    window.addEventListener('resize', function () {
+      if (window.innerWidth <= 768) {
+        // Pasar de desktop a móvil: cerrar sidebar
+        body.classList.remove(MINI, HIDDEN, OPEN);
+      } else {
+        // Pasar de móvil a desktop: restaurar estado guardado
+        body.classList.remove(OPEN);
+        var state = localStorage.getItem('sb_state');
+        body.classList.remove(MINI, HIDDEN);
+        if (state === 'mini')   body.classList.add(MINI);
+        if (state === 'hidden') body.classList.add(HIDDEN);
+      }
+    });
+
+    // ── NOTIFICACIONES ──
     const COLORES_DOT  = { 'Urgente':'dot-urgente','Alerta':'dot-alerta','Mantenimiento':'dot-mantenimiento','Recordatorio':'dot-recordatorio','Informacion':'dot-informacion' };
     const COLORES_TIPO = { 'Urgente':'tipo-urgente','Alerta':'tipo-alerta','Mantenimiento':'tipo-mantenimiento','Recordatorio':'tipo-recordatorio','Informacion':'tipo-informacion' };
 
@@ -464,24 +477,25 @@ window.addEventListener('resize', function () {
         if (container) container.innerHTML = '<div class="notif-empty">Error al cargar.</div>';
         });
     }
-    // DESPUÉS — llamar inmediatamente Y al abrir el dropdown
-  actualizarNotificaciones();
-  setInterval(actualizarNotificaciones, 30000);
+    
+    actualizarNotificaciones();
+    setInterval(actualizarNotificaciones, 30000);
 
-// Refrescar también cada vez que el usuario abre el dropdown
-  const btnNotif = document.getElementById('btn-notif-navbar');
-  if (btnNotif) {
+    const btnNotif = document.getElementById('btn-notif-navbar');
+    if (btnNotif) {
       btnNotif.addEventListener('click', function () {
-          actualizarNotificaciones();
+        actualizarNotificaciones();
       });
-  } 
+    }
 
+    // ── MENSAJES DEL SERVIDOR ──
     {% if messages %}
       {% for message in messages %}
         Swal.fire({ icon:"{{ message.tags|default:'info' }}", title:"{{ message|escapejs }}", confirmButtonColor:'#d32f2f', timer:3000, timerProgressBar:true });
       {% endfor %}
     {% endif %}
 
+    // ── CHATBOT ──
     const inputChat = document.getElementById('chatbot-input');
     if (inputChat) {
       inputChat.addEventListener('keydown', function(e) {
@@ -614,33 +628,30 @@ window.addEventListener('resize', function () {
         var lenNit = val.trim().length; if (lenNit < 9 || lenNit > 10) { mostrarError(input, '"' + label + '" debe tener 9 o 10 dígitos.'); return; }
       }
       if (name === 'numero_telefono') {
-    if (!esVacio(val)) {
-        if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
-        // Obtener el indicativo seleccionado
-        var indInput = document.getElementById('id_indicativo_proveedor') || document.getElementById('id_indicativo_cliente');
-        var ind = indInput ? indInput.value : '+57';
-        var RANGOS = {
-            '+57':(7,10),'+1':[10,10],'+52':[10,10],'+54':[6,11],'+55':[8,11],
-            '+56':[8,9],'+51':[7,9],'+58':[7,11],'+593':[8,9],'+591':[7,8],
-            '+595':[5,9],'+598':[7,8],'+507':[7,8],'+506':[8,8],'+503':[8,8],
-            '+502':[8,8],'+504':[8,8],'+505':[8,8],'+53':[7,8],'+1809':[10,10],
-            '+34':[9,9],'+44':[7,10],'+33':[9,9],'+49':[3,12],'+39':[6,11],
-            '+351':[9,9],'+7':[10,10],'+86':[7,11],'+81':[9,10],'+82':[9,11],
-            '+91':[10,10],'+61':[5,9],'+27':[9,9],'+20':[7,10],
-            '+212':[9,10],'+971':[7,9],'+966':[9,9]
-        };
-        var rango = RANGOS[ind] || [6,15];
-        var lenTel = val.trim().length;
-        if (lenTel < rango[0] || lenTel > rango[1]) {
-            var msg = rango[0] === rango[1]
-                ? '"' + label + '" debe tener exactamente ' + rango[0] + ' dígitos para ' + ind + '.'
-                : '"' + label + '" debe tener entre ' + rango[0] + ' y ' + rango[1] + ' dígitos para ' + ind + '.';
-            mostrarError(input, msg); return;
+        if (!esVacio(val)) {
+          if (!/^\d+$/.test(val.trim())) { mostrarError(input, '"' + label + '" solo permite números.'); return; }
+          var indInput = document.getElementById('id_indicativo_proveedor') || document.getElementById('id_indicativo_cliente');
+          var ind = indInput ? indInput.value : '+57';
+          var RANGOS = {
+              '+57':[7,10],'+1':[10,10],'+52':[10,10],'+54':[6,11],'+55':[8,11],
+              '+56':[8,9],'+51':[7,9],'+58':[7,11],'+593':[8,9],'+591':[7,8],
+              '+595':[5,9],'+598':[7,8],'+507':[7,8],'+506':[8,8],'+503':[8,8],
+              '+502':[8,8],'+504':[8,8],'+505':[8,8],'+53':[7,8],'+1809':[10,10],
+              '+34':[9,9],'+44':[7,10],'+33':[9,9],'+49':[3,12],'+39':[6,11],
+              '+351':[9,9],'+7':[10,10],'+86':[7,11],'+81':[9,10],'+82':[9,11],
+              '+91':[10,10],'+61':[5,9],'+27':[9,9],'+20':[7,10],
+              '+212':[9,10],'+971':[7,9],'+966':[9,9]
+          };
+          var rango = RANGOS[ind] || [6,15];
+          var lenTel = val.trim().length;
+          if (lenTel < rango[0] || lenTel > rango[1]) {
+              var msg = rango[0] === rango[1]
+                  ? '"' + label + '" debe tener exactamente ' + rango[0] + ' dígitos para ' + ind + '.'
+                  : '"' + label + '" debe tener entre ' + rango[0] + ' y ' + rango[1] + ' dígitos para ' + ind + '.';
+              mostrarError(input, msg); return;
+          }
         }
-    }
-    mostrarOk(input); return;
-}
-
+        mostrarOk(input); return;
       }
       if (name.includes('email') || name.includes('correo')) {
         if (!esVacio(val) && !/^[\w.\+\-]+@[\w\-]+\.[a-zA-Z]{2,}$/.test(val.trim())) { mostrarError(input, '"' + label + '" no tiene formato válido.'); return; }

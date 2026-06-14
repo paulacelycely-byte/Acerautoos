@@ -1451,3 +1451,76 @@ class PagarFacturaForm(forms.ModelForm):
         if not metodo:
             raise forms.ValidationError("Seleccione un método de pago.")
         return metodo
+
+# ══════════════════════════════════════════════════════════
+#  REGISTRO DE USUARIOS DEL SISTEMA
+# ══════════════════════════════════════════════════════════
+from django.contrib.auth.forms import UserCreationForm
+class RegistroUsuarioSistemaForm(UserCreationForm):
+    class Meta:
+        model  = UsuarioSistema
+        fields = ['username', 'first_name', 'last_name', 'email',
+                  'tipo_documento', 'cedula', 'telefono', 'cargo', 'foto']  # ← foto
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required  = True
+        self.fields['email'].required      = True
+        self.fields['foto'].required       = False
+
+    def clean_first_name(self):
+        return val_solo_letras(self.cleaned_data['first_name'], "Nombre")
+
+    def clean_last_name(self):
+        return val_solo_letras(self.cleaned_data['last_name'], "Apellido")
+
+    def clean_email(self):
+        email = val_email(self.cleaned_data['email'], "Email")
+        if UsuarioSistema.objects.filter(email=email).exists():
+            raise forms.ValidationError("Ya existe un usuario con este email.")
+        return email
+
+    def clean_cedula(self):
+        cedula = self.cleaned_data.get('cedula')
+        if cedula:
+            cedula = val_solo_numeros(cedula, "Cédula")
+            if not (8 <= len(cedula) <= 14):
+                raise forms.ValidationError("La cédula debe tener entre 8 y 14 dígitos.")
+            if UsuarioSistema.objects.filter(cedula=cedula).exists():
+                raise forms.ValidationError("Ya existe un usuario con esta cédula.")
+        return cedula
+
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get('telefono', '').strip()
+        if not telefono:
+            raise forms.ValidationError("El teléfono es obligatorio.")
+        if not telefono.isdigit():
+            raise forms.ValidationError("Solo se permiten números, sin espacios ni símbolos.")
+        if len(telefono) == 10:
+            if not (telefono.startswith('3')):
+                raise forms.ValidationError("Celular colombiano debe empezar por 3. Ej: 3101234567")
+        elif len(telefono) == 7:
+            pass  # fijo sin indicativo
+        else:
+            raise forms.ValidationError("Ingrese 10 dígitos para celular (ej: 3101234567) o 7 para fijo.")
+        return telefono
+
+    def clean_foto(self):
+        foto = self.cleaned_data.get('foto')
+        if foto and hasattr(foto, 'name'):
+            ext = foto.name.split('.')[-1].lower()
+            if ext not in ['jpg', 'jpeg', 'png', 'webp']:
+                raise forms.ValidationError("Solo se permiten imágenes JPG, PNG o WEBP.")
+            if foto.size > 2 * 1024 * 1024:
+                raise forms.ValidationError("La imagen no puede superar los 2 MB.")
+        return foto
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data['password1'])
+        user.activo    = True
+        user.is_active = True
+        if commit:
+            user.save()
+        return user

@@ -1,0 +1,420 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block css %}
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+    --rojo:   #d32f2f;
+    --rojo2:  #b71c1c;
+    --carbon: #1a1a1a;
+    --gris:   #f2f2f0;
+    --borde:  #e0ddd8;
+    --texto:  #2a2a2a;
+    --muted:  #888;
+}
+
+/* ══ HERO ══ */
+.ayuda-hero {
+    background: var(--carbon);
+    border-radius: 16px;
+    padding: 40px 36px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+.ayuda-hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(211,47,47,.25) 0%, transparent 70%);
+    pointer-events: none;
+}
+.ayuda-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #d32f2f 0%, rgba(211,47,47,.2) 60%, transparent 100%);
+}
+.hero-left { display: flex; align-items: center; gap: 20px; position: relative; z-index: 1; }
+.hero-icon {
+    width: 64px; height: 64px; border-radius: 16px;
+    background: rgba(211,47,47,.15);
+    border: 1.5px solid rgba(211,47,47,.35);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 6px rgba(211,47,47,.07);
+}
+.hero-icon svg { width: 30px; height: 30px; stroke: #d32f2f; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.hero-titulo { font-family: 'Barlow Condensed', sans-serif; font-size: 2.4rem; font-weight: 900; color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0; }
+.hero-sub { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: rgba(255,255,255,.4); margin-top: 6px; }
+.hero-badge {
+    position: relative; z-index: 1;
+    background: rgba(211,47,47,.12);
+    border: 1px solid rgba(211,47,47,.25);
+    border-radius: 12px; padding: 12px 20px;
+    text-align: center; flex-shrink: 0;
+}
+.hero-badge-num { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 900; color: #d32f2f; line-height: 1; }
+.hero-badge-lbl { font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.3); margin-top: 2px; }
+
+/* ══ GRID PRINCIPAL ══ */
+.ayuda-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.span-2 { grid-column: 1 / -1; }
+@media (max-width: 768px) { .ayuda-layout { grid-template-columns: 1fr; } .span-2 { grid-column: 1; } }
+
+/* ══ CARD BASE ══ */
+.a-card {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid var(--borde);
+    overflow: hidden;
+}
+.a-card-head {
+    padding: 14px 20px;
+    background: var(--carbon);
+    display: flex; align-items: center; gap: 10px;
+}
+.a-card-head svg { width: 16px; height: 16px; stroke: #d32f2f; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.a-card-head-title { font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,.6); margin: 0; }
+.a-card-body { padding: 20px; }
+
+/* ══ MÓDULOS GRID ══ */
+.mod-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+@media (max-width: 900px) { .mod-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .mod-grid { grid-template-columns: 1fr; } }
+
+.mod-item {
+    background: var(--gris);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex; align-items: center; gap: 12px;
+    transition: border-color .2s, box-shadow .2s;
+}
+.mod-item:hover { border-color: rgba(211,47,47,.3); box-shadow: 0 4px 16px rgba(0,0,0,.07); }
+.mod-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: .7rem; font-weight: 900;
+    background: var(--carbon); color: white;
+    padding: 3px 8px; border-radius: 6px;
+    flex-shrink: 0; letter-spacing: .5px;
+    min-width: 32px; text-align: center;
+}
+.mod-nombre { font-size: .82rem; font-weight: 700; color: var(--carbon); line-height: 1.2; }
+.mod-desc { font-size: .68rem; color: var(--muted); margin-top: 2px; }
+
+/* ══ TIPS ══ */
+.tip-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--gris);
+    border: 1px solid var(--borde);
+    border-left: 3px solid var(--rojo);
+    transition: box-shadow .2s;
+}
+.tip-item:hover { box-shadow: 0 4px 14px rgba(0,0,0,.07); }
+.tip-item + .tip-item { margin-top: 10px; }
+.tip-icon {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: rgba(211,47,47,.1); border: 1px solid rgba(211,47,47,.2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.tip-icon svg { width: 15px; height: 15px; stroke: #d32f2f; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tip-titulo { font-size: .82rem; font-weight: 700; color: var(--carbon); margin-bottom: 2px; }
+.tip-desc { font-size: .75rem; color: var(--muted); line-height: 1.5; }
+
+/* ══ CRÉDITOS ══ */
+.cred-item {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: var(--gris);
+    border: 1px solid var(--borde);
+}
+.cred-item + .cred-item { margin-top: 8px; }
+.cred-left { display: flex; align-items: center; gap: 10px; }
+.cred-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rojo); flex-shrink: 0; }
+.cred-label { font-size: .78rem; font-weight: 600; color: var(--texto); }
+.cred-val { font-size: .75rem; color: var(--muted); }
+.cred-link { font-size: .75rem; font-weight: 700; color: var(--rojo); text-decoration: none; padding: 3px 10px; border-radius: 6px; background: rgba(211,47,47,.08); border: 1px solid rgba(211,47,47,.15); transition: background .15s; }
+.cred-link:hover { background: rgba(211,47,47,.16); }
+
+/* ══ VERSION CARD ══ */
+.version-card {
+    background: var(--carbon);
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+.version-info { display: flex; align-items: center; gap: 16px; }
+.version-logo {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: rgba(211,47,47,.15); border: 1px solid rgba(211,47,47,.3);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.version-logo svg { width: 20px; height: 20px; stroke: #d32f2f; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.version-nombre { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 900; color: white; text-transform: uppercase; letter-spacing: .5px; line-height: 1; }
+.version-dato { font-size: .7rem; color: rgba(255,255,255,.35); margin-top: 4px; line-height: 1.5; }
+.version-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.v-badge {
+    font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .8px;
+    padding: 5px 12px; border-radius: 20px;
+}
+.v-badge-red { background: rgba(211,47,47,.2); color: #fca5a5; border: 1px solid rgba(211,47,47,.3); }
+.v-badge-white { background: rgba(255,255,255,.06); color: rgba(255,255,255,.5); border: 1px solid rgba(255,255,255,.1); }
+
+/* ══ RESPONSIVE ══ */
+@media (max-width: 767px) {
+    .ayuda-hero { padding: 24px 20px; }
+    .hero-titulo { font-size: 1.8rem; }
+    .a-card-body { padding: 14px; }
+    .version-card { padding: 16px; }
+}
+@media (max-width: 480px) {
+    .hero-titulo { font-size: 1.5rem; }
+    .hero-badge { display: none; }
+}
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="container-fluid py-2">
+
+    <!-- ══ HERO ══ -->
+    <div class="ayuda-hero">
+        <div class="hero-left">
+            <div class="hero-icon">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div>
+                <h1 class="hero-titulo">Centro de Ayuda</h1>
+                <div class="hero-sub">Todo lo que necesitas saber para usar ACERAUTOS</div>
+            </div>
+        </div>
+        <div class="hero-badge">
+            <div class="hero-badge-num">15</div>
+            <div class="hero-badge-lbl">Módulos</div>
+        </div>
+    </div>
+
+    <!-- ══ VERSIÓN ══ -->
+    <div class="version-card">
+        <div class="version-info">
+            <div class="version-logo">
+                <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <div>
+                <div class="version-nombre">Acerautos S.A.S</div>
+                <div class="version-dato">Sistema de Gestión Automotriz · Grupo 6 — Ficha 3063723 · SENA Centro Minero · 2026</div>
+            </div>
+        </div>
+        <div class="version-badges">
+            <span class="v-badge v-badge-red">v1.0</span>
+            <span class="v-badge v-badge-white">Django + Bootstrap 5</span>
+        </div>
+    </div>
+
+    <div class="ayuda-layout">
+
+        <!-- ══ MÓDULOS ══ -->
+        <div class="a-card span-2">
+            <div class="a-card-head">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                <span class="a-card-head-title">Módulos disponibles</span>
+            </div>
+            <div class="a-card-body">
+                <div class="mod-grid">
+                    <div class="mod-item">
+                        <span class="mod-num">P1</span>
+                        <div><div class="mod-nombre">Clientes</div><div class="mod-desc">Registro de propietarios</div></div>
+                    </div>
+                    <div class="mod-item">
+                        <span class="mod-num">P2</span>
+                        <div><div class="mod-nombre">Vehículos</div><div class="mod-desc">Vehículos del taller</div></div>
+                    </div>
+                    <div class="mod-item">
+                        <span class="mod-num">P3</span>
+                        <div><div class="mod-nombre">Órdenes de Servicio</div><div class="mod-desc">Gestión de órdenes</div></div>
+                    </div>
+                    <div class="mod-item">
+                        <span class="mod-num">P4</span>
+                        <div><div class="mod-nombre">Servicios</div><div class="mod-desc">Tipos de servicio</div></div>
+                    </div>
+                    <div class="mod-item">
+                        <span class="mod-num">P5</span>
+                        <div><div class="mod-nombre">Análisis de Consumo</div><div class="mod-desc">Consumo y detalles</div></div>
+                    </div>
+                    <div class="mod-item">
+                        <span class="mod-num">P6</span>
+                        <div><div class="mod-nombre">Productos</div><div class="mod-desc">Inventario disponible</div></div>
+                    </div>
+                    <div class="mod-item">
+                        <span class="mod-num">P7</span>
+                        <div><div class="mod-nombre">Marcas</div><div class="mod-desc">Marcas registradas</div></div>
+                    </div>
+                    <div class="mod-item">
+                        <span class="mod-num">P8</span>
+                        <div><div class="mod-nombre">Compatibilidad</div><div class="mod-desc">Productos por vehículo</div></div>
+                    </div>
+                    <div class="mod-item">
+                        <span class="mod-num">P9</span>
+                        <div><div class="mod-nombre">Proveedores</div><div class="mod-desc">Gestión de proveedores</div></div>
+                    </div>
+                    <div class="mod-item">
+                        <span class="mod-num">P10</span>
+                        <div><div class="mod-nombre">Compras</div><div class="mod-desc">Registro de compras</div></div>
+                    </div>
+                    <div class="mod-item">
+                        <span class="mod-num">P11</span>
+                        <div><div class="mod-nombre">Seguimiento</div><div class="mod-desc">Próximos mantenimientos</div></div>
+                    </div>
+                    <div class="mod-item">
+                        <span class="mod-num">P12</span>
+                        <div><div class="mod-nombre">Caja</div><div class="mod-desc">Control de cobros</div></div>
+                    </div>
+                    <div class="mod-item">
+                        <span class="mod-num">P13</span>
+                        <div><div class="mod-nombre">Facturación</div><div class="mod-desc">Generación de facturas</div></div>
+                    </div>
+                    <div class="mod-item">
+                        <span class="mod-num">P14</span>
+                        <div><div class="mod-nombre">Usuarios</div><div class="mod-desc">Administración de accesos</div></div>
+                    </div>
+                    <div class="mod-item">
+                        <span class="mod-num">P15</span>
+                        <div><div class="mod-nombre">Ayuda</div><div class="mod-desc">Centro de ayuda</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ TIPS ══ -->
+        <div class="a-card">
+            <div class="a-card-head">
+                <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span class="a-card-head-title">Consejos rápidos</span>
+            </div>
+            <div class="a-card-body">
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                    <div>
+                        <div class="tip-titulo">Asistente virtual</div>
+                        <div class="tip-desc">Usa el chatbot (botón inferior derecho) para consultar vehículos, órdenes, productos y alertas de forma rápida.</div>
+                    </div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    </div>
+                    <div>
+                        <div class="tip-titulo">Menú lateral</div>
+                        <div class="tip-desc">Haz clic en ☰ para colapsar el sidebar y tener más espacio. Pasa el cursor sobre los íconos para ver el nombre del módulo.</div>
+                    </div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <div>
+                        <div class="tip-titulo">Exportar reportes</div>
+                        <div class="tip-desc">Cada módulo tiene botones PDF y Excel en la parte superior para exportar la información fácilmente.</div>
+                    </div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    </div>
+                    <div>
+                        <div class="tip-titulo">Accesibilidad</div>
+                        <div class="tip-desc">Usa el botón ♿ para activar modo claro, alto contraste, narrador de voz o ajustar el tamaño del texto.</div>
+                    </div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                    </div>
+                    <div>
+                        <div class="tip-titulo">Copias de seguridad</div>
+                        <div class="tip-desc">Descarga el respaldo .SQL desde el ícono de base de datos en el header para proteger la información.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ CRÉDITOS ══ -->
+        <div class="a-card">
+            <div class="a-card-head">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <span class="a-card-head-title">Créditos y recursos</span>
+            </div>
+            <div class="a-card-body">
+                <div class="cred-item">
+                    <div class="cred-left">
+                        <span class="cred-dot"></span>
+                        <div>
+                            <div class="cred-label">Íconos del sistema</div>
+                            <div class="cred-val">icon-icons.com · flaticon.com</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        <a href="https://icon-icons.com/es/" target="_blank" class="cred-link">icon-icons</a>
+                        <a href="https://www.flaticon.com/es/" target="_blank" class="cred-link">flaticon</a>
+                    </div>
+                </div>
+                <div class="cred-item">
+                    <div class="cred-left">
+                        <span class="cred-dot"></span>
+                        <div>
+                            <div class="cred-label">Imágenes de fondo</div>
+                            <div class="cred-val">Google Images — uso referencial</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cred-item">
+                    <div class="cred-left">
+                        <span class="cred-dot"></span>
+                        <div>
+                            <div class="cred-label">Logo de la empresa</div>
+                            <div class="cred-val">Acerautos S.A.S — propiedad de la empresa</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cred-item">
+                    <div class="cred-left">
+                        <span class="cred-dot"></span>
+                        <div>
+                            <div class="cred-label">Framework de desarrollo</div>
+                            <div class="cred-val">Django + Bootstrap 5</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cred-item">
+                    <div class="cred-left">
+                        <span class="cred-dot"></span>
+                        <div>
+                            <div class="cred-label">Desarrollado por</div>
+                            <div class="cred-val">Grupo 6 — Ficha 3063723 · SENA Centro Minero · 2026</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
