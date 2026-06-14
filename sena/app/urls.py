@@ -45,6 +45,8 @@ urlpatterns = [
     path('clientes/crear/',             cli.ClienteCreateView.as_view(), name='crear_cliente'),
     path('clientes/editar/<int:pk>/',   cli.ClienteUpdateView.as_view(), name='editar_cliente'),
     path('clientes/eliminar/<int:pk>/', cli.ClienteDeleteView.as_view(), name='eliminar_cliente'),
+    path('clientes/validar-documento/', cli.validar_documento_cliente, name='validar_documento_cliente'),
+    path('clientes/validar-email/',     cli.validar_email_cliente,     name='validar_email_cliente'),
 
     # ── VEHÍCULOS
     path('vehiculos/listar/',            veh.VehiculoListView.as_view(),   name='listar_vehiculos'),
