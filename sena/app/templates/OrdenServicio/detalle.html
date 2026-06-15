@@ -84,11 +84,12 @@
         margin-bottom: 3px;
     }
     .hm-value {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 700;
-        color: white; letter-spacing: .5px;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .hm-value.accent { color: var(--rojo); }
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 700;
+    color: white; letter-spacing: .5px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    text-transform: capitalize;
+}
+.hm-value.accent { color: var(--rojo); }
 
     /* ── Columnas info ── */
     .dos-col {
@@ -130,14 +131,16 @@
         text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin-bottom: 2px;
     }
     .data-value {
-        font-family: 'DM Sans', sans-serif; font-size: .86rem; font-weight: 600; color: var(--texto);
-        word-break: break-word;
-    }
-    .data-value.placa {
-        font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem;
-        color: var(--carbon); letter-spacing: 2px;
-    }
-    .data-value.mono { font-family: monospace; letter-spacing: .5px; font-size: .84rem; }
+    font-family: 'DM Sans', sans-serif; font-size: .86rem; font-weight: 600; color: var(--texto);
+    word-break: break-word;
+    text-transform: capitalize;
+}
+.data-value.placa {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem;
+    color: var(--carbon); letter-spacing: 2px;
+    text-transform: uppercase;
+}
+.data-value.mono { font-family: monospace; letter-spacing: .5px; font-size: .84rem; text-transform: none; }
 
     /* ── Tabla productos ── */
     .prod-card {
@@ -441,11 +444,11 @@
                         <div class="data-value mono">{{ orden.fecha|date:"d/m/Y H:i" }}</div>
                     </div>
                     <div class="data-item" style="grid-column: span 2;">
-                        <div class="data-label">Técnico Asignado</div>
-                        <div class="data-value">
-                            {% if orden.empleado %}{{ orden.empleado }}{% else %}<span style="color:var(--muted);font-weight:400;">Sin asignar</span>{% endif %}
-                        </div>
-                    </div>
+    <div class="data-label">Técnico Asignado</div>
+    <div class="data-value" style="text-transform:capitalize;">
+        {% if orden.empleado %}{{ orden.empleado }}{% else %}<span style="color:var(--muted);font-weight:400;">Sin asignar</span>{% endif %}
+    </div>
+</div>
                 </div>
             </div>
         </div>
