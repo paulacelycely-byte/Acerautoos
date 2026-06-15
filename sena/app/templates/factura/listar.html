@@ -93,8 +93,9 @@
     }
     .filtro-group { display: flex; flex-direction: column; gap: 4px; }
     .filtro-label { font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
-    .filtro-input { border: 1.5px solid var(--borde); border-radius: 8px; padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: .83rem; color: var(--texto); outline: none; background: var(--gris); transition: border-color .2s; min-width: 140px; }
+    .filtro-input { border: 1.5px solid var(--carbon); border-radius: 8px; padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: .83rem; color: var(--texto); outline: none; background: var(--gris); transition: border-color .2s; min-width: 140px; }
     .filtro-input:focus { border-color: var(--rojo); background: white; }
+    .filtro-input::-webkit-calendar-picker-indicator { filter: brightness(0) saturate(100%); cursor: pointer; }
     .btn-limpiar { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; text-transform: uppercase; padding: 9px 16px; border-radius: 8px; border: 1.5px solid var(--borde); background: white; color: var(--muted); cursor: pointer; transition: .2s; align-self: flex-end; }
     .btn-limpiar:hover { border-color: var(--carbon); color: var(--carbon); }
     .chips-tipo { display: flex; gap: 6px; align-self: flex-end; flex-wrap: wrap; }

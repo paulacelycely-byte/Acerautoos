@@ -51,7 +51,6 @@
     #vista-tabla{display:block;}
     #vista-catalogo{display:none;}
     .tabla-wrap{background:white;border-radius:16px;border:1px solid var(--borde);overflow:hidden;}
-    .tabla-topbar{display:flex;justify-content:flex-end;align-items:center;padding:14px 20px 0 20px;}
     #tabla_productos{font-family:'DM Sans',sans-serif;font-size:.875rem;border-collapse:collapse;width:100%;}
     #tabla_productos thead tr{background:var(--gris);border-bottom:2px solid var(--borde);}
     #tabla_productos thead th{font-family:'Barlow Condensed',sans-serif;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);padding:14px 16px;border:none;}
@@ -83,7 +82,8 @@
     .btn-ver{background:var(--carbon);margin-right:4px;}
     .badge-solo-lectura{font-size:.68rem;font-weight:600;padding:3px 10px;border-radius:6px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;}
     .dataTables_wrapper{padding:16px 20px;}
-    .dataTables_filter{display:none!important;}
+    .dataTables_filter input{border:1.5px solid var(--borde)!important;border-radius:8px!important;padding:6px 12px!important;font-family:'DM Sans',sans-serif!important;font-size:.85rem!important;outline:none!important;transition:border-color .2s;max-width:200px;}
+    .dataTables_filter input:focus{border-color:var(--rojo)!important;}
     .dataTables_filter label,.dataTables_length label,.dataTables_info{font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--muted);}
     .dataTables_length select{border:1.5px solid var(--borde)!important;border-radius:8px!important;padding:4px 8px!important;appearance:none!important;background:white!important;}
     .page-item.active .page-link{background:var(--rojo)!important;border-color:var(--rojo)!important;color:white!important;font-weight:700!important;}
@@ -102,6 +102,7 @@
     .card-stock-badge.ok{background:var(--verde-bg);color:var(--verde);}
     .card-stock-badge.bajo{background:var(--amarillo-bg);color:var(--amarillo);}
     .card-stock-badge.sin{background:#fff3f3;color:var(--rojo);}
+    
     .card-body-prod{padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:2px;}
     .card-codigo{font-family:'DM Sans',sans-serif;font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
     .card-nombre{font-family:'Space Grotesk',sans-serif;font-size:.97rem;font-weight:700;color:var(--carbon);line-height:1.25;margin-top:2px;}
@@ -115,6 +116,42 @@
     .stock-bar.bajo{background:var(--amarillo);}
     .stock-bar.sin{background:var(--rojo);width:100%!important;}
     .card-footer-prod{padding:10px 14px;border-top:1px solid var(--borde);display:flex;gap:6px;justify-content:flex-end;}
+    .card-footer-prod .btn-ver{width:100%;height:auto;padding:10px;border-radius:10px;margin-right:0;gap:8px;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;}
+    .card-footer-prod .btn-ver svg{width:15px;height:15px;}
+    
+    /* MODAL ZOOM FULLSCREEN */
+    .modal-zoom-overlay{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.95);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px;animation:fadeInZoom .25s ease-out;overflow-y:auto;}
+    .modal-zoom-overlay.activo{display:flex;}
+    @keyframes fadeInZoom{from{opacity:0;}to{opacity:1;}}
+    .modal-zoom-container{position:relative;width:100%;max-width:850px;display:flex;flex-direction:column;gap:22px;animation:slideUpZoom .3s ease-out;}
+    @keyframes slideUpZoom{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+    .modal-zoom-image{width:100%;height:520px;background:white;border-radius:20px;display:flex;align-items:center;justify-content:center;padding:30px;box-shadow:0 25px 80px rgba(0,0,0,.4);}
+    .modal-zoom-image img{max-width:100%;max-height:100%;object-fit:contain;}
+    .modal-zoom-close{position:absolute;top:-50px;right:0;width:44px;height:44px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);border-radius:50%;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:28px;transition:all .2s;z-index:10;}
+    .modal-zoom-close:hover{background:rgba(211,47,47,.4);transform:rotate(90deg);}
+    .modal-zoom-info{background:white;border-radius:18px;padding:30px 36px;box-shadow:0 15px 50px rgba(0,0,0,.3);}
+    .zoom-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:16px;}
+    .zoom-title-block h2{font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:800;color:var(--carbon);text-transform:uppercase;letter-spacing:1px;margin:0 0 6px 0;}
+    .zoom-title-block .zoom-codigo{font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--muted);font-weight:600;}
+    .zoom-precio-badge{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:800;color:var(--rojo);letter-spacing:-.5px;}
+    .zoom-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0;}
+    .zoom-chip{background:#f8f7f6;border:1.5px solid var(--borde);border-radius:14px;padding:16px 12px;text-align:center;}
+    .zoom-chip-label{font-family:'DM Sans',sans-serif;font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:1.1px;color:var(--muted);margin-bottom:6px;}
+    .zoom-chip-valor{font-family:'Space Grotesk',sans-serif;font-size:.95rem;font-weight:700;color:var(--carbon);}
+    .zoom-stock-section{background:linear-gradient(135deg,#f8f7f6,#fff9f8);border:1.5px solid var(--borde);border-radius:16px;padding:18px;margin:18px 0;}
+    .zoom-stock-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:14px;}
+    .zoom-stock-label{font-family:'DM Sans',sans-serif;font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:1.1px;color:var(--muted);}
+    .zoom-stock-numero{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--carbon);line-height:1;}
+    .zoom-stock-estado{font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;padding:6px 14px;border-radius:100px;border:1.5px solid;}
+    .zoom-stock-estado.ok{background:rgba(46,125,50,.15);color:var(--verde);border-color:rgba(46,125,50,.3);}
+    .zoom-stock-estado.bajo{background:rgba(230,81,0,.15);color:var(--amarillo);border-color:rgba(230,81,0,.3);}
+    .zoom-stock-estado.sin{background:rgba(211,47,47,.15);color:var(--rojo);border-color:rgba(211,47,47,.3);}
+    .zoom-progress{background:rgba(0,0,0,.06);border-radius:100px;height:10px;overflow:hidden;margin-top:10px;}
+    .zoom-progress-bar{height:100%;border-radius:100px;transition:width .6s cubic-bezier(.34,1.56,.64,1);}
+    .zoom-progress-bar.ok{background:linear-gradient(90deg,#2e7d32,#66bb6a);}
+    .zoom-progress-bar.bajo{background:linear-gradient(90deg,#e65100,#ff9800);}
+    .zoom-progress-bar.sin{background:linear-gradient(90deg,#b71c1c,var(--rojo));}
+    
     .modal-prod-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .3s;}
     .modal-prod-overlay.abierto{opacity:1;pointer-events:all;}
     .modal-prod-box{background:white;border-radius:24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 40px 100px rgba(0,0,0,.5);transform:translateY(30px) scale(.92);transition:transform .35s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;}
@@ -122,7 +159,6 @@
     .modal-prod-box::-webkit-scrollbar{width:6px;}
     .modal-prod-box::-webkit-scrollbar-thumb{background:var(--rojo);border-radius:3px;}
     .modal-top-row{background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 100%);position:relative;overflow:hidden;display:flex;align-items:stretch;min-height:150px;}
-    .modal-top-row::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 10px,rgba(255,255,255,.015) 10px,rgba(255,255,255,.015) 20px);}
     .modal-close{position:absolute;top:14px;right:14px;z-index:10;width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;}
     .modal-close:hover{background:rgba(211,47,47,.5);transform:rotate(90deg);}
     .modal-close svg{width:14px;height:14px;stroke:rgba(255,255,255,.9);fill:none;stroke-width:2.5;stroke-linecap:round;}
@@ -170,6 +206,15 @@
     .modal-btn-del{padding:12px 16px;border-radius:12px;background:#fff3f3;color:var(--rojo);border:1.5px solid #ffd0d0;font-family:'Barlow Condensed',sans-serif;font-size:.98rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;transition:all .25s;cursor:pointer;}
     .modal-btn-del:hover{background:var(--rojo);color:white;border-color:var(--rojo);transform:translateY(-2px);}
     .modal-btn-del svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+    
+    @media(max-width:768px){
+        .modal-zoom-image{height:350px;padding:20px;}
+        .zoom-grid{grid-template-columns:repeat(2,1fr);}
+        .modal-zoom-close{top:-40px;width:38px;height:38px;font-size:24px;}
+        .modal-zoom-info{padding:20px;}
+        .zoom-title-block h2{font-size:1.5rem;}
+        .zoom-stock-numero{font-size:1.8rem;}
+    }
 </style>
 {% endblock %}
 
@@ -188,14 +233,7 @@
             </div>
         </div>
         <div class="header-actions">
-            <div class="vista-toggle">
-                <button class="vista-btn activo" id="btn-tabla" onclick="cambiarVista('tabla')" title="Vista tabla">
-                    <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                </button>
-                <button class="vista-btn" id="btn-catalogo" onclick="cambiarVista('catalogo')" title="Vista catálogo">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-                </button>
-            </div>
+            
             <a href="{% url 'app:reporte_productos_pdf' %}" class="btn-accion btn-pdf" target="_blank">
                 <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> PDF
             </a>
@@ -241,13 +279,6 @@
     <!-- VISTA TABLA -->
     <div id="vista-tabla">
         <div class="tabla-wrap">
-            <!-- BÚSQUEDA DENTRO DE LA TABLA -->
-            <div class="tabla-topbar">
-                <div class="busq-wrap">
-                    <span class="busq-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-                    <input type="text" class="busq-input" id="busq-global" placeholder="Buscar producto..." oninput="buscarGlobal(this.value)">
-                </div>
-            </div>
             <table id="tabla_productos" style="width:100%">
                 <thead>
                     <tr>
@@ -361,15 +392,8 @@
                     <button class="btn-fila btn-ver" title="Ver detalle"
                         onclick="abrirModal({nombre:'{{ p.nombre|escapejs }}',codigo:'{{ p.codigo|escapejs }}',marca:'{{ p.marca.nombre|escapejs }}',proveedor:'{% if p.proveedor %}{{ p.proveedor.nombre|escapejs }}{% endif %}',precio:'{{ p.precio|intcomma }}',stock:{{ p.stock }},stockMin:{{ p.stock_minimo_efectivo }},stockStatus:'{{ p.stock_status }}',unidad:'{{ p.get_unidad_medida_display|escapejs }}',estado:{% if p.estado %}true{% else %}false{% endif %},descripcion:'{{ p.descripcion|default:""|escapejs }}',img:'{% if p.imagen %}{{ p.imagen.url }}{% elif p.marca.logo %}{{ p.marca.logo.url }}{% endif %}',editUrl:'{% url "app:editar_producto" p.pk %}',delUrl:'{% url "app:eliminar_producto" p.pk %}'})">
                         <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        Ver detalle
                     </button>
-                    {% if request.user.is_superuser or request.user.cargo == 'ADMIN' %}
-                    <a href="{% url 'app:editar_producto' p.pk %}" class="btn-fila btn-edit" title="Editar">
-                        <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                    </a>
-                    <a href="{% url 'app:eliminar_producto' p.pk %}" class="btn-fila btn-del" title="Eliminar">
-                        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-                    </a>
-                    {% endif %}
                 </div>
             </div>
             {% empty %}
@@ -378,7 +402,56 @@
         </div>
     </div>
 
-    <!-- MODAL -->
+    <!-- MODAL ZOOM FULLSCREEN -->
+    <div class="modal-zoom-overlay" id="modal-zoom-overlay" onclick="cerrarZoom(event)">
+        <button class="modal-zoom-close" onclick="cerrarZoom()">✕</button>
+        <div class="modal-zoom-container" onclick="event.stopPropagation()">
+            <div class="modal-zoom-image">
+                <img id="zoom-imagen" src="" alt="Producto ampliado">
+            </div>
+            <div class="modal-zoom-info">
+                <div class="zoom-header">
+                    <div class="zoom-title-block">
+                        <h2 id="zoom-nombre"></h2>
+                        <div class="zoom-codigo" id="zoom-codigo"></div>
+                    </div>
+                    <div class="zoom-precio-badge" id="zoom-precio"></div>
+                </div>
+                <div class="zoom-grid">
+                    <div class="zoom-chip">
+                        <div class="zoom-chip-label">Marca</div>
+                        <div class="zoom-chip-valor" id="zoom-marca"></div>
+                    </div>
+                    <div class="zoom-chip">
+                        <div class="zoom-chip-label">Unidad</div>
+                        <div class="zoom-chip-valor" id="zoom-unidad"></div>
+                    </div>
+                    <div class="zoom-chip">
+                        <div class="zoom-chip-label">Stock Mín</div>
+                        <div class="zoom-chip-valor" id="zoom-stock-min"></div>
+                    </div>
+                    <div class="zoom-chip">
+                        <div class="zoom-chip-label">Proveedor</div>
+                        <div class="zoom-chip-valor" id="zoom-proveedor"></div>
+                    </div>
+                </div>
+                <div class="zoom-stock-section">
+                    <div class="zoom-stock-header">
+                        <div>
+                            <div class="zoom-stock-label">Stock Actual</div>
+                            <div class="zoom-stock-numero" id="zoom-stock"></div>
+                        </div>
+                        <span class="zoom-stock-estado" id="zoom-estado-stock"></span>
+                    </div>
+                    <div class="zoom-progress">
+                        <div class="zoom-progress-bar" id="zoom-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETAIL -->
     <div class="modal-prod-overlay" id="modal-overlay" onclick="cerrarModalOverlay(event)">
         <div class="modal-prod-box" id="modal-box">
             <button class="modal-close" onclick="cerrarModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
@@ -422,36 +495,36 @@ let dtTable = null;
 let filtroActual = 'todos';
 let vistaActual = 'tabla';
 
-document.addEventListener('DOMContentLoaded', function() {
-    var modal = document.getElementById('modal-overlay');
-    if (modal) document.body.appendChild(modal);
-});
-
 $(document).ready(function () {
     var filas = $('#tabla_productos tbody tr').length;
     var esVacia = filas === 1 && $('#tabla_productos tbody tr td[colspan]').length > 0;
     if (!esVacia) {
         dtTable = $('#tabla_productos').DataTable({
-            responsive: false, autoWidth: false, destroy: true, stateSave: false,
-            scrollX: true, pageLength: 10, order: [[1, 'asc']], pagingType: "full_numbers",
+            responsive: true, autoWidth: false, destroy: true, stateSave: false,
+            pageLength: 10, order: [[1, 'asc']], pagingType: "full_numbers",
             columnDefs: [{ orderable: false, targets: [0, 6] }],
             language: {
                 "sProcessing":"Procesando...","sLengthMenu":"Mostrar _MENU_ registros",
                 "sZeroRecords":"No se encontraron resultados","sEmptyTable":"Ningún dato disponible",
                 "sInfo":"Mostrando _START_ a _END_ de _TOTAL_ registros",
                 "sInfoEmpty":"Mostrando 0 a 0 de 0 registros","sInfoFiltered":"(filtrado de _MAX_ registros totales)",
-                "sSearch":"","sLoadingRecords":"Cargando...",
+                "sSearch":"Buscar:","sLoadingRecords":"Cargando...",
                 "oPaginate":{"sFirst":"«","sLast":"»","sNext":"›","sPrevious":"‹"}
             }
         });
     }
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            cerrarZoom();
+            cerrarModal();
+        }
+    });
 });
 
 function filtrarPorStat(tipo, el) {
     filtroActual = tipo;
     document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('activa-filtro'));
     el.classList.add('activa-filtro');
-    document.getElementById('busq-global').value = '';
     const ext = document.getElementById('busq-catalogo-ext');
     if (ext) ext.value = '';
     if (vistaActual === 'tabla') _filtrarTabla(tipo, '');
@@ -469,10 +542,10 @@ function _filtrarTabla(tipo, busq) {
         const fila = $(this);
         const status = fila.data('stock-status');
         const estado = fila.data('estado');
-        const texto  = fila.text().toLowerCase();
+        const texto = fila.text().toLowerCase();
         let pasaFiltro = tipo === 'todos' ? true
             : tipo === 'activo' ? (status === 'ok' && estado === 'activo')
-            : tipo === 'bajo'   ? status === 'bajo'
+            : tipo === 'bajo' ? status === 'bajo'
             : status === 'sin';
         fila.toggle(pasaFiltro && (t === '' || texto.includes(t)));
     });
@@ -486,7 +559,7 @@ function _filtrarCatalogo(tipo, busq) {
         const estado = c.dataset.estado;
         let pasaFiltro = tipo === 'todos' ? true
             : tipo === 'activo' ? (status === 'ok' && estado === 'activo')
-            : tipo === 'bajo'   ? status === 'bajo'
+            : tipo === 'bajo' ? status === 'bajo'
             : status === 'sin';
         const pasaBusq = t === '' || c.dataset.nombre.includes(t) || c.dataset.marca.includes(t);
         c.style.display = (pasaFiltro && pasaBusq) ? 'flex' : 'none';
@@ -496,9 +569,9 @@ function _filtrarCatalogo(tipo, busq) {
 function cambiarVista(modo) {
     vistaActual = modo;
     const tabla = document.getElementById('vista-tabla');
-    const cat   = document.getElementById('vista-catalogo');
-    const btnT  = document.getElementById('btn-tabla');
-    const btnC  = document.getElementById('btn-catalogo');
+    const cat = document.getElementById('vista-catalogo');
+    const btnT = document.getElementById('btn-tabla');
+    const btnC = document.getElementById('btn-catalogo');
     if (modo === 'tabla') {
         tabla.style.display='block'; cat.style.display='none';
         btnT.classList.add('activo'); btnC.classList.remove('activo');
@@ -507,6 +580,37 @@ function cambiarVista(modo) {
         btnT.classList.remove('activo'); btnC.classList.add('activo');
         _filtrarCatalogo(filtroActual, '');
     }
+}
+
+function abrirZoom(d) {
+    const overlay = document.getElementById('modal-zoom-overlay');
+    const imgEl = document.getElementById('zoom-imagen');
+    if (d.img && d.img.trim()) {
+        imgEl.src = d.img;
+    } else {
+        imgEl.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22 viewBox=%220 0 300 300%22%3E%3Crect width=%22300%22 height=%22300%22 fill=%22%23f2f2f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2272%22 font-weight=%22bold%22 fill=%22%231a1a1a%22%3E' + d.nombre.charAt(0).toUpperCase() + '%3C/text%3E%3C/svg%3E';
+    }
+    document.getElementById('zoom-nombre').textContent = d.nombre;
+    document.getElementById('zoom-codigo').textContent = 'Código: ' + d.codigo;
+    document.getElementById('zoom-precio').textContent = '$' + d.precio;
+    document.getElementById('zoom-marca').textContent = d.marca;
+    document.getElementById('zoom-unidad').textContent = d.unidad;
+    document.getElementById('zoom-stock-min').textContent = d.stockMin;
+    document.getElementById('zoom-proveedor').textContent = d.proveedor || '—';
+    document.getElementById('zoom-stock').textContent = d.stock;
+    const badge = document.getElementById('zoom-estado-stock');
+    badge.className = 'zoom-stock-estado ' + d.stockStatus;
+    badge.textContent = d.stockStatus === 'ok' ? 'Disponible' : d.stockStatus === 'bajo' ? 'Stock Bajo' : 'Sin Stock';
+    const pct = d.stockMin > 0 ? Math.min((d.stock / d.stockMin) * 100, 100) : 100;
+    const bar = document.getElementById('zoom-bar');
+    bar.className = 'zoom-progress-bar ' + d.stockStatus;
+    bar.style.width = (d.stockStatus === 'sin' ? 100 : pct) + '%';
+    overlay.classList.add('activo');
+}
+
+function cerrarZoom(e) {
+    if (e && e.target.id !== 'modal-zoom-overlay') return;
+    document.getElementById('modal-zoom-overlay').classList.remove('activo');
 }
 
 function abrirModal(d) {
@@ -525,20 +629,20 @@ function abrirModal(d) {
     estadoBadge.className = 'modal-estado-badge ' + (d.estado ? 'activo' : 'inactivo');
     estadoBadge.textContent = d.estado ? 'Activo' : 'Inactivo';
     side.appendChild(estadoBadge);
-    document.getElementById('modal-codigo').textContent         = d.codigo;
-    document.getElementById('modal-unidad').textContent         = d.unidad;
-    document.getElementById('modal-nombre').textContent         = d.nombre;
-    document.getElementById('modal-marca').textContent          = d.proveedor ? d.marca + ' · ' + d.proveedor : d.marca;
-    document.getElementById('modal-precio').textContent         = '$' + d.precio;
-    document.getElementById('modal-unidad-info').textContent    = d.unidad;
+    document.getElementById('modal-codigo').textContent = d.codigo;
+    document.getElementById('modal-unidad').textContent = d.unidad;
+    document.getElementById('modal-nombre').textContent = d.nombre;
+    document.getElementById('modal-marca').textContent = d.proveedor ? d.marca + ' · ' + d.proveedor : d.marca;
+    document.getElementById('modal-precio').textContent = '$' + d.precio;
+    document.getElementById('modal-unidad-info').textContent = d.unidad;
     document.getElementById('modal-stock-min-info').textContent = d.stockMin + ' ' + d.unidad;
-    document.getElementById('modal-estado-info').textContent    = d.estado ? 'Activo' : 'Inactivo';
-    document.getElementById('modal-stock-num').textContent      = d.stock;
+    document.getElementById('modal-estado-info').textContent = d.estado ? 'Activo' : 'Inactivo';
+    document.getElementById('modal-stock-num').textContent = d.stock;
     const s = d.stockStatus;
     const badge = document.getElementById('modal-stock-badge');
     badge.className = 'modal-stock-badge ' + s;
     badge.textContent = s === 'ok' ? 'Stock OK' : s === 'bajo' ? 'Stock Bajo' : 'Sin Stock';
-    const pct  = d.stockMin > 0 ? Math.min((d.stock / d.stockMin) * 100, 100) : 100;
+    const pct = d.stockMin > 0 ? Math.min((d.stock / d.stockMin) * 100, 100) : 100;
     const fill = document.getElementById('modal-bar-fill');
     fill.className = 'modal-bar-fill ' + s;
     fill.style.width = (s === 'sin' ? 100 : pct) + '%';
@@ -566,9 +670,9 @@ function cerrarModal() {
     document.getElementById('modal-overlay').classList.remove('abierto');
     document.body.style.overflow = '';
 }
+
 function cerrarModalOverlay(e) {
     if (e.target === document.getElementById('modal-overlay')) cerrarModal();
 }
-document.addEventListener('keydown', function(e) { if (e.key === 'Escape') cerrarModal(); });
 </script>
 {% endblock %}

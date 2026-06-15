@@ -109,28 +109,19 @@
     .producto-codigo { font-size: .72rem; color: var(--muted); margin-top: 2px; }
 
     .badge-marca {
-        background: var(--carbon); color: white;
-        padding: 5px 12px; border-radius: 8px;
-        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
-        display: inline-flex; align-items: center; gap: 5px;
-        text-transform: capitalize; letter-spacing: .4px; white-space: nowrap;
+        font-family: 'DM Sans', sans-serif; font-size: .83rem; font-weight: 600;
+        color: var(--texto);
     }
     .badge-servicio {
-        background: #dbeafe; color: #0369a1;
-        padding: 5px 12px; border-radius: 8px;
-        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
-        display: inline-flex; align-items: center; gap: 5px;
-        text-transform: capitalize; letter-spacing: .4px; white-space: nowrap;
+        font-family: 'DM Sans', sans-serif; font-size: .83rem; font-weight: 600;
+        color: var(--texto);
     }
     .badge-servicio-vacio {
-        background: #f3f4f6; color: #6b7280;
-        padding: 5px 12px; border-radius: 8px;
-        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
-        display: inline-flex; align-items: center; gap: 5px;
-        letter-spacing: .4px; white-space: nowrap;
+        font-family: 'DM Sans', sans-serif; font-size: .83rem; font-weight: 400;
+        color: var(--muted); font-style: italic;
     }
-    .badge-servicio-vacio svg { width: 11px; height: 11px; stroke: #6b7280; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
+    /* ── Stock con colores ── */
     .stock-ok  { background: #dcfce7; color: #16a34a; padding: 4px 9px; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
     .stock-bajo{ background: #fef9c3; color: #a16207; padding: 4px 9px; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
     .stock-sin { background: #fee2e2; color: #dc2626; padding: 4px 9px; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
@@ -241,7 +232,7 @@
     <div class="taller-header">
         <div class="header-left">
             <div class="header-icon-wrap" style="background:transparent; box-shadow:none;">
-                <img src="{% static 'imagenes/compatibilidaad.jpeg' %}" alt="Compatibilidad">
+                <img src="{% static 'imagenes/compa.jpeg' %}" alt="Compatibilidad">
             </div>
             <div>
                 <h1 class="header-titulo">Compatibilidad de Productos</h1>
@@ -310,16 +301,16 @@
                             {% if comp.tipo_servicio %}
                                 <span class="badge-servicio">{{ comp.tipo_servicio.nombre }}</span>
                             {% else %}
-                                <span class="badge-servicio-vacio">
-                                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-                                    Cualquier servicio
-                                </span>
+                                <span class="badge-servicio-vacio">Cualquier servicio</span>
                             {% endif %}
                         </td>
 
                         <td class="text-center">
                             {% if comp.producto.stock == 0 %}
-                                <span class="stock-sin">Sin stock</span>
+                                <span class="stock-sin">
+                                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                                    Sin stock
+                                </span>
                             {% elif comp.producto.stock <= comp.producto.stock_minimo %}
                                 <span class="stock-bajo">
                                     <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>

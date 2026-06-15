@@ -23,95 +23,95 @@
     }
 
     .taller-header {
-        background: var(--carbon); border-radius: 16px; padding: 20px 28px;
-        margin: 0 auto 28px auto; max-width: 760px;
+        background: var(--carbon); border-radius: 10px; padding: 22px 24px;
+        margin-bottom: 24px;
         display: flex; align-items: center; justify-content: space-between;
+        flex-wrap: wrap; gap: 12px;
     }
-    .header-left { display: flex; align-items: center; gap: 16px; }
+    .header-left { display: flex; align-items: center; gap: 16px; min-width: 0; }
     .header-icon-wrap {
-        width: 52px; height: 52px; border-radius: 12px;
+        width: 50px; height: 50px; border-radius: 12px;
         display: flex; align-items: center; justify-content: center;
         overflow: hidden; flex-shrink: 0; background: transparent;
     }
-    .header-img-icon { width: 52px; height: 52px; object-fit: contain; }
+    .header-img-icon { width: 50px; height: 50px; object-fit: contain; }
     .header-icon-wrap i { font-size: 1.5rem; color: white; }
     .header-titulo {
         font-family: 'Barlow Condensed', sans-serif;
-        font-size: 1.9rem; font-weight: 800; color: white;
+        font-size: clamp(1.3rem, 4vw, 1.9rem); font-weight: 800; color: white;
         letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0 0 4px 0;
     }
-    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin: 0; }
+    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .76rem; color: rgba(255,255,255,.45); margin: 0; }
     .header-empresa {
-        font-family: 'Barlow Condensed', sans-serif; font-size: .85rem; font-weight: 700;
-        color: rgba(255,255,255,.35); text-transform: uppercase; letter-spacing: 1px;
+        font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; font-weight: 700;
+        color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0;
     }
     .badge-editando {
         display: inline-flex; align-items: center; gap: 6px;
         background: var(--azul); color: white;
-        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1px;
-        padding: 6px 14px; border-radius: 20px;
-        box-shadow: 0 2px 10px rgba(37,99,235,.35);
+        font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 800;
+        text-transform: uppercase; letter-spacing: 1.5px;
+        padding: 3px 10px; border-radius: 20px; opacity: .85;
     }
+
     .form-card {
         background: white; border-radius: 16px; border: 1px solid var(--borde);
-        overflow: hidden; max-width: 760px; margin: 0 auto;
+        overflow: hidden;
         box-shadow: 0 8px 30px rgba(0,0,0,.10);
     }
     .form-card-header {
-        background: var(--carbon); padding: 14px 24px;
+        background: var(--carbon); padding: 13px 22px;
         display: flex; align-items: center; justify-content: space-between;
     }
     .form-card-header-left { display: flex; align-items: center; gap: 10px; }
     .form-card-header span.header-label {
-        font-family: 'Barlow Condensed', sans-serif; font-size: .85rem; font-weight: 700;
+        font-family: 'Barlow Condensed', sans-serif; font-size: .83rem; font-weight: 700;
         text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.7);
     }
     .form-card-header i.header-icon { color: var(--primario); font-size: .9rem; }
-    .form-card-body { padding: 32px 32px 20px; }
-    .field-group { margin-bottom: 24px; }
+    .modo-chip {
+        margin-left: auto; font-family: 'Barlow Condensed', sans-serif;
+        font-size: .7rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+        padding: 3px 10px; border-radius: 20px; background: var(--primario); color: white; opacity: .85;
+        white-space: nowrap;
+    }
+    .form-card-body { padding: 24px 22px; }
+    .field-group { margin-bottom: 18px; }
     .field-label {
-        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
+        font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700;
         text-transform: uppercase; letter-spacing: .9px; color: var(--muted);
-        display: flex; align-items: center; gap: 4px; margin-bottom: 7px;
+        display: flex; align-items: center; gap: 4px; margin-bottom: 6px;
     }
     .field-label .req { color: var(--primario); font-size: .9rem; line-height: 1; }
     .field-inner { position: relative; }
     .field-inner .field-icon {
-        position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-        color: #ccc; font-size: .85rem; pointer-events: none; z-index: 5; transition: color .2s;
+        position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+        color: #bbb; font-size: .85rem; pointer-events: none; z-index: 5; transition: color .2s;
     }
     .field-inner:focus-within .field-icon { color: var(--primario); }
-    .form-card-footer {
-        background: var(--gris); border-top: 1px solid var(--borde);
-        padding: 18px 32px; display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+
+    .form-field-styled {
+        width: 100% !important; padding: 11px 13px 11px 38px !important;
+        border: 1.5px solid var(--borde) !important; border-radius: 10px !important;
+        font-family: 'DM Sans', sans-serif !important; font-size: .88rem !important;
+        color: var(--texto) !important; background: var(--gris) !important;
+        outline: none !important; transition: all .2s !important;
+        box-sizing: border-box !important; -webkit-appearance: none !important; appearance: none !important;
     }
-    .btn-cancelar {
-        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 600;
-        text-transform: uppercase; letter-spacing: .5px; padding: 10px 22px;
-        border-radius: 10px; border: 1.5px solid var(--borde); background: white;
-        color: var(--muted); text-decoration: none; cursor: pointer;
-        display: inline-flex; align-items: center; gap: 7px; transition: .2s;
+    .form-field-styled:focus {
+        border-color: var(--primario) !important; background: white !important;
+        box-shadow: 0 0 0 3px var(--primario-glow) !important;
     }
-    .btn-cancelar:hover { background: var(--borde); color: var(--texto); }
-    .btn-guardar {
-        font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px; padding: 11px 26px;
-        border-radius: 10px; border: none; background: var(--primario);
-        color: white; cursor: pointer; box-shadow: 0 4px 14px var(--primario-shadow);
-        display: inline-flex; align-items: center; gap: 8px; transition: .2s;
-    }
-    .btn-guardar:hover { background: var(--primario2); transform: translateY(-1px); box-shadow: 0 6px 18px var(--primario-shadow); }
 
     /* ── PHONE DROPDOWN ── */
     #id_indicativo_proveedor { display: none !important; }
     .phone-wrap { display: flex; gap: 8px; align-items: flex-start; width: 100%; }
     .pais-dropdown { position: relative; width: 150px; flex-shrink: 0; font-family: 'DM Sans', sans-serif; }
     .pais-selected {
-        display: flex; align-items: center; gap: 6px; padding: 11px 10px;
+        display: flex; align-items: center; gap: 6px; padding: 10px 10px;
         border: 1.5px solid var(--borde); border-radius: 10px; background: var(--gris);
         cursor: pointer; user-select: none;
-        transition: border-color .2s, background .2s, box-shadow .2s; min-height: 46px;
+        transition: border-color .2s, background .2s, box-shadow .2s; min-height: 44px;
     }
     .pais-selected:hover, .pais-dropdown.open .pais-selected {
         border-color: var(--primario); background: white; box-shadow: 0 0 0 3px var(--primario-glow);
@@ -127,49 +127,38 @@
         box-shadow: 0 8px 32px rgba(0,0,0,.12); z-index: 9999; overflow: hidden;
     }
     .pais-dropdown.open .pais-menu { display: block; }
-    .pais-search { padding: 10px 12px; border-bottom: 1px solid var(--borde); }
+    .pais-search { padding: 9px 11px; border-bottom: 1px solid var(--borde); }
     .pais-search input {
-        width: 100%; padding: 7px 10px; border: 1.5px solid var(--borde); border-radius: 8px;
-        font-family: 'DM Sans', sans-serif; font-size: .82rem; outline: none; background: var(--gris);
+        width: 100%; padding: 6px 10px; border: 1.5px solid var(--borde); border-radius: 8px;
+        font-family: 'DM Sans', sans-serif; font-size: .8rem; outline: none; background: var(--gris);
+        box-sizing: border-box;
     }
     .pais-search input:focus { border-color: var(--primario); background: white; }
-    .pais-list { max-height: 220px; overflow-y: auto; }
+    .pais-list { max-height: 200px; overflow-y: auto; }
     .pais-list::-webkit-scrollbar { width: 4px; }
     .pais-list::-webkit-scrollbar-thumb { background: var(--borde); border-radius: 4px; }
     .pais-option {
-        display: flex; align-items: center; gap: 10px; padding: 9px 14px;
-        cursor: pointer; transition: background .15s; font-size: .84rem; color: var(--texto);
+        display: flex; align-items: center; gap: 9px; padding: 8px 13px;
+        cursor: pointer; transition: background .15s; font-size: .82rem; color: var(--texto);
     }
     .pais-option:hover { background: var(--gris); }
     .pais-option.selected { background: rgba(37,99,235,.07); }
-    .pais-option img { width: 22px; height: 15px; object-fit: cover; border-radius: 2px; flex-shrink: 0; }
-    .pais-option .pais-codigo { font-weight: 600; color: var(--primario); min-width: 44px; font-size: .8rem; }
+    .pais-option img { width: 20px; height: 14px; object-fit: cover; border-radius: 2px; flex-shrink: 0; }
+    .pais-option .pais-codigo { font-weight: 600; color: var(--primario); min-width: 38px; font-size: .78rem; }
     .pais-option .pais-nombre { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .form-field-styled {
-        width: 100% !important; padding: 12px 14px 12px 40px !important;
-        border: 1.5px solid var(--borde) !important; border-radius: 10px !important;
-        font-family: 'DM Sans', sans-serif !important; font-size: .9rem !important;
-        color: var(--texto) !important; background: var(--gris) !important;
-        outline: none !important; transition: all .2s !important;
-        box-sizing: border-box !important; -webkit-appearance: none !important; appearance: none !important;
-    }
-    .form-field-styled:focus {
-        border-color: var(--primario) !important; background: white !important;
-        box-shadow: 0 0 0 3px var(--primario-glow) !important;
-    }
 
     /* ── MÁSCARA TELÉFONO ── */
-    .phone-input-wrap { position: relative; flex: 1; }
+    .phone-input-wrap { position: relative; flex: 1; min-width: 0; }
     .phone-input-wrap [name="numero_telefono"] {
         color: transparent !important; caret-color: var(--texto);
         background: var(--gris) !important; position: relative; z-index: 2;
     }
     .phone-input-wrap [name="numero_telefono"]:focus { background: white !important; }
     #maskOverlay {
-        position: absolute; left: 40px; top: 0; bottom: 0;
+        position: absolute; left: 38px; right: 10px; top: 0; bottom: 0;
         display: flex; align-items: center; pointer-events: none; z-index: 3;
-        font-family: 'DM Sans', sans-serif; font-size: .9rem;
-        white-space: nowrap; overflow: hidden; padding-right: 10px; letter-spacing: 0;
+        font-family: 'DM Sans', sans-serif; font-size: .88rem;
+        white-space: nowrap; overflow: hidden;
     }
     #maskOverlay .char-typed { color: var(--texto); }
     #maskOverlay .char-hint  { color: #c8c8c8; }
@@ -177,17 +166,69 @@
     /* ── ERROR TELÉFONO ── */
     .tel-error-box {
         color: #d32f2f; background: #fef2f2; border: 1px solid #fca5a5;
-        border-radius: 8px; padding: 8px 12px; font-size: .8rem;
+        border-radius: 8px; padding: 8px 12px; font-size: .78rem;
         font-family: 'DM Sans', sans-serif; margin-top: 6px;
         display: none; align-items: flex-start; gap: 6px;
     }
     .tel-error-box.visible { display: flex; }
     .tel-error-box i { margin-top: 1px; flex-shrink: 0; }
+
+    /* ── FOOTER ── */
+    .form-card-footer {
+        background: var(--gris); border-top: 1px solid var(--borde);
+        padding: 16px 22px; display: flex; align-items: center;
+        justify-content: flex-end; gap: 10px; flex-wrap: wrap;
+    }
+    .btn-cancelar {
+        font-family: 'DM Sans', sans-serif; font-size: .8rem; font-weight: 600;
+        text-transform: uppercase; letter-spacing: .5px; padding: 10px 18px;
+        border-radius: 10px; border: 1.5px solid var(--borde); background: white;
+        color: var(--muted); text-decoration: none; cursor: pointer;
+        display: inline-flex; align-items: center; gap: 7px; transition: .2s; white-space: nowrap;
+    }
+    .btn-cancelar:hover { background: var(--borde); color: var(--texto); }
+    .btn-guardar {
+        font-family: 'DM Sans', sans-serif; font-size: .8rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .7px; padding: 11px 22px;
+        border-radius: 10px; border: none; background: var(--primario);
+        color: white; cursor: pointer; box-shadow: 0 4px 14px var(--primario-shadow);
+        display: inline-flex; align-items: center; gap: 7px; transition: .2s; white-space: nowrap;
+    }
+    .btn-guardar:hover { background: var(--primario2); transform: translateY(-1px); }
+
+    /* ════════════════════════
+       RESPONSIVE
+    ════════════════════════ */
+    @media (max-width: 768px) {
+        .taller-header { padding: 18px 16px; }
+        .form-card-body { padding: 18px 16px; }
+        .pais-dropdown { width: 140px; }
+    }
+
+    @media (max-width: 576px) {
+        .taller-header { flex-direction: column; align-items: flex-start; }
+        .header-empresa { display: none; }
+
+        .phone-wrap { flex-direction: column; gap: 8px; }
+        .pais-dropdown { width: 100%; }
+        .pais-menu { width: 100%; }
+        .phone-input-wrap { width: 100%; }
+
+        .form-card-footer { flex-direction: column; align-items: stretch; padding: 14px 16px; gap: 8px; }
+        .btn-cancelar, .btn-guardar { width: 100%; justify-content: center; }
+    }
+
+    @media (max-width: 380px) {
+        .header-titulo { font-size: 1.2rem; }
+        .form-card-body { padding: 14px 13px; }
+        .form-card-footer { padding: 12px 13px; }
+        .btn-cancelar, .btn-guardar { font-size: .74rem; padding: 9px 14px; }
+    }
 </style>
 {% endblock %}
 
 {% block contenido %}
-<div class="container-fluid animate__animated animate__fadeIn" style="padding: 24px;">
+<div class="container animate__animated animate__fadeIn" style="max-width: 860px;">
 
     <div class="taller-header">
         <div class="header-left">
@@ -195,7 +236,7 @@
                 {% if 'editar' in request.path %}
                     <i class="fas fa-pen-to-square" style="font-size:1.6rem; color:white;"></i>
                 {% else %}
-                    <img src="{% static 'imagenes/proveedores.jpeg' %}" alt="Proveedor" class="header-img-icon">
+                    <img src="{% static 'imagenes/camion.jpeg' %}" alt="Proveedor" class="header-img-icon">
                 {% endif %}
             </div>
             <div>
@@ -222,9 +263,7 @@
                     </span>
                 </div>
                 {% if 'editar' in request.path %}
-                <span class="badge-editando" style="font-size:.68rem; padding:4px 12px;">
-                    <i class="fas fa-pen-to-square" style="font-size:.62rem;"></i> Editando
-                </span>
+                <span class="modo-chip">✎ Editando</span>
                 {% endif %}
             </div>
 
@@ -251,7 +290,6 @@
                         </div>
                     </div>
 
-                    <!-- TELÉFONO -->
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">Teléfono <span class="req">*</span></label>
@@ -274,7 +312,6 @@
                                     <div id="maskOverlay"></div>
                                 </div>
                             </div>
-                            <!-- Caja de error por país — se muestra/oculta por JS -->
                             <div class="tel-error-box" id="telErrorBox">
                                 <i class="fas fa-triangle-exclamation"></i>
                                 <span id="telErrorMsg"></span>
@@ -312,9 +349,6 @@
 
 {% block js %}
 <script>
-// ══════════════════════════════════════════════════════════
-//  DATOS DE PAÍSES
-// ══════════════════════════════════════════════════════════
 const PAISES = [
     { code: '+57',  iso: 'co', nombre: 'Colombia',                ejemplo: '3219876543'  },
     { code: '+1',   iso: 'us', nombre: 'Estados Unidos / Canadá', ejemplo: '2025550173'  },
@@ -355,126 +389,46 @@ const PAISES = [
     { code: '+966', iso: 'sa', nombre: 'Arabia Saudita',          ejemplo: '0512345678'  },
 ];
 
-// ══════════════════════════════════════════════════════════
-//  REGLAS DE VALIDACIÓN POR INDICATIVO
-// ══════════════════════════════════════════════════════════
 const REGLAS_TEL = {
-    '+57':  { min:7,  max:10, prefijos:['3','60','61','62','63','64','65','66','67','68'],
-              errLen:  'Colombia: 10 dígitos para celular (ej: 3219876543) o 7 para fijo.',
-              errPref: 'Colombia: celular empieza por 3 (ej: 3219876543) o fijo por 60–68.' },
-    '+1':   { min:10, max:10, prefijos:['2','3','4','5','6','7','8','9'],
-              errLen:  'EEUU/Canadá: exactamente 10 dígitos (ej: 2025550173).',
-              errPref: 'EEUU/Canadá: el primer dígito debe ser 2–9.' },
-    '+52':  { min:10, max:10, prefijos:['2','3','4','5','6','7','8','9'],
-              errLen:  'México: exactamente 10 dígitos (ej: 5512345678).',
-              errPref: 'México: el primer dígito debe ser 2–9.' },
-    '+54':  { min:6,  max:11, prefijos:['9','11','15','2','3'],
-              errLen:  'Argentina: 10–11 dígitos para móvil (ej: 91123456789) o 6–10 para fijo.',
-              errPref: 'Argentina: móvil empieza por 9, fijo por 11/2xx/3xx.' },
-    '+55':  { min:8,  max:11, prefijos:['1','2','3','4','5','6','7','8','9'],
-              errLen:  'Brasil: móvil 11 dígitos (ej: 11987654321) o fijo 10 dígitos.',
-              errPref: 'Brasil: incluya código de área (11–99). No puede empezar por 0.' },
-    '+56':  { min:8,  max:9,  prefijos:['2','3','4','5','6','7','9'],
-              errLen:  'Chile: móvil 9 dígitos (ej: 912345678) o fijo 8 dígitos.',
-              errPref: 'Chile: móvil empieza por 9, fijo por 2–7.' },
-    '+51':  { min:7,  max:9,  prefijos:['1','9'],
-              errLen:  'Perú: móvil 9 dígitos (ej: 987654321) o fijo 7 dígitos.',
-              errPref: 'Perú: móvil empieza por 9, fijo por 1.' },
-    '+58':  { min:7,  max:11, prefijos:['0412','0414','0416','0424','0426','02'],
-              errLen:  'Venezuela: móvil 11 dígitos (ej: 04121234567) o fijo empieza por 02.',
-              errPref: 'Venezuela: móvil empieza por 0412/0414/0416/0424/0426, fijo por 02.' },
-    '+593': { min:8,  max:9,  prefijos:['09','02','03','04','05','06','07'],
-              errLen:  'Ecuador: móvil 9 dígitos (ej: 0987654321) o fijo 8 dígitos.',
-              errPref: 'Ecuador: móvil empieza por 09, fijo por 02–07.' },
-    '+591': { min:7,  max:8,  prefijos:['2','3','4','6','7'],
-              errLen:  'Bolivia: móvil 8 dígitos (ej: 71234567) o fijo 7 dígitos.',
-              errPref: 'Bolivia: móvil empieza por 6 o 7, fijo por 2/3/4.' },
-    '+595': { min:5,  max:9,  prefijos:['09','02','03','04','05','06','07'],
-              errLen:  'Paraguay: móvil 9 dígitos (ej: 0961234567) o fijo 5–7 dígitos.',
-              errPref: 'Paraguay: móvil empieza por 09, fijo por 02–07.' },
-    '+598': { min:7,  max:8,  prefijos:['09','2'],
-              errLen:  'Uruguay: móvil 8 dígitos (ej: 091234567) o fijo 7 dígitos.',
-              errPref: 'Uruguay: móvil empieza por 09, fijo por 2.' },
-    '+507': { min:7,  max:8,  prefijos:['2','3','4','5','6'],
-              errLen:  'Panamá: móvil 8 dígitos (ej: 61234567) o fijo 7 dígitos.',
-              errPref: 'Panamá: móvil empieza por 6, fijo por 2–5.' },
-    '+506': { min:8,  max:8,  prefijos:['2','5','6','7','8'],
-              errLen:  'Costa Rica: exactamente 8 dígitos (ej: 83456789).',
-              errPref: 'Costa Rica: móvil empieza por 5/6/7/8, fijo por 2.' },
-    '+503': { min:8,  max:8,  prefijos:['2','6','7'],
-              errLen:  'El Salvador: exactamente 8 dígitos (ej: 70123456).',
-              errPref: 'El Salvador: móvil empieza por 6 o 7, fijo por 2.' },
-    '+502': { min:8,  max:8,  prefijos:['2','3','4','5','6','7'],
-              errLen:  'Guatemala: exactamente 8 dígitos (ej: 51234567).',
-              errPref: 'Guatemala: móvil empieza por 3/4/5, fijo por 2/6/7.' },
-    '+504': { min:8,  max:8,  prefijos:['2','3','7','8','9'],
-              errLen:  'Honduras: exactamente 8 dígitos (ej: 91234567).',
-              errPref: 'Honduras: móvil empieza por 3/7/8/9, fijo por 2.' },
-    '+505': { min:8,  max:8,  prefijos:['2','5','6','7','8'],
-              errLen:  'Nicaragua: exactamente 8 dígitos (ej: 81234567).',
-              errPref: 'Nicaragua: móvil empieza por 5/6/7/8, fijo por 2.' },
-    '+53':  { min:7,  max:8,  prefijos:['2','3','4','5'],
-              errLen:  'Cuba: móvil 8 dígitos (ej: 51234567) o fijo 7 dígitos.',
-              errPref: 'Cuba: móvil empieza por 5, fijo por 2/3/4.' },
-    '+1809':{ min:10, max:10, prefijos:['809','829','849'],
-              errLen:  'Rep. Dominicana: exactamente 10 dígitos (ej: 8091234567).',
-              errPref: 'Rep. Dominicana: debe empezar por 809, 829 o 849.' },
-    '+34':  { min:9,  max:9,  prefijos:['6','7','8','9'],
-              errLen:  'España: exactamente 9 dígitos (ej: 612345678).',
-              errPref: 'España: móvil empieza por 6 o 7, fijo por 8 o 9.' },
-    '+44':  { min:7,  max:10, prefijos:['1','2','3','7'],
-              errLen:  'Reino Unido: 7–10 dígitos sin el 0 inicial (ej: 7911123456).',
-              errPref: 'Reino Unido: sin el 0 inicial — móvil empieza por 7, fijo por 1/2/3.' },
-    '+33':  { min:9,  max:9,  prefijos:['1','2','3','4','5','6','7'],
-              errLen:  'Francia: 9 dígitos sin el 0 inicial (ej: 612345678).',
-              errPref: 'Francia: sin el 0 — móvil empieza por 6 o 7, fijo por 1–5.' },
-    '+49':  { min:3,  max:12, prefijos:[],
-              errLen:  'Alemania: entre 3 y 12 dígitos (ej móvil: 15123456789).',
-              errPref: '' },
-    '+39':  { min:6,  max:11, prefijos:['0','3'],
-              errLen:  'Italia: móvil 10 dígitos (ej: 3201234567) o fijo 6–11 dígitos.',
-              errPref: 'Italia: móvil empieza por 3, fijo por 0.' },
-    '+351': { min:9,  max:9,  prefijos:['2','9'],
-              errLen:  'Portugal: exactamente 9 dígitos (ej: 912345678).',
-              errPref: 'Portugal: móvil empieza por 9, fijo por 2.' },
-    '+7':   { min:10, max:10, prefijos:['3','4','8','9'],
-              errLen:  'Rusia: exactamente 10 dígitos (ej: 9161234567).',
-              errPref: 'Rusia: móvil empieza por 9, fijo por 3/4/8.' },
-    '+86':  { min:7,  max:11, prefijos:['1','2','3','4','5','6','7','8','9'],
-              errLen:  'China: móvil 11 dígitos (ej: 13812345678) o fijo 7–8 dígitos.',
-              errPref: 'China: no puede empezar por 0.' },
-    '+81':  { min:9,  max:10, prefijos:['0','7','8','9'],
-              errLen:  'Japón: 9–10 dígitos (ej: 09012345678).',
-              errPref: 'Japón: móvil empieza por 070/080/090, fijo por código de área.' },
-    '+82':  { min:9,  max:11, prefijos:['0','1','2','3','4','5','6'],
-              errLen:  'Corea del Sur: 9–11 dígitos (ej: 01012345678).',
-              errPref: 'Corea del Sur: móvil empieza por 010, fijo por 02/031/…' },
-    '+91':  { min:10, max:10, prefijos:['6','7','8','9'],
-              errLen:  'India: exactamente 10 dígitos (ej: 9876543210).',
-              errPref: 'India: debe empezar por 6, 7, 8 o 9.' },
-    '+61':  { min:5,  max:9,  prefijos:['2','3','4','7','8'],
-              errLen:  'Australia: móvil 9 dígitos (ej: 412345678) o fijo 8 dígitos, sin el 0 inicial.',
-              errPref: 'Australia: sin el 0 inicial — móvil empieza por 4, fijo por 2/3/7/8.' },
-    '+27':  { min:9,  max:9,  prefijos:['1','2','3','4','5','6','7','8'],
-              errLen:  'Sudáfrica: exactamente 9 dígitos sin el 0 inicial (ej: 812345678).',
-              errPref: 'Sudáfrica: sin el 0 — móvil empieza por 6/7/8, fijo por 1–5.' },
-    '+20':  { min:7,  max:10, prefijos:['01','02','03'],
-              errLen:  'Egipto: móvil 10 dígitos (ej: 0101234567) o fijo 8–9 dígitos.',
-              errPref: 'Egipto: móvil empieza por 01, fijo por 02 o 03.' },
-    '+212': { min:9,  max:10, prefijos:['05','06','07'],
-              errLen:  'Marruecos: 9–10 dígitos (ej: 0612345678).',
-              errPref: 'Marruecos: móvil empieza por 06 o 07, fijo por 05.' },
-    '+971': { min:7,  max:9,  prefijos:['02','03','04','05','06','07','09'],
-              errLen:  'Emiratos Árabes: móvil 9 dígitos (ej: 0512345678) o fijo 7–8 dígitos.',
-              errPref: 'Emiratos Árabes: móvil empieza por 05, fijo por 02/03/04/06/07/09.' },
-    '+966': { min:9,  max:9,  prefijos:['01','02','03','05'],
-              errLen:  'Arabia Saudita: exactamente 9 dígitos (ej: 0512345678).',
-              errPref: 'Arabia Saudita: móvil empieza por 05, fijo por 01/02/03.' },
+    '+57':  { min:7,  max:10, prefijos:['3','60','61','62','63','64','65','66','67','68'], errLen:'Colombia: 10 dígitos para celular (ej: 3219876543) o 7 para fijo.', errPref:'Colombia: celular empieza por 3 (ej: 3219876543) o fijo por 60–68.' },
+    '+1':   { min:10, max:10, prefijos:['2','3','4','5','6','7','8','9'], errLen:'EEUU/Canadá: exactamente 10 dígitos (ej: 2025550173).', errPref:'EEUU/Canadá: el primer dígito debe ser 2–9.' },
+    '+52':  { min:10, max:10, prefijos:['2','3','4','5','6','7','8','9'], errLen:'México: exactamente 10 dígitos (ej: 5512345678).', errPref:'México: el primer dígito debe ser 2–9.' },
+    '+54':  { min:6,  max:11, prefijos:['9','11','15','2','3'], errLen:'Argentina: 10–11 dígitos para móvil (ej: 91123456789) o 6–10 para fijo.', errPref:'Argentina: móvil empieza por 9, fijo por 11/2xx/3xx.' },
+    '+55':  { min:8,  max:11, prefijos:['1','2','3','4','5','6','7','8','9'], errLen:'Brasil: móvil 11 dígitos (ej: 11987654321) o fijo 10 dígitos.', errPref:'Brasil: incluya código de área (11–99). No puede empezar por 0.' },
+    '+56':  { min:8,  max:9,  prefijos:['2','3','4','5','6','7','9'], errLen:'Chile: móvil 9 dígitos (ej: 912345678) o fijo 8 dígitos.', errPref:'Chile: móvil empieza por 9, fijo por 2–7.' },
+    '+51':  { min:7,  max:9,  prefijos:['1','9'], errLen:'Perú: móvil 9 dígitos (ej: 987654321) o fijo 7 dígitos.', errPref:'Perú: móvil empieza por 9, fijo por 1.' },
+    '+58':  { min:7,  max:11, prefijos:['0412','0414','0416','0424','0426','02'], errLen:'Venezuela: móvil 11 dígitos (ej: 04121234567) o fijo empieza por 02.', errPref:'Venezuela: móvil empieza por 0412/0414/0416/0424/0426, fijo por 02.' },
+    '+593': { min:8,  max:9,  prefijos:['09','02','03','04','05','06','07'], errLen:'Ecuador: móvil 9 dígitos (ej: 0987654321) o fijo 8 dígitos.', errPref:'Ecuador: móvil empieza por 09, fijo por 02–07.' },
+    '+591': { min:7,  max:8,  prefijos:['2','3','4','6','7'], errLen:'Bolivia: móvil 8 dígitos (ej: 71234567) o fijo 7 dígitos.', errPref:'Bolivia: móvil empieza por 6 o 7, fijo por 2/3/4.' },
+    '+595': { min:5,  max:9,  prefijos:['09','02','03','04','05','06','07'], errLen:'Paraguay: móvil 9 dígitos (ej: 0961234567) o fijo 5–7 dígitos.', errPref:'Paraguay: móvil empieza por 09, fijo por 02–07.' },
+    '+598': { min:7,  max:8,  prefijos:['09','2'], errLen:'Uruguay: móvil 8 dígitos (ej: 091234567) o fijo 7 dígitos.', errPref:'Uruguay: móvil empieza por 09, fijo por 2.' },
+    '+507': { min:7,  max:8,  prefijos:['2','3','4','5','6'], errLen:'Panamá: móvil 8 dígitos (ej: 61234567) o fijo 7 dígitos.', errPref:'Panamá: móvil empieza por 6, fijo por 2–5.' },
+    '+506': { min:8,  max:8,  prefijos:['2','5','6','7','8'], errLen:'Costa Rica: exactamente 8 dígitos (ej: 83456789).', errPref:'Costa Rica: móvil empieza por 5/6/7/8, fijo por 2.' },
+    '+503': { min:8,  max:8,  prefijos:['2','6','7'], errLen:'El Salvador: exactamente 8 dígitos (ej: 70123456).', errPref:'El Salvador: móvil empieza por 6 o 7, fijo por 2.' },
+    '+502': { min:8,  max:8,  prefijos:['2','3','4','5','6','7'], errLen:'Guatemala: exactamente 8 dígitos (ej: 51234567).', errPref:'Guatemala: móvil empieza por 3/4/5, fijo por 2/6/7.' },
+    '+504': { min:8,  max:8,  prefijos:['2','3','7','8','9'], errLen:'Honduras: exactamente 8 dígitos (ej: 91234567).', errPref:'Honduras: móvil empieza por 3/7/8/9, fijo por 2.' },
+    '+505': { min:8,  max:8,  prefijos:['2','5','6','7','8'], errLen:'Nicaragua: exactamente 8 dígitos (ej: 81234567).', errPref:'Nicaragua: móvil empieza por 5/6/7/8, fijo por 2.' },
+    '+53':  { min:7,  max:8,  prefijos:['2','3','4','5'], errLen:'Cuba: móvil 8 dígitos (ej: 51234567) o fijo 7 dígitos.', errPref:'Cuba: móvil empieza por 5, fijo por 2/3/4.' },
+    '+1809':{ min:10, max:10, prefijos:['809','829','849'], errLen:'Rep. Dominicana: exactamente 10 dígitos (ej: 8091234567).', errPref:'Rep. Dominicana: debe empezar por 809, 829 o 849.' },
+    '+34':  { min:9,  max:9,  prefijos:['6','7','8','9'], errLen:'España: exactamente 9 dígitos (ej: 612345678).', errPref:'España: móvil empieza por 6 o 7, fijo por 8 o 9.' },
+    '+44':  { min:7,  max:10, prefijos:['1','2','3','7'], errLen:'Reino Unido: 7–10 dígitos sin el 0 inicial (ej: 7911123456).', errPref:'Reino Unido: sin el 0 inicial — móvil empieza por 7, fijo por 1/2/3.' },
+    '+33':  { min:9,  max:9,  prefijos:['1','2','3','4','5','6','7'], errLen:'Francia: 9 dígitos sin el 0 inicial (ej: 612345678).', errPref:'Francia: sin el 0 — móvil empieza por 6 o 7, fijo por 1–5.' },
+    '+49':  { min:3,  max:12, prefijos:[], errLen:'Alemania: entre 3 y 12 dígitos (ej móvil: 15123456789).', errPref:'' },
+    '+39':  { min:6,  max:11, prefijos:['0','3'], errLen:'Italia: móvil 10 dígitos (ej: 3201234567) o fijo 6–11 dígitos.', errPref:'Italia: móvil empieza por 3, fijo por 0.' },
+    '+351': { min:9,  max:9,  prefijos:['2','9'], errLen:'Portugal: exactamente 9 dígitos (ej: 912345678).', errPref:'Portugal: móvil empieza por 9, fijo por 2.' },
+    '+7':   { min:10, max:10, prefijos:['3','4','8','9'], errLen:'Rusia: exactamente 10 dígitos (ej: 9161234567).', errPref:'Rusia: móvil empieza por 9, fijo por 3/4/8.' },
+    '+86':  { min:7,  max:11, prefijos:['1','2','3','4','5','6','7','8','9'], errLen:'China: móvil 11 dígitos (ej: 13812345678) o fijo 7–8 dígitos.', errPref:'China: no puede empezar por 0.' },
+    '+81':  { min:9,  max:10, prefijos:['0','7','8','9'], errLen:'Japón: 9–10 dígitos (ej: 09012345678).', errPref:'Japón: móvil empieza por 070/080/090, fijo por código de área.' },
+    '+82':  { min:9,  max:11, prefijos:['0','1','2','3','4','5','6'], errLen:'Corea del Sur: 9–11 dígitos (ej: 01012345678).', errPref:'Corea del Sur: móvil empieza por 010, fijo por 02/031/…' },
+    '+91':  { min:10, max:10, prefijos:['6','7','8','9'], errLen:'India: exactamente 10 dígitos (ej: 9876543210).', errPref:'India: debe empezar por 6, 7, 8 o 9.' },
+    '+61':  { min:5,  max:9,  prefijos:['2','3','4','7','8'], errLen:'Australia: móvil 9 dígitos (ej: 412345678) o fijo 8 dígitos, sin el 0 inicial.', errPref:'Australia: sin el 0 inicial — móvil empieza por 4, fijo por 2/3/7/8.' },
+    '+27':  { min:9,  max:9,  prefijos:['1','2','3','4','5','6','7','8'], errLen:'Sudáfrica: exactamente 9 dígitos sin el 0 inicial (ej: 812345678).', errPref:'Sudáfrica: sin el 0 — móvil empieza por 6/7/8, fijo por 1–5.' },
+    '+20':  { min:7,  max:10, prefijos:['01','02','03'], errLen:'Egipto: móvil 10 dígitos (ej: 0101234567) o fijo 8–9 dígitos.', errPref:'Egipto: móvil empieza por 01, fijo por 02 o 03.' },
+    '+212': { min:9,  max:10, prefijos:['05','06','07'], errLen:'Marruecos: 9–10 dígitos (ej: 0612345678).', errPref:'Marruecos: móvil empieza por 06 o 07, fijo por 05.' },
+    '+971': { min:7,  max:9,  prefijos:['02','03','04','05','06','07','09'], errLen:'Emiratos Árabes: móvil 9 dígitos (ej: 0512345678) o fijo 7–8 dígitos.', errPref:'Emiratos Árabes: móvil empieza por 05, fijo por 02/03/04/06/07/09.' },
+    '+966': { min:9,  max:9,  prefijos:['01','02','03','05'], errLen:'Arabia Saudita: exactamente 9 dígitos (ej: 0512345678).', errPref:'Arabia Saudita: móvil empieza por 05, fijo por 01/02/03.' },
 };
 
-// ══════════════════════════════════════════════════════════
-//  UTILIDAD: mostrar/limpiar error inline en un campo
-// ══════════════════════════════════════════════════════════
 function setFieldError(inputEl, msg) {
     const wrap = inputEl.closest('.field-group') || inputEl.parentElement;
     let errorEl = wrap.querySelector('.field-error-js');
@@ -496,86 +450,50 @@ function setFieldError(inputEl, msg) {
     }
 }
 
-// ══════════════════════════════════════════════════════════
-//  VALIDACIÓN EN TIEMPO REAL — NOMBRE (solo JS)
-// ══════════════════════════════════════════════════════════
 (function initValidarNombre() {
     const inputNombre = document.querySelector('[name="nombre"]');
     if (!inputNombre) return;
-
     inputNombre.addEventListener('input', function () {
-        // Bloquear números y símbolos en tiempo real
         const limpio = this.value.replace(/[^a-zA-ZÁÉÍÓÚáéíóúÑñ\s]/g, '');
         if (this.value !== limpio) this.value = limpio;
-
         const val = this.value.trim();
-        if (val.length === 0) {
-            setFieldError(this, null);
-        } else if (val.length < 3) {
-            setFieldError(this, 'El nombre debe tener al menos 3 caracteres.');
-        } else {
-            setFieldError(this, null);
-        }
+        if (val.length === 0) setFieldError(this, null);
+        else if (val.length < 3) setFieldError(this, 'El nombre debe tener al menos 3 caracteres.');
+        else setFieldError(this, null);
     });
-
     inputNombre.addEventListener('blur', function () {
         const val = this.value.trim();
-        if (val.length > 0 && val.length < 3) {
-            setFieldError(this, 'El nombre debe tener al menos 3 caracteres.');
-        } else {
-            setFieldError(this, null);
-        }
+        if (val.length > 0 && val.length < 3) setFieldError(this, 'El nombre debe tener al menos 3 caracteres.');
+        else setFieldError(this, null);
     });
 })();
 
-// ══════════════════════════════════════════════════════════
-//  VALIDACIÓN AJAX — NIT DUPLICADO
-// ══════════════════════════════════════════════════════════
 (function initValidarNit() {
     const inputNit = document.querySelector('[name="nit"]');
     if (!inputNit) return;
-
     const excludePk = '{{ object.pk|default:"" }}';
-    let timerNit    = null;
-
-    // Solo permitir dígitos mientras escribe
+    let timerNit = null;
     inputNit.addEventListener('input', function () {
         const limpio = this.value.replace(/\D/g, '');
         if (this.value !== limpio) this.value = limpio;
         clearTimeout(timerNit);
         setFieldError(this, null);
     });
-
     inputNit.addEventListener('blur', function () {
         const val = this.value.trim();
         if (!val) return;
-
-        // Validación local primero (9-10 dígitos)
-        if (val.length < 9 || val.length > 10) {
-            setFieldError(this, 'El NIT debe tener 9 o 10 dígitos.');
-            return;
-        }
-
+        if (val.length < 9 || val.length > 10) { setFieldError(this, 'El NIT debe tener 9 o 10 dígitos.'); return; }
         clearTimeout(timerNit);
         timerNit = setTimeout(() => {
             const url = `{% url 'app:validar_nit_proveedor' %}?valor=${encodeURIComponent(val)}${excludePk ? '&exclude_pk=' + excludePk : ''}`;
-            fetch(url)
-                .then(r => r.json())
-                .then(data => {
-                    if (data.existe) {
-                        setFieldError(inputNit, 'Ya existe un proveedor registrado con este NIT.');
-                    } else {
-                        setFieldError(inputNit, null);
-                    }
-                })
-                .catch(() => {});
+            fetch(url).then(r => r.json()).then(data => {
+                if (data.existe) setFieldError(inputNit, 'Ya existe un proveedor registrado con este NIT.');
+                else setFieldError(inputNit, null);
+            }).catch(() => {});
         }, 300);
     });
 })();
 
-// ══════════════════════════════════════════════════════════
-//  LÓGICA DROPDOWN / MÁSCARA
-// ══════════════════════════════════════════════════════════
 function flagUrl(iso) { return `https://flagcdn.com/w40/${iso}.png`; }
 
 const paisListEl   = document.getElementById('paisList');
@@ -609,25 +527,23 @@ function renderLista(filtro) {
         const div = document.createElement('div');
         div.className = 'pais-option';
         div.dataset.code = p.code;
-        div.innerHTML = `
-            <img src="${flagUrl(p.iso)}" alt="${p.nombre}" loading="lazy">
-            <span class="pais-codigo">${p.code}</span>
-            <span class="pais-nombre">${p.nombre}</span>`;
+        div.innerHTML = `<img src="${flagUrl(p.iso)}" alt="${p.nombre}" loading="lazy"><span class="pais-codigo">${p.code}</span><span class="pais-nombre">${p.nombre}</span>`;
         div.addEventListener('click', () => seleccionar(p));
         paisListEl.appendChild(div);
     });
 }
 
-function seleccionar(p) {
+function seleccionar(p, resetearNumero = true) {
     paisSelected.innerHTML = `
-        <img src="${flagUrl(p.iso)}" alt="${p.nombre}"
-             style="width:20px;height:14px;object-fit:cover;border-radius:2px;">
+        <img src="${flagUrl(p.iso)}" alt="${p.nombre}" style="width:20px;height:14px;object-fit:cover;border-radius:2px;">
         <span class="pais-label">${p.code}</span>
         <i class="fas fa-chevron-down pais-chevron"></i>`;
     hiddenInput.value = p.code;
     if (inputNumero) {
         inputNumero.setAttribute('data-ejemplo', p.ejemplo || '');
-        inputNumero.value = '';
+        if (resetearNumero) {
+            inputNumero.value = '';
+        }
         aplicarMascara();
     }
     document.querySelectorAll('.pais-option').forEach(el =>
@@ -655,7 +571,10 @@ renderLista('');
 
 (function() {
     const v = hiddenInput ? hiddenInput.value : '';
-    if (v) { const p = PAISES.find(x => x.code === v); if (p) seleccionar(p); }
+    if (v) {
+        const p = PAISES.find(x => x.code === v);
+        if (p) seleccionar(p, false); // no borrar el número ya cargado al editar
+    }
 })();
 
 document.querySelectorAll('.form-field').forEach(el => {
@@ -669,17 +588,13 @@ function actualizarTelefono() {
     $('[name="telefono"]').val(ind && num ? ind + num : '');
 }
 
-// ══════════════════════════════════════════════════════════
-//  VALIDACIÓN POR PAÍS — TELÉFONO
-// ══════════════════════════════════════════════════════════
 function validarTelefonoPorPais(indicativo, numero) {
     if (!indicativo) return 'Seleccione el indicativo del país.';
     if (!numero)     return 'Ingrese el número de teléfono.';
     if (!/^\d+$/.test(numero)) return 'Solo se permiten dígitos, sin espacios ni símbolos.';
     const regla = REGLAS_TEL[indicativo];
     if (!regla) {
-        if (numero.length < 6 || numero.length > 15)
-            return `Número inválido para ${indicativo}: entre 6 y 15 dígitos.`;
+        if (numero.length < 6 || numero.length > 15) return `Número inválido para ${indicativo}: entre 6 y 15 dígitos.`;
         return null;
     }
     if (numero.length < regla.min || numero.length > regla.max) return regla.errLen;
@@ -733,30 +648,17 @@ $(function () {
     $('#formProveedor').on('submit', function (e) {
         e.preventDefault();
         actualizarTelefono();
-
-        // Bloquear si hay errores JS visibles
         const erroresJS = document.querySelectorAll('.field-error-js');
-        if (erroresJS.length > 0) {
-            erroresJS[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return;
-        }
-
-        // Bloquear si el teléfono es inválido
+        if (erroresJS.length > 0) { erroresJS[0].scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
         const ind = (hiddenInput ? hiddenInput.value : '').trim();
         const num = ($('[name="numero_telefono"]').val() || '').trim();
         const err = validarTelefonoPorPais(ind, num);
-        if (err) {
-            mostrarErrorTel(err);
-            inputNumero && inputNumero.focus();
-            return;
-        }
+        if (err) { mostrarErrorTel(err); inputNumero && inputNumero.focus(); return; }
         mostrarErrorTel(null);
-
         const f = this;
         Swal.fire({
             title: esEditar ? '¿Confirmar actualización?' : '¿Confirmar registro?',
-            text: esEditar ? 'Los datos del proveedor serán actualizados.'
-                           : 'La información del proveedor será almacenada.',
+            text: esEditar ? 'Los datos del proveedor serán actualizados.' : 'La información del proveedor será almacenada.',
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: esEditar ? 'Sí, actualizar' : 'Sí, guardar',
