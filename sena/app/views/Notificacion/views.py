@@ -64,7 +64,7 @@ def _enviar_correo_notificacion(cliente, vehiculo, tipo, mensaje):
         <p style="margin:0 0 6px;font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;">Estimado/a</p>
         <p style="margin:0 0 28px;font-size:22px;font-weight:700;color:#1a1a1a;">{nombre_cliente}</p>
         <p style="margin:0 0 24px;font-size:15px;color:#444;line-height:1.7;">Te informamos que el siguiente vehículo requiere atención:</p>
-        <div style="background:#f8f8f8;border-radius:8px;padding:20px 24px;margin-bottom:24px;border-left:4px solid #d32f2f;">
+        <div style="background:#f8f8f8;border-radius:8px;padding:20px 24px;margin-bottom:24px;">
             <table style="width:100%;border-collapse:collapse;">
                 <tr><td style="padding:6px 0;font-size:13px;color:#888;width:130px;">Placa</td><td style="padding:6px 0;font-size:14px;font-weight:700;color:#1a1a1a;">{vehiculo.placa}</td></tr>
                 <tr><td style="padding:6px 0;font-size:13px;color:#888;">Vehículo</td><td style="padding:6px 0;font-size:14px;font-weight:600;color:#1a1a1a;">{vehiculo.marca.nombre} {vehiculo.modelo}</td></tr>
@@ -76,7 +76,7 @@ def _enviar_correo_notificacion(cliente, vehiculo, tipo, mensaje):
             <p style="margin:0 0 8px;font-size:13px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.5px;">⚠ Detalle del aviso</p>
             <p style="margin:0;font-size:15px;color:#333;line-height:1.7;">{mensaje}</p>
         </div>
-        <p style="margin:0 0 28px;font-size:14px;color:#444;line-height:1.7;">Por favor <strong>comunícate con nosotros</strong> para agendar tu cita de mantenimiento.</p>
+       <p style="margin:0 0 28px;font-size:14px;color:#444;line-height:1.7;">Acércate a nuestro taller cuando lo desees, estaremos listos para atenderte.</p>
         <div style="background:#1a1a1a;border-radius:8px;padding:20px 24px;text-align:center;">
             <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:1px;">Contáctanos</p>
             <p style="margin:0;font-size:13px;color:#aaa;line-height:1.9;">📞 +57 (8) 632-5678<br>💬 WhatsApp: +57 320 123 4567<br>📍 Yopal, Casanare — Colombia</p>
@@ -127,7 +127,7 @@ def _enviar_correo_informacion(cliente, titulo, mensaje):
     <div style="padding:36px 32px;">
         <p style="margin:0 0 6px;font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;">Estimado/a</p>
         <p style="margin:0 0 28px;font-size:22px;font-weight:700;color:#1a1a1a;">{cliente.nombre}</p>
-        <div style="background:#e8f5e9;border-radius:8px;padding:20px 24px;margin-bottom:24px;border-left:4px solid #2e7d32;">
+        <div style="background:#e8f5e9;border-radius:8px;padding:20px 24px;margin-bottom:24px;">
             <p style="margin:0 0 8px;font-size:13px;font-weight:700;color:#2e7d32;text-transform:uppercase;letter-spacing:.5px;">ℹ {titulo}</p>
             <p style="margin:0;font-size:15px;color:#333;line-height:1.7;">{mensaje}</p>
         </div>

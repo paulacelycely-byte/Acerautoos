@@ -263,12 +263,22 @@ class Vehiculo(models.Model):
 # ══════════════════════════════════════════════════════════
 #  NOTIFICACION
 # ══════════════════════════════════════════════════════════
-def validar_no_futuro(value):
-    anio_actual = timezone.now().year
-    if value.year > anio_actual:
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+
+def validar_fecha_presente_o_futura(value):
+    """
+    Valida que la fecha de la notificación sea hoy o en el futuro.
+    Rechaza cualquier fecha pasada.
+    """
+    hoy = timezone.now().date()
+    if value < hoy:
+        dias_atras = (hoy - value).days
         raise ValidationError(
-            f"No se permiten notificaciones para años futuros. El año máximo permitido es {anio_actual}."
+            f"No se permiten notificaciones con fechas pasadas. "
+            f"Esta fecha fue hace {dias_atras} día{'s' if dias_atras != 1 else ''}."
         )
+
 
 class Notificacion(models.Model):
     TIPOS = [
@@ -290,8 +300,8 @@ class Notificacion(models.Model):
     leido    = models.BooleanField(default=False)
     fecha    = models.DateField(
         default=timezone.now,
-        validators=[validar_no_futuro],
-        help_text="Fecha de la notificación (no mayor al año actual)."
+        validators=[validar_fecha_presente_o_futura],
+        help_text="Fecha de la notificación (hoy o en el futuro)."
     )
 
     def __str__(self):
@@ -300,6 +310,7 @@ class Notificacion(models.Model):
     class Meta:
         db_table = 'notificacion'
         ordering = ['-fecha']
+
 
 
 # ══════════════════════════════════════════════════════════

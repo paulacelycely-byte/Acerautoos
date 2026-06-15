@@ -1286,11 +1286,6 @@ class CajaForm(forms.ModelForm):
             raise forms.ValidationError("Las observaciones son demasiado cortas (mínimo 10 caracteres).")
         return obs or None
 
-
-# ══════════════════════════════════════════════════════════
-#  NOTIFICACIÓN
-# ══════════════════════════════════════════════════════════
-
 class NotificacionForm(forms.ModelForm):
     TIPOS_NOTIFICACION = [
         ('',             '-- Seleccione un tipo --'),
@@ -1314,20 +1309,38 @@ class NotificacionForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['vehiculo'].required    = False
         self.fields['vehiculo'].empty_label = "-- Sin vehículo asociado --"
+        self.fields['vehiculo'].widget.attrs.update({'required': False})
         self.fields['titulo'].required      = False
         self.fields['titulo'].help_text     = "Opcional. Resumen corto de la notificación."
         self.fields['leido'].initial        = False
-        anio_actual = timezone.now().year
+
+        hoy = timezone.now().date()
+        max_fecha = hoy.replace(year=hoy.year + 2)  # ── límite 2 años
+
         if 'fecha' in self.fields:
             self.fields['fecha'].widget = forms.DateInput(attrs={
-                'type': 'date', 'class': 'form-control',
-                'id': 'id_fecha', 'max': f"{anio_actual}-12-31"
+                'type':  'date',
+                'class': 'form-control',
+                'id':    'id_fecha',
+                'min':   hoy.strftime('%Y-%m-%d'),
+                'max':   max_fecha.strftime('%Y-%m-%d'),  # ── NUEVO
             })
 
     def clean_fecha(self):
         fecha = self.cleaned_data.get('fecha')
-        if fecha and fecha.year > timezone.now().year:
-            raise forms.ValidationError(f"No se pueden registrar notificaciones para el año {fecha.year}.")
+        if fecha:
+            hoy = timezone.now().date()
+            if fecha < hoy:
+                dias_atras = (hoy - fecha).days
+                raise forms.ValidationError(
+                    f"No se pueden registrar notificaciones con fechas pasadas. "
+                    f"Esta fecha fue hace {dias_atras} día{'s' if dias_atras != 1 else ''}."
+                )
+            limite = hoy.replace(year=hoy.year + 2)  # ── NUEVO
+            if fecha > limite:
+                raise forms.ValidationError(
+                    "La fecha no puede ser mayor a 2 años desde hoy."
+                )
         return fecha
 
     def clean_tipo(self):
@@ -1352,7 +1365,6 @@ class NotificacionForm(forms.ModelForm):
         if len(mensaje) > 500:
             raise forms.ValidationError("El mensaje no puede superar 500 caracteres.")
         return mensaje
-
 
 # ══════════════════════════════════════════════════════════
 #  FACTURA

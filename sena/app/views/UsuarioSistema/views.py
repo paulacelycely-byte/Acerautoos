@@ -135,7 +135,7 @@ class RegistroUsuarioView(CreateView):
         return context
 
     def form_valid(self, form):
-        self.request.session['registro_exitoso'] = True
+        messages.success(self.request, '¡Cuenta creada exitosamente! Ya puedes iniciar sesión.')
         return super().form_valid(form)
 
     def form_invalid(self, form):
