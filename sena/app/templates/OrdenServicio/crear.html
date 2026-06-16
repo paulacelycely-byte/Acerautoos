@@ -90,11 +90,45 @@
     .srv-dropdown-item .chk { font-weight: 700; color: #b71c1c; }
     .srv-empty { padding: 14px; text-align: center; font-size: .8rem; color: #aaa; font-family: 'DM Sans', sans-serif; }
 
+    /* ── Bloque seguimiento con dos columnas lado a lado ── */
     #bloque-seguimiento { display: none; margin-top: 18px; padding: 18px 20px; background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 12px; animation: fadeSlide .2s ease; }
     #bloque-seguimiento.visible { display: block; }
     @keyframes fadeSlide { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
     .seguimiento-titulo { font-family: 'Barlow Condensed', sans-serif; font-size: .82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #92400e; display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
     .seguimiento-titulo svg { width: 14px; height: 14px; stroke: #a16207; fill: none; stroke-width: 2.2; stroke-linecap: round; flex-shrink: 0; }
+
+    .seguimiento-cols { 
+    display: flex; 
+    gap: 16px; 
+    align-items: flex-start; 
+    flex-wrap: nowrap; 
+}
+.seguimiento-col { 
+    flex: 1; 
+    min-width: 0;  /* ← esto es clave para que flex no desborde */
+}
+
+    /* input km dentro del bloque amarillo */
+    #id_km_actual {
+        width: 100%; padding: 11px 14px 11px 40px;
+        border: 1.5px solid #fde68a; border-radius: 9px;
+        font-family: 'DM Sans', sans-serif; font-size: .88rem;
+        color: var(--texto); background: white; outline: none;
+        transition: border-color .18s, box-shadow .18s;
+        -webkit-appearance: none; appearance: none;
+    }
+    /* Fix: la columna izquierda ocupa todo el espacio disponible */
+.seguimiento-col .field-inner {
+    width: 100%;
+    display: block;
+}
+
+.seguimiento-col .field-inner input {
+    box-sizing: border-box;
+    width: 100%;
+}
+    #id_km_actual:focus { border-color: var(--naranja); box-shadow: 0 0 0 3px rgba(245,158,11,.15); }
+    /* input fecha dentro del bloque amarillo */
     #id_fecha_proximo_mantenimiento { width: 100%; padding: 11px 14px 11px 40px; border: 1.5px solid #fde68a; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: .88rem; color: var(--texto); background: white; outline: none; transition: border-color .18s, box-shadow .18s; }
     #id_fecha_proximo_mantenimiento:focus { border-color: var(--naranja); box-shadow: 0 0 0 3px rgba(245,158,11,.15); }
     .seguimiento-hint { font-family: 'DM Sans', sans-serif; font-size: .72rem; color: #a16207; margin-top: 6px; line-height: 1.5; }
@@ -211,8 +245,9 @@
                     Datos de la Orden
                 </div>
                 <div class="row">
+                    {# Excluimos estado, fecha_proximo_mantenimiento y km_actual del loop principal #}
                     {% for field in form.visible_fields %}
-                        {% if field.name != 'estado' and field.name != 'fecha_proximo_mantenimiento' %}
+                        {% if field.name != 'estado' and field.name != 'fecha_proximo_mantenimiento' and field.name != 'km_actual' %}
                         <div class="col-md-6">
                             <div class="field-group">
 
@@ -240,20 +275,6 @@
                                         <span id="vehiculo-info-texto">—</span>
                                     </div>
 
-                                {% elif field.name == 'km_actual' %}
-                                    <label class="field-label">
-                                        {{ field.label }} <span class="req">*</span>
-                                        <span class="badge-km-ref" id="badge-km">⚠ Km de referencia</span>
-                                    </label>
-                                    <div class="field-inner">
-                                        <span class="fi-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span>
-                                        {{ field|add_class:'form-field'|attr:'id:id_km_actual'|attr:'autocomplete:off'|attr:'placeholder:Escribe el km actual del odómetro' }}
-                                    </div>
-                                    <div class="km-hint" id="km-hint">
-                                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                                        <span id="km-hint-texto"></span>
-                                    </div>
-
                                 {% elif 'servicios' in field.name|lower %}
                                     <label class="field-label">{{ field.label }} <span class="req">*</span></label>
                                     <div id="servicios-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:0;"></div>
@@ -272,23 +293,50 @@
                                     </div>
                                     <div id="servicios-dropdown"></div>
 
-                                    <!-- BLOQUE SEGUIMIENTO -->
+                                    <!-- BLOQUE SEGUIMIENTO: km_actual + fecha_proximo_mantenimiento lado a lado -->
                                     <div id="bloque-seguimiento">
                                         <div class="seguimiento-titulo">
                                             <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                            Próximo mantenimiento
+                                            Kilometraje y próximo mantenimiento
                                         </div>
-                                        <div class="field-inner">
-                                            <span class="fi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
-                                            {{ form.fecha_proximo_mantenimiento }}
-                                        </div>
-                                        <div class="seguimiento-hint" id="seguimiento-hint">
-                                            📅 Se calcula automáticamente al escribir el kilometraje. Puedes ajustarla si lo necesitas.
-                                        </div>
-                                        {% for error in form.fecha_proximo_mantenimiento.errors %}
-                                            <div class="field-error">⚠ {{ error }}</div>
-                                        {% endfor %}
-                                    </div>
+                                        <div class="seguimiento-cols">
+
+                                            <!-- Columna izquierda: Km actual -->
+                                            <div class="seguimiento-col">
+                                                <label class="field-label">
+                                                    Km Actual <span class="req">*</span>
+                                                    <span class="badge-km-ref" id="badge-km">⚠ Km de referencia</span>
+                                                </label>
+                                                <div class="field-inner">
+                                                    <span class="fi-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span>
+                                                    {{ form.km_actual|add_class:'form-field'|attr:'id:id_km_actual'|attr:'autocomplete:off'|attr:'placeholder:Km del odómetro' }}
+                                                </div>
+                                                <div class="km-hint" id="km-hint">
+                                                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                                    <span id="km-hint-texto"></span>
+                                                </div>
+                                                {% for error in form.km_actual.errors %}
+                                                    <div class="field-error">⚠ {{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+
+                                            <!-- Columna derecha: Fecha próximo mantenimiento -->
+                                            <div class="seguimiento-col">
+                                                <label class="field-label">Próximo mantenimiento</label>
+                                                <div class="field-inner">
+                                                    <span class="fi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+                                                    {{ form.fecha_proximo_mantenimiento }}
+                                                </div>
+                                                <div class="seguimiento-hint" id="seguimiento-hint">
+                                                      Se calcula automáticamente al escribir el km.
+                                                </div>
+                                                {% for error in form.fecha_proximo_mantenimiento.errors %}
+                                                    <div class="field-error">⚠ {{ error }}</div>
+                                                {% endfor %}
+                                            </div>
+
+                                        </div>{# /seguimiento-cols #}
+                                    </div>{# /bloque-seguimiento #}
 
                                     <div id="servicios-hidden" style="display:none;">{{ field }}</div>
 
@@ -403,19 +451,18 @@ function actualizarBloqueSeguimiento() {
     var requiere = srvSeleccionados.some(function(s) { return s.seguimiento; });
     var bloque   = document.getElementById('bloque-seguimiento');
     var campo    = document.getElementById('id_fecha_proximo_mantenimiento');
-    var campoKmWrap = document.getElementById('id_km_actual').closest('.col-md-6');
+    var campoKm  = document.getElementById('id_km_actual');
+
     if (requiere) {
         bloque.classList.add('visible');
-        if (campo) campo.required = true;
-        campoKmWrap.style.display = '';
-        var km = parseInt(document.getElementById('id_km_actual').value);
+        if (campo)   campo.required  = true;
+        if (campoKm) campoKm.required = true;
+        var km = parseInt(campoKm ? campoKm.value : 0);
         if (km > 0 && datosVehiculo) calcularFechaPorKm(km);
     } else {
         bloque.classList.remove('visible');
-        if (campo) { campo.required = false; campo.value = ''; }
-        campoKmWrap.style.display = 'none';
-        document.getElementById('id_km_actual').value = '';
-        document.getElementById('id_km_actual').required = false;
+        if (campo)   { campo.required = false;  campo.value  = ''; }
+        if (campoKm) { campoKm.required = false; campoKm.value = ''; }
     }
 }
 
@@ -429,8 +476,9 @@ function calcularFechaPorKm(km) {
             if (campoPrx) campoPrx.value = data.fecha_sugerida;
             var hint = document.getElementById('seguimiento-hint');
             if (hint) {
-                hint.textContent = ' El próximo mantenimiento le toca el '
-                + new Date(data.fecha_sugerida + 'T00:00:00').toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' }) + '.';
+                hint.textContent = '📅 El próximo mantenimiento le toca el '
+                    + new Date(data.fecha_sugerida + 'T00:00:00').toLocaleDateString('es-CO',
+                        { day: 'numeric', month: 'long', year: 'numeric' }) + '.';
             }
         })
         .catch(function() {});
@@ -464,7 +512,7 @@ function srvRenderDropdown(q) {
     var filtrados = SERVICIOS_CATALOG.filter(function(s){ return s.nombre.toLowerCase().indexOf(q) !== -1; });
     if (!filtrados.length) { dd.innerHTML = '<div class="srv-empty">Sin resultados</div>'; return; }
     dd.innerHTML = filtrados.map(function(s) {
-        var sel = srvSeleccionados.find(function(x){ return x.id === s.id; });
+        var sel   = srvSeleccionados.find(function(x){ return x.id === s.id; });
         var icono = s.seguimiento ? ' 📅' : '';
         return '<div class="srv-dropdown-item' + (sel ? ' sel' : '') + '" onclick="srvToggle(' + s.id + ',\'' + s.nombre.replace(/'/g,"\\'") + '\',' + s.seguimiento + ')">'
              + '<span>' + s.nombre + icono + '</span><span class="chk">' + (sel ? '✓' : '') + '</span></div>';
@@ -484,7 +532,7 @@ function filtrarServicioDropdown(q) {
 function srvToggle(id, nombre, seguimiento) {
     var idx = srvSeleccionados.findIndex(function(x){ return x.id === id; });
     if (idx === -1) srvSeleccionados.push({ id: id, nombre: nombre, seguimiento: !!seguimiento });
-    else srvSeleccionados.splice(idx, 1);
+    else            srvSeleccionados.splice(idx, 1);
     srvRenderTags(); srvRenderHidden();
     srvRenderDropdown(document.getElementById('servicios-search').value);
     actualizarBloqueSeguimiento();
@@ -511,11 +559,6 @@ document.addEventListener('DOMContentLoaded', function () {
     srvRenderTags();
     srvRenderHidden();
     actualizarBloqueSeguimiento();
-
-    if (!srvSeleccionados.some(function(s){ return s.seguimiento; })) {
-        var campoKmWrap = document.getElementById('id_km_actual').closest('.col-md-6');
-        if (campoKmWrap) campoKmWrap.style.display = 'none';
-    }
 
     /* Reloj */
     var reloj = document.getElementById('reloj-live');
@@ -556,7 +599,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function cargarDatosVehiculo(vehiculoId) {
         if (!vehiculoId) {
-            badgeKm.classList.remove('visible'); kmHint.classList.remove('visible');
+            if (badgeKm) badgeKm.classList.remove('visible');
+            if (kmHint)  kmHint.classList.remove('visible');
             marcaVehiculo = null; datosVehiculo = null;
             actualizarInfoStrip(null, null); revalidarTodosLosProductos(); return;
         }
@@ -566,21 +610,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 datosVehiculo = { id: vehiculoId };
                 marcaVehiculo = data.marca_id || null;
                 if (data.km !== undefined && data.km > 0 && !ES_EDITAR) {
-                    campoKm.value = data.km;
-                    badgeKm.classList.add('visible');
-                    kmHint.classList.add('visible');
-                    kmHintTexto.textContent = 'Último registro: ' + data.km.toLocaleString('es-CO') + ' km — escribe el km real del odómetro.';
+                    if (campoKm) campoKm.value = data.km;
+                    if (badgeKm) badgeKm.classList.add('visible');
+                    if (kmHint)  kmHint.classList.add('visible');
+                    if (kmHintTexto) kmHintTexto.textContent = 'Último registro: ' + data.km.toLocaleString('es-CO') + ' km — escribe el km real del odómetro.';
                 } else {
-                    badgeKm.classList.remove('visible');
-                    kmHint.classList.remove('visible');
+                    if (badgeKm) badgeKm.classList.remove('visible');
+                    if (kmHint)  kmHint.classList.remove('visible');
                 }
-                campoKm.removeAttribute('readonly');
-                campoKm.style.background = '';
-                campoKm.style.color = '';
-                campoKm.style.cursor = '';
+                if (campoKm) {
+                    campoKm.removeAttribute('readonly');
+                    campoKm.style.background = '';
+                    campoKm.style.color      = '';
+                    campoKm.style.cursor     = '';
+                }
                 actualizarInfoStrip(data.placa, data.marca_nombre);
                 revalidarTodosLosProductos();
-                var kmVal = parseInt(campoKm.value);
+                var kmVal = parseInt(campoKm ? campoKm.value : 0);
                 if (kmVal > 0) calcularFechaPorKm(kmVal);
             })
             .catch(function() {});
@@ -593,8 +639,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (campoKm) {
         campoKm.addEventListener('input', function () {
-            badgeKm.classList.remove('visible');
-            kmHint.classList.remove('visible');
+            if (badgeKm) badgeKm.classList.remove('visible');
+            if (kmHint)  kmHint.classList.remove('visible');
             var km = parseInt(this.value);
             if (km > 0 && datosVehiculo) calcularFechaPorKm(km);
         });
@@ -607,10 +653,11 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.classList.add('activo-' + estadoInicial.replace(' ', ''));
     });
 
-    /* Estilos campos */
+    /* Estilos campos del loop */
     var acento = getComputedStyle(document.documentElement).getPropertyValue('--acento').trim();
     document.querySelectorAll('.form-field').forEach(function(el) {
         if (el.classList.contains('fecha-auto')) return;
+        if (el.id === 'id_km_actual') return;
         var enGrupo = el.closest('.field-with-btn');
         var radius  = enGrupo ? '9px 0 0 9px' : '9px';
         el.style.cssText = 'width:100%;padding:11px 14px 11px 40px;border:1.5px solid #e0ddd8;border-radius:'+radius+';font-family:\'DM Sans\',sans-serif;font-size:.88rem;color:#2a2a2a;background:#f2f2f0;outline:none;transition:border-color .18s,box-shadow .18s;-webkit-appearance:none;appearance:none;';
@@ -635,7 +682,8 @@ document.addEventListener('DOMContentLoaded', function () {
         var campoPrx = document.getElementById('id_fecha_proximo_mantenimiento');
         if (requiereSeguimiento && campoPrx && !campoPrx.value) {
             Swal.fire({ icon: 'warning', title: 'Fecha requerida', text: 'Escribe el kilometraje actual para calcular la fecha del próximo mantenimiento.', confirmButtonColor: '#f59e0b' });
-            document.getElementById('id_km_actual').focus();
+            var ck = document.getElementById('id_km_actual');
+            if (ck) ck.focus();
             return;
         }
         var formulario = this;
@@ -713,7 +761,7 @@ function quitarFila(id) {
     revalidarAvisoGeneral();
 }
 
-/* ─── Compatibilidad: verifica contra TODOS los servicios ─── */
+/* ─── Compatibilidad ─── */
 function onProductoChange(sel, filaId) {
     var productoId = sel.value;
     var pill = document.getElementById('pill-' + filaId);
@@ -729,9 +777,9 @@ function onProductoChange(sel, filaId) {
     Promise.all(promises).then(function(results) {
         var esCompatible = results.some(function(d){ return d.compatible === true; });
         var tieneReglas  = results.some(function(d){ return d.compatible === false; });
-        if (esCompatible)     setPill(pill, 'ok',      'Compatible');
-        else if (tieneReglas) setPill(pill, 'warn',     'Revisar');
-        else                  setPill(pill, 'neutral',  'Sin restricción');
+        if (esCompatible)     setPill(pill, 'ok',     'Compatible');
+        else if (tieneReglas) setPill(pill, 'warn',    'Revisar');
+        else                  setPill(pill, 'neutral', 'Sin restricción');
         revalidarAvisoGeneral();
     }).catch(function(){ setPill(pill, 'neutral', 'Sin verificar'); });
 }
