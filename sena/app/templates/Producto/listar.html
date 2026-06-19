@@ -311,7 +311,7 @@
                         </td>
                         <td>
                             <div style="font-size:.85rem;font-weight:600;">{{ p.marca.nombre }}</div>
-                            {% if p.proveedor %}<div style="font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:4px;margin-top:2px;"><svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>{{ p.proveedor.nombre }}</div>{% endif %}
+                           
                         </td>
                         <td class="text-center"><span class="precio-val">${{ p.precio|intcomma }}</span></td>
                         <td>
@@ -377,7 +377,7 @@
                 <div class="card-body-prod">
                     <div class="card-codigo">{{ p.codigo }}</div>
                     <div class="card-nombre">{{ p.nombre }}</div>
-                    <div class="card-marca">{{ p.marca.nombre }}{% if p.proveedor %} · {{ p.proveedor.nombre }}{% endif %}</div>
+                    <div class="card-marca">{{ p.marca.nombre }}</div>
                     <div class="card-precio">${{ p.precio|intcomma }}</div>
                     <div class="card-stock-row">
                         <span>Stock: <span class="card-stock-num">{{ p.stock }}</span> {{ p.get_unidad_medida_display }}</span>

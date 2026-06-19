@@ -3,6 +3,7 @@
 {% load widget_tweaks %}
 
 {% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -50,14 +51,80 @@
     .field-group { margin-bottom: 22px; }
     .field-label { font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .9px; color: var(--muted); display: block; margin-bottom: 7px; }
     .field-label .req { color: var(--acento); margin-left: 2px; }
-    .field-inner { position: relative; }
-    .field-inner .fi-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: #ccc; pointer-events: none; display: flex; align-items: center; justify-content: center; transition: color .2s; }
-    .field-inner .fi-icon svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .field-inner select { width: 100%; padding: 11px 14px 11px 40px; border: 1.5px solid var(--borde); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: .88rem; color: var(--texto); background: var(--gris); outline: none; transition: border-color .18s, background .18s, box-shadow .18s; -webkit-appearance: none; appearance: none; }
-    .field-inner select:focus { border-color: var(--acento); background: white; box-shadow: 0 0 0 3px rgba(21,101,192,.1); }
+
+    /* ── Ícono dentro del select, centrado verticalmente y dentro de su casilla ── */
+    .field-inner {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    .field-inner .fi-icon {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 15px;
+        height: 15px;
+        color: #ccc;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color .2s;
+        z-index: 2;
+    }
+    .field-inner .fi-icon svg {
+        width: 15px;
+        height: 15px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        display: block;
+    }
+    .field-inner select {
+        width: 100%;
+        height: 44px;
+        padding: 0 14px 0 40px;
+        border: 1.5px solid var(--borde);
+        border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .88rem;
+        color: var(--texto);
+        background: var(--gris);
+        outline: none;
+        transition: border-color .18s, background .18s, box-shadow .18s;
+        -webkit-appearance: none;
+        appearance: none;
+        box-sizing: border-box;
+        line-height: normal;
+    }
+    .field-inner select:focus { border-color: var(--acento); background: white; box-shadow: 0 0 0 3px var(--acento-ring); }
     .field-inner:focus-within .fi-icon { color: var(--acento); }
 
-    .field-error { font-family: 'DM Sans', sans-serif; font-size: .76rem; color: var(--acento); margin-top: 5px; display: flex; align-items: center; gap: 5px; }
+    /* ── Campo inválido (mismo estilo unificado) ── */
+    .field-inner.campo-invalido select {
+        border-color: var(--acento) !important;
+        background: #fff5f5 !important;
+        box-shadow: 0 0 0 3px var(--acento-ring) !important;
+    }
+
+    /* ── ALERTAS INLINE (igual módulo usuarios) ── */
+    .field-error {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .76rem; font-weight: 600;
+        color: var(--acento);
+        margin-top: 6px;
+        display: flex; align-items: center; gap: 6px;
+        animation: fadeInErr .2s ease;
+    }
+    .field-error i { font-size: .73rem; flex-shrink: 0; }
+    @keyframes fadeInErr {
+        from { opacity: 0; transform: translateY(-4px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
     .field-hint { font-family: 'DM Sans', sans-serif; font-size: .72rem; color: var(--muted); margin-top: 5px; }
 
     .desde-orden-banner {
@@ -97,7 +164,7 @@
         <span class="header-badge">Acerautos S.A.S</span>
     </div>
 
-    <form method="post" action="." id="formCompat">
+    <form method="post" action="." id="formCompat" novalidate class="no-validar-global">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.GET.next|default:'' }}">
 
@@ -119,43 +186,51 @@
 
                 <!-- Producto -->
                 <div class="field-group">
-                    <label class="field-label">{{ form.producto.label }} <span class="req"></span></label>
-                    <div class="field-inner">
+                    <label class="field-label">{{ form.producto.label }} <span class="req">*</span></label>
+                    <div class="field-inner {% if form.producto.errors %}campo-invalido{% endif %}">
                         <span class="fi-icon">
                             <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                         </span>
                         {{ form.producto|add_class:'form-field' }}
                     </div>
-                    {% for error in form.producto.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                    {% for error in form.producto.errors %}
+                        <div class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                    {% endfor %}
                 </div>
 
                 <!-- Marca vehículo -->
                 <div class="field-group">
-                    <label class="field-label">{{ form.marca_vehiculo.label }} <span class="req"></span></label>
-                    <div class="field-inner">
+                    <label class="field-label">{{ form.marca_vehiculo.label }} <span class="req">*</span></label>
+                    <div class="field-inner {% if form.marca_vehiculo.errors %}campo-invalido{% endif %}">
                         <span class="fi-icon">
                             <svg viewBox="0 0 24 24"><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/><path d="M5 17H3v-6l2-5h12l2 5h1a1 1 0 0 1 1 1v4h-2"/><path d="M9 17h6"/></svg>
                         </span>
                         {{ form.marca_vehiculo|add_class:'form-field' }}
                     </div>
-                    {% for error in form.marca_vehiculo.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                    {% for error in form.marca_vehiculo.errors %}
+                        <div class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                    {% endfor %}
                 </div>
 
                 <!-- Tipo servicio -->
                 <div class="field-group">
                     <label class="field-label">{{ form.tipo_servicio.label }}</label>
-                    <div class="field-inner">
+                    <div class="field-inner {% if form.tipo_servicio.errors %}campo-invalido{% endif %}">
                         <span class="fi-icon">
                             <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                         </span>
                         {{ form.tipo_servicio|add_class:'form-field' }}
                     </div>
                     <div class="field-hint">Opcional — si no seleccionas, aplica para cualquier servicio.</div>
-                    {% for error in form.tipo_servicio.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                    {% for error in form.tipo_servicio.errors %}
+                        <div class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                    {% endfor %}
                 </div>
 
                 {% if form.non_field_errors %}
-                <div class="field-error" style="margin-bottom:16px;">⚠ {{ form.non_field_errors|join:", " }}</div>
+                <div class="field-error" style="margin-bottom:16px;">
+                    <i class="fas fa-circle-exclamation"></i><span>{{ form.non_field_errors|join:", " }}</span>
+                </div>
                 {% endif %}
 
             </div>
@@ -182,6 +257,16 @@
 
 {% block js %}
 <script>
+// Limpiar alertas al cambiar un select
+document.querySelectorAll('#formCompat .form-field').forEach(function(el) {
+    el.addEventListener('change', function() {
+        var inner = this.closest('.field-inner');
+        if (inner) inner.classList.remove('campo-invalido');
+        var group = this.closest('.field-group');
+        if (group) group.querySelectorAll('.field-error').forEach(function(e) { e.style.display = 'none'; });
+    });
+});
+
 $(function(){
     $('#formCompat').on('submit', function(e){
         e.preventDefault();
@@ -192,7 +277,7 @@ $(function(){
             text: desdeOrden ? 'Se guardará y regresarás a la orden.' : 'Se registrará la relación de compatibilidad.',
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: {% if es_editar %}'#1565c0'{% else %}'#d32f2f'{% endif %},,
+            confirmButtonColor: {% if es_editar %}'#1565c0'{% else %}'#d32f2f'{% endif %},
             cancelButtonColor: '#888',
             confirmButtonText: '{% if es_editar %}Sí, actualizar{% else %}Sí, guardar{% endif %}',
             cancelButtonText: 'Revisar'

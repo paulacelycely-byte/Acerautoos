@@ -13,7 +13,6 @@ from app.models import Marca
 from app.forms import MarcaForm
 
 
-# ── Mixin 1: Solo ADMIN ──────────────────────────────────────────
 class SoloAdminMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
@@ -22,7 +21,7 @@ class SoloAdminMixin(UserPassesTestMixin):
         messages.error(self.request, "No tienes permisos de administrador para gestionar las marcas.")
         return redirect('app:dashboard')
 
-# ── Mixin 2: ADMIN o MECANICO ────────────────────────────────────
+
 class AdminOMecanicoMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.cargo in ('ADMIN', 'MECANICO') or self.request.user.is_superuser
@@ -32,7 +31,6 @@ class AdminOMecanicoMixin(UserPassesTestMixin):
         return redirect('app:dashboard')
 
 
-# ── LISTAR — Mecánico puede ver ──────────────────────────────────
 class MarcaListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
     model = Marca
     template_name = 'Marca/listar.html'
@@ -49,7 +47,6 @@ class MarcaListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
         return context
 
 
-# ── CREAR — Solo Admin ────────────────────────────────────────────
 class MarcaCreateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, CreateView):
     model = Marca
     form_class = MarcaForm
@@ -68,7 +65,8 @@ class MarcaCreateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, C
         context['titulo']     = 'Registro de Marca'
         context['listar_url'] = reverse_lazy('app:listar_marca')
         context['next']       = self.request.GET.get('next', '')
-        context['btn_color']  = 'primary'
+        context['btn_color']  = 'rojo'      # ← rojo para crear
+        context['es_editar']  = False
         return context
 
     def form_valid(self, form):
@@ -82,7 +80,6 @@ class MarcaCreateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, C
         return redirect(self.success_url)
 
 
-# ── EDITAR — Solo Admin ───────────────────────────────────────────
 class MarcaUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, UpdateView):
     model = Marca
     form_class = MarcaForm
@@ -101,7 +98,8 @@ class MarcaUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, U
         context['titulo']     = 'Editar Marca'
         context['listar_url'] = reverse_lazy('app:listar_marca')
         context['next']       = self.request.GET.get('next', '')
-        context['btn_color']  = 'primary'
+        context['btn_color']  = 'azul'      # ← azul para editar
+        context['es_editar']  = True
         return context
 
     def form_valid(self, form):
@@ -115,7 +113,6 @@ class MarcaUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, U
         return redirect(self.success_url)
 
 
-# ── ELIMINAR — Solo Admin ─────────────────────────────────────────
 class MarcaDeleteView(LoginRequiredMixin, SoloAdminMixin, View):
     def get(self, request, pk):
         marca = get_object_or_404(Marca, pk=pk)
@@ -148,7 +145,6 @@ class MarcaDeleteView(LoginRequiredMixin, SoloAdminMixin, View):
         return redirect('app:listar_marca')
 
 
-# ── CREAR MARCA AJAX — Solo usuarios autenticados con cargo válido ─
 @require_POST
 def crear_marca_ajax(request):
     if not request.user.is_authenticated:

@@ -123,7 +123,6 @@ PAISES = [
 
 # ══════════════════════════════════════════════════════════
 #  REGLAS DE VALIDACIÓN DE TELÉFONO POR PAÍS
-#  (longitud, prefijos válidos y mensajes de error propios)
 # ══════════════════════════════════════════════════════════
 
 REGLAS_TELEFONO = {
@@ -351,7 +350,6 @@ REGLAS_TELEFONO = {
     },
 }
 
-# Alias de compatibilidad por si algún módulo ya importa LONGITUDES_POR_INDICATIVO
 LONGITUDES_POR_INDICATIVO = {k: v['longitud'] for k, v in REGLAS_TELEFONO.items()}
 
 
@@ -377,7 +375,7 @@ def _validar_numero_por_regla(numero, indicativo):
 
     regla = REGLAS_TELEFONO.get(indicativo)
     if not regla:
-        # País no mapeado: rango genérico
+     
         if not (6 <= len(numero_limpio) <= 15):
             raise forms.ValidationError(
                 f"Número inválido para {indicativo or 'indicativo no seleccionado'}: "
@@ -385,12 +383,12 @@ def _validar_numero_por_regla(numero, indicativo):
             )
         return numero_limpio
 
-    # 1. Longitud
+   
     min_d, max_d = regla['longitud']
     if not (min_d <= len(numero_limpio) <= max_d):
         raise forms.ValidationError(regla['error_long'])
 
-    # 2. Prefijo (más específicos primero)
+    
     prefijos = regla.get('prefijos', [])
     if prefijos:
         sorted_p = sorted(prefijos, key=len, reverse=True)
@@ -499,14 +497,14 @@ class UsuarioSistemaForm(forms.ModelForm):
         model  = UsuarioSistema
         fields = ['username', 'first_name', 'last_name', 'email',
                   'tipo_documento', 'cedula', 'telefono', 'cargo',
-                  'is_active', 'foto']  # ← foto agregado
+                  'is_active', 'foto']  
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['first_name'].required = True
         self.fields['last_name'].required  = True
         self.fields['email'].required      = True
-        self.fields['foto'].required       = False  # opcional
+        self.fields['foto'].required       = False  
         if self.instance.pk:
             self.fields['password1'].help_text = "Dejar vacío para no cambiar la contraseña."
 
@@ -645,7 +643,7 @@ class ProveedorForm(forms.ModelForm):
         return numero
 
     def clean_telefono(self):
-        # El campo telefono del modelo se construye en clean(), no aquí
+
         return self.cleaned_data.get('telefono')
 
     def clean_direccion(self):
@@ -951,7 +949,7 @@ class ClienteForm(forms.ModelForm):
 class VehiculoForm(forms.ModelForm):
     class Meta:
         model  = Vehiculo
-        fields = ['placa', 'modelo', 'marca', 'cliente', 'km_ultimo_servicio', 'tipo_uso']
+        fields = ['placa', 'modelo', 'marca', 'cliente', 'tipo_uso']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -964,9 +962,6 @@ class VehiculoForm(forms.ModelForm):
         self.fields['modelo'].label     = "Año del Vehículo"
         self.fields['modelo'].help_text = "Ej: 2020"
         self.fields['modelo'].widget.attrs.update({'placeholder': '2020'})
-        self.fields['km_ultimo_servicio'].required = True
-        self.fields['km_ultimo_servicio'].label    = "¿Cuántos km tiene el vehículo ahora?"
-        self.fields['km_ultimo_servicio'].widget.attrs.update({'placeholder': '0'})
         self.fields['tipo_uso'].required  = True
         self.fields['tipo_uso'].label     = "¿Cómo se usa este vehículo?"
         self.fields['tipo_uso'].help_text = "Ayuda a estimar el próximo mantenimiento"
@@ -989,23 +984,15 @@ class VehiculoForm(forms.ModelForm):
             raise forms.ValidationError(f"El año debe estar entre 1900 y {date.today().year}.")
         return modelo
 
-    def clean_km_ultimo_servicio(self):
-        km = self.cleaned_data.get('km_ultimo_servicio')
-        if km is None or km < 0:
-            raise forms.ValidationError("El kilometraje no puede ser negativo.")
-        if km > 1000000:
-            raise forms.ValidationError("El kilometraje no puede superar 1.000.000 km.")
-        return km
-
+    
 
 # ══════════════════════════════════════════════════════════
 #  TIPO DE SERVICIO
 # ══════════════════════════════════════════════════════════
-
 class TipoServicioForm(forms.ModelForm):
     class Meta:
         model  = TipoServicio
-        fields = ['nombre', 'descripcion', 'precio_mano_obra', 'estado', 'requiere_seguimiento']
+        fields = ['nombre', 'descripcion', 'precio_mano_obra', 'estado', 'requiere_seguimiento', 'requiere_productos']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -1019,6 +1006,8 @@ class TipoServicioForm(forms.ModelForm):
         self.fields['estado'].label = "¿Está disponible?"
         self.fields['requiere_seguimiento'].label = "¿Requiere seguimiento de mantenimiento?"
         self.fields['requiere_seguimiento'].help_text = "Actívalo para servicios como cambio de aceite — pedirá fecha del próximo mantenimiento al crear una orden."
+        self.fields['requiere_productos'].label = "¿Requiere productos obligatorios?"
+        self.fields['requiere_productos'].help_text = "Actívalo para exigir al menos un producto en la orden (ej: cambio de aceite)."
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre'].strip()
@@ -1038,7 +1027,6 @@ class TipoServicioForm(forms.ModelForm):
         if precio > 99999999:
             raise forms.ValidationError("El precio de mano de obra es demasiado alto.")
         return precio
-
 
 # ══════════════════════════════════════════════════════════
 #  ORDEN DE SERVICIO
@@ -1098,14 +1086,22 @@ class OrdenServicioForm(forms.ModelForm):
             raise forms.ValidationError("El kilometraje debe ser mayor que 0.")
         if km > 1000000:
             raise forms.ValidationError("El kilometraje ingresado es demasiado alto (máx. 1.000.000 km).")
+
         vehiculo = self.cleaned_data.get('vehiculo') or (
             self.instance.vehiculo if self.instance and self.instance.pk else None
         )
-        if vehiculo and vehiculo.km_ultimo_servicio and km < vehiculo.km_ultimo_servicio:
-            raise forms.ValidationError(
-                f"El km ingresado ({km:,}) no puede ser menor al registrado "
-                f"para este vehículo ({vehiculo.km_ultimo_servicio:,} km)."
-            )
+        if vehiculo:
+            ultima_orden = OrdenServicio.objects.filter(
+                vehiculo=vehiculo
+            ).exclude(
+                pk=self.instance.pk if self.instance and self.instance.pk else None
+            ).order_by('-km_actual').first()
+
+            if ultima_orden and km < ultima_orden.km_actual:
+                raise forms.ValidationError(
+                    f"El km ingresado ({km:,}) no puede ser menor al registrado "
+                    f"en la última orden (#{ultima_orden.pk}: {ultima_orden.km_actual:,} km)."
+                )
         return km
 
     def clean_estado(self):
@@ -1136,9 +1132,8 @@ class OrdenServicioForm(forms.ModelForm):
                 )
         return cleaned
 
-
 # ══════════════════════════════════════════════════════════
-#  SEGUIMIENTO MANTENIMIENTO (primera definición)
+#  SEGUIMIENTO MANTENIMIENTO 
 # ══════════════════════════════════════════════════════════
 
 class SeguimientoMantenimientoForm(forms.ModelForm):

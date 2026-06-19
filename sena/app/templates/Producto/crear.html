@@ -40,6 +40,9 @@
     .field-inner input:focus, .field-inner select:focus, .field-inner textarea:focus { border-color: var(--acento); background: white; box-shadow: 0 0 0 3px var(--acento-ring); }
     .field-inner:focus-within .field-icon { color: var(--acento); }
 
+    /* Campo con error */
+    .campo-invalido { border-color: #d32f2f !important; background: #fff5f5 !important; }
+
     .field-with-btn { display: flex; }
     .field-with-btn .field-inner { flex: 1; }
     .field-with-btn .field-inner input, .field-with-btn .field-inner select { border-radius: 10px 0 0 10px; }
@@ -55,7 +58,23 @@
     .switch-wrap:has(input:checked) .switch-toggle::after { transform: translateX(20px); }
     .switch-label { font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; color: var(--texto); }
 
-    .field-error { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: #d32f2f; margin-top: 5px; display: flex; align-items: center; gap: 5px; }
+    /* Alertas estilo compatibilidad */
+    .field-error {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .76rem;
+        font-weight: 600;
+        color: #d32f2f;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        animation: fadeInErr .2s ease;
+    }
+    .field-error i { font-size: .73rem; flex-shrink: 0; }
+    @keyframes fadeInErr {
+        from { opacity: 0; transform: translateY(-4px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
 
     .form-card-footer { background: var(--gris); border-top: 1px solid var(--borde); padding: 20px 32px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
     .btn-cancelar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; padding: 10px 22px; border-radius: 10px; border: 1.5px solid var(--borde); background: white; color: var(--muted); text-decoration: none; transition: .2s; cursor: pointer; display: flex; align-items: center; gap: 8px; }
@@ -106,7 +125,7 @@
     </div>
     {% endif %}
 
-    <form method="post" action="." enctype="multipart/form-data" id="formProducto">
+    <form method="post" action="." enctype="multipart/form-data" id="formProducto" novalidate class="no-validar-global">
         {% csrf_token %}
         {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
 
@@ -123,30 +142,178 @@
 
             <div class="form-card-body">
                 <div class="row">
-                    <div class="col-md-6"><div class="field-group"><label class="field-label">{{ form.nombre.label }}</label><div class="field-inner"><i class="fas fa-tag field-icon"></i>{{ form.nombre|add_class:'form-field'|attr:'autocomplete:off' }}</div>{% for e in form.nombre.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ e }}</div>{% endfor %}</div></div>
-                    <div class="col-md-6"><div class="field-group"><label class="field-label">{{ form.marca.label }}</label><div class="field-with-btn"><div class="field-inner"><i class="fas fa-copyright field-icon"></i>{{ form.marca|add_class:'form-field' }}</div><a href="{% url 'app:crear_marca' %}?next=producto" target="_blank" class="btn-add-inline"><i class="fas fa-plus"></i></a></div>{% for e in form.marca.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ e }}</div>{% endfor %}</div></div>
-                    <div class="col-md-6"><div class="field-group"><label class="field-label">{{ form.proveedor.label }}</label><div class="field-inner"><i class="fas fa-truck field-icon"></i>{{ form.proveedor|add_class:'form-field'|attr:'autocomplete:off' }}</div>{% for e in form.proveedor.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ e }}</div>{% endfor %}</div></div>
-                    <div class="col-md-6"><div class="field-group"><label class="field-label">{{ form.codigo.label }}</label><div class="field-inner"><i class="fas fa-barcode field-icon"></i>{{ form.codigo|add_class:'form-field'|attr:'autocomplete:off' }}</div>{% for e in form.codigo.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ e }}</div>{% endfor %}</div></div>
-                    <div class="col-md-6"><div class="field-group"><label class="field-label">{{ form.precio.label }}</label><div class="field-inner"><i class="fas fa-dollar-sign field-icon"></i>{{ form.precio|add_class:'form-field'|attr:'autocomplete:off' }}</div>{% for e in form.precio.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ e }}</div>{% endfor %}</div></div>
-                    <div class="col-md-6"><div class="field-group"><label class="field-label">{{ form.stock.label }}</label><div class="field-inner"><i class="fas fa-cubes field-icon"></i>{{ form.stock|add_class:'form-field'|attr:'autocomplete:off' }}</div>{% for e in form.stock.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ e }}</div>{% endfor %}</div></div>
-                    <div class="col-md-6"><div class="field-group"><label class="field-label">{{ form.stock_minimo.label }}</label><div class="field-inner"><i class="fas fa-cubes field-icon"></i>{{ form.stock_minimo|add_class:'form-field'|attr:'autocomplete:off' }}</div>{% for e in form.stock_minimo.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ e }}</div>{% endfor %}</div></div>
-                   
-                    <div class="col-md-6"><div class="field-group"><label class="field-label">{{ form.unidad_medida.label }}</label><div class="field-inner"><i class="fas fa-ruler field-icon"></i>{{ form.unidad_medida|add_class:'form-field' }}</div>{% for e in form.unidad_medida.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ e }}</div>{% endfor %}</div></div>
-                    <div class="col-md-6"><div class="field-group"><label class="field-label">{{ form.descripcion.label }}</label><div class="field-inner textarea-inner"><i class="fas fa-align-left field-icon"></i>{{ form.descripcion|add_class:'form-field'|attr:'minlength:10'|attr:'maxlength:500' }}</div>{% for e in form.descripcion.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ e }}</div>{% endfor %}</div></div>
-                    <div class="col-md-6"><div class="field-group"><label class="field-label">{{ form.imagen.label }}</label><div class="img-upload-wrap" onclick="document.getElementById('id_imagen').click()"><input type="file" name="imagen" id="id_imagen" accept="image/jpeg,image/png,image/webp" onchange="previsualizarImagen(this)"><label class="img-upload-btn" for="id_imagen" onclick="event.stopPropagation()"><i class="fas fa-upload"></i> Elegir imagen</label><div class="img-upload-hint">JPG, PNG o WEBP · Máx. 2 MB</div></div><div class="img-preview-box" id="previewBox" style="{% if not form.instance.imagen %}display:none;{% endif %}"><img id="previewImg" src="{% if form.instance.imagen %}{{ form.instance.imagen.url }}{% endif %}" alt="Vista previa"><div class="img-preview-info"><strong id="previewNombre">{% if form.instance.imagen %}Imagen actual{% endif %}</strong><span id="previewTam"></span>{% if form.instance.imagen %}<label class="img-clear-label"><input type="checkbox" name="imagen-clear" id="imagen-clear_id"> Eliminar imagen actual</label>{% endif %}</div></div></div></div>
-                    <div class="col-md-6"><div class="field-group"><label class="field-label">{{ form.estado.label }}</label><label class="switch-wrap" for="{{ form.estado.id_for_label }}">{{ form.estado }}<div class="switch-toggle"></div><span class="switch-label">Habilitar para la venta</span></label>{% for e in form.estado.errors %}<div class="field-error"><i class="fas fa-exclamation-circle"></i> {{ e }}</div>{% endfor %}</div></div>
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.nombre.label }}</label>
+                            <div class="field-inner">
+                                <i class="fas fa-tag field-icon"></i>
+                                {{ form.nombre|add_class:'form-field'|attr:'autocomplete:off' }}
+                            </div>
+                            {% for e in form.nombre.errors %}
+                            <div class="field-error"><i class="fas fa-circle-exclamation"></i> {{ e }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.marca.label }}</label>
+                            <div class="field-with-btn">
+                                <div class="field-inner">
+                                    <i class="fas fa-copyright field-icon"></i>
+                                    {{ form.marca|add_class:'form-field' }}
+                                </div>
+                                <a href="{% url 'app:crear_marca' %}?next=producto" target="_blank" class="btn-add-inline"><i class="fas fa-plus"></i></a>
+                            </div>
+                            {% for e in form.marca.errors %}
+                            <div class="field-error"><i class="fas fa-circle-exclamation"></i> {{ e }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    
+
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.codigo.label }}</label>
+                            <div class="field-inner">
+                                <i class="fas fa-barcode field-icon"></i>
+                                {{ form.codigo|add_class:'form-field'|attr:'autocomplete:off' }}
+                            </div>
+                            {% for e in form.codigo.errors %}
+                            <div class="field-error"><i class="fas fa-circle-exclamation"></i> {{ e }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.precio.label }}</label>
+                            <div class="field-inner">
+                                <i class="fas fa-dollar-sign field-icon"></i>
+                                {{ form.precio|add_class:'form-field'|attr:'autocomplete:off' }}
+                            </div>
+                            {% for e in form.precio.errors %}
+                            <div class="field-error"><i class="fas fa-circle-exclamation"></i> {{ e }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.stock.label }}</label>
+                            <div class="field-inner">
+                                <i class="fas fa-cubes field-icon"></i>
+                                {{ form.stock|add_class:'form-field'|attr:'autocomplete:off' }}
+                            </div>
+                            {% for e in form.stock.errors %}
+                            <div class="field-error"><i class="fas fa-circle-exclamation"></i> {{ e }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.stock_minimo.label }}</label>
+                            <div class="field-inner">
+                                <i class="fas fa-cubes field-icon"></i>
+                                {{ form.stock_minimo|add_class:'form-field'|attr:'autocomplete:off' }}
+                            </div>
+                            {% for e in form.stock_minimo.errors %}
+                            <div class="field-error"><i class="fas fa-circle-exclamation"></i> {{ e }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.unidad_medida.label }}</label>
+                            <div class="field-inner">
+                                <i class="fas fa-ruler field-icon"></i>
+                                {{ form.unidad_medida|add_class:'form-field' }}
+                            </div>
+                            {% for e in form.unidad_medida.errors %}
+                            <div class="field-error"><i class="fas fa-circle-exclamation"></i> {{ e }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.descripcion.label }}</label>
+                            <div class="field-inner textarea-inner">
+                                <i class="fas fa-align-left field-icon"></i>
+                                {{ form.descripcion|add_class:'form-field'|attr:'minlength:10'|attr:'maxlength:500' }}
+                            </div>
+                            {% for e in form.descripcion.errors %}
+                            <div class="field-error"><i class="fas fa-circle-exclamation"></i> {{ e }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.imagen.label }}</label>
+                            <div class="img-upload-wrap" onclick="document.getElementById('id_imagen').click()">
+                                <input type="file" name="imagen" id="id_imagen" accept="image/jpeg,image/png,image/webp" onchange="previsualizarImagen(this)">
+                                <label class="img-upload-btn" for="id_imagen" onclick="event.stopPropagation()">
+                                    <i class="fas fa-upload"></i> Elegir imagen
+                                </label>
+                                <div class="img-upload-hint">JPG, PNG o WEBP · Máx. 2 MB</div>
+                            </div>
+                            <div class="img-preview-box" id="previewBox" style="{% if not form.instance.imagen %}display:none;{% endif %}">
+                                <img id="previewImg" src="{% if form.instance.imagen %}{{ form.instance.imagen.url }}{% endif %}" alt="Vista previa">
+                                <div class="img-preview-info">
+                                    <strong id="previewNombre">{% if form.instance.imagen %}Imagen actual{% endif %}</strong>
+                                    <span id="previewTam"></span>
+                                    {% if form.instance.imagen %}
+                                    <label class="img-clear-label">
+                                        <input type="checkbox" name="imagen-clear" id="imagen-clear_id"> Eliminar imagen actual
+                                    </label>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% for e in form.imagen.errors %}
+                            <div class="field-error"><i class="fas fa-circle-exclamation"></i> {{ e }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="field-label">{{ form.estado.label }}</label>
+                            <label class="switch-wrap" for="{{ form.estado.id_for_label }}">
+                                {{ form.estado }}
+                                <div class="switch-toggle"></div>
+                                <span class="switch-label">Habilitar para la venta</span>
+                            </label>
+                            {% for e in form.estado.errors %}
+                            <div class="field-error"><i class="fas fa-circle-exclamation"></i> {{ e }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="form-card-footer">
                 {% if next == 'orden' %}
-                <a href="{% url 'app:orden_servicio_create' %}" class="btn-volver-orden"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Volver a la Orden</a>
+                <a href="{% url 'app:orden_servicio_create' %}" class="btn-volver-orden">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                    Volver a la Orden
+                </a>
                 {% else %}
-                <button type="button" class="btn-cancelar" onclick="confirmarCancelacion('{{ listar_url }}')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Cancelar</button>
+                <button type="button" class="btn-cancelar" onclick="confirmarCancelacion('{{ listar_url }}')">
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Cancelar
+                </button>
                 {% endif %}
                 <button type="submit" class="btn-guardar">
-                    {% if es_editar %}<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> {% if next == 'orden' %}Actualizar y Volver a Orden{% else %}Actualizar Producto{% endif %}
-                    {% else %}<svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> {% if next == 'orden' %}Guardar y Volver a Orden{% else %}Guardar Producto{% endif %}
+                    {% if es_editar %}
+                    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    {% if next == 'orden' %}Actualizar y volver a orden{% else %}Actualizar producto{% endif %}
+                    {% else %}
+                    <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    {% if next == 'orden' %}Guardar y volver a orden{% else %}Guardar producto{% endif %}
                     {% endif %}
                 </button>
             </div>
@@ -168,7 +335,24 @@ document.querySelectorAll('.form-field').forEach(el => {
     }
     el.addEventListener('focus', () => { el.style.borderColor = acento; el.style.background = 'white'; el.style.boxShadow = `0 0 0 3px ${acento}22`; });
     el.addEventListener('blur',  () => { el.style.borderColor = '#e0ddd8'; el.style.background = '#f2f2f0'; el.style.boxShadow = 'none'; });
+
+    // Limpiar alerta al escribir
+    el.addEventListener('input', () => {
+        const grupo = el.closest('.field-group');
+        if (grupo) {
+            grupo.querySelectorAll('.field-error').forEach(e => e.remove());
+            el.classList.remove('campo-invalido');
+        }
+    });
+    el.addEventListener('change', () => {
+        const grupo = el.closest('.field-group');
+        if (grupo) {
+            grupo.querySelectorAll('.field-error').forEach(e => e.remove());
+            el.classList.remove('campo-invalido');
+        }
+    });
 });
+
 function previsualizarImagen(input) {
     const previewBox = document.getElementById('previewBox');
     const previewImg = document.getElementById('previewImg');
@@ -181,11 +365,18 @@ function previsualizarImagen(input) {
             input.value = ''; return;
         }
         const reader = new FileReader();
-        reader.onload = e => { previewImg.src = e.target.result; previewNom.textContent = file.name; previewTam.textContent = (file.size / 1024).toFixed(1) + ' KB'; previewBox.style.display = 'flex'; };
+        reader.onload = e => {
+            previewImg.src = e.target.result;
+            previewNom.textContent = file.name;
+            previewTam.textContent = (file.size / 1024).toFixed(1) + ' KB';
+            previewBox.style.display = 'flex';
+        };
         reader.readAsDataURL(file);
     }
 }
+
 const esEditar = {% if es_editar %}true{% else %}false{% endif %};
+
 $(function () {
     $('#formProducto').on('submit', function (e) {
         e.preventDefault();
@@ -193,8 +384,11 @@ $(function () {
         var esOrden = '{{ next }}' === 'orden';
         Swal.fire({
             title: esEditar ? '¿Actualizar producto?' : '¿Confirmar registro?',
-            text: esOrden ? (esEditar ? 'Se actualizará el producto y volverás a la orden.' : 'El producto se guardará y volverás a la orden de servicio.') : (esEditar ? 'Se guardarán los cambios del producto.' : 'El producto se guardará en el catálogo.'),
-            icon: 'question', showCancelButton: true,
+            text: esOrden
+                ? (esEditar ? 'Se actualizará el producto y volverás a la orden.' : 'El producto se guardará y volverás a la orden de servicio.')
+                : (esEditar ? 'Se guardarán los cambios del producto.' : 'El producto se guardará en el catálogo.'),
+            icon: 'question',
+            showCancelButton: true,
             confirmButtonText: esEditar ? 'Sí, actualizar' : 'Sí, guardar',
             cancelButtonText: 'Revisar',
             confirmButtonColor: esEditar ? '#1565c0' : '#d32f2f',
@@ -202,12 +396,17 @@ $(function () {
         }).then((result) => { if (result.isConfirmed) { $(formulario).off('submit').submit(); } });
     });
 });
+
 function confirmarCancelacion(url) {
     Swal.fire({
-        title: '¿Cancelar?', text: 'Los cambios no se guardarán.',
-        icon: 'warning', showCancelButton: true,
-        confirmButtonText: 'Sí, salir', cancelButtonText: 'Seguir aquí',
-        confirmButtonColor: '#d32f2f', cancelButtonColor: '#888',
+        title: '¿Cancelar?',
+        text: 'Los cambios no se guardarán.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, salir',
+        cancelButtonText: 'Seguir aquí',
+        confirmButtonColor: '#d32f2f',
+        cancelButtonColor: '#888',
     }).then((result) => { if (result.isConfirmed) { window.location.href = url; } });
 }
 </script>

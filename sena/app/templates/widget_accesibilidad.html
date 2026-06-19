@@ -161,8 +161,7 @@
 .acc-btn-reset:hover { background:rgba(239,83,80,.12); color:#ef9a9a; border-color:rgba(239,83,80,.5); }
 
 /* ══════════════════════════════════════════
-   MODO CLARO - CORREGIDO
-   Textos NEGROS en fondo claro - TODO LEGIBLE
+   MODO CLARO
 ══════════════════════════════════════════ */
 
 /* FONDO CLARO GENERAL */
@@ -550,183 +549,168 @@ body.acc-modo-claro .btn-success {
   color:#fff !important; 
 }
 
-/* ── HEADER EN MODO CLARO ── */
-body.acc-modo-claro .app-header { background:#ffffff !important; border-bottom:1px solid #e2e5ea !important; box-shadow:0 1px 0 rgba(198,40,40,.12),0 2px 16px rgba(0,0,0,.06) !important; }
-body.acc-modo-claro .navbar-brand-text { color:#111 !important; }
-body.acc-modo-claro .navbar-brand-text span { color:#c62828 !important; }
-body.acc-modo-claro #header-sub { color:rgba(0,0,0,.35) !important; }
-body.acc-modo-claro .btn-toggle-menu { color:#666 !important; }
-body.acc-modo-claro .btn-toggle-menu:hover { background:rgba(0,0,0,.06) !important; color:#111 !important; }
-body.acc-modo-claro .nav-vdivider { background:rgba(0,0,0,.1) !important; }
-body.acc-modo-claro .user-pill { background:rgba(0,0,0,.04) !important; border-color:rgba(0,0,0,.09) !important; }
-body.acc-modo-claro .user-pill-name { color:#111 !important; }
-body.acc-modo-claro .user-pill-role { color:#777 !important; }
-body.acc-modo-claro .pill-arrow svg { stroke:#aaa !important; }
-body.acc-modo-claro .user-pill-avatar { background:#c62828 !important; }
-body.acc-modo-claro .user-dropdown-menu { background:#fff !important; border-color:#e2e5ea !important; box-shadow:0 8px 32px rgba(0,0,0,.1) !important; }
-body.acc-modo-claro .dd-header { border-bottom-color:#eee !important; }
-body.acc-modo-claro .dd-username { color:#111 !important; }
-body.acc-modo-claro .dd-role { color:#888 !important; }
-body.acc-modo-claro .dropdown-item { color:#444 !important; }
-body.acc-modo-claro .dropdown-item:hover { background:rgba(0,0,0,.04) !important; color:#111 !important; }
-body.acc-modo-claro .dropdown-item svg { stroke:rgba(0,0,0,.3) !important; }
-body.acc-modo-claro .dropdown-divider { border-color:#eee !important; }
-body.acc-modo-claro .dd-logout { color:#c62828 !important; }
-
-/* Contenido principal */
-body.acc-modo-claro .app-main-bg > * { color:#222 !important; }
-body.acc-modo-claro .app-main-bg h1,
-body.acc-modo-claro .app-main-bg h2,
-body.acc-modo-claro .app-main-bg h3,
-body.acc-modo-claro .app-main-bg h4,
-body.acc-modo-claro .app-main-bg h5,
-body.acc-modo-claro .app-main-bg h6 { color:#111 !important; }
-body.acc-modo-claro .app-main-bg p,
-body.acc-modo-claro .app-main-bg span,
-body.acc-modo-claro .app-main-bg small,
-body.acc-modo-claro .app-main-bg li { color:#333 !important; }
-body.acc-modo-claro .app-main-bg a { color:#1565c0 !important; }
-
-/* Cards / tarjetas */
-body.acc-modo-claro .card,
-body.acc-modo-claro [class*="card"],
-body.acc-modo-claro .app-main-bg [style*="background"],
-body.acc-modo-claro .app-main-bg .bg-dark,
-body.acc-modo-claro .app-main-bg .rounded,
-body.acc-modo-claro .app-main-bg > div > div,
-body.acc-modo-claro .app-main-bg > div > div > div { 
-  background:#ffffff !important; 
-  color:#000 !important;
-  border-color:#e2e5ea !important;
-}
-
-body.acc-modo-claro .card h1,
-body.acc-modo-claro .card h2,
-body.acc-modo-claro .card h3,
-body.acc-modo-claro [class*="card"] h1,
-body.acc-modo-claro [class*="card"] h2,
-body.acc-modo-claro [class*="card"] h3 { 
-  color:#000 !important; 
-  font-weight:700 !important;
-}
-
-body.acc-modo-claro .app-main-bg > div > div > div * { color:#000 !important; }
-
-/* TABLAS */
-body.acc-modo-claro table { 
-  background:#ffffff !important; 
-  color:#000 !important; 
-}
-body.acc-modo-claro thead tr { background:#f5f6f8 !important; }
-body.acc-modo-claro thead th { 
-  background:#f5f6f8 !important; 
-  color:#000 !important; 
-  border-color:#e2e5ea !important; 
-  font-weight:700 !important; 
-  border:1px solid #d0d5dd !important;
-}
-body.acc-modo-claro tbody tr { background:#ffffff !important; }
-body.acc-modo-claro tbody tr:hover { background:#f9fafb !important; }
-body.acc-modo-claro td { 
-  color:#000 !important; 
-  border-color:#e2e5ea !important;
-  border:1px solid #e2e5ea !important;
-  background:#ffffff !important;
-}
-
-/* DataTables */
-body.acc-modo-claro .dataTables_wrapper { color:#333 !important; }
-body.acc-modo-claro .dataTables_wrapper label,
-body.acc-modo-claro .dataTables_wrapper span,
-body.acc-modo-claro .dataTables_wrapper .dataTables_info { color:#555 !important; }
-body.acc-modo-claro .dataTables_wrapper input,
-body.acc-modo-claro .dataTables_wrapper select { background:#ffffff !important; color:#000 !important; border-color:#ccc !important; }
-body.acc-modo-claro .page-link { background:#ffffff !important; color:#444 !important; border-color:#ddd !important; }
-body.acc-modo-claro .page-item.active .page-link { background:#c62828 !important; border-color:#c62828 !important; color:#fff !important; }
-
-/* Inputs */
-body.acc-modo-claro input,
-body.acc-modo-claro select,
-body.acc-modo-claro textarea,
-body.acc-modo-claro .form-control,
-body.acc-modo-claro .form-select { background:#ffffff !important; color:#000 !important; border-color:#ccc !important; }
-body.acc-modo-claro .form-label,
-body.acc-modo-claro label { color:#333 !important; }
-
-/* Notificaciones */
-body.acc-modo-claro .notif-dropdown { background:#ffffff !important; border-color:#e2e5ea !important; }
-body.acc-modo-claro .notif-header { border-bottom-color:#eee !important; }
-body.acc-modo-claro .notif-header-title { color:#555 !important; }
-body.acc-modo-claro .notif-titulo { color:#222 !important; }
-body.acc-modo-claro .notif-mensaje { color:#666 !important; }
-body.acc-modo-claro .notif-fecha { color:#aaa !important; }
-body.acc-modo-claro .notif-empty { color:rgba(0,0,0,.3) !important; }
-body.acc-modo-claro .notif-footer { border-top-color:#eee !important; }
-
-/* Badges, pills, botones */
-body.acc-modo-claro .badge { color:#fff !important; }
-body.acc-modo-claro .btn-danger { background:#c62828 !important; border-color:#c62828 !important; color:#fff !important; }
-body.acc-modo-claro .btn-primary { background:#1565c0 !important; border-color:#1565c0 !important; color:#fff !important; }
-body.acc-modo-claro .btn-success { background:#2e7d32 !important; border-color:#2e7d32 !important; color:#fff !important; }
-
 /* ══════════════════════════════════════════
-   ALTO CONTRASTE
+   ALTO CONTRASTE - MEJORADO WCAG AAA
 ══════════════════════════════════════════ */
-body.acc-alto-contraste { background:#000 !important; }
-body.acc-alto-contraste .app-wrapper { background:#000 !important; }
-body.acc-alto-contraste .app-main-bg { background:#000 !important; }
-body.acc-alto-contraste .app-main-bg::before { opacity:0 !important; }
+body.acc-alto-contraste { 
+  background: #000000 !important; 
+}
+body.acc-alto-contraste .app-wrapper { 
+  background: #000000 !important; 
+}
+body.acc-alto-contraste .app-main-bg { 
+  background: #000000 !important; 
+}
+body.acc-alto-contraste .app-main-bg::before { 
+  opacity: 0 !important; 
+}
+
+/* Sidebar y Header */
 body.acc-alto-contraste nav#appSidebar,
-body.acc-alto-contraste .app-sidebar { background:#000 !important; border-right:2px solid #ff0 !important; }
-body.acc-alto-contraste .app-header { background:#000 !important; border-bottom:2px solid #ff0 !important; box-shadow:none !important; }
+body.acc-alto-contraste .app-sidebar { 
+  background: #000000 !important; 
+  border-right: 2.5px solid #ffff00 !important; 
+}
+body.acc-alto-contraste .app-header { 
+  background: #000000 !important; 
+  border-bottom: 2.5px solid #ffff00 !important; 
+  box-shadow: none !important; 
+}
+
+/* Items del sidebar */
 body.acc-alto-contraste .sb-brand,
-body.acc-alto-contraste .sb-footer { background:#000 !important; border-color:#ff0 !important; }
-body.acc-alto-contraste .sb-item { color:#fff !important; }
-body.acc-alto-contraste .sb-item:hover { background:#ff0 !important; }
-body.acc-alto-contraste .sb-item:hover * { color:#000 !important; }
-body.acc-alto-contraste .sb-item.active { background:#ff0 !important; border-color:#ff0 !important; }
-body.acc-alto-contraste .sb-item.active * { color:#000 !important; }
-/* Forzar TODOS los textos visibles */
-body.acc-alto-contraste * { color:#fff !important; background-color:transparent !important; border-color:rgba(255,255,0,.35) !important; }
-/* Excepciones: fondos que sí deben verse */
+body.acc-alto-contraste .sb-footer { 
+  background: #000000 !important; 
+  border-color: #ffff00 !important; 
+}
+body.acc-alto-contraste .sb-item { 
+  color: #ffffff !important; 
+}
+body.acc-alto-contraste .sb-item:hover { 
+  background: #ffff00 !important; 
+}
+body.acc-alto-contraste .sb-item:hover * { 
+  color: #000000 !important; 
+}
+body.acc-alto-contraste .sb-item.active { 
+  background: #ffff00 !important; 
+  border-color: #ffff00 !important; 
+}
+body.acc-alto-contraste .sb-item.active * { 
+  color: #000000 !important; 
+}
+
+/* TODOS los textos - amarillo sobre negro */
+body.acc-alto-contraste * { 
+  color: #ffff00 !important; 
+  background-color: transparent !important; 
+  border-color: rgba(255, 255, 0, 0.5) !important; 
+}
+
+/* Excepciones: fondos que deben verse negro */
 body.acc-alto-contraste body,
 body.acc-alto-contraste .app-wrapper,
 body.acc-alto-contraste .app-main-bg,
 body.acc-alto-contraste nav#appSidebar,
 body.acc-alto-contraste .app-header,
 body.acc-alto-contraste .sb-brand,
-body.acc-alto-contraste .sb-footer { background-color:#000 !important; }
+body.acc-alto-contraste .sb-footer { 
+  background-color: #000000 !important; 
+}
+
+/* Tarjetas y contenedores */
 body.acc-alto-contraste .card,
 body.acc-alto-contraste [class*="card"],
 body.acc-alto-contraste .app-main-bg > div > div > div,
-body.acc-alto-contraste table { background-color:#0a0a0a !important; border:1.5px solid #ff0 !important; }
+body.acc-alto-contraste table { 
+  background-color: #0a0a0a !important; 
+  border: 2px solid #ffff00 !important; 
+}
+
+/* Encabezados de tabla */
 body.acc-alto-contraste thead tr,
-body.acc-alto-contraste thead th { background-color:#111 !important; color:#ff0 !important; border:1px solid #ff0 !important; }
-body.acc-alto-contraste tbody tr { background-color:#000 !important; }
-body.acc-alto-contraste tbody tr:hover { background-color:#1a1a00 !important; }
+body.acc-alto-contraste thead th { 
+  background-color: #111111 !important; 
+  color: #ffff00 !important; 
+  border: 2px solid #ffff00 !important; 
+}
+body.acc-alto-contraste tbody tr { 
+  background-color: #000000 !important; 
+}
+body.acc-alto-contraste tbody tr:hover { 
+  background-color: #1a1a00 !important; 
+}
 body.acc-alto-contraste td,
-body.acc-alto-contraste th { color:#fff !important; border:1px solid rgba(255,255,0,.3) !important; }
-/* Badges / pills en alto contraste */
+body.acc-alto-contraste th { 
+  color: #ffff00 !important; 
+  border: 1px solid rgba(255, 255, 0, 0.4) !important; 
+}
+
+/* Badges y labels */
 body.acc-alto-contraste .badge,
 body.acc-alto-contraste [class*="badge"],
-body.acc-alto-contraste span[class] { background-color:#111 !important; color:#ff0 !important; border:1px solid #ff0 !important; }
+body.acc-alto-contraste span[class] { 
+  background-color: #111111 !important; 
+  color: #ffff00 !important; 
+  border: 1px solid #ffff00 !important; 
+}
+
+/* Botones */
 body.acc-alto-contraste .btn-danger,
 body.acc-alto-contraste .btn-primary,
-body.acc-alto-contraste .btn-success { background-color:#000 !important; color:#ff0 !important; border:2px solid #ff0 !important; }
+body.acc-alto-contraste .btn-success,
+body.acc-alto-contraste button { 
+  background-color: #000000 !important; 
+  color: #ffff00 !important; 
+  border: 2px solid #ffff00 !important; 
+}
+
+/* Inputs */
 body.acc-alto-contraste input,
 body.acc-alto-contraste select,
 body.acc-alto-contraste textarea,
-body.acc-alto-contraste .form-control { background-color:#000 !important; color:#fff !important; border:2px solid #ff0 !important; }
-body.acc-alto-contraste .page-link { background-color:#000 !important; color:#ff0 !important; border-color:#ff0 !important; }
-body.acc-alto-contraste .page-item.active .page-link { background-color:#ff0 !important; color:#000 !important; }
-body.acc-alto-contraste .user-dropdown-menu,
-body.acc-alto-contraste .notif-dropdown { background-color:#000 !important; border:2px solid #ff0 !important; }
-body.acc-alto-contraste a { color:#ff0 !important; text-decoration:underline !important; }
+body.acc-alto-contraste .form-control { 
+  background-color: #000000 !important; 
+  color: #ffff00 !important; 
+  border: 2px solid #ffff00 !important; 
+}
 
-/* Proteger panel en alto contraste */
-body.acc-alto-contraste #acc-panel,
-body.acc-alto-contraste #acc-panel * { background-color:#000 !important; border-color:#ff0 !important; color:#fff !important; }
-body.acc-alto-contraste #acc-panel-header { background:#000 !important; border-color:#ff0 !important; }
+/* Paginación */
+body.acc-alto-contraste .page-link { 
+  background-color: #000000 !important; 
+  color: #ffff00 !important; 
+  border-color: #ffff00 !important; 
+}
+body.acc-alto-contraste .page-item.active .page-link { 
+  background-color: #ffff00 !important; 
+  color: #000000 !important; 
+}
+
+/* Dropdowns */
+body.acc-alto-contraste .user-dropdown-menu,
+body.acc-alto-contraste .notif-dropdown { 
+  background-color: #000000 !important; 
+  border: 2px solid #ffff00 !important; 
+}
+
+/* Enlaces */
+body.acc-alto-contraste a { 
+  color: #ffff00 !important; 
+  text-decoration: underline !important; 
+}
+
+/* Panel de accesibilidad protegido */
+body.acc-alto-contraste #acc-panel { 
+  background-color: #000000 !important; 
+  border-color: #ffff00 !important; 
+}
+body.acc-alto-contraste #acc-panel * { 
+  color: #ffffff !important; 
+}
+body.acc-alto-contraste #acc-panel-header { 
+  background: #000000 !important; 
+  border-color: #ffff00 !important; 
+}
 
 /* ══ CURSOR GRANDE ══ */
 body.acc-cursor-grande,
@@ -905,25 +889,13 @@ body.acc-font-dyslexia * { font-family:'Comic Sans MS','Comic Sans',cursive !imp
   var fuenteClases = ['acc-fuente-md','acc-fuente-lg','acc-fuente-xl'];
   var fontClases   = ['acc-font-sans','acc-font-serif','acc-font-mono','acc-font-dyslexia'];
 
-  /* ── Mapa URL → nombre del módulo ── */
   var MODULOS = {
-    'dashboard':        'Panel de Control',
-    'clientes':         'Módulo de Clientes',
-    'vehiculos':        'Módulo de Vehículos',
-    'usuarios':         'Módulo de Usuarios',
-    'marca':            'Módulo de Marcas',
-    'proveedor':        'Módulo de Proveedores',
-    'producto':         'Módulo de Productos',
-    'compatibilidad':   'Módulo de Compatibilidad',
-    'tipo_servicio':    'Módulo de Servicios',
-    'orden_servicio':   'Módulo de Órdenes de Servicio',
-    'detalles':         'Análisis de Consumo',
-    'seguimiento':      'Módulo de Seguimiento',
-    'compras':          'Módulo de Compras',
-    'caja':             'Módulo de Caja',
-    'factura':          'Módulo de Facturación',
-    'notificaciones':   'Módulo de Notificaciones',
-    'backup':           'Respaldo de Datos',
+    'dashboard':'Panel de Control','clientes':'Módulo de Clientes','vehiculos':'Módulo de Vehículos',
+    'usuarios':'Módulo de Usuarios','marca':'Módulo de Marcas','proveedor':'Módulo de Proveedores',
+    'producto':'Módulo de Productos','compatibilidad':'Módulo de Compatibilidad','tipo_servicio':'Módulo de Servicios',
+    'orden_servicio':'Módulo de Órdenes','detalles':'Análisis de Consumo','seguimiento':'Módulo de Seguimiento',
+    'compras':'Módulo de Compras','caja':'Módulo de Caja','factura':'Módulo de Facturación',
+    'notificaciones':'Módulo de Notificaciones','backup':'Respaldo de Datos'
   };
 
   function getNombreModulo() {
@@ -935,7 +907,6 @@ body.acc-font-dyslexia * { font-family:'Comic Sans MS','Comic Sans',cursive !imp
     return 'Sistema ACERAUTOS';
   }
 
-  /* ── Síntesis de voz ── */
   function hablar(texto) {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
@@ -953,14 +924,12 @@ body.acc-font-dyslexia * { font-family:'Comic Sans MS','Comic Sans',cursive !imp
     toast._t = setTimeout(function(){ toast.classList.remove('visible'); }, 3500);
   }
 
-  /* ── Narrador al navegar ── */
   function activarNarrador() {
     var nombre = getNombreModulo();
     hablar('Has ingresado a ' + nombre);
     mostrarToast('🔊 ' + nombre);
   }
 
-  /* ── Guardar / cargar ── */
   function guardar() {
     var activos = clases.filter(function(c){ return document.body.classList.contains(c); });
     var fuente  = fuenteClases.find(function(c){ return document.body.classList.contains(c); }) || 'normal';
@@ -997,7 +966,6 @@ body.acc-font-dyslexia * { font-family:'Comic Sans MS','Comic Sans',cursive !imp
     });
   }
 
-  /* ── Abrir / cerrar ── */
   function abrir() { panel.classList.add('abierto'); overlay.classList.add('visible'); btn.setAttribute('aria-expanded','true'); closeBtn.focus(); }
   function cerrar() { panel.classList.remove('abierto'); overlay.classList.remove('visible'); btn.setAttribute('aria-expanded','false'); btn.focus(); }
 
@@ -1006,7 +974,6 @@ body.acc-font-dyslexia * { font-family:'Comic Sans MS','Comic Sans',cursive !imp
   overlay.addEventListener('click', cerrar);
   document.addEventListener('keydown', function(e){ if (e.key==='Escape' && panel.classList.contains('abierto')) cerrar(); });
 
-  /* ── Opciones visuales ── */
   document.querySelectorAll('.acc-opcion').forEach(function(b){
     b.addEventListener('click', function(){
       var c = b.getAttribute('data-acc');
@@ -1024,14 +991,12 @@ body.acc-font-dyslexia * { font-family:'Comic Sans MS','Comic Sans',cursive !imp
     });
   });
 
-  /* ── Leer página ── */
   leerBtn.addEventListener('click', function(){
     var texto = document.querySelector('main') ? document.querySelector('main').innerText : document.body.innerText;
     hablar(texto.substring(0, 600));
     mostrarToast('Leyendo página...');
   });
 
-  /* ── Tipografía ── */
   document.querySelectorAll('.acc-font-opcion').forEach(function(b){
     b.addEventListener('click', function(){
       fontClases.forEach(function(c){ document.body.classList.remove(c); });
@@ -1041,7 +1006,6 @@ body.acc-font-dyslexia * { font-family:'Comic Sans MS','Comic Sans',cursive !imp
     });
   });
 
-  /* ── Tamaño ── */
   document.querySelectorAll('.acc-size-btn').forEach(function(b){
     b.addEventListener('click', function(){
       fuenteClases.forEach(function(c){ document.body.classList.remove(c); });
@@ -1051,7 +1015,6 @@ body.acc-font-dyslexia * { font-family:'Comic Sans MS','Comic Sans',cursive !imp
     });
   });
 
-  /* ── Reset ── */
   resetBtn.addEventListener('click', function(){
     clases.forEach(function(c){ document.body.classList.remove(c); });
     fuenteClases.forEach(function(c){ document.body.classList.remove(c); });

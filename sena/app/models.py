@@ -163,6 +163,10 @@ class TipoServicio(models.Model):
         default=False,
         help_text="Si está activo, al crear una orden con este servicio se pedirá la fecha del próximo mantenimiento."
     )
+    requiere_productos   = models.BooleanField(
+        default=False,
+        help_text="Si está activo, la orden no podrá guardarse sin al menos un producto agregado."
+    )
     fecha_creacion      = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
 
@@ -229,7 +233,6 @@ class Vehiculo(models.Model):
     modelo             = models.CharField(max_length=50)
     marca              = models.ForeignKey(Marca, on_delete=models.PROTECT, limit_choices_to={'categoria': 'AUTO', 'estado': True})
     cliente            = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    km_ultimo_servicio = models.IntegerField(default=0, help_text="Km registrados en el último servicio")
     tipo_uso           = models.CharField(max_length=10, choices=TIPOS_USO, default='NORMAL')
     fecha_creacion     = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
@@ -312,7 +315,6 @@ class Notificacion(models.Model):
         ordering = ['-fecha']
 
 
-
 # ══════════════════════════════════════════════════════════
 #  ORDEN DE SERVICIO
 # ══════════════════════════════════════════════════════════
@@ -320,7 +322,6 @@ class OrdenServicio(models.Model):
     ESTADOS = [
         ('Pendiente',  'Pendiente'),
         ('En Proceso', 'En Proceso'),
-        
     ]
     empleado = models.ForeignKey(
         UsuarioSistema,
@@ -330,8 +331,6 @@ class OrdenServicio(models.Model):
         verbose_name="Mecánico responsable",
     )
     vehiculo      = models.ForeignKey(Vehiculo, on_delete=models.CASCADE)
-
-    # FIX #3 — through model para guardar precio histórico por servicio
     servicios     = models.ManyToManyField(
         TipoServicio,
         through='OrdenServicioDetalle',
@@ -344,20 +343,12 @@ class OrdenServicio(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self._actualizar_km_vehiculo()
-
-    def _actualizar_km_vehiculo(self):
-        veh = self.vehiculo
-        if self.km_actual >= veh.km_ultimo_servicio:
-            veh.km_ultimo_servicio = self.km_actual
-            veh.save(update_fields=['km_ultimo_servicio'])
 
     def __str__(self):
         return f"Orden #{self.id} — {self.vehiculo.placa}"
 
     class Meta:
         db_table = 'orden_servicio'
-
 
 # ══════════════════════════════════════════════════════════
 #  ORDEN DE SERVICIO - 
@@ -496,7 +487,7 @@ class DetalleOrdenProducto(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
     cantidad = models.PositiveIntegerField(default=1)
 
-    # FIX #4 — snapshot del precio del producto al momento de agregarlo
+  
     precio_unitario = models.DecimalField(
         max_digits=10, decimal_places=2, default=0,
         help_text="Precio del producto en el momento de agregarlo a la orden"
@@ -522,7 +513,7 @@ class DetalleOrdenProducto(models.Model):
 
 # ══════════════════════════════════════════════════════════
 #  FACTURA
-#  FIX #4 — lee precios desde snapshots, no desde los modelos en vivo
+#
 # ══════════════════════════════════════════════════════════
 class Factura(models.Model):
     TIPO_FACTURA = [
@@ -555,12 +546,12 @@ class Factura(models.Model):
 
     def save(self, *args, **kwargs):
         if self.tipo == 'SERVICIO' and self.orden_servicio:
-            # FIX #4 — usa precio_mano_obra del detalle (snapshot histórico)
+          
             servicios = sum(
                 d.precio_mano_obra
                 for d in self.orden_servicio.servicios_detalle.all()
             )
-            # FIX #4 — usa precio_unitario del detalle (snapshot histórico)
+           
             productos = sum(
                 dp.cantidad * dp.precio_unitario
                 for dp in self.orden_servicio.productos_usados.all()

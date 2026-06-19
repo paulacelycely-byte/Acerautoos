@@ -689,7 +689,7 @@
       }
       mostrarOk(input);
     }
-    document.querySelectorAll('form input, form select, form textarea').forEach(function(input) {
+    document.querySelectorAll('form:not(.no-validar-global) input, form:not(.no-validar-global) select, form:not(.no-validar-global) textarea').forEach(function(input) {
       if (input.type === 'hidden' || input.type === 'submit' || input.name === 'csrfmiddlewaretoken') return;
       input.addEventListener('input',  function(){ validarCampo(this); });
       input.addEventListener('change', function(){ validarCampo(this); });

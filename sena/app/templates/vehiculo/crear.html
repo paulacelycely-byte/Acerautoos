@@ -39,7 +39,19 @@
     .btn-add-inline { background:var(--acento); color:white; border:none; border-radius:0 10px 10px 0; padding:0 14px; cursor:pointer; transition:background .2s; display:flex; align-items:center; justify-content:center; text-decoration:none; width:42px; }
     .btn-add-inline svg { width:16px; height:16px; stroke:white; fill:none; stroke-width:2.5; stroke-linecap:round; }
     .btn-add-inline:hover { background:var(--acento2); color:white; }
-    .field-error { font-family:'DM Sans',sans-serif; font-size:.78rem; color:#d32f2f; margin-top:5px; display:flex; align-items:center; gap:5px; }
+
+    /* ── ALERTAS ESTILO ROSADO ── */
+    .field-error {
+        font-family:'DM Sans',sans-serif;
+        font-size:.78rem;
+        font-weight:600;
+        color:#d32f2f;
+        margin-top:5px;
+        display:flex;
+        align-items:center;
+        gap:5px;
+    }
+    .field-error svg { flex-shrink:0; }
 
     /* Tarjetas de uso */
     .uso-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
@@ -47,7 +59,6 @@
     .uso-card:hover { border-color:var(--acento); background:#fafaf8; }
     .uso-card.activo { border-color:var(--acento); background:var(--acento-ring); box-shadow:0 0 0 1px var(--acento); }
     .uso-card input[type=radio] { display:none; }
-    /* Recuadro gris del icono */
     .uso-icon-box { width:44px; height:44px; min-width:44px; background:#f0ede8; border-radius:10px; display:flex; align-items:center; justify-content:center; border:1px solid var(--borde); transition:background .2s, border-color .2s; }
     .uso-icon-box img { width:26px; height:26px; object-fit:contain; }
     .uso-card.activo .uso-icon-box { background:var(--acento-ring); border-color:var(--acento); }
@@ -80,7 +91,7 @@
         <span class="header-badge">Acerautos S.A.S</span>
     </div>
 
-    <form method="post" action="." id="formVehiculo">
+    <form method="post" action="." id="formVehiculo" novalidate class="no-validar-global">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
 
@@ -106,7 +117,9 @@
                                 <span class="field-icon"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="10" y1="10" x2="10" y2="14"/><line x1="14" y1="10" x2="16" y2="14"/></svg></span>
                                 {{ form.placa|add_class:'form-field'|attr:'autocomplete:off'|attr:'style:text-transform:uppercase' }}
                             </div>
-                            {% for error in form.placa.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                            {% for error in form.placa.errors %}
+                            <div class="field-error"><svg style="width:14px;height:14px;flex-shrink:0;" viewBox="0 0 24 24" fill="#d32f2f" stroke="none"><circle cx="12" cy="12" r="10"/><rect x="11" y="7" width="2" height="6" rx="1" fill="white"/><rect x="11" y="15" width="2" height="2" rx="1" fill="white"/></svg> <span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -123,7 +136,9 @@
                                     <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                                 </a>
                             </div>
-                            {% for error in form.marca.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                            {% for error in form.marca.errors %}
+                            <div class="field-error"><svg style="width:14px;height:14px;flex-shrink:0;" viewBox="0 0 24 24" fill="#d32f2f" stroke="none"><circle cx="12" cy="12" r="10"/><rect x="11" y="7" width="2" height="6" rx="1" fill="white"/><rect x="11" y="15" width="2" height="2" rx="1" fill="white"/></svg> <span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -135,7 +150,9 @@
                                 <span class="field-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
                                 {{ form.modelo|add_class:'form-field'|attr:'autocomplete:off'|attr:'placeholder:Ej: 2020' }}
                             </div>
-                            {% for error in form.modelo.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                            {% for error in form.modelo.errors %}
+                            <div class="field-error"><svg style="width:14px;height:14px;flex-shrink:0;" viewBox="0 0 24 24" fill="#d32f2f" stroke="none"><circle cx="12" cy="12" r="10"/><rect x="11" y="7" width="2" height="6" rx="1" fill="white"/><rect x="11" y="15" width="2" height="2" rx="1" fill="white"/></svg> <span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -152,30 +169,9 @@
                                     <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                                 </a>
                             </div>
-                            {% for error in form.cliente.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
-                        </div>
-                    </div>
-
-                    <!-- Km actual -->
-                    <div class="col-md-6">
-                        <div class="field-group">
-                            <label class="field-label">
-                                {{ form.km_ultimo_servicio.label }}
-                                <span class="tip" data-tip="Kilometraje actual del odómetro del vehículo.">?</span>
-                            </label>
-                            <div class="field-inner">
-                                <span class="field-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span>
-                                {{ form.km_ultimo_servicio|add_class:'form-field fecha-auto'|attr:'placeholder:Ej: 45000' }}
-                            </div>
-                            {% for error in form.km_ultimo_servicio.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
-                        </div>
-                    </div>
-
-                    <!-- Separador tipo de uso -->
-                    <div class="col-12">
-                        <div class="section-sep">
-                            <span class="section-sep-label">Intensidad de uso</span>
-                            <div class="section-sep-line"></div>
+                            {% for error in form.cliente.errors %}
+                            <div class="field-error"><svg style="width:14px;height:14px;flex-shrink:0;" viewBox="0 0 24 24" fill="#d32f2f" stroke="none"><circle cx="12" cy="12" r="10"/><rect x="11" y="7" width="2" height="6" rx="1" fill="white"/><rect x="11" y="15" width="2" height="2" rx="1" fill="white"/></svg> <span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -233,7 +229,9 @@
                                 </label>
 
                             </div>
-                            {% for error in form.tipo_uso.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                            {% for error in form.tipo_uso.errors %}
+                            <div class="field-error" style="margin-top:10px;"><svg style="width:14px;height:14px;flex-shrink:0;" viewBox="0 0 24 24" fill="#d32f2f" stroke="none"><circle cx="12" cy="12" r="10"/><rect x="11" y="7" width="2" height="6" rx="1" fill="white"/><rect x="11" y="15" width="2" height="2" rx="1" fill="white"/></svg> <span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -242,7 +240,7 @@
 
             <div class="form-card-footer">
                 <button type="button" class="btn-cancelar" onclick="confirmarCancelacion('{% url "app:listar_vehiculos" %}')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap:round; stroke-linejoin:round style="width:14px;height:14px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     Cancelar
                 </button>
                 <button type="submit" class="btn-guardar">

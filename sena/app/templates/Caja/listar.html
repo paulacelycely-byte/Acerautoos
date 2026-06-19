@@ -86,13 +86,13 @@
 
     /* ── FILTROS ── */
     .filtro-wrap {
-        background: white; border-radius: 10px; border: 1px solid var(--borde);
-        padding: 16px 20px; margin-bottom: 18px;
-        display: flex; align-items: center; flex-wrap: wrap; gap: 12px;
-    }
-    .filtro-group { display: flex; flex-direction: column; gap: 4px; }
+    background: white; border-radius: 10px; border: 1px solid var(--borde);
+    padding: 16px 20px; margin-bottom: 18px;
+    display: flex; align-items: flex-end; flex-wrap: nowrap; gap: 12px; width: 100%;
+}
+    .filtro-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
     .filtro-label { font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
-    .filtro-input { border: 1.5px solid var(--borde); border-radius: 8px; padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: .83rem; color: var(--texto); outline: none; background: var(--gris); transition: border-color .2s; min-width: 140px; color-scheme: light; }
+   .filtro-input { border: 1.5px solid var(--borde); border-radius: 8px; padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: .83rem; color: var(--texto); outline: none; background: var(--gris); transition: border-color .2s; width: 100%; color-scheme: light; }
     .filtro-input:focus { border-color: var(--rojo); background: white; }
     .btn-limpiar { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; text-transform: uppercase; padding: 9px 16px; border-radius: 8px; border: 1.5px solid var(--borde); background: white; color: var(--muted); cursor: pointer; transition: .2s; align-self: flex-end; }
     .btn-limpiar:hover { border-color: var(--carbon); color: var(--carbon); }
@@ -126,7 +126,7 @@
     .tipo-avatar svg { width: 15px; height: 15px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
     .av-ingreso { background: var(--verde); }
     .av-egreso  { background: var(--rojo); }
-    .badge-tipo { font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 800; padding: 3px 9px; border-radius: 5px; text-transform: uppercase; letter-spacing: .5px; display: inline-block; }
+    .badge-tipo { font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 800; padding: 3px 9px; border-radius: 5px; letter-spacing: .5px; display: inline-block; }
     .bt-ingreso { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
     .bt-egreso  { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
     .badge-cat, .badge-metodo { font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 600; background: var(--gris); color: var(--muted); border: 1px solid var(--borde); border-radius: 5px; padding: 2px 8px; display: inline-block; }
@@ -335,7 +335,7 @@
                                     <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
                                     {% endif %}
                                 </div>
-                                <span class="badge-tipo {% if c.tipo == 'INGRESO' %}bt-ingreso{% else %}bt-egreso{% endif %}">{{ c.tipo }}</span>
+                              <span class="badge-tipo {% if c.tipo == 'INGRESO' %}bt-ingreso{% else %}bt-egreso{% endif %}">{{ c.tipo|title }}</span>
                             </div>
                         </td>
                         <td style="font-weight:500; max-width:260px;">{{ c.descripcion }}</td>
@@ -348,10 +348,7 @@
                         <td><span class="badge-metodo">{{ c.metodo_pago }}</span></td>
                         <td style="color:var(--muted);font-size:.8rem;white-space:nowrap;">{{ c.fecha|date:"d/m/Y H:i" }}</td>
                     </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="7" class="text-center py-4 text-muted">No hay movimientos registrados.</td>
-                    </tr>
+                    
                     {% endfor %}
                 </tbody>
             </table>

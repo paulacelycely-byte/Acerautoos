@@ -3,6 +3,7 @@
 {% load widget_tweaks %}
 
 {% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
     :root {
@@ -43,20 +44,40 @@
     .field-inner { position: relative; }
     .field-inner .field-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: #bbb; pointer-events: none; transition: color .2s; display: flex; align-items: center; justify-content: center; }
     .field-inner .field-icon svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .field-inner:focus-within .field-icon { color: var(--acento); }
     .form-field { width: 100%; padding: 12px 14px 12px 40px; border: 1.5px solid var(--borde); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: .9rem; color: var(--texto); background: var(--gris); outline: none; transition: border-color .2s, background .2s, box-shadow .2s; -webkit-appearance: none; appearance: none; }
     .form-field:focus { border-color: var(--acento); background: white; box-shadow: 0 0 0 3px var(--acento-ring); }
 
+    /* ── Campo inválido (igual módulo usuarios) ── */
+    .field-inner.campo-invalido .form-field {
+        border-color: #d32f2f !important;
+        background: #fff5f5 !important;
+        box-shadow: 0 0 0 3px rgba(211,47,47,.1) !important;
+    }
+
+    /* ── ALERTAS INLINE (igual módulo usuarios) ── */
+    .field-error {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .74rem; font-weight: 600;
+        color: #d32f2f; margin-top: 6px;
+        display: flex; align-items: center; gap: 6px;
+        animation: fadeInErr .2s ease;
+    }
+    .field-error i { font-size: .72rem; flex-shrink: 0; }
+    @keyframes fadeInErr {
+        from { opacity: 0; transform: translateY(-4px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
     /* ── ARCHIVO ── */
-    .file-wrap { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1.5px solid var(--borde); border-radius: 10px; background: var(--gris); transition: border-color .2s; }
+    .file-wrap { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1.5px solid var(--borde); border-radius: 10px; background: var(--gris); transition: border-color .2s; cursor: pointer; }
     .file-wrap:focus-within { border-color: var(--acento); background: white; }
+    .file-wrap.campo-invalido { border-color: #d32f2f; background: #fff5f5; }
     .file-input { display: none; }
     .file-btn { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; padding: 7px 14px; border-radius: 7px; background: var(--carbon); color: white; border: none; cursor: pointer; white-space: nowrap; transition: background .2s; flex-shrink: 0; }
     .file-btn:hover { background: var(--acento); }
     .file-info { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .file-info.selected { color: var(--texto); font-weight: 600; }
-    .file-error-msg { font-family: 'DM Sans', sans-serif; font-size: .76rem; color: #d32f2f; margin-top: 5px; display: none; }
-
-    .field-error { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: #d32f2f; margin-top: 5px; display: flex; align-items: center; gap: 5px; }
 
     .form-card-footer { background: var(--gris); border-top: 1px solid var(--borde); padding: 20px 32px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
     .btn-cancelar { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; padding: 10px 22px; border-radius: 10px; border: 1.5px solid var(--borde); background: white; color: var(--muted); text-decoration: none; transition: .2s; cursor: pointer; display: flex; align-items: center; gap: 8px; }
@@ -80,7 +101,7 @@
         <span class="header-badge">Acerautos S.A.S</span>
     </div>
 
-    <form method="post" action="." enctype="multipart/form-data" id="formCompra">
+    <form method="post" action="." enctype="multipart/form-data" id="formCompra" novalidate class="no-validar-global">
         {% csrf_token %}
 
         <div class="form-card">
@@ -101,21 +122,25 @@
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.proveedor.label }}</label>
-                            <div class="field-inner">
+                            <div class="field-inner {% if form.proveedor.errors %}campo-invalido{% endif %}">
                                 <span class="field-icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
                                 {{ form.proveedor|add_class:'form-field'|attr:'autocomplete:off' }}
                             </div>
-                            {% for error in form.proveedor.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                            {% for error in form.proveedor.errors %}
+                                <div class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.producto.label }}</label>
-                            <div class="field-inner">
+                            <div class="field-inner {% if form.producto.errors %}campo-invalido{% endif %}">
                                 <span class="field-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>
                                 {{ form.producto|add_class:'form-field' }}
                             </div>
-                            {% for error in form.producto.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                            {% for error in form.producto.errors %}
+                                <div class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -123,21 +148,25 @@
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.cantidad.label }}</label>
-                            <div class="field-inner">
+                            <div class="field-inner {% if form.cantidad.errors %}campo-invalido{% endif %}">
                                 <span class="field-icon"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>
                                 {{ form.cantidad|add_class:'form-field'|attr:'autocomplete:off'|attr:'placeholder:Ej: 10' }}
                             </div>
-                            {% for error in form.cantidad.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                            {% for error in form.cantidad.errors %}
+                                <div class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.num_factura_proveedor.label }}</label>
-                            <div class="field-inner">
+                            <div class="field-inner {% if form.num_factura_proveedor.errors %}campo-invalido{% endif %}">
                                 <span class="field-icon"><svg viewBox="0 0 24 24"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg></span>
                                 {{ form.num_factura_proveedor|add_class:'form-field'|attr:'autocomplete:off'|attr:'placeholder:Ej: FAC-0001' }}
                             </div>
-                            {% for error in form.num_factura_proveedor.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                            {% for error in form.num_factura_proveedor.errors %}
+                                <div class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -153,21 +182,25 @@
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.fecha.label }}</label>
-                            <div class="field-inner">
+                            <div class="field-inner {% if form.fecha.errors %}campo-invalido{% endif %}">
                                 <span class="field-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
                                 {{ form.fecha|add_class:'form-field'|attr:'autocomplete:off'|attr:'readonly:true' }}
                             </div>
-                            {% for error in form.fecha.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                            {% for error in form.fecha.errors %}
+                                <div class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.total_pagado.label }}</label>
-                            <div class="field-inner">
+                            <div class="field-inner {% if form.total_pagado.errors %}campo-invalido{% endif %}">
                                 <span class="field-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
                                 {{ form.total_pagado|add_class:'form-field'|attr:'autocomplete:off'|attr:'placeholder:Ej: 150000' }}
                             </div>
-                            {% for error in form.total_pagado.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                            {% for error in form.total_pagado.errors %}
+                                <div class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -181,14 +214,17 @@
                             </label>
                             <input type="file" name="archivo_factura" id="id_archivo_factura"
                                    class="file-input" accept=".pdf,.jpg,.jpeg,.png">
-                            <div class="file-wrap" onclick="document.getElementById('id_archivo_factura').click()">
+                            <div class="file-wrap" id="fileWrap" onclick="document.getElementById('id_archivo_factura').click()">
                                 <button type="button" class="file-btn" onclick="event.stopPropagation(); document.getElementById('id_archivo_factura').click();">
                                     Elegir archivo
                                 </button>
                                 <span class="file-info" id="fileInfo">PDF, JPG o PNG · Máx. 5 MB</span>
                             </div>
-                            <div class="file-error-msg" id="fileError"></div>
-                            {% for error in form.archivo_factura.errors %}<div class="field-error">⚠ {{ error }}</div>{% endfor %}
+                            <div id="fileErrorBox">
+                                {% for error in form.archivo_factura.errors %}
+                                    <div class="field-error"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
 
@@ -201,7 +237,7 @@
                     Cancelar
                 </button>
                 <button type="submit" class="btn-guardar {% if form.instance.pk %}editando{% else %}nuevo{% endif %}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap: round; stroke-linejoin="round" style="width:16px;height:16px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                     {% if form.instance.pk %}Actualizar Compra{% else %}Guardar Compra{% endif %}
                 </button>
             </div>
@@ -213,10 +249,12 @@
 {% block js %}
 <script>
 document.getElementById('id_archivo_factura').addEventListener('change', function () {
-    var info   = document.getElementById('fileInfo');
-    var errBox = document.getElementById('fileError');
+    var info    = document.getElementById('fileInfo');
+    var wrap    = document.getElementById('fileWrap');
+    var errBox  = document.getElementById('fileErrorBox');
 
-    errBox.style.display = 'none';
+    errBox.innerHTML = '';
+    wrap.classList.remove('campo-invalido');
     info.className = 'file-info';
 
     if (!this.files || !this.files[0]) {
@@ -231,22 +269,34 @@ document.getElementById('id_archivo_factura').addEventListener('change', functio
     if (!permitidos.includes(ext)) {
         this.value = '';
         info.textContent = 'PDF, JPG o PNG · Máx. 5 MB';
-        errBox.textContent = '⚠ Tipo de archivo no permitido. Solo PDF, JPG o PNG.';
-        errBox.style.display = 'block';
+        wrap.classList.add('campo-invalido');
+        errBox.innerHTML = '<div class="field-error"><i class="fas fa-circle-exclamation"></i><span>Tipo de archivo no permitido. Solo PDF, JPG o PNG.</span></div>';
         return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
         this.value = '';
         info.textContent = 'PDF, JPG o PNG · Máx. 5 MB';
-        errBox.textContent = '⚠ El archivo supera los 5 MB permitidos.';
-        errBox.style.display = 'block';
+        wrap.classList.add('campo-invalido');
+        errBox.innerHTML = '<div class="field-error"><i class="fas fa-circle-exclamation"></i><span>El archivo supera los 5 MB permitidos.</span></div>';
         return;
     }
 
     var iconos = { pdf: '📄', jpg: '🖼️', jpeg: '🖼️', png: '🖼️' };
     info.textContent = (iconos[ext] || '📎') + ' ' + file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
     info.className = 'file-info selected';
+});
+
+// Limpiar alertas al escribir/cambiar
+document.querySelectorAll('#formCompra .form-field').forEach(function(el) {
+    function limpiar() {
+        var inner = el.closest('.field-inner');
+        if (inner) inner.classList.remove('campo-invalido');
+        var group = el.closest('.field-group');
+        if (group) group.querySelectorAll('.field-error').forEach(function(e) { e.style.display = 'none'; });
+    }
+    el.addEventListener('input', limpiar);
+    el.addEventListener('change', limpiar);
 });
 
 $(function () {
@@ -266,7 +316,6 @@ $(function () {
     });
 
     $('#formCompra').on('submit', function (e) {
-        if (!this.checkValidity()) { return; }
         e.preventDefault();
         var formulario = this;
         Swal.fire({

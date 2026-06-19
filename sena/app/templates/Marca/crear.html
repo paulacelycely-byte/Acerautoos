@@ -3,22 +3,29 @@
 {% load widget_tweaks %}
 
 {% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
 <style>
 :root {
-    /* Paleta de colores cambiada a Azul */
-    --acento:      #0d6efd;       /* Azul principal */
-    --acento2:     #0b5ed7;       /* Azul oscuro para hover */
-    --acento-glow: rgba(13, 110, 253, .25); /* Sombra azul */
-    --acento-ring: rgba(13, 110, 253, .1);  /* Anillo de enfoque azul */
-    
-    --carbon: #1a1a1a; 
-    --gris: #f2f2f0; 
-    --borde: #e0ddd8; 
-    --texto: #2a2a2a; 
-    --muted: #888;
+    {% if btn_color == 'azul' %}
+    --acento:      #0d6efd;
+    --acento2:     #0b5ed7;
+    --acento-glow: rgba(13, 110, 253, .25);
+    --acento-ring: rgba(13, 110, 253, .1);
+    {% else %}
+    --acento:      #d32f2f;
+    --acento2:     #b71c1c;
+    --acento-glow: rgba(211, 47, 47, .25);
+    --acento-ring: rgba(211, 47, 47, .1);
+    {% endif %}
+
+    --carbon: #1a1a1a;
+    --gris:   #f2f2f0;
+    --borde:  #e0ddd8;
+    --texto:  #2a2a2a;
+    --muted:  #888;
 }
 
     .taller-header { position:relative; background:var(--carbon); border-radius:10px; padding:28px 32px; margin-bottom:28px; overflow:hidden; display:flex; align-items:center; justify-content:space-between; }
@@ -70,15 +77,13 @@
     .select2-container--default .select2-search--dropdown .select2-search__field:focus { border-color:var(--acento); }
     .select2-container--default .select2-results__option { padding:9px 14px; font-size:.88rem; display:flex; align-items:center; gap:10px; }
     .select2-container--default .select2-results__option--highlighted[aria-selected] { background:var(--acento); color:white; }
-    /* Cambio de fondo a un tono azul muy claro para la opción seleccionada */
-    .select2-container--default .select2-results__option[aria-selected=true] { background:#f0f7ff; color:var(--acento); font-weight:600; }
+    .select2-container--default .select2-results__option[aria-selected=true] { background:{% if btn_color == 'azul' %}#f0f7ff{% else %}#fff5f5{% endif %}; color:var(--acento); font-weight:600; }
     .select2-pais-option { display:flex; align-items:center; gap:10px; }
     .select2-pais-option .fi { font-size:1.1rem; flex-shrink:0; border-radius:2px; }
 
     /* Switch */
     .switch-wrap { display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--gris); border:1.5px solid var(--borde); border-radius:10px; cursor:pointer; transition:border-color .2s; }
-    /* Cambio de fondo a un tono azul muy claro al activarlo */
-    .switch-wrap:has(input:checked) { border-color:var(--acento); background:#f0f7ff; }
+    .switch-wrap:has(input:checked) { border-color:var(--acento); background:{% if btn_color == 'azul' %}#f0f7ff{% else %}#fff5f5{% endif %}; }
     .switch-wrap input[type="checkbox"] { display:none; }
     .switch-toggle { width:44px; height:24px; background:var(--borde); border-radius:24px; position:relative; transition:background .2s; flex-shrink:0; }
     .switch-toggle::after { content:''; position:absolute; width:18px; height:18px; background:white; border-radius:50%; top:3px; left:3px; transition:transform .2s; box-shadow:0 1px 4px rgba(0,0,0,.2); }
@@ -86,8 +91,20 @@
     .switch-wrap:has(input:checked) .switch-toggle::after { transform:translateX(20px); }
     .switch-label { font-family:'DM Sans',sans-serif; font-size:.85rem; font-weight:600; color:var(--texto); }
 
-    /* Los errores se quedan en rojo por convención de diseño (facilita que el usuario note el problema) */
-    .field-error { font-family:'DM Sans',sans-serif; font-size:.78rem; color:#d32f2f; margin-top:5px; display:flex; align-items:center; gap:5px; }
+    /* ── ALERTAS estilo compatibilidad ── */
+    .field-error {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .76rem; font-weight: 600;
+        color: #d32f2f;
+        margin-top: 6px;
+        display: flex; align-items: center; gap: 6px;
+        animation: fadeInErr .2s ease;
+    }
+    .field-error i { font-size: .73rem; flex-shrink: 0; }
+    @keyframes fadeInErr {
+        from { opacity: 0; transform: translateY(-4px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
 
     .form-card-footer { background:var(--gris); border-top:1px solid var(--borde); padding:20px 32px; display:flex; align-items:center; justify-content:flex-end; gap:12px; }
     .btn-cancelar { font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:600; text-transform:uppercase; letter-spacing:.5px; padding:10px 22px; border-radius:10px; border:1.5px solid var(--borde); background:white; color:var(--muted); text-decoration:none; transition:.2s; cursor:pointer; display:flex; align-items:center; gap:8px; }
@@ -140,7 +157,7 @@
         </div>
     </div>
 
-    <form method="post" action="." id="formMarca" enctype="multipart/form-data">
+   <form method="post" action="." id="formMarca" enctype="multipart/form-data" novalidate class="no-validar-global">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
 
@@ -187,6 +204,12 @@
                                         {% endif %}
                                     </div>
                                 </div>
+                                {% for error in field.errors %}
+                                    <div class="field-error">
+                                        <i class="fas fa-circle-exclamation"></i>
+                                        <span>{{ error }}</span>
+                                    </div>
+                                {% endfor %}
 
                             {% elif field.name == 'pais_origen' %}
                                 <div class="field-inner">
@@ -195,6 +218,12 @@
                                     </span>
                                     {{ field }}
                                 </div>
+                                {% for error in field.errors %}
+                                    <div class="field-error">
+                                        <i class="fas fa-circle-exclamation"></i>
+                                        <span>{{ error }}</span>
+                                    </div>
+                                {% endfor %}
 
                             {% elif field.name == 'nombre' %}
                                 <div class="field-inner">
@@ -203,6 +232,12 @@
                                     </span>
                                     {{ field|add_class:'form-field'|attr:'autocomplete:off'|attr:'placeholder:Ej: Toyota, Bosch...' }}
                                 </div>
+                                {% for error in field.errors %}
+                                    <div class="field-error">
+                                        <i class="fas fa-circle-exclamation"></i>
+                                        <span>{{ error }}</span>
+                                    </div>
+                                {% endfor %}
 
                             {% elif field.name == 'descripcion' %}
                                 <div class="field-inner textarea-inner">
@@ -211,6 +246,12 @@
                                     </span>
                                     {{ field|add_class:'form-field'|attr:'autocomplete:off'|attr:'rows:3' }}
                                 </div>
+                                {% for error in field.errors %}
+                                    <div class="field-error">
+                                        <i class="fas fa-circle-exclamation"></i>
+                                        <span>{{ error }}</span>
+                                    </div>
+                                {% endfor %}
 
                             {% else %}
                                 <div class="field-inner">
@@ -219,14 +260,14 @@
                                     </span>
                                     {{ field|add_class:'form-field'|attr:'autocomplete:off' }}
                                 </div>
+                                {% for error in field.errors %}
+                                    <div class="field-error">
+                                        <i class="fas fa-circle-exclamation"></i>
+                                        <span>{{ error }}</span>
+                                    </div>
+                                {% endfor %}
                             {% endif %}
 
-                            {% for error in field.errors %}
-                                <div class="field-error">
-                                    <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                                    {{ error }}
-                                </div>
-                            {% endfor %}
                         </div>
                     </div>
                     {% endif %}
@@ -277,6 +318,9 @@ var PAISES_BANDERAS = {
     'Sudafrica':'za','Uruguay':'uy','Venezuela':'ve',
 };
 
+var BTN_COLOR = '{{ btn_color }}';
+var COLOR_ACENTO = BTN_COLOR === 'azul' ? '#0d6efd' : '#d32f2f';
+
 function formatPais(state) {
     if (!state.id) return state.text;
     var codigo = PAISES_BANDERAS[state.id];
@@ -323,10 +367,13 @@ $(document).ready(function () {
         e.preventDefault();
         var formulario = this;
         Swal.fire({
-            title: '¿Confirmar registro?', text: 'La marca se guardará en el sistema.',
-            icon: 'question', showCancelButton: true,
-            confirmButtonText: 'Sí, guardar', cancelButtonText: 'Revisar',
-            confirmButtonColor: '#0d6efd', /* Modificado al azul del formulario */
+            title: '¿Confirmar registro?',
+            text: 'La marca se guardará en el sistema.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, guardar',
+            cancelButtonText: 'Revisar',
+            confirmButtonColor: COLOR_ACENTO,
             cancelButtonColor: '#888',
         }).then((result) => { if (result.isConfirmed) { $(formulario).off('submit').submit(); } });
     });
@@ -336,10 +383,13 @@ $(document).ready(function () {
                        : nextParam === 'producto'  ? "{% url 'app:crear_producto' %}"
                        : "{{ listar_url }}";
         Swal.fire({
-            title: '¿Cancelar?', text: 'Los cambios no se guardarán.',
-            icon: 'warning', showCancelButton: true,
-            confirmButtonText: 'Sí, salir', cancelButtonText: 'Seguir aquí',
-            confirmButtonColor: '#0d6efd', /* Modificado al azul del formulario */
+            title: '¿Cancelar?',
+            text: 'Los cambios no se guardarán.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, salir',
+            cancelButtonText: 'Seguir aquí',
+            confirmButtonColor: COLOR_ACENTO,
             cancelButtonColor: '#888',
         }).then((result) => { if (result.isConfirmed) window.location.href = urlDestino; });
     });

@@ -3,6 +3,7 @@
 {% load widget_tweaks %}
 
 {% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
     :root {
@@ -103,6 +104,20 @@
         box-shadow: 0 0 0 3px var(--primario-glow) !important;
     }
 
+    /* ── ALERTAS INLINE (igual módulo usuarios) ── */
+    .field-error-js {
+        font-family: 'DM Sans', sans-serif;
+        font-size: .74rem; font-weight: 600;
+        color: #d32f2f; margin-top: 6px;
+        display: flex; align-items: center; gap: 6px;
+        animation: fadeInErr .2s ease;
+    }
+    .field-error-js i { font-size: .72rem; flex-shrink: 0; }
+    @keyframes fadeInErr {
+        from { opacity: 0; transform: translateY(-4px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
     /* ── PHONE DROPDOWN ── */
     #id_indicativo_proveedor { display: none !important; }
     .phone-wrap { display: flex; gap: 8px; align-items: flex-start; width: 100%; }
@@ -163,15 +178,16 @@
     #maskOverlay .char-typed { color: var(--texto); }
     #maskOverlay .char-hint  { color: #c8c8c8; }
 
-    /* ── ERROR TELÉFONO ── */
+    /* ── ERROR TELÉFONO (mismo estilo unificado) ── */
     .tel-error-box {
-        color: #d32f2f; background: #fef2f2; border: 1px solid #fca5a5;
-        border-radius: 8px; padding: 8px 12px; font-size: .78rem;
-        font-family: 'DM Sans', sans-serif; margin-top: 6px;
-        display: none; align-items: flex-start; gap: 6px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .74rem; font-weight: 600;
+        color: #d32f2f; margin-top: 6px;
+        display: none; align-items: center; gap: 6px;
+        animation: fadeInErr .2s ease;
     }
     .tel-error-box.visible { display: flex; }
-    .tel-error-box i { margin-top: 1px; flex-shrink: 0; }
+    .tel-error-box i { font-size: .72rem; flex-shrink: 0; }
 
     /* ── FOOTER ── */
     .form-card-footer {
@@ -249,7 +265,7 @@
         <div class="header-empresa">ACERAUTOS S.A.S</div>
     </div>
 
-    <form method="post" action="." id="formProveedor">
+    <form method="post" action="." id="formProveedor" novalidate class="no-validar-global">
         {% csrf_token %}
         {{ form.telefono.as_hidden }}
         {{ form.indicativo_telefono|attr:"id:id_indicativo_proveedor" }}
@@ -277,6 +293,9 @@
                                 <i class="fas fa-user field-icon"></i>
                                 {{ form.nombre|add_class:"form-field" }}
                             </div>
+                            {% for error in form.nombre.errors %}
+                                <div class="field-error-js"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -287,6 +306,9 @@
                                 <i class="fas fa-tag field-icon"></i>
                                 {{ form.nit|add_class:"form-field" }}
                             </div>
+                            {% for error in form.nit.errors %}
+                                <div class="field-error-js"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -313,9 +335,12 @@
                                 </div>
                             </div>
                             <div class="tel-error-box" id="telErrorBox">
-                                <i class="fas fa-triangle-exclamation"></i>
+                                <i class="fas fa-circle-exclamation"></i>
                                 <span id="telErrorMsg"></span>
                             </div>
+                            {% for error in form.numero_telefono.errors %}
+                                <div class="field-error-js"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -326,6 +351,9 @@
                                 <i class="fas fa-map-marked-alt field-icon"></i>
                                 {{ form.direccion|add_class:"form-field" }}
                             </div>
+                            {% for error in form.direccion.errors %}
+                                <div class="field-error-js"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -436,17 +464,18 @@ function setFieldError(inputEl, msg) {
         if (!errorEl) {
             errorEl = document.createElement('div');
             errorEl.className = 'field-error-js';
-            errorEl.style.cssText = 'color:#d32f2f;font-size:.78rem;margin-top:5px;display:flex;align-items:center;gap:5px;font-family:"DM Sans",sans-serif;';
             const fieldInner = wrap.querySelector('.field-inner') || inputEl.parentElement;
             fieldInner.insertAdjacentElement('afterend', errorEl);
         }
-        errorEl.innerHTML = `⚠ ${msg}`;
+        errorEl.innerHTML = `<i class="fas fa-circle-exclamation"></i><span>${msg}</span>`;
         inputEl.style.setProperty('border-color', '#d32f2f', 'important');
         inputEl.style.setProperty('box-shadow',   '0 0 0 3px rgba(211,47,47,.12)', 'important');
+        inputEl.style.setProperty('background',   '#fff5f5', 'important');
     } else {
         if (errorEl) errorEl.remove();
         inputEl.style.removeProperty('border-color');
         inputEl.style.removeProperty('box-shadow');
+        inputEl.style.removeProperty('background');
     }
 }
 

@@ -11,51 +11,25 @@
         --gris:   #f2f2f0;
         --borde:  #e0ddd8;
         --texto:  #2a2a2a;
-        --muted:  #888;
+        --muted:  #666;
         --verde:  #16a34a;
         --azul:   #1565c0;
         --naranja:#e65100;
     }
 
-    /* ── HEADER ── */
     .taller-header {
-        position: relative;
-        background: var(--carbon);
-        border-radius: 10px;
-        padding: 20px 20px;
-        margin-bottom: 20px;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;        /* ← se envuelve en móvil */
-        gap: 16px;
+        position: relative; background: var(--carbon); border-radius: 10px;
+        padding: 20px; margin-bottom: 20px; overflow: hidden;
+        display: flex; align-items: center; justify-content: space-between;
+        flex-wrap: wrap; gap: 16px;
     }
-
-    .header-left { display: flex; align-items: center; gap: 18px; position: relative; }
+    .header-left { display: flex; align-items: center; gap: 18px; }
     .header-icon-wrap { width: 56px; height: 56px; background: var(--rojo); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 4px rgba(211,47,47,.25); flex-shrink: 0; }
     .header-icon-wrap svg { width: 28px; height: 28px; stroke: white; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
     .header-titulo { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; color: white; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0; }
-    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 6px; letter-spacing: .5px; }
-
-    .header-actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        position: relative;
-        flex-wrap: wrap;        /* ← botones se envuelven */
-    }
-
-    .btn-accion {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .75rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px;
-        padding: 10px 16px; border-radius: 10px;
-        display: flex; align-items: center; gap: 6px;
-        border: none; cursor: pointer; text-decoration: none;
-        transition: transform .2s, box-shadow .2s;
-        white-space: nowrap;    /* ← texto del botón no se parte */
-    }
+    .header-sub { font-family: 'DM Sans', sans-serif; font-size: .78rem; color: rgba(255,255,255,.45); margin-top: 6px; }
+    .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .btn-accion { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 10px 16px; border-radius: 10px; display: flex; align-items: center; gap: 6px; border: none; cursor: pointer; text-decoration: none; transition: transform .2s, box-shadow .2s; white-space: nowrap; }
     .btn-accion:hover { transform: translateY(-2px); }
     .btn-accion svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
     .btn-pdf   { background: #c0392b; color: white !important; }
@@ -64,95 +38,69 @@
     .btn-nuevo:hover { box-shadow: 0 6px 20px rgba(211,47,47,.5); color: white !important; }
 
     /* ── STATS ── */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 14px;
-        margin-bottom: 20px;
-    }
-
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
     .stat-card { background: var(--carbon); border-radius: 16px; padding: 22px 24px; display: flex; align-items: center; gap: 18px; transition: transform .2s, box-shadow .2s; }
     .stat-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,.25); }
     .stat-icon { width: 50px; height: 50px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-    .stat-num { font-family: 'Bebas Neue', 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 400; color: white; line-height: 1; letter-spacing: 1px; }
+    .stat-num { font-family: 'Bebas Neue', 'Barlow Condensed', sans-serif; font-size: 1.8rem; color: white; line-height: 1; letter-spacing: 1px; }
     .stat-num.verde    { color: #4ade80; }
     .stat-num.amarillo { color: #fbbf24; }
     .stat-label { font-family: 'DM Sans', sans-serif; font-size: .63rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,.55); margin-top: 3px; }
 
-    /* ── FILTROS ── */
+    /* ── FILTROS: ancho completo ── */
     .filtro-wrap {
-        background: white;
-        border-radius: 10px;
-        border: 1px solid var(--borde);
-        padding: 16px 20px;
-        margin-bottom: 18px;
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 12px;
+        background: white; border-radius: 10px; border: 1px solid var(--borde);
+        padding: 16px 20px; margin-bottom: 18px;
+        display: flex; align-items: flex-end; flex-wrap: nowrap; gap: 12px; width: 100%;
     }
-    .filtro-group { display: flex; flex-direction: column; gap: 4px; }
+    .filtro-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
     .filtro-label { font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
-    .filtro-input { border: 1.5px solid var(--carbon); border-radius: 8px; padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: .83rem; color: var(--texto); outline: none; background: var(--gris); transition: border-color .2s; min-width: 140px; }
-    .filtro-input:focus { border-color: var(--rojo); background: white; }
-    .filtro-input::-webkit-calendar-picker-indicator { filter: brightness(0) saturate(100%); cursor: pointer; }
-    .btn-limpiar { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; text-transform: uppercase; padding: 9px 16px; border-radius: 8px; border: 1.5px solid var(--borde); background: white; color: var(--muted); cursor: pointer; transition: .2s; align-self: flex-end; }
+    .filtro-input { border: 1.5px solid #ccc; border-radius: 8px; padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: .83rem; color: var(--texto); outline: none; background: white; transition: border-color .2s; width: 100%; }
+
+    .filtro-input::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+    .filtro-input::-webkit-calendar-picker-indicator { cursor: pointer; }
+    .btn-limpiar { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; text-transform: uppercase; padding: 9px 16px; border-radius: 8px; border: 1.5px solid var(--borde); background: white; color: var(--muted); cursor: pointer; transition: .2s; flex-shrink: 0; white-space: nowrap; }
     .btn-limpiar:hover { border-color: var(--carbon); color: var(--carbon); }
-    .chips-tipo { display: flex; gap: 6px; align-self: flex-end; flex-wrap: wrap; }
-    .chip-tipo { font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: 8px 16px; border-radius: 8px; border: 1.5px solid var(--borde); background: white; color: var(--muted); cursor: pointer; transition: .15s; }
+    .chips-tipo { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: nowrap; }
+    .chip-tipo { font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700; text-transform: uppercase; padding: 8px 16px; border-radius: 8px; border: 1.5px solid var(--borde); background: white; color: var(--muted); cursor: pointer; transition: .15s; white-space: nowrap; }
     .chip-tipo:hover { border-color: var(--carbon); color: var(--carbon); }
     .chip-tipo.active-todos     { background: var(--carbon); color: white; border-color: var(--carbon); }
     .chip-tipo.active-pagada    { background: var(--verde);  color: white; border-color: var(--verde); }
     .chip-tipo.active-pendiente { background: #f57f17;       color: white; border-color: #f57f17; }
 
     /* ── TABLA ── */
-    .tabla-wrap {
-        background: white;
-        border-radius: 10px;
-        border: 1px solid var(--borde);
-        overflow: hidden;
-    }
-
-    /* Scroll horizontal para la tabla en pantallas pequeñas */
-    .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    #tabla_facturas {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .875rem;
-        border-collapse: collapse;
-        width: 100%;
-        min-width: 700px;       /* ← evita que se comprima demasiado */
-    }
-
+    .tabla-wrap { background: white; border-radius: 10px; border: 1px solid var(--borde); overflow: hidden; }
+    .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    #tabla_facturas { font-family: 'DM Sans', sans-serif; font-size: .875rem; border-collapse: collapse; width: 100%; min-width: 700px; }
     #tabla_facturas thead tr { background: var(--gris); border-bottom: 2px solid var(--borde); }
-    #tabla_facturas thead th {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: .78rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1.2px;
-        color: var(--muted); padding: 14px 12px;
-        border: none;
-    }
+    #tabla_facturas thead th { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700; text-transform: capitalize; letter-spacing: .3px; color: var(--muted); padding: 14px 12px; border: none; }
     #tabla_facturas tbody tr { border-bottom: 1px solid var(--borde); transition: background .15s; }
     #tabla_facturas tbody tr:hover { background: #fafaf8; }
     #tabla_facturas tbody tr:last-child { border-bottom: none; }
     #tabla_facturas tbody td { padding: 12px 12px; color: var(--texto); vertical-align: middle; border: none; }
 
-    .factura-num { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 800; color: var(--carbon); }
+    /* Número de factura */
+    .factura-num { font-family: 'DM Sans', sans-serif; font-size: .92rem; font-weight: 700; color: var(--carbon); }
     .factura-sub { font-size: .75rem; color: var(--muted); margin-top: 2px; }
-    .monto-total { font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 800; color: var(--rojo); }
 
-    .badge-tipo { font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 800; padding: 3px 9px; border-radius: 5px; text-transform: uppercase; letter-spacing: .5px; display: inline-flex; align-items: center; gap: 4px; }
+    /* Total en negro */
+    .monto-total { font-family: 'DM Sans', sans-serif; font-size: .95rem; font-weight: 800; color: var(--carbon); }
+
+    /* Fecha más legible */
+    .fecha-principal { font-family: 'DM Sans', sans-serif; font-size: .82rem; font-weight: 600; color: #444; }
+    .fecha-hora { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+
+    /* Método pago más oscuro */
+    .badge-metodo { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 600; background: #e8e6e1; color: #444; border: 1px solid #ccc; border-radius: 6px; padding: 3px 10px; display: inline-block; }
+
+    .badge-tipo { font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 700; padding: 3px 9px; border-radius: 5px; text-transform: capitalize; letter-spacing: .3px; display: inline-flex; align-items: center; gap: 4px; }
     .bt-servicio { background: #e3f2fd; color: var(--azul);    border: 1px solid #bbdefb; }
     .bt-producto { background: #e8f5e9; color: var(--verde);   border: 1px solid #c8e6c9; }
     .bt-compra   { background: #fff3e0; color: var(--naranja); border: 1px solid #ffe0b2; }
 
-    .badge-estado { font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700; border-radius: 100px; padding: 4px 11px; text-transform: uppercase; letter-spacing: .4px; display: inline-flex; align-items: center; gap: 5px; }
+    .badge-estado { font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700; border-radius: 100px; padding: 4px 11px; text-transform: capitalize; letter-spacing: .3px; display: inline-flex; align-items: center; gap: 5px; }
     .badge-pagada    { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
     .badge-pendiente { background: #fff8e1; color: #f57f17; border: 1px solid #ffe082; }
-    .badge-metodo { font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 600; background: var(--gris); color: var(--muted); border: 1px solid var(--borde); border-radius: 5px; padding: 2px 8px; display: inline-block; }
 
     .btn-fila { width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: transform .2s, box-shadow .2s; text-decoration: none; }
     .btn-fila svg { width: 14px; height: 14px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
@@ -169,147 +117,49 @@
     .mc-check svg { width: 10px; height: 10px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
     .metodo-card .mc-logo { width: 52px; height: 52px; border-radius: 12px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: white; border: 1px solid var(--borde); pointer-events: none; }
     .metodo-card .mc-logo img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
-    .metodo-card .mc-nombre { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; pointer-events: none; }
-    .btn-confirmar-pago { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px; border-radius: 10px; border: none; background: var(--rojo); color: white; width: 100%; cursor: pointer; box-shadow: 0 4px 20px rgba(211,47,47,.4); transition: .2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-    .btn-confirmar-pago:hover { background: var(--rojo2); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(211,47,47,.5); }
-
-    .modal-num-factura {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-size: 1.05rem; font-weight: 800;
-        color: var(--carbon);
-        letter-spacing: .5px;
-        background: transparent;
-        border: none;
-        text-decoration: none !important;
-    }
+    .metodo-card .mc-nombre { font-size: .68rem; font-weight: 700; text-transform: capitalize; letter-spacing: .3px; pointer-events: none; }
+    .btn-confirmar-pago { font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 14px; border-radius: 10px; border: none; background: var(--rojo); color: white; width: 100%; cursor: pointer; box-shadow: 0 4px 20px rgba(211,47,47,.4); transition: .2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .btn-confirmar-pago:hover { background: var(--rojo2); transform: translateY(-1px); }
+    .modal-num-factura { font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 800; color: var(--carbon); background: transparent; border: none; }
 
     /* ── DataTables ── */
     .dataTables_wrapper { padding: 12px 16px; }
-    .dataTables_filter input {
-        border: 1.5px solid var(--borde) !important;
-        border-radius: 8px !important;
-        padding: 6px 12px !important;
-        font-family: 'DM Sans', sans-serif !important;
-        font-size: .85rem !important;
-        outline: none !important;
-        transition: border-color .2s;
-        max-width: 160px;       /* ← no ocupa toda la línea en móvil */
-    }
+    .dataTables_filter input { border: 1.5px solid var(--borde) !important; border-radius: 8px !important; padding: 6px 12px !important; font-family: 'DM Sans', sans-serif !important; font-size: .85rem !important; outline: none !important; transition: border-color .2s; max-width: 160px; }
     .dataTables_filter input:focus { border-color: var(--rojo) !important; }
-    .dataTables_filter label,
-    .dataTables_length label,
-    .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
-    .dataTables_length select {
-        border: 1.5px solid var(--borde) !important;
-        border-radius: 8px !important;
-        padding: 4px 8px !important;
-        -webkit-appearance: none !important;
-        -moz-appearance: none !important;
-        appearance: none !important;
-        background: white !important;
-    }
+    .dataTables_filter label, .dataTables_length label, .dataTables_info { font-family: 'DM Sans', sans-serif; font-size: .8rem; color: var(--muted); }
+    .dataTables_length select { border: 1.5px solid var(--borde) !important; border-radius: 8px !important; padding: 4px 8px !important; -webkit-appearance: none !important; appearance: none !important; background: white !important; }
     .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
     .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
-    .paginate_button.current a, .paginate_button.current a:hover { color: white !important; }
     .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
     .paginate_button.disabled { display: inline-block !important; opacity: .4; }
     .dataTables_paginate { display: block !important; }
 
-    /* ══════════════════════════════════════
-       BREAKPOINTS RESPONSIVOS
-    ══════════════════════════════════════ */
-
-    /* Tablets / móvil grande */
-    @media (max-width: 991px) {
-        .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
+    /* ── RESPONSIVE ── */
+    @media (max-width: 991px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 767px) {
-        /* Header */
-        .taller-header {
-            padding: 16px;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .header-actions {
-            width: 100%;
-        }
-
-        .btn-accion {
-            flex: 1;                /* botones se expanden al mismo ancho */
-            justify-content: center;
-            font-size: .7rem;
-            padding: 9px 10px;
-        }
-
+        .taller-header { padding: 16px; flex-direction: column; align-items: flex-start; }
+        .header-actions { width: 100%; }
+        .btn-accion { flex: 1; justify-content: center; font-size: .7rem; padding: 9px 10px; }
         .header-titulo { font-size: 1.5rem; }
-
-        /* Stats: 2 columnas en tablet, 1 sola si no caben */
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .stat-card {
-            padding: 16px 18px;
-            gap: 14px;
-        }
-
-        /* Filtros apilados */
-        .filtro-wrap {
-            flex-direction: column;
-            align-items: stretch;
-            padding: 14px;
-        }
-
-        .filtro-group { width: 100%; }
-        .filtro-input { min-width: unset; width: 100%; }
-        .chips-tipo { align-self: auto; }
-        .btn-limpiar { align-self: auto; width: 100%; }
-
-        /* Tabla */
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        .stat-card { padding: 16px 18px; gap: 14px; }
+        .filtro-wrap { flex-wrap: wrap; padding: 14px; }
+        .filtro-group { width: 100%; flex: none; }
+        .filtro-input { width: 100%; }
+        .chips-tipo { flex-wrap: wrap; }
+        .btn-limpiar { width: 100%; }
         #tabla_facturas { min-width: 600px; }
-
-        #tabla_facturas thead th,
-        #tabla_facturas tbody td {
-            padding: 10px 8px;
-        }
-
-        /* Ocultar columna Método Pago en móvil (opcional) */
-        #tabla_facturas th:nth-child(5),
-        #tabla_facturas td:nth-child(5) {
-            display: none;
-        }
-
-        /* DataTables controls */
+        #tabla_facturas thead th, #tabla_facturas tbody td { padding: 10px 8px; }
+        #tabla_facturas th:nth-child(5), #tabla_facturas td:nth-child(5) { display: none; }
         .dataTables_wrapper { padding: 8px 10px; }
-
-        .dataTables_filter,
-        .dataTables_length {
-            float: none !important;
-            text-align: left !important;
-            margin-bottom: 6px;
-        }
-
+        .dataTables_filter, .dataTables_length { float: none !important; text-align: left !important; margin-bottom: 6px; }
         .dataTables_filter input { max-width: 100%; width: 100%; }
     }
-
     @media (max-width: 480px) {
         .header-titulo { font-size: 1.3rem; }
-
-        /* Stats: 1 columna en pantallas muy pequeñas */
         .stats-grid { grid-template-columns: 1fr; }
-
-        /* En pantallas muy pequeñas también ocultar Fecha */
-        #tabla_facturas th:nth-child(7),
-        #tabla_facturas td:nth-child(7) {
-            display: none;
-        }
-
-        /* Modal adaptado */
-        #modalPagarOverlay > div {
-            margin: 8px;
-        }
+        #tabla_facturas th:nth-child(7), #tabla_facturas td:nth-child(7) { display: none; }
+        #modalPagarOverlay > div { margin: 8px; }
     }
 </style>
 {% endblock %}
@@ -317,7 +167,6 @@
 {% block contenido %}
 <div class="container-fluid py-2">
 
-    <!-- HEADER -->
     <div class="taller-header">
         <div class="header-left">
             <div class="stat-icon" style="background:transparent;">
@@ -340,7 +189,7 @@
             {% if request.user.cargo != 'MECANICO' %}
             <a href="{% url 'app:crear_factura' %}" class="btn-accion btn-nuevo">
                 <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Nueva Factura
+                Nueva factura
             </a>
             {% endif %}
         </div>
@@ -354,7 +203,7 @@
             </div>
             <div>
                 <div class="stat-num" id="stat-total">0</div>
-                <div class="stat-label">Total Facturas</div>
+                <div class="stat-label">Total facturas</div>
             </div>
         </div>
         <div class="stat-card">
@@ -405,7 +254,7 @@
                         <th>Factura / Tipo</th>
                         <th>Descripción</th>
                         <th class="text-center">Estado</th>
-                        <th>Método Pago</th>
+                        <th>Método de pago</th>
                         <th>Total</th>
                         <th>Fecha</th>
                         <th class="text-center">Acciones</th>
@@ -418,7 +267,6 @@
                         data-total="{{ f.total }}">
                         <td class="text-center" style="font-weight:700;color:var(--muted);font-size:.8rem;">{{ forloop.counter }}</td>
 
-                        <!-- Factura + tipo -->
                         <td>
                             <div class="factura-num">{{ f.numero_factura }}</div>
                             <div style="margin-top:4px;">
@@ -441,7 +289,6 @@
                             </div>
                         </td>
 
-                        <!-- Descripción -->
                         <td>
                             {% if f.tipo == 'SERVICIO' and f.orden_servicio %}
                                 <div style="font-weight:600;font-size:.88rem;">
@@ -459,7 +306,6 @@
                             {% endif %}
                         </td>
 
-                        <!-- Estado -->
                         <td class="text-center">
                             {% if f.estado_pago == 'Pagada' %}
                                 <span class="badge-estado badge-pagada">
@@ -474,7 +320,6 @@
                             {% endif %}
                         </td>
 
-                        <!-- Método pago -->
                         <td>
                             {% if f.metodo_pago %}
                                 <span class="badge-metodo">{{ f.get_metodo_pago_display }}</span>
@@ -483,31 +328,25 @@
                             {% endif %}
                         </td>
 
-                        <!-- Total -->
                         <td><div class="monto-total">${{ f.total|floatformat:0 }}</div></td>
 
-                        <!-- Fecha -->
-                        <td style="color:var(--muted);font-size:.82rem;white-space:nowrap;">
-                            {{ f.fecha_emision|date:"d/m/Y" }}
-                            <div class="factura-sub">{{ f.fecha_emision|date:"H:i" }}</div>
+                        <td>
+                            <div class="fecha-principal">{{ f.fecha_emision|date:"d/m/Y" }}</div>
+                            <div class="fecha-hora">{{ f.fecha_emision|date:"H:i" }}</div>
                         </td>
 
-                        <!-- Acciones -->
                         <td class="text-center">
                             <div class="d-flex justify-content-center" style="gap:6px;">
                                 {% if f.estado_pago == 'Pagada' %}
-                                <button class="btn-fila btn-ver"
-                                    title="Ver factura"
+                                <button class="btn-fila btn-ver" title="Ver factura"
                                     data-url="{% url 'app:detalle_factura' f.pk %}"
                                     onclick="imprimirFactura(this.dataset.url)">
                                     <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                 </button>
                                 {% endif %}
                                 {% if f.estado_pago == 'Pendiente' and f.tipo != 'COMPRA' and request.user.cargo != 'MECANICO' %}
-                                <button class="btn-fila btn-pagar btn-abrir-pago"
-                                    title="Registrar pago"
-                                    data-id="{{ f.pk }}"
-                                    data-num="{{ f.numero_factura }}"
+                                <button class="btn-fila btn-pagar btn-abrir-pago" title="Registrar pago"
+                                    data-id="{{ f.pk }}" data-num="{{ f.numero_factura }}"
                                     data-url="{% url 'app:pagar_factura' f.pk %}">
                                     <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                                 </button>
@@ -525,35 +364,22 @@
 <!-- MODAL PAGAR -->
 <div id="modalPagarOverlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;backdrop-filter:blur(4px);">
     <div style="background:white;border-radius:20px;width:100%;max-width:460px;margin:16px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.45);position:relative;z-index:100000;">
-
-        <!-- Cabecera -->
         <div style="background:var(--carbon);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:12px;">
                 <div style="width:52px;height:52px;border-radius:12px;overflow:hidden;background:white;border:1px solid var(--borde);display:flex;align-items:center;justify-content:center;">
                     <img src="{% static 'imagenes/jj.jpeg' %}" alt="Pago" style="width:100%;height:100%;object-fit:contain;">
                 </div>
-                <span style="font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:white;">Registrar Pago</span>
+                <span style="font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:800;color:white;">Registrar pago</span>
             </div>
             <button onclick="cerrarModalPagar()" style="background:rgba(255,255,255,.1);border:none;color:white;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:.2s;" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">×</button>
         </div>
-
-        <!-- Separador rojo -->
         <div style="height:3px;background:linear-gradient(90deg,var(--rojo),var(--rojo2));"></div>
-
-        <!-- Cuerpo -->
         <div style="padding:24px;">
-
-            <!-- Info factura -->
             <div style="background:var(--gris);border-radius:10px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:10px;">
-                <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;flex-shrink:0;stroke-linecap:round;stroke-linejoin:round;">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                </svg>
+                <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;flex-shrink:0;stroke-linecap:round;stroke-linejoin:round;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 <span style="font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--muted);">Número de factura:</span>
                 <span class="modal-num-factura" id="modalNumFactura"></span>
             </div>
-
-            <!-- Grid métodos -->
             <p style="font-family:'DM Sans',sans-serif;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px;">Selecciona el método</p>
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
                 <div class="metodo-card" data-metodo="Efectivo">
@@ -569,12 +395,12 @@
                 <div class="metodo-card" data-metodo="TarjetaDebito">
                     <div class="mc-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
                     <div class="mc-logo"><img src="{% static 'imagenes/debito.jpeg' %}" alt="T. Débito"></div>
-                    <div class="mc-nombre">T. Débito</div>
+                    <div class="mc-nombre">T. débito</div>
                 </div>
                 <div class="metodo-card" data-metodo="TarjetaCredito">
                     <div class="mc-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
                     <div class="mc-logo"><img src="{% static 'imagenes/credito.jpeg' %}" alt="T. Crédito"></div>
-                    <div class="mc-nombre">T. Crédito</div>
+                    <div class="mc-nombre">T. crédito</div>
                 </div>
                 <div class="metodo-card" data-metodo="Nequi">
                     <div class="mc-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
@@ -587,7 +413,6 @@
                     <div class="mc-nombre">Daviplata</div>
                 </div>
             </div>
-
             <form method="post" id="formPagar" action="">
                 {% csrf_token %}
                 <input type="hidden" name="metodo_pago" id="metodoPagoInput">
@@ -596,7 +421,7 @@
                 </div>
                 <button type="submit" class="btn-confirmar-pago">
                     <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:white;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><polyline points="20 6 9 17 4 12"/></svg>
-                    Confirmar Pago
+                    Confirmar pago
                 </button>
             </form>
         </div>
@@ -606,37 +431,28 @@
 
 {% block js %}
 <script>
-function imprimirFactura(url) {
-    window.open(url, '_blank');
-}
+function imprimirFactura(url) { window.open(url, '_blank'); }
 
 $(document).ready(function () {
     var dt = $('#tabla_facturas').DataTable({
-        responsive: true,
-        autoWidth: false,
-        pageLength: 10,
-        order: [[0, 'desc']],
-        pagingType: 'full_numbers',
+        responsive: true, autoWidth: false, pageLength: 10,
+        order: [[0, 'desc']], pagingType: 'full_numbers',
         columnDefs: [{ orderable: false, targets: [7] }],
         language: {
-            sProcessing:    'Procesando...',
-            sLengthMenu:    'Mostrar _MENU_ registros',
-            sZeroRecords:   'No se encontraron facturas',
-            sEmptyTable:    'No hay facturas registradas',
-            sInfo:          'Mostrando _START_ a _END_ de _TOTAL_ registros',
-            sInfoEmpty:     'Mostrando 0 a 0 de 0 registros',
-            sInfoFiltered:  '(filtrado de _MAX_ registros totales)',
-            sSearch:        'Buscar:',
-            sLoadingRecords:'Cargando...',
-            oPaginate: { sFirst:'«', sLast:'»', sNext:'›', sPrevious:'‹' }
+            sProcessing:'Procesando...', sLengthMenu:'Mostrar _MENU_ registros',
+            sZeroRecords:'No se encontraron facturas', sEmptyTable:'No hay facturas registradas',
+            sInfo:'Mostrando _START_ a _END_ de _TOTAL_ registros',
+            sInfoEmpty:'Mostrando 0 a 0 de 0 registros',
+            sInfoFiltered:'(filtrado de _MAX_ registros totales)',
+            sSearch:'Buscar:', sLoadingRecords:'Cargando...',
+            oPaginate:{ sFirst:'«', sLast:'»', sNext:'›', sPrevious:'‹' }
         }
     });
 
     var estadoActivo = '';
-
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
         if (settings.nTable.id !== 'tabla_facturas') return true;
-        var row    = dt.row(dataIndex).node();
+        var row = dt.row(dataIndex).node();
         var estado = $(row).data('estado') || '';
         var fecha  = $(row).data('fecha')  || '';
         var desde  = $('#fechaDesde').val();
@@ -650,47 +466,39 @@ $(document).ready(function () {
     $('.chip-tipo').on('click', function () {
         $('.chip-tipo').removeClass('active-todos active-pagada active-pendiente');
         estadoActivo = $(this).data('estado');
-        if (!estadoActivo)                  $(this).addClass('active-todos');
-        else if (estadoActivo === 'Pagada') $(this).addClass('active-pagada');
-        else                                $(this).addClass('active-pendiente');
-        dt.draw();
-        recalcularStats();
+        if (!estadoActivo)                   $(this).addClass('active-todos');
+        else if (estadoActivo === 'Pagada')  $(this).addClass('active-pagada');
+        else                                 $(this).addClass('active-pendiente');
+        dt.draw(); recalcularStats();
     });
 
     $('#fechaDesde, #fechaHasta').on('change', function () { dt.draw(); recalcularStats(); });
-
     $('#btn-limpiar').on('click', function () {
         $('#fechaDesde, #fechaHasta').val('');
         estadoActivo = '';
         $('.chip-tipo').removeClass('active-todos active-pagada active-pendiente');
         $('.chip-tipo[data-estado=""]').addClass('active-todos');
-        dt.draw();
-        recalcularStats();
+        dt.draw(); recalcularStats();
     });
 
     function recalcularStats() {
         var total = 0, pagadas = 0, pendientes = 0;
         dt.rows({ search: 'applied' }).every(function () {
-            var row    = $(this.node());
+            var row = $(this.node());
             var estado = row.data('estado');
             total++;
-            if (estado === 'Pagada') pagadas++;
-            else                     pendientes++;
+            if (estado === 'Pagada') pagadas++; else pendientes++;
         });
         $('#stat-total').text(total);
         $('#stat-pagadas').text(pagadas);
         $('#stat-pendientes').text(pendientes);
     }
-
     $('#tabla_facturas').on('draw.dt', recalcularStats);
     recalcularStats();
 
     $(document).on('click', '.btn-abrir-pago', function () {
-        var num = $(this).data('num');
-        var url = $(this).data('url');
-        abrirModalPagar(num, url);
+        abrirModalPagar($(this).data('num'), $(this).data('url'));
     });
-
     $(document).on('click', '.metodo-card', function () {
         $('.metodo-card').removeClass('activo');
         $(this).addClass('activo');
@@ -707,19 +515,11 @@ function abrirModalPagar(numFactura, urlPagar) {
     document.getElementById('errorMetodo').style.display = 'none';
     document.getElementById('modalPagarOverlay').style.display = 'flex';
 }
-
-function cerrarModalPagar() {
-    document.getElementById('modalPagarOverlay').style.display = 'none';
-}
-
-document.getElementById('modalPagarOverlay').addEventListener('click', function(e) {
-    if (e.target === this) cerrarModalPagar();
-});
-
+function cerrarModalPagar() { document.getElementById('modalPagarOverlay').style.display = 'none'; }
+document.getElementById('modalPagarOverlay').addEventListener('click', function(e) { if (e.target === this) cerrarModalPagar(); });
 document.getElementById('formPagar').addEventListener('submit', function(e) {
     if (!document.getElementById('metodoPagoInput').value) {
-        e.preventDefault();
-        document.getElementById('errorMetodo').style.display = 'block';
+        e.preventDefault(); document.getElementById('errorMetodo').style.display = 'block';
     }
 });
 </script>

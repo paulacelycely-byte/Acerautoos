@@ -45,7 +45,7 @@
         font-family: 'Barlow Condensed', sans-serif;
         font-size: clamp(1.4rem, 5vw, 2rem);
         font-weight: 800; color: white; letter-spacing: 1px;
-        text-transform: uppercase; line-height: 1; margin: 0;
+        margin: 0; line-height: 1;
         white-space: nowrap;
     }
     .header-sub {
@@ -59,7 +59,7 @@
         display: inline-flex; align-items: center; gap: 6px;
         padding: 7px 14px; border-radius: 50px;
         font-family: 'DM Sans', sans-serif; font-size: .74rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .6px; white-space: nowrap;
+        letter-spacing: .6px; white-space: nowrap;
     }
     .badge-estado svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
     .badge-pendiente  { background: rgba(230,152,0,.18);  color: #f5a623; }
@@ -80,16 +80,16 @@
     .hm-item + .hm-item { padding-left: 16px; }
     .hm-label {
         font-family: 'DM Sans', sans-serif; font-size: .62rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .9px; color: rgba(255,255,255,.35);
+        letter-spacing: .9px; color: rgba(255,255,255,.35);
         margin-bottom: 3px;
     }
     .hm-value {
-    font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 700;
-    color: white; letter-spacing: .5px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    text-transform: capitalize;
-}
-.hm-value.accent { color: var(--rojo); }
+        font-family: 'DM Sans', sans-serif; font-size: .95rem; font-weight: 600;
+        color: white; letter-spacing: .3px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .hm-value.accent { color: var(--rojo); font-weight: 700; }
+    .hm-value.placa { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; letter-spacing: 2px; }
 
     /* ── Columnas info ── */
     .dos-col {
@@ -105,6 +105,7 @@
         border-radius: 12px;
         border: 1px solid var(--borde);
         overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,.05);
     }
     .info-card-header {
         background: var(--gris);
@@ -119,28 +120,26 @@
         flex-shrink: 0;
     }
     .info-card-header span {
-        font-family: 'Barlow Condensed', sans-serif;
+        font-family: 'DM Sans', sans-serif;
         font-size: .78rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: 1.1px; color: var(--texto);
+        letter-spacing: .4px; color: var(--texto);
     }
     .info-card-body { padding: 16px 18px; }
 
     .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
     .data-label {
-        font-family: 'DM Sans', sans-serif; font-size: .62rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin-bottom: 2px;
+        font-family: 'Barlow Condensed', sans-serif; font-size: .75rem; font-weight: 800;
+        letter-spacing: 1.2px; color: var(--muted); margin-bottom: 4px; text-transform: uppercase;
     }
     .data-value {
-    font-family: 'DM Sans', sans-serif; font-size: .86rem; font-weight: 600; color: var(--texto);
-    word-break: break-word;
-    text-transform: capitalize;
-}
-.data-value.placa {
-    font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem;
-    color: var(--carbon); letter-spacing: 2px;
-    text-transform: uppercase;
-}
-.data-value.mono { font-family: monospace; letter-spacing: .5px; font-size: .84rem; text-transform: none; }
+        font-family: 'DM Sans', sans-serif; font-size: .86rem; font-weight: 600; color: var(--texto);
+        word-break: break-word;
+    }
+    .data-value.placa {
+        font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem;
+        color: var(--carbon); letter-spacing: 2px;
+    }
+    .data-value.mono { font-family: monospace; letter-spacing: .5px; font-size: .84rem; }
 
     /* ── Tabla productos ── */
     .prod-card {
@@ -149,15 +148,16 @@
         border: 1px solid var(--borde);
         overflow: hidden;
         margin-bottom: 14px;
+        box-shadow: 0 1px 3px rgba(0,0,0,.05);
     }
     .tabla-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .tabla-productos { width: 100%; border-collapse: collapse; font-family: 'DM Sans', sans-serif; min-width: 500px; }
     .tabla-productos thead tr { background: var(--carbon); }
     .tabla-productos thead th {
         padding: 12px 14px;
-        font-family: 'Barlow Condensed', sans-serif; font-size: .72rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .9px;
-        color: rgba(255,255,255,.55); text-align: left; border: none; white-space: nowrap;
+        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
+        letter-spacing: .4px;
+        color: rgba(255,255,255,.6); text-align: left; border: none; white-space: nowrap;
     }
     .tabla-productos thead th.td-r { text-align: right; }
     .tabla-productos tbody tr { border-bottom: 1px solid var(--borde); }
@@ -178,7 +178,7 @@
         display: inline-flex; align-items: center; gap: 4px;
         font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 700;
         padding: 3px 9px; border-radius: 20px;
-        text-transform: uppercase; letter-spacing: .3px; white-space: nowrap;
+        letter-spacing: .3px; white-space: nowrap;
     }
     .compat-badge svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
     .compat-ok      { background: #dcfce7; color: #15803d; }
@@ -212,8 +212,8 @@
     .totales-row:last-child { border-bottom: none; }
     .totales-row.total-final {
         background: var(--carbon); padding: 13px 16px;
-        font-family: 'Barlow Condensed', sans-serif; font-size: 1rem;
-        font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: white;
+        font-family: 'DM Sans', sans-serif; font-size: .95rem;
+        font-weight: 700; letter-spacing: .3px; color: white;
     }
     .totales-row.total-final span:last-child { color: var(--rojo); font-size: 1.15rem; }
     .t-label { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: .8rem; }
@@ -225,12 +225,13 @@
         padding: 16px 20px;
         display: flex; align-items: center; justify-content: space-between;
         flex-wrap: wrap; gap: 10px;
+        box-shadow: 0 1px 3px rgba(0,0,0,.05);
     }
     .footer-acciones { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
     .btn-footer {
         font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .6px;
+        letter-spacing: .4px;
         padding: 9px 16px; border-radius: 9px; border: none;
         cursor: pointer; text-decoration: none;
         display: inline-flex; align-items: center; gap: 7px;
@@ -292,7 +293,7 @@
         .hm-item:last-child { border-bottom: none; }
         .hm-item + .hm-item { padding-left: 0; }
         .hm-label { font-size: .6rem; }
-        .hm-value { font-size: .96rem; }
+        .hm-value { font-size: .88rem; }
 
         .info-card { border-radius: 10px; }
         .info-card-header { padding: 10px 14px; }
@@ -327,7 +328,7 @@
     @media (max-width: 360px) {
         .header-titulo { font-size: 1.25rem; }
         .badge-estado { font-size: .68rem; padding: 6px 10px; }
-        .hm-value { font-size: .88rem; }
+        .hm-value { font-size: .82rem; }
         .btn-footer { font-size: .68rem; padding: 8px 10px; }
     }
 </style>
@@ -345,7 +346,7 @@
                 </div>
                 <div>
                     <h1 class="header-titulo">Orden #{{ orden.pk }}</h1>
-                    <div class="header-sub">{{ orden.fecha|date:"d/m/Y H:i" }} &nbsp;·&nbsp; Acerautos S.A.S</div>
+                    <div class="header-sub">{{ orden.fecha|date:"d/m/Y H:i" }} · Acerautos S.A.S</div>
                 </div>
             </div>
             <div class="header-estado">
@@ -357,7 +358,7 @@
                 {% elif orden.estado == 'En Proceso' %}
                     <span class="badge-estado badge-en-proceso">
                         <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                        En Proceso
+                        En proceso
                     </span>
                 {% else %}
                     <span class="badge-estado badge-terminado">
@@ -370,23 +371,23 @@
 
         <div class="header-metrics">
             <div class="hm-item">
-                <div class="hm-label">Placa</div>
-                <div class="hm-value">{{ orden.vehiculo.placa }}</div>
+                <div class="hm-label">placa</div>
+                <div class="hm-value placa">{{ orden.vehiculo.placa }}</div>
             </div>
             <div class="hm-item">
-                <div class="hm-label">Vehículo</div>
+                <div class="hm-label">vehículo</div>
                 <div class="hm-value">{{ orden.vehiculo.marca }} {{ orden.vehiculo.modelo }}</div>
             </div>
             <div class="hm-item">
-                <div class="hm-label">Cliente</div>
+                <div class="hm-label">cliente</div>
                 <div class="hm-value">{{ orden.vehiculo.cliente.nombre }}</div>
             </div>
             <div class="hm-item">
-                <div class="hm-label">Kilometraje</div>
+                <div class="hm-label">kilometraje</div>
                 <div class="hm-value">{{ orden.km_actual|floatformat:0 }} km</div>
             </div>
             <div class="hm-item">
-                <div class="hm-label">Total Estimado</div>
+                <div class="hm-label">total estimado</div>
                 <div class="hm-value accent">$ {{ total|floatformat:0 }}</div>
             </div>
         </div>
@@ -399,24 +400,24 @@
         <div class="info-card">
             <div class="info-card-header">
                 <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-                <span>Datos del Vehículo</span>
+                <span>datos del vehículo</span>
             </div>
             <div class="info-card-body">
                 <div class="data-grid">
                     <div class="data-item" style="grid-column: span 2;">
-                        <div class="data-label">Placa</div>
+                        <div class="data-label">placa</div>
                         <div class="data-value placa">{{ orden.vehiculo.placa }}</div>
                     </div>
                     <div class="data-item">
-                        <div class="data-label">Marca</div>
+                        <div class="data-label">marca</div>
                         <div class="data-value">{{ orden.vehiculo.marca }}</div>
                     </div>
                     <div class="data-item">
-                        <div class="data-label">Modelo</div>
+                        <div class="data-label">modelo</div>
                         <div class="data-value">{{ orden.vehiculo.modelo }}</div>
                     </div>
                     <div class="data-item" style="grid-column: span 2;">
-                        <div class="data-label">Propietario</div>
+                        <div class="data-label">propietario</div>
                         <div class="data-value">{{ orden.vehiculo.cliente.nombre }}</div>
                     </div>
                 </div>
@@ -427,28 +428,24 @@
         <div class="info-card">
             <div class="info-card-header">
                 <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                <span>Servicio &amp; Asignación</span>
+                <span>servicio &amp; asignación</span>
             </div>
             <div class="info-card-body">
                 <div class="data-grid">
                     <div class="data-item" style="grid-column: span 2;">
-                        <div class="data-label">Tipo de Servicio</div>
+                        <div class="data-label">tipo de servicio</div>
                         <div class="data-value">{{ orden.servicio.nombre }}</div>
                     </div>
                     <div class="data-item">
-                        <div class="data-label">Mano de Obra</div>
-                        <div class="data-value">$ {{ orden.servicio.precio_mano_obra|floatformat:0 }}</div>
-                    </div>
-                    <div class="data-item">
-                        <div class="data-label">Fecha Ingreso</div>
+                        <div class="data-label">fecha ingreso</div>
                         <div class="data-value mono">{{ orden.fecha|date:"d/m/Y H:i" }}</div>
                     </div>
                     <div class="data-item" style="grid-column: span 2;">
-    <div class="data-label">Técnico Asignado</div>
-    <div class="data-value" style="text-transform:capitalize;">
-        {% if orden.empleado %}{{ orden.empleado }}{% else %}<span style="color:var(--muted);font-weight:400;">Sin asignar</span>{% endif %}
-    </div>
-</div>
+                        <div class="data-label">técnico asignado</div>
+                        <div class="data-value">
+                            {% if orden.empleado %}{{ orden.empleado }}{% else %}<span style="color:var(--muted);font-weight:400;">sin asignar</span>{% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -459,15 +456,15 @@
     <div class="prod-card">
         <div class="info-card-header" style="padding:12px 18px;">
             <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-            <span>Productos / Repuestos Usados</span>
+            <span>productos / repuestos usados</span>
         </div>
 
         {% for d in detalles %}{% if d.compat_status == 'warn' %}
         <div class="compat-aviso">
             <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             <div>
-                <div class="compat-aviso-texto">Hay productos sin compatibilidad registrada para la marca de este vehículo.</div>
-                <div class="compat-aviso-sub">Verifica que los repuestos sean correctos para {{ orden.vehiculo.marca.nombre }}.</div>
+                <div class="compat-aviso-texto">hay productos sin compatibilidad registrada para la marca de este vehículo.</div>
+                <div class="compat-aviso-sub">verifica que los repuestos sean correctos para {{ orden.vehiculo.marca.nombre }}.</div>
             </div>
         </div>
         {% endif %}{% endfor %}
@@ -477,12 +474,12 @@
                 <thead>
                     <tr>
                         <th style="width:36px;">#</th>
-                        <th>Producto</th>
-                        <th>Código</th>
-                        <th>Compat.</th>
-                        <th class="td-r">P. Unit.</th>
-                        <th class="td-r">Cant.</th>
-                        <th class="td-r">Subtotal</th>
+                        <th>producto</th>
+                        <th>código</th>
+                        <th>compat.</th>
+                        <th class="td-r">p. unitario</th>
+                        <th class="td-r">cantidad</th>
+                        <th class="td-r">subtotal</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -495,17 +492,17 @@
                             {% if d.compat_status == 'ok' %}
                                 <span class="compat-badge compat-ok">
                                     <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                                    Compatible
+                                    compatible
                                 </span>
                             {% elif d.compat_status == 'warn' %}
                                 <span class="compat-badge compat-warn">
                                     <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                                    Revisar
+                                    revisar
                                 </span>
                             {% else %}
                                 <span class="compat-badge compat-neutral">
                                     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                                    Sin restricción
+                                    sin restricción
                                 </span>
                             {% endif %}
                         </td>
@@ -515,7 +512,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="7" class="sin-productos">No hay productos registrados en esta orden.</td>
+                        <td colspan="7" class="sin-productos">no hay productos registrados en esta orden.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -527,19 +524,19 @@
                 <div class="totales-row">
                     <span class="t-label">
                         <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-                        Subtotal productos
+                        subtotal productos
                     </span>
                     <span style="font-weight:700;">$ {{ subtotal_productos|floatformat:0 }}</span>
                 </div>
                 <div class="totales-row">
                     <span class="t-label">
                         <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                        Mano de obra
+                        mano de obra
                     </span>
                     <span style="font-weight:700;">$ {{ mano_obra|floatformat:0 }}</span>
                 </div>
                 <div class="totales-row total-final">
-                    <span>Total Estimado</span>
+                    <span>total estimado</span>
                     <span>$ {{ total|floatformat:0 }}</span>
                 </div>
             </div>
@@ -550,7 +547,7 @@
     <div class="detalle-footer">
         <a href="{{ listar_url }}" class="btn-footer btn-volver">
             <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-            Volver al listado
+            volver al listado
         </a>
     </div>
 

@@ -37,7 +37,7 @@ CONFIG_MANTENIMIENTO = {
 def _calcular_fecha_sugerida(vehiculo, km_actual=None):
     config = CONFIG_MANTENIMIENTO.get(vehiculo.tipo_uso, (50, 5000))
     km_diarios, km_por_cambio = config
-    km_base = km_actual if km_actual else (vehiculo.km_ultimo_servicio or 0)
+    km_base = km_actual if km_actual else 0
     if km_base > 0:
         km_proximo = ((km_base // km_por_cambio) + 1) * km_por_cambio
         km_faltan  = km_proximo - km_base
@@ -52,7 +52,7 @@ def _info_mantenimiento(vehiculo, km_actual=None):
     config = CONFIG_MANTENIMIENTO.get(vehiculo.tipo_uso, (50, 5000))
     km_diarios, km_por_cambio = config
     fecha, km_proximo = _calcular_fecha_sugerida(vehiculo, km_actual)
-    km_base = km_actual if km_actual else (vehiculo.km_ultimo_servicio or 0)
+    km_base = km_actual if km_actual else 0
     km_faltan = max(0, km_proximo - km_base)
     dias = max(1, km_faltan // km_diarios)
     return {
@@ -205,7 +205,7 @@ def _crear_seguimientos(request, orden):
 
 
 # ══════════════════════════════════════════════════════════
-#  LISTAR — Mecánico puede ver
+#  LISTAR
 # ══════════════════════════════════════════════════════════
 class OrdenServicioListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
     model = OrdenServicio
@@ -241,7 +241,7 @@ class OrdenServicioListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
 
 
 # ══════════════════════════════════════════════════════════
-#  CAMBIAR ESTADO — Mecánico puede cambiar estado
+#  CAMBIAR ESTADO
 # ══════════════════════════════════════════════════════════
 class CambiarEstadoOrdenView(LoginRequiredMixin, AdminOMecanicoMixin, View):
     def post(self, request, pk):
@@ -266,7 +266,7 @@ class CambiarEstadoOrdenView(LoginRequiredMixin, AdminOMecanicoMixin, View):
 
 
 # ══════════════════════════════════════════════════════════
-#  DETALLE — Mecánico puede ver
+#  DETALLE
 # ══════════════════════════════════════════════════════════
 class OrdenServicioDetailView(LoginRequiredMixin, AdminOMecanicoMixin, View):
     def get(self, request, pk):
@@ -299,16 +299,16 @@ class OrdenServicioDetailView(LoginRequiredMixin, AdminOMecanicoMixin, View):
 
 
 # ══════════════════════════════════════════════════════════
-#  AJAX — accesibles para ambos roles
+#  AJAX
 # ══════════════════════════════════════════════════════════
 class VehiculoKmView(LoginRequiredMixin, AdminOMecanicoMixin, View):
     def get(self, request, pk):
         try:
             v = Vehiculo.objects.select_related('marca').get(pk=pk)
-            km_actual = int(request.GET.get('km', 0)) or v.km_ultimo_servicio or 0
+            km_actual = int(request.GET.get('km', 0)) or 0
             info = _info_mantenimiento(v, km_actual if km_actual else None)
             return JsonResponse({
-                'km':              v.km_ultimo_servicio or 0,
+                'km':              0,
                 'placa':           v.placa,
                 'marca_id':        v.marca_id,
                 'marca_nombre':    v.marca.nombre,
@@ -370,7 +370,7 @@ class ProductosCompatiblesView(LoginRequiredMixin, AdminOMecanicoMixin, View):
 
 
 # ══════════════════════════════════════════════════════════
-#  CREAR — Mecánico puede crear
+#  CREAR
 # ══════════════════════════════════════════════════════════
 class OrdenServicioCreateView(LoginRequiredMixin, AdminOMecanicoMixin, CreateView):
     model         = OrdenServicio
@@ -389,15 +389,6 @@ class OrdenServicioCreateView(LoginRequiredMixin, AdminOMecanicoMixin, CreateVie
     def form_valid(self, form):
         orden = form.save(commit=False)
         orden.fecha = timezone.now()
-
-        if orden.vehiculo:
-            km_vehiculo = orden.vehiculo.km_ultimo_servicio or 0
-            if orden.km_actual < km_vehiculo:
-                orden.km_actual = km_vehiculo
-            elif orden.km_actual > km_vehiculo:
-                orden.vehiculo.km_ultimo_servicio = orden.km_actual
-                orden.vehiculo.save(update_fields=['km_ultimo_servicio'])
-
         orden.save()
         _guardar_servicios_detalle(form, orden)
 
@@ -424,7 +415,7 @@ class OrdenServicioCreateView(LoginRequiredMixin, AdminOMecanicoMixin, CreateVie
 
 
 # ══════════════════════════════════════════════════════════
-#  EDITAR — Mecánico puede editar
+#  EDITAR
 # ══════════════════════════════════════════════════════════
 class OrdenServicioUpdateView(LoginRequiredMixin, AdminOMecanicoMixin, UpdateView):
     model         = OrdenServicio
@@ -450,15 +441,6 @@ class OrdenServicioUpdateView(LoginRequiredMixin, AdminOMecanicoMixin, UpdateVie
     def form_valid(self, form):
         orden = form.save(commit=False)
         orden.fecha = self.get_object().fecha
-
-        if orden.vehiculo:
-            km_vehiculo = orden.vehiculo.km_ultimo_servicio or 0
-            if orden.km_actual < km_vehiculo:
-                orden.km_actual = km_vehiculo
-            elif orden.km_actual > km_vehiculo:
-                orden.vehiculo.km_ultimo_servicio = orden.km_actual
-                orden.vehiculo.save(update_fields=['km_ultimo_servicio'])
-
         orden.save()
         _guardar_servicios_detalle(form, orden)
 
@@ -480,7 +462,7 @@ class OrdenServicioUpdateView(LoginRequiredMixin, AdminOMecanicoMixin, UpdateVie
 
 
 # ══════════════════════════════════════════════════════════
-#  ELIMINAR — Solo Admin
+#  ELIMINAR
 # ══════════════════════════════════════════════════════════
 class OrdenServicioDeleteView(LoginRequiredMixin, SoloAdminMixin, View):
     def get(self, request, pk):
