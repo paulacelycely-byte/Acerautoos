@@ -120,6 +120,23 @@ class Proveedor(models.Model):
     class Meta:
         db_table = 'proveedor'
 
+# ══════════════════════════════════════════════════════════
+#  CATÁLOGO PROVEEDOR-PRODUCTO
+# ══════════════════════════════════════════════════════════
+class ProveedorProducto(models.Model):
+    proveedor        = models.ForeignKey(Proveedor, on_delete=models.CASCADE, related_name='catalogo')
+    producto         = models.ForeignKey('Producto', on_delete=models.CASCADE, related_name='proveedores')
+    precio_proveedor = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.proveedor.nombre} → {self.producto.nombre} (${self.precio_proveedor:,.0f})"
+
+    class Meta:
+        db_table        = 'proveedor_producto'
+        unique_together = ('proveedor', 'producto')
+        verbose_name    = 'Producto del Proveedor'
+
+
 
 # ══════════════════════════════════════════════════════════
 #  PRODUCTO
@@ -134,7 +151,6 @@ class Producto(models.Model):
     ]
     nombre        = models.CharField(max_length=100, unique=True)
     marca         = models.ForeignKey(Marca, on_delete=models.PROTECT, limit_choices_to={'categoria': 'REPUESTO', 'estado': True})
-    proveedor     = models.ForeignKey(Proveedor, on_delete=models.SET_NULL, null=True, blank=True)
     descripcion   = models.TextField(blank=True, null=True)
     precio        = models.DecimalField(max_digits=10, decimal_places=2)
     stock         = models.PositiveIntegerField(default=0)
@@ -337,7 +353,7 @@ class OrdenServicio(models.Model):
         verbose_name="Servicios",
     )
     fecha         = models.DateTimeField(default=timezone.now)
-    km_actual     = models.IntegerField()
+    km_actual     = models.IntegerField(null=True, blank=True) 
     estado        = models.CharField(max_length=20, choices=ESTADOS, default='Pendiente')
     observaciones = models.TextField(blank=True, null=True)
 
@@ -435,8 +451,9 @@ class SeguimientoMantenimiento(models.Model):
 
 
 # ══════════════════════════════════════════════════════════
-#  COMPRA
+#  COMPRA Y COMPRA DETALLE
 # ══════════════════════════════════════════════════════════
+
 class Compra(models.Model):
     METODOS = [
         ('Efectivo',       'Efectivo'),
@@ -449,8 +466,6 @@ class Compra(models.Model):
     ESTADOS_PAGO = [('Pendiente', 'Pendiente'), ('Pagada', 'Pagada')]
 
     proveedor             = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
-    producto              = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    cantidad              = models.IntegerField()
     fecha                 = models.DateTimeField(default=timezone.now)
     num_factura_proveedor = models.CharField(max_length=50, unique=True)
     metodo_pago           = models.CharField(max_length=20, choices=METODOS, null=True, blank=True)
@@ -459,24 +474,51 @@ class Compra(models.Model):
     fecha_pago            = models.DateTimeField(null=True, blank=True)
     archivo_factura       = models.FileField(upload_to='facturas_proveedores/', blank=True, null=True)
 
-    def save(self, *args, **kwargs):
-        is_new = not self.pk
-        super().save(*args, **kwargs)
-        if is_new:
-            if not Factura.objects.filter(compra=self).exists():
-                Factura.objects.create(
-                    tipo           = 'COMPRA',
-                    numero_factura = self.num_factura_proveedor,
-                    compra         = self,
-                    total          = self.total_pagado,
-                    subtotal       = self.total_pagado,
-                    iva            = 0,
-                    estado_pago    = 'Pendiente',
-                    metodo_pago    = None,
-                )
+    def __str__(self):
+        return f"Compra {self.num_factura_proveedor} - {self.proveedor.nombre}"
+
+    def get_total(self):
+        return self.detalles.aggregate(total=Sum(F('cantidad') * F('precio_unitario'), output_field=DecimalField()))['total'] or 0
 
     class Meta:
         db_table = 'compra'
+        ordering = ['-fecha']
+
+
+class CompraDetalle(models.Model):
+    compra              = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name='detalles')
+    producto            = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad            = models.IntegerField()
+    precio_unitario     = models.DecimalField(max_digits=12, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.compra.num_factura_proveedor} - {self.producto.nombre}"
+
+    class Meta:
+        db_table = 'compra_detalle'
+        unique_together = ('compra', 'producto')
+
+    def save(self, *args, **kwargs):
+        is_new = not self.pk
+        super().save(*args, **kwargs)
+        
+       
+        if is_new:
+            self.producto.stock += self.cantidad
+        else:
+            detalle_anterior = CompraDetalle.objects.get(pk=self.pk)
+            diferencia = self.cantidad - detalle_anterior.cantidad
+            self.producto.stock += diferencia
+        
+        self.producto.save(update_fields=['stock'])
+
+    def delete(self, *args, **kwargs):
+        # Restar stock al eliminar
+        self.producto.stock -= self.cantidad
+        if self.producto.stock < 0:
+            self.producto.stock = 0
+        self.producto.save(update_fields=['stock'])
+        super().delete(*args, **kwargs)
 
 
 # ══════════════════════════════════════════════════════════
@@ -531,6 +573,7 @@ class Factura(models.Model):
     ESTADOS_PAGO = [('Pendiente', 'Pendiente'), ('Pagada', 'Pagada')]
 
     tipo           = models.CharField(max_length=10, choices=TIPO_FACTURA, default='SERVICIO')
+    comprobante_pago = models.FileField(upload_to='facturas_comprobantes/', blank=True, null=True)
     numero_factura = models.CharField(max_length=20, unique=True)
     fecha_emision  = models.DateTimeField(auto_now_add=True)
     orden_servicio = models.ForeignKey(OrdenServicio, on_delete=models.SET_NULL, null=True, blank=True)

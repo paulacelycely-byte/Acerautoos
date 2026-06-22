@@ -1,15 +1,20 @@
 from django import forms
 import re
 from datetime import date
+from django.db.models import Q
+from django.forms.models import inlineformset_factory
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from .models import (
+    ProveedorProducto,
     UsuarioSistema,
-    Proveedor, Producto, Compra, Cliente, Marca, Vehiculo, Factura,
+    Proveedor, Producto, Compra, CompraDetalle, Cliente, Marca, Vehiculo, Factura,
     TipoServicio, OrdenServicio,
     Notificacion, Caja, DetalleOrdenProducto, CompatibilidadProducto,
     SeguimientoMantenimiento,
 )
+
+
 
 
 # ══════════════════════════════════════════════════════════
@@ -632,18 +637,12 @@ class ProveedorForm(forms.ModelForm):
         return nit
 
     def clean_numero_telefono(self):
-        """
-        Valida el número local según el indicativo seleccionado.
-        Usa REGLAS_TELEFONO para dar el mensaje correcto por país.
-        Esto reemplaza cualquier validación colombiana del backend.
-        """
         numero     = self.cleaned_data.get('numero_telefono', '').strip()
         indicativo = self.data.get('indicativo_telefono', '').strip()
         _validar_numero_por_regla(numero, indicativo)
         return numero
 
     def clean_telefono(self):
-
         return self.cleaned_data.get('telefono')
 
     def clean_direccion(self):
@@ -676,6 +675,51 @@ class ProveedorForm(forms.ModelForm):
         return instance
 
 
+# ══════════════════════════════════════════════════════════
+#  PROVEEDOR PRODUCTO FORMSET
+# ══════════════════════════════════════════════════════════
+
+class ProveedorProductoForm(forms.ModelForm):
+    class Meta:
+        model  = ProveedorProducto
+        fields = ['producto', 'precio_proveedor']
+        widgets = {
+            'producto':         forms.Select(attrs={'class': 'form-field-styled'}),
+            'precio_proveedor': forms.NumberInput(attrs={'class': 'form-field-styled', 'placeholder': 'Precio del proveedor'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['producto'].required         = False
+        self.fields['precio_proveedor'].required = False
+
+class BaseProveedorProductoFormSet(forms.BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        for form in self.forms:
+            if not hasattr(form, 'cleaned_data'):
+                continue
+            if form.cleaned_data.get('DELETE'):
+                continue
+            producto = form.cleaned_data.get('producto')
+            precio   = form.cleaned_data.get('precio_proveedor')
+            if not producto and not precio:
+                continue
+            if producto and not precio:
+                form.add_error('precio_proveedor', 'Ingresa el precio para este producto.')
+            if precio and not producto:
+                form.add_error('producto', 'Selecciona un producto.')
+
+ProveedorProductoFormSet = inlineformset_factory(
+    Proveedor,
+    ProveedorProducto,
+    form=ProveedorProductoForm,
+    formset=BaseProveedorProductoFormSet,
+    extra=1,
+    can_delete=True,
+    min_num=0,
+    validate_min=False,
+)
 # ══════════════════════════════════════════════════════════
 #  MARCA
 # ══════════════════════════════════════════════════════════
@@ -797,20 +841,11 @@ class ProductoForm(forms.ModelForm):
 #  COMPRA
 # ══════════════════════════════════════════════════════════
 
+
 class CompraForm(forms.ModelForm):
     class Meta:
         model  = Compra
-        fields = ['proveedor', 'producto', 'cantidad', 'fecha', 'num_factura_proveedor', 'total_pagado', 'archivo_factura']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['producto'].queryset = Producto.objects.filter(estado=True)
-
-    def clean_cantidad(self):
-        cantidad = val_positivo(self.cleaned_data['cantidad'], "Cantidad")
-        if cantidad > 10000:
-            raise forms.ValidationError("La cantidad no puede superar 10.000 unidades por compra.")
-        return cantidad
+        fields = ['proveedor', 'num_factura_proveedor', 'archivo_factura']
 
     def clean_num_factura_proveedor(self):
         nf = self.cleaned_data['num_factura_proveedor'].strip()
@@ -827,24 +862,89 @@ class CompraForm(forms.ModelForm):
             raise forms.ValidationError("Ya existe una compra registrada con este número de factura.")
         return nf
 
-    def clean_total_pagado(self):
-        total = val_no_negativo(self.cleaned_data['total_pagado'], "Total pagado")
-        if total > 999999999:
-            raise forms.ValidationError("El total pagado es demasiado alto. Verifique el valor.")
-        return total
+    
 
-    def clean_fecha(self):
-        fecha = self.cleaned_data.get('fecha')
-        if fecha:
-            hoy        = timezone.localdate()
-            fecha_date = fecha.date() if hasattr(fecha, 'date') else fecha
-            if fecha_date != hoy:
-                raise forms.ValidationError(
-                    f"La fecha de compra debe ser el día de hoy ({hoy.strftime('%d/%m/%Y')}). "
-                    f"No se permiten fechas pasadas ni futuras."
-                )
-        return fecha
 
+# ══════════════════════════════════════════════════════════
+#  COMPRA DETALLE 
+# ══════════════════════════════════════════════════════════
+
+class CompraDetalleForm(forms.ModelForm):
+    class Meta:
+        model  = CompraDetalle
+        fields = ['producto', 'cantidad', 'precio_unitario']
+
+    def __init__(self, *args, **kwargs):
+        self.proveedor_id = kwargs.pop('proveedor_id', None)
+        super().__init__(*args, **kwargs)
+
+        proveedor_id = self.proveedor_id
+        if not proveedor_id and self.instance.pk and self.instance.compra_id:
+            proveedor_id = self.instance.compra.proveedor_id
+        elif not proveedor_id and self.data.get('proveedor'):
+            proveedor_id = self.data.get('proveedor')
+
+        if proveedor_id:
+            ids = ProveedorProducto.objects.filter(
+                proveedor_id=proveedor_id
+            ).values_list('producto_id', flat=True)
+            self.fields['producto'].queryset = Producto.objects.filter(id__in=ids, estado=True)
+        else:
+            self.fields['producto'].queryset = Producto.objects.none()
+
+    def clean_cantidad(self):
+        cantidad = val_positivo(self.cleaned_data['cantidad'], "Cantidad")
+        if cantidad > 10000:
+            raise forms.ValidationError("La cantidad no puede superar 10.000 unidades por producto.")
+        return cantidad
+
+    def clean_precio_unitario(self):
+        precio = val_no_negativo(self.cleaned_data['precio_unitario'], "Precio unitario")
+        if precio > 999999999:
+            raise forms.ValidationError("El precio unitario es demasiado alto. Verifique el valor.")
+        return precio
+
+
+class BaseCompraDetalleFormSet(forms.BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        if any(self.errors):
+            return
+
+        productos_vistos    = []
+        formularios_validos = 0
+
+        for form in self.forms:
+            if not hasattr(form, 'cleaned_data') or not form.cleaned_data:
+                continue
+            if form.cleaned_data.get('DELETE'):
+                continue
+
+            producto = form.cleaned_data.get('producto')
+            if not producto:
+                continue
+
+            formularios_validos += 1
+
+            if producto in productos_vistos:
+                form.add_error('producto', "Este producto ya fue agregado en otra fila.")
+            productos_vistos.append(producto)
+
+        if formularios_validos == 0:
+            raise forms.ValidationError("Debes agregar al menos un producto a la compra.")
+
+
+CompraDetalleFormSet = inlineformset_factory(
+    Compra,
+    CompraDetalle,
+    form=CompraDetalleForm,
+    formset=BaseCompraDetalleFormSet,
+    fields=['producto', 'cantidad', 'precio_unitario'],
+    extra=1,
+    can_delete=True,
+    min_num=1,
+    validate_min=True,
+)
 
 # ══════════════════════════════════════════════════════════
 #  CLIENTE
@@ -1028,6 +1128,7 @@ class TipoServicioForm(forms.ModelForm):
             raise forms.ValidationError("El precio de mano de obra es demasiado alto.")
         return precio
 
+
 # ══════════════════════════════════════════════════════════
 #  ORDEN DE SERVICIO
 # ══════════════════════════════════════════════════════════
@@ -1058,6 +1159,17 @@ class OrdenServicioForm(forms.ModelForm):
         self.fields['empleado'].empty_label = "-- Sin asignar --"
         self.fields['servicios'].queryset   = TipoServicio.objects.filter(estado=True).order_by('nombre')
 
+        if self.instance and self.instance.pk:
+            
+            self.fields['vehiculo'].queryset = Vehiculo.objects.filter(
+                Q(marca__estado=True) | Q(pk=self.instance.vehiculo_id)
+            )
+        else:
+            # Crear: solo vehículos cuya marca esté activa
+            self.fields['vehiculo'].queryset = Vehiculo.objects.filter(marca__estado=True)
+
+        self.fields['km_actual'].required = False
+
     def clean_fecha_proximo_mantenimiento(self):
         fecha     = self.cleaned_data.get('fecha_proximo_mantenimiento')
         servicios = self.cleaned_data.get('servicios')
@@ -1077,7 +1189,8 @@ class OrdenServicioForm(forms.ModelForm):
     def clean_km_actual(self):
         km = self.cleaned_data.get('km_actual')
         if km is None:
-            raise forms.ValidationError("El kilometraje es obligatorio.")
+            return km
+
         if not isinstance(km, int):
             raise forms.ValidationError("El kilometraje debe ser un número entero, sin decimales.")
         if km < 0:
@@ -1109,18 +1222,30 @@ class OrdenServicioForm(forms.ModelForm):
         estados_validos = [e[0] for e in OrdenServicio.ESTADOS]
         if estado not in estados_validos:
             raise forms.ValidationError(f"Estado no válido. Opciones: {', '.join(estados_validos)}.")
+        if estado == 'Terminado':
+            raise forms.ValidationError(
+                "El estado 'Terminado' se asigna automáticamente al pagar la factura, no se puede seleccionar manualmente."
+            )
         if self.instance.pk and self.instance.estado == 'Terminado':
             raise forms.ValidationError("Esta orden ya está terminada y no puede modificarse.")
         return estado
 
     def clean(self):
-        cleaned  = super().clean()
-        vehiculo = cleaned.get('vehiculo')
-        estado   = cleaned.get('estado')
+        cleaned   = super().clean()
+        vehiculo  = cleaned.get('vehiculo')
+        estado    = cleaned.get('estado')
+        servicios = cleaned.get('servicios')
+        km        = cleaned.get('km_actual')
+
+        requiere_seguimiento = bool(servicios and servicios.filter(requiere_seguimiento=True).exists())
+
+        if requiere_seguimiento and km is None:
+            self.add_error('km_actual', "Este servicio requiere registrar el kilometraje actual.")
+        elif not requiere_seguimiento:
+            cleaned['km_actual'] = None
+
         if self.instance.pk and self.instance.estado == 'Terminado':
             raise forms.ValidationError("Esta orden ya está terminada y no puede modificarse.")
-        if not self.instance.pk and estado == 'Terminado':
-            self.add_error('estado', "No puede crear una orden con estado 'Terminado'.")
         if vehiculo and not self.instance.pk:
             orden_activa = OrdenServicio.objects.filter(
                 vehiculo=vehiculo, estado__in=['Pendiente', 'En Proceso']
@@ -1131,7 +1256,6 @@ class OrdenServicioForm(forms.ModelForm):
                     f"(#{orden_activa.pk} - {orden_activa.estado}). Finalícela antes de crear una nueva."
                 )
         return cleaned
-
 # ══════════════════════════════════════════════════════════
 #  SEGUIMIENTO MANTENIMIENTO 
 # ══════════════════════════════════════════════════════════

@@ -47,18 +47,10 @@
         font-family: 'Barlow Condensed', sans-serif; font-size: .8rem; font-weight: 700;
         color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0;
     }
-    .badge-editando {
-        display: inline-flex; align-items: center; gap: 6px;
-        background: var(--azul); color: white;
-        font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 800;
-        text-transform: uppercase; letter-spacing: 1.5px;
-        padding: 3px 10px; border-radius: 20px; opacity: .85;
-    }
 
     .form-card {
         background: white; border-radius: 16px; border: 1px solid var(--borde);
-        overflow: hidden;
-        box-shadow: 0 8px 30px rgba(0,0,0,.10);
+        overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,.10);
     }
     .form-card-header {
         background: var(--carbon); padding: 13px 22px;
@@ -90,7 +82,6 @@
         color: #bbb; font-size: .85rem; pointer-events: none; z-index: 5; transition: color .2s;
     }
     .field-inner:focus-within .field-icon { color: var(--primario); }
-
     .form-field-styled {
         width: 100% !important; padding: 11px 13px 11px 38px !important;
         border: 1.5px solid var(--borde) !important; border-radius: 10px !important;
@@ -103,13 +94,9 @@
         border-color: var(--primario) !important; background: white !important;
         box-shadow: 0 0 0 3px var(--primario-glow) !important;
     }
-
-    /* ── ALERTAS INLINE (igual módulo usuarios) ── */
     .field-error-js {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .74rem; font-weight: 600;
-        color: #d32f2f; margin-top: 6px;
-        display: flex; align-items: center; gap: 6px;
+        font-family: 'DM Sans', sans-serif; font-size: .74rem; font-weight: 600;
+        color: #d32f2f; margin-top: 6px; display: flex; align-items: center; gap: 6px;
         animation: fadeInErr .2s ease;
     }
     .field-error-js i { font-size: .72rem; flex-shrink: 0; }
@@ -118,7 +105,7 @@
         to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── PHONE DROPDOWN ── */
+    /* ── PHONE ── */
     #id_indicativo_proveedor { display: none !important; }
     .phone-wrap { display: flex; gap: 8px; align-items: flex-start; width: 100%; }
     .pais-dropdown { position: relative; width: 150px; flex-shrink: 0; font-family: 'DM Sans', sans-serif; }
@@ -161,8 +148,6 @@
     .pais-option img { width: 20px; height: 14px; object-fit: cover; border-radius: 2px; flex-shrink: 0; }
     .pais-option .pais-codigo { font-weight: 600; color: var(--primario); min-width: 38px; font-size: .78rem; }
     .pais-option .pais-nombre { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    /* ── MÁSCARA TELÉFONO ── */
     .phone-input-wrap { position: relative; flex: 1; min-width: 0; }
     .phone-input-wrap [name="numero_telefono"] {
         color: transparent !important; caret-color: var(--texto);
@@ -172,22 +157,44 @@
     #maskOverlay {
         position: absolute; left: 38px; right: 10px; top: 0; bottom: 0;
         display: flex; align-items: center; pointer-events: none; z-index: 3;
-        font-family: 'DM Sans', sans-serif; font-size: .88rem;
-        white-space: nowrap; overflow: hidden;
+        font-family: 'DM Sans', sans-serif; font-size: .88rem; white-space: nowrap; overflow: hidden;
     }
     #maskOverlay .char-typed { color: var(--texto); }
     #maskOverlay .char-hint  { color: #c8c8c8; }
-
-    /* ── ERROR TELÉFONO (mismo estilo unificado) ── */
     .tel-error-box {
-        font-family: 'DM Sans', sans-serif;
-        font-size: .74rem; font-weight: 600;
-        color: #d32f2f; margin-top: 6px;
-        display: none; align-items: center; gap: 6px;
-        animation: fadeInErr .2s ease;
+        font-family: 'DM Sans', sans-serif; font-size: .74rem; font-weight: 600;
+        color: #d32f2f; margin-top: 6px; display: none; align-items: center; gap: 6px;
     }
     .tel-error-box.visible { display: flex; }
     .tel-error-box i { font-size: .72rem; flex-shrink: 0; }
+
+    /* ── CATÁLOGO ── */
+    .catalogo-seccion {
+        border-top: 1px solid var(--borde); padding: 20px 22px;
+    }
+    .catalogo-titulo {
+        font-family: 'Barlow Condensed', sans-serif; font-size: .85rem; font-weight: 800;
+        letter-spacing: 2px; text-transform: uppercase; color: var(--primario); margin-bottom: 16px;
+    }
+    .catalogo-row select, .catalogo-row input[type="number"] {
+        width: 100%; padding: 9px 12px; border: 1.5px solid var(--borde); border-radius: 8px;
+        font-family: 'DM Sans', sans-serif; font-size: .85rem; color: var(--texto);
+        background: var(--gris); outline: none; transition: border-color .2s;
+        box-sizing: border-box; appearance: none;
+    }
+    .catalogo-row select:focus, .catalogo-row input[type="number"]:focus {
+        border-color: var(--primario); background: white;
+    }
+    .catalogo-row .delete-label {
+        font-size: .75rem; color: #d32f2f; cursor: pointer;
+        display: flex; align-items: center; gap: 4px;
+    }
+    .btn-agregar-producto {
+        margin-top: 10px; font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 700;
+        padding: 8px 16px; border-radius: 8px; border: 1.5px dashed var(--primario);
+        background: transparent; color: var(--primario); cursor: pointer; transition: .2s;
+    }
+    .btn-agregar-producto:hover { background: var(--primario-glow); }
 
     /* ── FOOTER ── */
     .form-card-footer {
@@ -200,7 +207,7 @@
         text-transform: uppercase; letter-spacing: .5px; padding: 10px 18px;
         border-radius: 10px; border: 1.5px solid var(--borde); background: white;
         color: var(--muted); text-decoration: none; cursor: pointer;
-        display: inline-flex; align-items: center; gap: 7px; transition: .2s; white-space: nowrap;
+        display: inline-flex; align-items: center; gap: 7px; transition: .2s;
     }
     .btn-cancelar:hover { background: var(--borde); color: var(--texto); }
     .btn-guardar {
@@ -208,37 +215,16 @@
         text-transform: uppercase; letter-spacing: .7px; padding: 11px 22px;
         border-radius: 10px; border: none; background: var(--primario);
         color: white; cursor: pointer; box-shadow: 0 4px 14px var(--primario-shadow);
-        display: inline-flex; align-items: center; gap: 7px; transition: .2s; white-space: nowrap;
+        display: inline-flex; align-items: center; gap: 7px; transition: .2s;
     }
     .btn-guardar:hover { background: var(--primario2); transform: translateY(-1px); }
 
-    /* ════════════════════════
-       RESPONSIVE
-    ════════════════════════ */
-    @media (max-width: 768px) {
-        .taller-header { padding: 18px 16px; }
-        .form-card-body { padding: 18px 16px; }
-        .pais-dropdown { width: 140px; }
-    }
-
     @media (max-width: 576px) {
         .taller-header { flex-direction: column; align-items: flex-start; }
-        .header-empresa { display: none; }
-
-        .phone-wrap { flex-direction: column; gap: 8px; }
+        .phone-wrap { flex-direction: column; }
         .pais-dropdown { width: 100%; }
-        .pais-menu { width: 100%; }
-        .phone-input-wrap { width: 100%; }
-
-        .form-card-footer { flex-direction: column; align-items: stretch; padding: 14px 16px; gap: 8px; }
+        .form-card-footer { flex-direction: column; align-items: stretch; }
         .btn-cancelar, .btn-guardar { width: 100%; justify-content: center; }
-    }
-
-    @media (max-width: 380px) {
-        .header-titulo { font-size: 1.2rem; }
-        .form-card-body { padding: 14px 13px; }
-        .form-card-footer { padding: 12px 13px; }
-        .btn-cancelar, .btn-guardar { font-size: .74rem; padding: 9px 14px; }
     }
 </style>
 {% endblock %}
@@ -285,7 +271,6 @@
 
             <div class="form-card-body">
                 <div class="row g-3">
-
                     <div class="col-md-6">
                         <div class="field-group">
                             <label class="field-label">{{ form.nombre.label }} <span class="req">*</span></label>
@@ -356,8 +341,49 @@
                             {% endfor %}
                         </div>
                     </div>
-
                 </div>
+            </div>
+
+            <!-- ── CATÁLOGO DE PRODUCTOS ── -->
+            <div class="catalogo-seccion">
+                <div class="catalogo-titulo">
+                    <i class="fas fa-boxes"></i> Productos que vende este proveedor
+                </div>
+
+                {{ formset.management_form }}
+
+                <div id="catalogoFormset">
+                    {% for fform in formset %}
+                    <div class="catalogo-row row g-2 align-items-center mb-2">
+                        {{ fform.id }}
+                        <div class="col-md-6">
+                            {{ fform.producto }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ fform.precio_proveedor }}
+                        </div>
+                        <div class="col-md-2 d-flex align-items-center">
+                            <label class="delete-label">
+                                {{ fform.DELETE }}
+                                <i class="fas fa-trash-alt"></i> Quitar
+                            </label>
+                        </div>
+                        {% if fform.errors %}
+                            <div class="col-12">
+                                {% for field, errors in fform.errors.items %}
+                                    {% for error in errors %}
+                                        <div class="field-error-js"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button type="button" id="btnAgregarProducto" class="btn-agregar-producto">
+                    <i class="fas fa-plus"></i> Agregar producto
+                </button>
             </div>
 
             <div class="form-card-footer">
@@ -457,6 +483,73 @@ const REGLAS_TEL = {
     '+966': { min:9,  max:9,  prefijos:['01','02','03','05'], errLen:'Arabia Saudita: exactamente 9 dígitos (ej: 0512345678).', errPref:'Arabia Saudita: móvil empieza por 05, fijo por 01/02/03.' },
 };
 
+// ── Agregar fila al formset ──
+// ── Agregar fila al formset ──
+(function() {
+    const container  = document.getElementById('catalogoFormset');
+    const btnAgregar = document.getElementById('btnAgregarProducto');
+    const totalForms = document.getElementById('id_catalogo-TOTAL_FORMS');
+    if (!btnAgregar || !container || !totalForms) return;
+
+    // Captura opciones del primer select al cargar
+    const primerSelect = container.querySelector('select[name*="producto"]');
+    const opcionesHtml = primerSelect
+        ? Array.from(primerSelect.options).map(o =>
+            `<option value="${o.value}">${o.text}</option>`
+          ).join('')
+        : '<option value="">---------</option>';
+
+    // Oculta filas extra vacías al cargar la página
+    container.querySelectorAll('.catalogo-row').forEach(row => {
+        const sel    = row.querySelector('select[name*="producto"]');
+        const precio = row.querySelector('input[name*="precio_proveedor"]');
+        if (sel && !sel.value && precio && !precio.value) {
+            row.style.display = 'none';
+            const chk = row.querySelector('input[name*="DELETE"]');
+            if (chk) chk.checked = true;
+        }
+    });
+
+    btnAgregar.addEventListener('click', function() {
+        // Primero intenta mostrar una fila oculta vacía si existe
+        const filaOculta = Array.from(container.querySelectorAll('.catalogo-row'))
+            .find(r => r.style.display === 'none');
+        if (filaOculta) {
+            filaOculta.style.display = '';
+            const chk = filaOculta.querySelector('input[name*="DELETE"]');
+            if (chk) chk.checked = false;
+            return;
+        }
+
+        const formCount = parseInt(totalForms.value);
+        const newRow = document.createElement('div');
+        newRow.className = 'catalogo-row row g-2 align-items-center mb-2';
+        newRow.innerHTML = `
+            <input type="hidden" name="catalogo-${formCount}-id" value="">
+            <div class="col-md-6">
+                <select name="catalogo-${formCount}-producto" class="form-field-styled">
+                    ${opcionesHtml}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="number"
+                       name="catalogo-${formCount}-precio_proveedor"
+                       class="form-field-styled"
+                       step="0.01" min="0"
+                       placeholder="Precio del proveedor">
+            </div>
+            <div class="col-md-2 d-flex align-items-center">
+                <label class="delete-label">
+                    <input type="checkbox" name="catalogo-${formCount}-DELETE" style="display:none;">
+                    <i class="fas fa-trash-alt"></i> Quitar
+                </label>
+            </div>`;
+
+        container.appendChild(newRow);
+        totalForms.value = formCount + 1;
+    });
+})();
+// ── Phone dropdown ──
 function setFieldError(inputEl, msg) {
     const wrap = inputEl.closest('.field-group') || inputEl.parentElement;
     let errorEl = wrap.querySelector('.field-error-js');
@@ -570,9 +663,7 @@ function seleccionar(p, resetearNumero = true) {
     hiddenInput.value = p.code;
     if (inputNumero) {
         inputNumero.setAttribute('data-ejemplo', p.ejemplo || '');
-        if (resetearNumero) {
-            inputNumero.value = '';
-        }
+        if (resetearNumero) inputNumero.value = '';
         aplicarMascara();
     }
     document.querySelectorAll('.pais-option').forEach(el =>
@@ -602,7 +693,7 @@ renderLista('');
     const v = hiddenInput ? hiddenInput.value : '';
     if (v) {
         const p = PAISES.find(x => x.code === v);
-        if (p) seleccionar(p, false); // no borrar el número ya cargado al editar
+        if (p) seleccionar(p, false);
     }
 })();
 
@@ -677,13 +768,20 @@ $(function () {
     $('#formProveedor').on('submit', function (e) {
         e.preventDefault();
         actualizarTelefono();
-        const erroresJS = document.querySelectorAll('.field-error-js');
-        if (erroresJS.length > 0) { erroresJS[0].scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+
+        
+        const erroresJS = document.querySelectorAll('.field-group .field-error-js');
+        if (erroresJS.length > 0) {
+            erroresJS[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
         const ind = (hiddenInput ? hiddenInput.value : '').trim();
         const num = ($('[name="numero_telefono"]').val() || '').trim();
         const err = validarTelefonoPorPais(ind, num);
         if (err) { mostrarErrorTel(err); inputNumero && inputNumero.focus(); return; }
         mostrarErrorTel(null);
+
         const f = this;
         Swal.fire({
             title: esEditar ? '¿Confirmar actualización?' : '¿Confirmar registro?',
@@ -697,7 +795,6 @@ $(function () {
         }).then(r => { if (r.isConfirmed) { $(f).off('submit').submit(); } });
     });
 });
-
 function confirmarCancelacion(url) {
     Swal.fire({
         title: '¿Cancelar?', text: 'Los cambios no se guardarán.',

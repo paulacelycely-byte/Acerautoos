@@ -142,6 +142,7 @@
     .field-wrap.campo-invalido input,
     .field-wrap.campo-invalido select,
     .field-wrap.campo-invalido textarea { border-color: var(--rojo); background: #fff5f5; }
+    .field-wrap.campo-invalido .dp-trigger { border-color: var(--rojo); background: #fff5f5; }
 
     .field-wrap select {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23888' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
@@ -177,6 +178,7 @@
         cursor: pointer; transition: .15s;
     }
     .fecha-chip:hover { border-color: var(--rojo); color: var(--rojo); }
+    .fecha-chip.activo { background: var(--rojo); border-color: var(--rojo); color: white; }
 
     /* Contador de caracteres */
     .contador-msg { display: flex; justify-content: flex-end; margin-top: 6px; }
@@ -184,6 +186,126 @@
     .contador-msg span.limite { color: var(--rojo); font-weight: 700; }
 
     .aviso-info { padding: 14px 18px; background: #e8f5e9; border-radius: 10px; border-left: 4px solid var(--c-info); font-family: 'DM Sans', sans-serif; font-size: .85rem; color: var(--c-info); font-weight: 600; }
+
+    /* ══════════════════════════════════════════
+       DATE PICKER CUSTOM — COMPACTO Y MEJORADO
+    ══════════════════════════════════════════ */
+    .dp-trigger {
+        border: 1.5px solid var(--borde);
+        border-radius: 10px;
+        padding: 11px 14px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .88rem;
+        color: var(--texto);
+        background: var(--gris);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: border-color .2s, box-shadow .2s, background .2s;
+        user-select: none;
+        white-space: nowrap;
+        box-sizing: border-box;
+    }
+    .dp-trigger:hover { border-color: #aaa; background: white; }
+    .dp-trigger.active { border-color: var(--rojo); box-shadow: 0 0 0 3px rgba(211,47,47,.08); background: white; }
+    .dp-trigger svg { width: 16px; height: 16px; stroke: var(--rojo); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .dp-trigger .dp-val { flex: 1; font-weight: 600; }
+
+    .dp-popover {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        z-index: 9999;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 8px 40px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.08);
+        border: 1px solid var(--borde);
+        padding: 0;
+        width: 200px;
+        animation: dpFadeIn .15s ease;
+        overflow: hidden;
+    }
+    @keyframes dpFadeIn { from { opacity: 0; transform: translateY(-6px) scale(.97); } to { opacity: 1; transform: none; } }
+
+    .dp-header {
+        background: var(--carbon);
+        padding: 8px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 4px;
+    }
+    .dp-nav-btn {
+        width: 22px; height: 22px; border-radius: 4px; border: none;
+        background: rgba(255,255,255,.12); color: white; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        transition: background .15s;
+        flex-shrink: 0;
+    }
+    .dp-nav-btn:hover { background: rgba(255,255,255,.25); }
+    .dp-nav-btn svg { width: 10px; height: 10px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .dp-month-label {
+        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
+        color: white; text-align: center; flex: 1; letter-spacing: .2px;
+        cursor: pointer; border-radius: 3px; padding: 1px 2px;
+        transition: background .15s;
+    }
+    .dp-month-label:hover { background: rgba(255,255,255,.12); }
+
+    .dp-body { padding: 6px 8px 8px; }
+    .dp-weekdays {
+        display: grid; grid-template-columns: repeat(7, 1fr);
+        gap: 0px; margin-bottom: 2px;
+    }
+    .dp-weekdays span {
+        font-family: 'DM Sans', sans-serif; font-size: .5rem; font-weight: 700;
+        color: var(--muted); text-align: center; text-transform: uppercase; letter-spacing: .2px;
+        padding: 1px 0;
+    }
+    .dp-days {
+        display: grid; grid-template-columns: repeat(7, 1fr); gap: 0px;
+    }
+    .dp-day {
+        font-family: 'DM Sans', sans-serif; font-size: .65rem; font-weight: 500;
+        text-align: center; padding: 3px 0px; border-radius: 4px;
+        cursor: pointer; color: var(--texto); border: none; background: transparent;
+        transition: background .12s, color .12s;
+        aspect-ratio: 1;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .dp-day:hover:not(.dp-day-other) { background: #f0e8e8; color: var(--rojo); }
+    .dp-day-other { color: #ddd; cursor: default; font-size: .7rem; }
+    .dp-day-today { font-weight: 700; color: var(--rojo); position: relative; }
+    .dp-day-today::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 3px; height: 3px; border-radius: 50%; background: var(--rojo); }
+    .dp-day-selected { background: var(--rojo) !important; color: white !important; font-weight: 700; box-shadow: 0 2px 6px rgba(211,47,47,.35); }
+    .dp-day-selected.dp-day-today::after { background: white; }
+
+    .dp-footer {
+        border-top: 1px solid var(--borde);
+        padding: 6px 8px;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .dp-btn-hoy {
+        font-family: 'DM Sans', sans-serif; font-size: .6rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .4px;
+        background: transparent; border: 1.5px solid var(--borde); border-radius: 4px;
+        padding: 3px 10px; cursor: pointer; color: var(--muted); transition: .15s;
+    }
+    .dp-btn-hoy:hover { border-color: var(--rojo); color: var(--rojo); }
+
+    .dp-grid-my {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+        padding: 6px 8px 8px;
+    }
+    .dp-my-item {
+        font-family: 'DM Sans', sans-serif; font-size: .6rem; font-weight: 600;
+        text-align: center; padding: 5px 1px; border-radius: 4px;
+        cursor: pointer; border: 1.5px solid transparent; transition: .15s;
+        color: var(--texto); background: var(--gris);
+    }
+    .dp-my-item:hover { border-color: var(--rojo); color: var(--rojo); background: white; }
+    .dp-my-item.dp-my-sel { background: var(--rojo); color: white; border-color: var(--rojo); }
 
     /* ===== Footer ===== */
     .form-card-footer { background: var(--gris); border-top: 1px solid var(--borde); padding: 20px 28px; display: flex; justify-content: flex-end; gap: 10px; }
@@ -307,6 +429,7 @@
         .form-card-header span { font-size: .88rem; }
         .preview-card-body { padding: 16px; }
         .tipo-btn { font-size: .72rem; padding: 7px 10px; }
+        .dp-popover { width: 180px; left: 0; }
     }
 </style>
 {% endblock %}
@@ -370,18 +493,22 @@
                         <div class="col-md-4">
                             <div class="campo-label"><span class="req">*</span> Fecha del Evento</div>
                             <div class="field-wrap {% if form.fecha.errors %}campo-invalido{% endif %}" id="wrap-fecha">
-                                <i class="fas fa-calendar-alt field-icon"></i>
-                                {% render_field form.fecha type="date" class="form-control" id="id_fecha" %}
+                                {% render_field form.fecha type="date" class="form-control" id="id_fecha" style="display:none;" %}
+                                <div class="dp-trigger" id="dp-fecha-trigger" onclick="dpOpen('fecha')">
+                                    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                    <span class="dp-val" id="dp-fecha-val">Seleccionar fecha</span>
+                                </div>
+                                <div class="dp-popover" id="dp-fecha-pop" style="display:none;"></div>
                             </div>
                             <div id="error-fecha" class="field-error" style="{% if form.fecha.errors %}display:flex;{% else %}display:none;{% endif %}">
                                 <i class="fas fa-exclamation-circle"></i>
                                 {% if form.fecha.errors %}{{ form.fecha.errors|join:", " }}{% else %}Ingresa una fecha válida.{% endif %}
                             </div>
                             <div class="fecha-chips">
-                                <span class="fecha-chip" onclick="ajustarFecha(0)">Hoy</span>
-                                <span class="fecha-chip" onclick="ajustarFecha(7)">+1 sem</span>
-                                <span class="fecha-chip" onclick="ajustarFecha(30)">+1 mes</span>
-                                <span class="fecha-chip" onclick="ajustarFecha(365)">+1 año</span>
+                                <span class="fecha-chip" data-dias="0" onclick="ajustarFecha(0, this)">Hoy</span>
+                                <span class="fecha-chip" data-dias="7" onclick="ajustarFecha(7, this)">+1 sem</span>
+                                <span class="fecha-chip" data-dias="30" onclick="ajustarFecha(30, this)">+1 mes</span>
+                                <span class="fecha-chip" data-dias="365" onclick="ajustarFecha(365, this)">+1 año</span>
                             </div>
                             <small class="campo-hint">Esta fecha determinará el <b>Mes y Año</b> en la lista.</small>
                         </div>
@@ -466,259 +593,502 @@
 
 {% block js %}
 <script>
-    window.onload = function() {
-        const fechaInput = document.getElementById('id_fecha');
-        if (!fechaInput.value) {
-            const now = new Date();
-            const day = ("0" + now.getDate()).slice(-2);
-            const month = ("0" + (now.getMonth() + 1)).slice(-2);
-            fechaInput.value = now.getFullYear() + "-" + month + "-" + day;
+/* ══════════════════════════════════════════════════════════════════
+   DATE PICKER CUSTOM — COMPACTO Y MEJORADO
+══════════════════════════════════════════════════════════════════ */
+(function () {
+    const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                   'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const DIAS_S = ['Do','Lu','Ma','Mi','Ju','Vi','Sá'];
+
+    const state = { fecha: { value: null, view: 'days', viewYear: null, viewMonth: null, _yearBase: null } };
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    state.fecha.viewYear  = today.getFullYear();
+    state.fecha.viewMonth = today.getMonth();
+
+    function toISO(d) {
+        if (!d) return null;
+        const yy = d.getFullYear(), mm = String(d.getMonth()+1).padStart(2,'0'), dd = String(d.getDate()).padStart(2,'0');
+        return `${yy}-${mm}-${dd}`;
+    }
+    function fmtDisplay(d) {
+        if (!d) return 'Seleccionar fecha';
+        return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+    }
+    function parseISO(s) {
+        if (!s) return null;
+        const [y,m,d] = s.split('-').map(Number);
+        const dt = new Date(y, m-1, d);
+        dt.setHours(0,0,0,0);
+        return dt;
+    }
+
+    function render(id) {
+        const s   = state[id];
+        const pop = document.getElementById(`dp-${id}-pop`);
+        if (pop.style.display === 'none') return;
+
+        if (s.view === 'days')   pop.innerHTML = renderDays(id);
+        if (s.view === 'months') pop.innerHTML = renderMonths(id);
+        if (s.view === 'years')  pop.innerHTML = renderYears(id);
+
+        pop.querySelectorAll('.dp-day:not(.dp-day-other)').forEach(el => {
+            el.addEventListener('click', () => {
+                const d = new Date(Number(el.dataset.y), Number(el.dataset.m), Number(el.dataset.d));
+                selectDate(id, d);
+            });
+        });
+        const prev = pop.querySelector('.dp-prev');
+        const next = pop.querySelector('.dp-next');
+        if (prev) prev.addEventListener('click', () => { navMonth(id, -1); render(id); });
+        if (next) next.addEventListener('click', () => { navMonth(id, +1); render(id); });
+        const lbl = pop.querySelector('.dp-month-label');
+        if (lbl) lbl.addEventListener('click', () => { s.view = 'months'; render(id); });
+        pop.querySelectorAll('.dp-my-item[data-month]').forEach(el => {
+            el.addEventListener('click', () => {
+                s.viewMonth = Number(el.dataset.month);
+                s.view = 'days';
+                render(id);
+            });
+        });
+        pop.querySelectorAll('.dp-my-item[data-year]').forEach(el => {
+            el.addEventListener('click', () => {
+                s.viewYear = Number(el.dataset.year);
+                s.view = 'months';
+                render(id);
+            });
+        });
+        const btnHoy = pop.querySelector('.dp-btn-hoy');
+        if (btnHoy) btnHoy.addEventListener('click', () => selectDate(id, new Date(today)));
+        const prevY = pop.querySelector('.dp-prev-y');
+        const nextY = pop.querySelector('.dp-next-y');
+        if (prevY) prevY.addEventListener('click', () => { s._yearBase = (s._yearBase || s.viewYear) - 12; render(id); });
+        if (nextY) nextY.addEventListener('click', () => { s._yearBase = (s._yearBase || s.viewYear) + 12; render(id); });
+    }
+
+    function renderDays(id) {
+        const s = state[id];
+        const yr = s.viewYear, mo = s.viewMonth;
+        const first = new Date(yr, mo, 1).getDay();
+        const daysInMonth = new Date(yr, mo+1, 0).getDate();
+        const daysInPrev  = new Date(yr, mo, 0).getDate();
+
+        let cells = '';
+        for (let i = first - 1; i >= 0; i--) {
+            cells += `<button class="dp-day dp-day-other" disabled>${daysInPrev - i}</button>`;
         }
-        const tipoActual = document.getElementById('campo-tipo').value;
-        if (tipoActual) {
-            const btn = document.querySelector(`.tipo-btn[data-tipo="${tipoActual}"]`);
-            if (btn) seleccionarTipo(btn);
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dt = new Date(yr, mo, d);
+            const iso = toISO(dt);
+            let cls = 'dp-day';
+            if (dt.getTime() === today.getTime()) cls += ' dp-day-today';
+            if (s.value && toISO(s.value) === iso) cls += ' dp-day-selected';
+            cells += `<button class="${cls}" data-y="${yr}" data-m="${mo}" data-d="${d}">${d}</button>`;
         }
+        const total = first + daysInMonth;
+        const rem   = total % 7 === 0 ? 0 : 7 - (total % 7);
+        for (let d = 1; d <= rem; d++) {
+            cells += `<button class="dp-day dp-day-other" disabled>${d}</button>`;
+        }
+
+        return `
+        <div class="dp-header">
+            <button class="dp-nav-btn dp-prev" type="button">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <span class="dp-month-label">${MESES[mo]} ${yr}</span>
+            <button class="dp-nav-btn dp-next" type="button">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+        </div>
+        <div class="dp-body">
+            <div class="dp-weekdays">${DIAS_S.map(d=>`<span>${d}</span>`).join('')}</div>
+            <div class="dp-days">${cells}</div>
+        </div>
+        <div class="dp-footer">
+            <button class="dp-btn-hoy" type="button">Hoy</button>
+        </div>`;
+    }
+
+    function renderMonths(id) {
+        const s = state[id];
+        return `
+        <div class="dp-header">
+            <button class="dp-nav-btn dp-prev-y" type="button">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <span class="dp-month-label" style="cursor:default;">${s.viewYear}</span>
+            <button class="dp-nav-btn dp-next-y" type="button">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+        </div>
+        <div class="dp-grid-my">
+            ${MESES.map((m,i) => `<div class="dp-my-item${s.viewMonth===i?' dp-my-sel':''}" data-month="${i}">${m.slice(0,3)}</div>`).join('')}
+        </div>`;
+    }
+
+    function renderYears(id) {
+        const s    = state[id];
+        const base = s._yearBase || s.viewYear;
+        const years = Array.from({length:12}, (_,i) => base - 5 + i);
+        return `
+        <div class="dp-header">
+            <button class="dp-nav-btn dp-prev-y" type="button">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <span class="dp-month-label" style="cursor:default;">${years[0]}–${years[years.length-1]}</span>
+            <button class="dp-nav-btn dp-next-y" type="button">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+        </div>
+        <div class="dp-grid-my">
+            ${years.map(y => `<div class="dp-my-item${s.viewYear===y?' dp-my-sel':''}" data-year="${y}">${y}</div>`).join('')}
+        </div>`;
+    }
+
+    function navMonth(id, dir) {
+        const s = state[id];
+        let m = s.viewMonth + dir, y = s.viewYear;
+        if (m > 11) { m = 0;  y++; }
+        if (m < 0)  { m = 11; y--; }
+        s.viewMonth = m; s.viewYear = y;
+    }
+
+    function selectDate(id, d) {
+        d.setHours(0,0,0,0);
+        state[id].value = d;
+        state[id].viewYear  = d.getFullYear();
+        state[id].viewMonth = d.getMonth();
+        updateTrigger(id);
+        syncHiddenInput(id, d);
+        dpClose(id);
+        marcarChipActivo(null);
+    }
+
+    function updateTrigger(id) {
+        const val = state[id].value;
+        document.getElementById(`dp-${id}-val`).textContent = fmtDisplay(val);
+        document.getElementById(`dp-${id}-trigger`).classList.add('has-value');
+    }
+
+    function syncHiddenInput(id, d) {
+        const input = document.getElementById('id_' + id);
+        if (!input) return;
+        input.value = toISO(d);
+        const evt = new Event('change', { bubbles: true });
+        input.dispatchEvent(evt);
+    }
+
+    window.dpOpen = function(id) {
+        const pop     = document.getElementById(`dp-${id}-pop`);
+        const trigger = document.getElementById(`dp-${id}-trigger`);
+        const isOpen  = pop.style.display !== 'none';
+        pop.style.display = 'none';
+        trigger.classList.remove('active');
+        if (!isOpen) {
+            // sincronizar la vista del calendario con el valor actual antes de abrir
+            if (state[id].value) {
+                state[id].viewYear  = state[id].value.getFullYear();
+                state[id].viewMonth = state[id].value.getMonth();
+            }
+            state[id].view = 'days';
+            pop.style.display = 'block';
+            trigger.classList.add('active');
+            render(id);
+            pop.addEventListener('mousedown', function(ev) { ev.stopPropagation(); }, true);
+        }
+    };
+
+    function dpClose(id) {
+        document.getElementById(`dp-${id}-pop`).style.display = 'none';
+        document.getElementById(`dp-${id}-trigger`).classList.remove('active');
+    }
+
+    document.addEventListener('mousedown', function(e) {
+        const wrap = document.getElementById('wrap-fecha');
+        if (wrap && !wrap.contains(e.target)) dpClose('fecha');
+    });
+
+    // Permite que el resto del script (chips de fecha, carga inicial) sincronice el picker
+    window.dpSetFechaFromISO = function(iso) {
+        const d = parseISO(iso);
+        if (!d) return;
+        state.fecha.value = d;
+        state.fecha.viewYear  = d.getFullYear();
+        state.fecha.viewMonth = d.getMonth();
+        updateTrigger('fecha');
+    };
+
+    function marcarChipActivo(dias) {
+        document.querySelectorAll('.fecha-chip').forEach(c => c.classList.remove('activo'));
+        if (dias !== null) {
+            const chip = document.querySelector(`.fecha-chip[data-dias="${dias}"]`);
+            if (chip) chip.classList.add('activo');
+        }
+    }
+    window.dpMarcarChip = marcarChipActivo;
+})();
+
+/* ══════════════════════════════════════════════════════════════════
+   FORM LOGIC
+══════════════════════════════════════════════════════════════════ */
+window.onload = function() {
+    const fechaInput = document.getElementById('id_fecha');
+    if (!fechaInput.value) {
+        const now = new Date();
+        const day = ("0" + now.getDate()).slice(-2);
+        const month = ("0" + (now.getMonth() + 1)).slice(-2);
+        fechaInput.value = now.getFullYear() + "-" + month + "-" + day;
+        window.dpMarcarChip(0);
+    }
+    window.dpSetFechaFromISO(fechaInput.value);
+
+    const tipoActual = document.getElementById('campo-tipo').value;
+    if (tipoActual) {
+        const btn = document.querySelector(`.tipo-btn[data-tipo="${tipoActual}"]`);
+        if (btn) seleccionarTipo(btn);
+    }
+    actualizarContador();
+    actualizarPreview();
+};
+
+const ICONOS_TIPO = {
+    Mantenimiento: 'fa-wrench',
+    Alerta: 'fa-exclamation-triangle',
+    Recordatorio: 'fa-clock',
+    Urgente: 'fa-fire',
+    Informacion: 'fa-info-circle'
+};
+
+function seleccionarTipo(btn) {
+    document.querySelectorAll('.tipo-btn').forEach(b => b.className = 'tipo-btn');
+    var tipo = btn.dataset.tipo;
+    btn.classList.add('activo-' + tipo);
+    document.getElementById('campo-tipo').value = tipo;
+
+    document.getElementById('error-tipo').style.display = 'none';
+
+    const vehiculoWrap = document.getElementById('campo-vehiculo-wrap');
+    const vehiculoSel  = document.getElementById('id_vehiculo');
+    const avisoWrap    = document.getElementById('aviso-info-wrap');
+
+    if (tipo === 'Informacion') {
+        vehiculoWrap.style.display = 'none';
+        avisoWrap.style.display    = 'block';
+        vehiculoSel.disabled       = true;
+    } else {
+        vehiculoWrap.style.display = 'block';
+        avisoWrap.style.display    = 'none';
+        vehiculoSel.disabled       = false;
+    }
+
+    actualizarPreview();
+}
+
+function ajustarFecha(dias, chipEl) {
+    const fechaInput = document.getElementById('id_fecha');
+    const fecha = new Date();
+    fecha.setDate(fecha.getDate() + dias);
+    const day = ("0" + fecha.getDate()).slice(-2);
+    const month = ("0" + (fecha.getMonth() + 1)).slice(-2);
+    fechaInput.value = fecha.getFullYear() + "-" + month + "-" + day;
+
+    window.dpSetFechaFromISO(fechaInput.value);
+    window.dpMarcarChip(dias);
+
+    document.getElementById('error-fecha').style.display = 'none';
+    document.getElementById('wrap-fecha').classList.remove('campo-invalido');
+    actualizarPreview();
+}
+
+function actualizarContador() {
+    var mensaje = document.getElementById('id_mensaje');
+    if (!mensaje) return;
+    var max = mensaje.getAttribute('maxlength') || 400;
+    var actual = mensaje.value.length;
+    var contador = document.getElementById('contador-mensaje');
+    contador.textContent = actual + ' / ' + max + ' caracteres';
+    contador.classList.toggle('limite', actual >= max * 0.9);
+}
+
+function formatearFecha(valor) {
+    if (!valor) return 'Sin fecha';
+    const partes = valor.split('-');
+    if (partes.length !== 3) return valor;
+    const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    const dia = parseInt(partes[2], 10);
+    const mes = meses[parseInt(partes[1], 10) - 1];
+    return dia + ' de ' + mes + '. ' + partes[0];
+}
+
+function actualizarPreview() {
+    const tipo = document.getElementById('campo-tipo').value;
+    const titulo = document.getElementById('id_titulo').value.trim();
+    const fecha = document.getElementById('id_fecha').value;
+    const mensaje = document.getElementById('id_mensaje').value.trim();
+    const vehiculoSel = document.getElementById('id_vehiculo');
+
+    const item = document.getElementById('preview-item');
+    const icono = document.getElementById('preview-icon');
+    const badge = document.getElementById('preview-badge');
+    const tituloEl = document.getElementById('preview-titulo');
+    const fechaEl = document.getElementById('preview-fecha');
+    const mensajeEl = document.getElementById('preview-mensaje');
+    const vehiculoEl = document.getElementById('preview-vehiculo');
+
+    item.className = 'preview-item';
+    if (tipo) {
+        item.classList.add('tipo-' + tipo);
+        badge.textContent = tipo;
+        icono.innerHTML = '<i class="fas ' + (ICONOS_TIPO[tipo] || 'fa-bell') + '"></i>';
+    } else {
+        badge.textContent = 'Sin tipo';
+        icono.innerHTML = '<i class="fas fa-bell"></i>';
+    }
+
+    if (titulo) {
+        tituloEl.textContent = titulo;
+        tituloEl.classList.remove('preview-placeholder');
+    } else {
+        tituloEl.textContent = 'Sin título';
+        tituloEl.classList.add('preview-placeholder');
+    }
+
+    fechaEl.textContent = formatearFecha(fecha);
+
+    if (mensaje) {
+        mensajeEl.textContent = mensaje;
+        mensajeEl.classList.remove('preview-placeholder');
+    } else {
+        mensajeEl.textContent = 'El mensaje aparecerá aquí...';
+        mensajeEl.classList.add('preview-placeholder');
+    }
+
+    if (tipo === 'Informacion') {
+        vehiculoEl.textContent = 'Todos los clientes registrados';
+    } else if (vehiculoSel && vehiculoSel.value && vehiculoSel.selectedIndex >= 0 && vehiculoSel.options[vehiculoSel.selectedIndex].text.trim()) {
+        vehiculoEl.textContent = vehiculoSel.options[vehiculoSel.selectedIndex].text.trim();
+    } else {
+        vehiculoEl.textContent = 'Selecciona un vehículo';
+    }
+}
+
+// ── Helpers para mostrar / limpiar errores ──────────────────
+function mostrarError(wrapId, errorId) {
+    document.getElementById(wrapId).classList.add('campo-invalido');
+    document.getElementById(errorId).style.display = 'flex';
+}
+
+function limpiarError(wrapId, errorId) {
+    document.getElementById(wrapId).classList.remove('campo-invalido');
+    document.getElementById(errorId).style.display = 'none';
+}
+
+$(function () {
+    $('#btnCancelar').on('click', function() {
+        window.location.href = '{{ listar_url }}';
+    });
+
+    // Vista previa en vivo
+    $('#id_titulo, #id_fecha').on('input change', actualizarPreview);
+    $('#id_vehiculo').on('change', actualizarPreview);
+    $('#id_mensaje').on('input', function() {
         actualizarContador();
         actualizarPreview();
-    };
-
-    const ICONOS_TIPO = {
-        Mantenimiento: 'fa-wrench',
-        Alerta: 'fa-exclamation-triangle',
-        Recordatorio: 'fa-clock',
-        Urgente: 'fa-fire',
-        Informacion: 'fa-info-circle'
-    };
-
-    function seleccionarTipo(btn) {
-        document.querySelectorAll('.tipo-btn').forEach(b => b.className = 'tipo-btn');
-        var tipo = btn.dataset.tipo;
-        btn.classList.add('activo-' + tipo);
-        document.getElementById('campo-tipo').value = tipo;
-
-        // Ocultar error de tipo si estaba visible
-        document.getElementById('error-tipo').style.display = 'none';
-
-        const vehiculoWrap = document.getElementById('campo-vehiculo-wrap');
-        const vehiculoSel  = document.getElementById('id_vehiculo');
-        const avisoWrap    = document.getElementById('aviso-info-wrap');
-
-        if (tipo === 'Informacion') {
-            vehiculoWrap.style.display = 'none';
-            avisoWrap.style.display    = 'block';
-            vehiculoSel.disabled       = true;
-        } else {
-            vehiculoWrap.style.display = 'block';
-            avisoWrap.style.display    = 'none';
-            vehiculoSel.disabled       = false;
-        }
-
-        actualizarPreview();
-    }
-
-    function ajustarFecha(dias) {
-        const fechaInput = document.getElementById('id_fecha');
-        const fecha = new Date();
-        fecha.setDate(fecha.getDate() + dias);
-        const day = ("0" + fecha.getDate()).slice(-2);
-        const month = ("0" + (fecha.getMonth() + 1)).slice(-2);
-        fechaInput.value = fecha.getFullYear() + "-" + month + "-" + day;
-        document.getElementById('error-fecha').style.display = 'none';
-        document.getElementById('wrap-fecha').classList.remove('campo-invalido');
-        actualizarPreview();
-    }
-
-    function actualizarContador() {
-        var mensaje = document.getElementById('id_mensaje');
-        if (!mensaje) return;
-        var max = mensaje.getAttribute('maxlength') || 400;
-        var actual = mensaje.value.length;
-        var contador = document.getElementById('contador-mensaje');
-        contador.textContent = actual + ' / ' + max + ' caracteres';
-        contador.classList.toggle('limite', actual >= max * 0.9);
-    }
-
-    function formatearFecha(valor) {
-        if (!valor) return 'Sin fecha';
-        const partes = valor.split('-');
-        if (partes.length !== 3) return valor;
-        const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-        const dia = parseInt(partes[2], 10);
-        const mes = meses[parseInt(partes[1], 10) - 1];
-        return dia + ' de ' + mes + '. ' + partes[0];
-    }
-
-    function actualizarPreview() {
-        const tipo = document.getElementById('campo-tipo').value;
-        const titulo = document.getElementById('id_titulo').value.trim();
-        const fecha = document.getElementById('id_fecha').value;
-        const mensaje = document.getElementById('id_mensaje').value.trim();
-        const vehiculoSel = document.getElementById('id_vehiculo');
-
-        const item = document.getElementById('preview-item');
-        const icono = document.getElementById('preview-icon');
-        const badge = document.getElementById('preview-badge');
-        const tituloEl = document.getElementById('preview-titulo');
-        const fechaEl = document.getElementById('preview-fecha');
-        const mensajeEl = document.getElementById('preview-mensaje');
-        const vehiculoEl = document.getElementById('preview-vehiculo');
-
-        item.className = 'preview-item';
-        if (tipo) {
-            item.classList.add('tipo-' + tipo);
-            badge.textContent = tipo;
-            icono.innerHTML = '<i class="fas ' + (ICONOS_TIPO[tipo] || 'fa-bell') + '"></i>';
-        } else {
-            badge.textContent = 'Sin tipo';
-            icono.innerHTML = '<i class="fas fa-bell"></i>';
-        }
-
-        if (titulo) {
-            tituloEl.textContent = titulo;
-            tituloEl.classList.remove('preview-placeholder');
-        } else {
-            tituloEl.textContent = 'Sin título';
-            tituloEl.classList.add('preview-placeholder');
-        }
-
-        fechaEl.textContent = formatearFecha(fecha);
-
-        if (mensaje) {
-            mensajeEl.textContent = mensaje;
-            mensajeEl.classList.remove('preview-placeholder');
-        } else {
-            mensajeEl.textContent = 'El mensaje aparecerá aquí...';
-            mensajeEl.classList.add('preview-placeholder');
-        }
-
-        if (tipo === 'Informacion') {
-            vehiculoEl.textContent = 'Todos los clientes registrados';
-        } else if (vehiculoSel && vehiculoSel.value && vehiculoSel.selectedIndex >= 0 && vehiculoSel.options[vehiculoSel.selectedIndex].text.trim()) {
-            vehiculoEl.textContent = vehiculoSel.options[vehiculoSel.selectedIndex].text.trim();
-        } else {
-            vehiculoEl.textContent = 'Selecciona un vehículo';
-        }
-    }
-
-    // ── Helpers para mostrar / limpiar errores ──────────────────
-    function mostrarError(wrapId, errorId) {
-        document.getElementById(wrapId).classList.add('campo-invalido');
-        document.getElementById(errorId).style.display = 'flex';
-    }
-
-    function limpiarError(wrapId, errorId) {
-        document.getElementById(wrapId).classList.remove('campo-invalido');
-        document.getElementById(errorId).style.display = 'none';
-    }
-
-    $(function () {
-        $('#btnCancelar').on('click', function() {
-            window.location.href = '{{ listar_url }}';
-        });
-
-        // Vista previa en vivo
-        $('#id_titulo, #id_fecha').on('input change', actualizarPreview);
-        $('#id_vehiculo').on('change', actualizarPreview);
-        $('#id_mensaje').on('input', function() {
-            actualizarContador();
-            actualizarPreview();
-        });
-
-        // Validar en tiempo real al escribir/cambiar
-        $('#id_titulo').on('input', function() {
-            if (this.value.trim()) {
-                limpiarError('wrap-titulo', 'error-titulo');
-            } else {
-                mostrarError('wrap-titulo', 'error-titulo');
-                document.getElementById('error-titulo').querySelector('i').nextSibling
-                document.getElementById('error-titulo').innerHTML = '<i class="fas fa-exclamation-circle"></i> El título es obligatorio.';
-                mostrarError('wrap-titulo', 'error-titulo');
-            }
-        });
-        $('#id_mensaje').on('input', function() {
-            const val = this.value.trim();
-            const el = document.getElementById('error-mensaje');
-            if (!val) {
-                el.innerHTML = '<i class="fas fa-exclamation-circle"></i> El mensaje es obligatorio (mínimo 10 caracteres).';
-                mostrarError('wrap-mensaje', 'error-mensaje');
-            } else if (val.length < 10) {
-                el.innerHTML = '<i class="fas fa-exclamation-circle"></i> Mínimo 10 caracteres (llevas ' + val.length + ').';
-                mostrarError('wrap-mensaje', 'error-mensaje');
-            } else {
-                limpiarError('wrap-mensaje', 'error-mensaje');
-            }
-        });
-        $('#id_fecha').on('change', function() {
-            if (this.value) limpiarError('wrap-fecha', 'error-fecha');
-        });
-        $('#id_vehiculo').on('change', function() {
-            if (this.value) limpiarError('wrap-vehiculo', 'error-vehiculo');
-        });
-
-        // ── Validación al enviar ────────────────────────────────
-        $('#formNotificacion').on('submit', function(e) {
-            var valido = true;
-
-            // Tipo
-            if (!document.getElementById('campo-tipo').value) {
-                document.getElementById('error-tipo').style.display = 'flex';
-                document.getElementById('tipo-grid').classList.add('shake');
-                setTimeout(() => document.getElementById('tipo-grid').classList.remove('shake'), 400);
-                valido = false;
-            }
-
-            // Título
-            if (!document.getElementById('id_titulo').value.trim()) {
-                mostrarError('wrap-titulo', 'error-titulo');
-                valido = false;
-            } else {
-                limpiarError('wrap-titulo', 'error-titulo');
-            }
-
-            // Fecha
-            const fechaVal = document.getElementById('id_fecha').value;
-            if (!fechaVal) {
-                mostrarError('wrap-fecha', 'error-fecha');
-                valido = false;
-            } else {
-                limpiarError('wrap-fecha', 'error-fecha');
-            }
-
-            // Vehículo (solo si no es Información)
-            const tipoSel = document.getElementById('campo-tipo').value;
-            if (tipoSel !== 'Informacion') {
-                const vehiculoVal = document.getElementById('id_vehiculo').value;
-                if (!vehiculoVal) {
-                    mostrarError('wrap-vehiculo', 'error-vehiculo');
-                    valido = false;
-                } else {
-                    limpiarError('wrap-vehiculo', 'error-vehiculo');
-                }
-            }
-
-            // Mensaje
-            const mensajeVal = document.getElementById('id_mensaje').value.trim();
-            if (!mensajeVal || mensajeVal.length < 10) {
-                mostrarError('wrap-mensaje', 'error-mensaje');
-                valido = false;
-            } else {
-                limpiarError('wrap-mensaje', 'error-mensaje');
-            }
-
-            if (!valido) {
-                e.preventDefault();
-                // Scroll al primer error
-                const primerError = document.querySelector('.campo-invalido');
-                if (primerError) primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                return;
-            }
-
-            // Estado de carga
-            const btn = document.getElementById('btnGuardar');
-            btn.classList.add('cargando');
-            btn.disabled = true;
-        });
     });
+
+    // Validar en tiempo real al escribir/cambiar
+    $('#id_titulo').on('input', function() {
+        if (this.value.trim()) {
+            limpiarError('wrap-titulo', 'error-titulo');
+        } else {
+            document.getElementById('error-titulo').innerHTML = '<i class="fas fa-exclamation-circle"></i> El título es obligatorio.';
+            mostrarError('wrap-titulo', 'error-titulo');
+        }
+    });
+    $('#id_mensaje').on('input', function() {
+        const val = this.value.trim();
+        const el = document.getElementById('error-mensaje');
+        if (!val) {
+            el.innerHTML = '<i class="fas fa-exclamation-circle"></i> El mensaje es obligatorio (mínimo 10 caracteres).';
+            mostrarError('wrap-mensaje', 'error-mensaje');
+        } else if (val.length < 10) {
+            el.innerHTML = '<i class="fas fa-exclamation-circle"></i> Mínimo 10 caracteres (llevas ' + val.length + ').';
+            mostrarError('wrap-mensaje', 'error-mensaje');
+        } else {
+            limpiarError('wrap-mensaje', 'error-mensaje');
+        }
+    });
+    $('#id_fecha').on('change', function() {
+        if (this.value) limpiarError('wrap-fecha', 'error-fecha');
+    });
+    $('#id_vehiculo').on('change', function() {
+        if (this.value) limpiarError('wrap-vehiculo', 'error-vehiculo');
+    });
+
+    // ── Validación al enviar ────────────────────────────────
+    $('#formNotificacion').on('submit', function(e) {
+        var valido = true;
+
+        // Tipo
+        if (!document.getElementById('campo-tipo').value) {
+            document.getElementById('error-tipo').style.display = 'flex';
+            document.getElementById('tipo-grid').classList.add('shake');
+            setTimeout(() => document.getElementById('tipo-grid').classList.remove('shake'), 400);
+            valido = false;
+        }
+
+        // Título
+        if (!document.getElementById('id_titulo').value.trim()) {
+            mostrarError('wrap-titulo', 'error-titulo');
+            valido = false;
+        } else {
+            limpiarError('wrap-titulo', 'error-titulo');
+        }
+
+        // Fecha
+        const fechaVal = document.getElementById('id_fecha').value;
+        if (!fechaVal) {
+            mostrarError('wrap-fecha', 'error-fecha');
+            valido = false;
+        } else {
+            limpiarError('wrap-fecha', 'error-fecha');
+        }
+
+        // Vehículo (solo si no es Información)
+        const tipoSel = document.getElementById('campo-tipo').value;
+        if (tipoSel !== 'Informacion') {
+            const vehiculoVal = document.getElementById('id_vehiculo').value;
+            if (!vehiculoVal) {
+                mostrarError('wrap-vehiculo', 'error-vehiculo');
+                valido = false;
+            } else {
+                limpiarError('wrap-vehiculo', 'error-vehiculo');
+            }
+        }
+
+        // Mensaje
+        const mensajeVal = document.getElementById('id_mensaje').value.trim();
+        if (!mensajeVal || mensajeVal.length < 10) {
+            mostrarError('wrap-mensaje', 'error-mensaje');
+            valido = false;
+        } else {
+            limpiarError('wrap-mensaje', 'error-mensaje');
+        }
+
+        if (!valido) {
+            e.preventDefault();
+            const primerError = document.querySelector('.campo-invalido');
+            if (primerError) primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        const btn = document.getElementById('btnGuardar');
+        btn.classList.add('cargando');
+        btn.disabled = true;
+    });
+});
 </script>
 {% endblock %}

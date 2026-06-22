@@ -1,33 +1,31 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
 from django.contrib import messages
-from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
+from django.http import JsonResponse
 
-from ...models import Compra, Caja, Factura
-from ...forms import CompraForm
+from ...models import Compra, CompraDetalle, Caja, ProveedorProducto, Producto
+from ...forms import CompraForm, CompraDetalleFormSet
 
 
-# ── Solo ADMIN — todo este módulo es restringido ─────────────────
 class SoloAdminMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.cargo == 'ADMIN' or self.request.user.is_superuser
 
     def handle_no_permission(self):
-        messages.error(self.request, "No tienes permisos de administrador para gestionar las compras.")
+        messages.error(self.request, "No tienes permisos de administrador.")
         return redirect('app:dashboard')
 
 
-# ── LISTAR — Solo Admin ───────────────────────────────────────────
 class CompraListView(LoginRequiredMixin, SoloAdminMixin, ListView):
     model = Compra
     template_name = 'Compra/listar.html'
     context_object_name = 'compras'
 
     def get_queryset(self):
-        return Compra.objects.all().order_by('-fecha')
+        return Compra.objects.prefetch_related('detalles__producto').order_by('-fecha')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -35,59 +33,105 @@ class CompraListView(LoginRequiredMixin, SoloAdminMixin, ListView):
         return context
 
 
-# ── CREAR — Solo Admin ────────────────────────────────────────────
-class CompraCreateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, CreateView):
+def _get_proveedor_id(request, instance=None):
+    """Obtiene el proveedor_id desde POST o desde la instancia existente."""
+    if request.POST.get('proveedor'):
+        return request.POST.get('proveedor')
+    if instance and instance.pk and instance.proveedor_id:
+        return instance.proveedor_id
+    return None
+
+
+class CompraCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
     model = Compra
     form_class = CompraForm
     template_name = 'Compra/crear.html'
     success_url = reverse_lazy('app:lista_compras')
-    success_message = "Compra registrada correctamente."
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = 'Registrar Nueva Compra'
+        proveedor_id = _get_proveedor_id(self.request, self.object)
+        if self.request.POST:
+            context['formset'] = CompraDetalleFormSet(
+                self.request.POST,
+                instance=self.object,
+                form_kwargs={'proveedor_id': proveedor_id},
+            )
+        else:
+            context['formset'] = CompraDetalleFormSet(
+                instance=self.object,
+                form_kwargs={'proveedor_id': proveedor_id},
+            )
         return context
 
     def form_valid(self, form):
-        compra = form.save(commit=False)
-        compra.producto.stock += compra.cantidad
-        compra.producto.save(update_fields=['stock'])
-        compra.save()
-        return super().form_valid(form)
+        context = self.get_context_data()
+        formset = context['formset']
+
+        if formset.is_valid():
+            self.object = form.save(commit=False)
+            self.object.fecha = timezone.now()  
+            total = sum(
+                (f.cleaned_data.get('cantidad') or 0) * (f.cleaned_data.get('precio_unitario') or 0)
+                for f in formset
+                if f.cleaned_data and not f.cleaned_data.get('DELETE')
+            )
+            self.object.total_pagado = total
+            self.object.save()
+            formset.instance = self.object
+            formset.save()
+            messages.success(self.request, "Compra registrada correctamente.")
+            return redirect(self.success_url)
+        else:
+            return self.form_invalid(form)
 
 
-# ── EDITAR — Solo Admin ───────────────────────────────────────────
-class CompraUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, UpdateView):
+class CompraUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
     model = Compra
     form_class = CompraForm
     template_name = 'Compra/crear.html'
     success_url = reverse_lazy('app:lista_compras')
-    success_message = "Compra modificada exitosamente."
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Editar Registro de Compra'
+        context['titulo'] = 'Editar Compra'
+        proveedor_id = _get_proveedor_id(self.request, self.object)
+        if self.request.POST:
+            context['formset'] = CompraDetalleFormSet(
+                self.request.POST,
+                instance=self.object,
+                form_kwargs={'proveedor_id': proveedor_id},
+            )
+        else:
+            context['formset'] = CompraDetalleFormSet(
+                instance=self.object,
+                form_kwargs={'proveedor_id': proveedor_id},
+            )
         return context
 
     def form_valid(self, form):
-        compra_anterior = Compra.objects.get(pk=self.object.pk)
-        compra = form.save(commit=False)
+        context = self.get_context_data()
+        formset = context['formset']
 
-        if compra_anterior.producto_id != compra.producto_id:
-            compra_anterior.producto.stock -= compra_anterior.cantidad
-            compra_anterior.producto.save(update_fields=['stock'])
-            compra.producto.stock += compra.cantidad
-            compra.producto.save(update_fields=['stock'])
+        if formset.is_valid():
+            self.object = form.save(commit=False)
+            self.object.fecha = timezone.now() 
+            total = sum(
+                (f.cleaned_data.get('cantidad') or 0) * (f.cleaned_data.get('precio_unitario') or 0)
+                for f in formset
+                if f.cleaned_data and not f.cleaned_data.get('DELETE')
+            )
+            self.object.total_pagado = total
+            self.object.save()
+            formset.instance = self.object
+            formset.save()
+            messages.success(self.request, "Compra actualizada correctamente.")
+            return redirect(self.success_url)
         else:
-            diferencia = compra.cantidad - compra_anterior.cantidad
-            compra.producto.stock += diferencia
-            compra.producto.save(update_fields=['stock'])
-
-        compra.save()
-        return super().form_valid(form)
+            return self.form_invalid(form)
 
 
-# ── ELIMINAR — Solo Admin ─────────────────────────────────────────
 class CompraDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
     model = Compra
     template_name = 'Compra/eliminar.html'
@@ -95,20 +139,14 @@ class CompraDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['titulo'] = 'Eliminar Registro de Compra'
+        context['titulo'] = 'Eliminar Compra'
         return context
 
     def form_valid(self, form):
-        compra = self.get_object()
-        compra.producto.stock -= compra.cantidad
-        if compra.producto.stock < 0:
-            compra.producto.stock = 0
-        compra.producto.save(update_fields=['stock'])
-        messages.success(self.request, "El registro de compra ha sido eliminado.")
+        messages.success(self.request, "Compra eliminada correctamente.")
         return super().form_valid(form)
 
 
-# ── PAGAR — Solo Admin ────────────────────────────────────────────
 class PagarCompraView(LoginRequiredMixin, SoloAdminMixin, View):
     def post(self, request, pk):
         compra = get_object_or_404(Compra, pk=pk)
@@ -124,24 +162,37 @@ class PagarCompraView(LoginRequiredMixin, SoloAdminMixin, View):
 
         compra.estado_pago = 'Pagada'
         compra.metodo_pago = metodo
-        compra.fecha_pago  = timezone.now()
+        compra.fecha_pago = timezone.now()
         compra.save()
 
         Caja.objects.create(
-            descripcion = f"Compra Factura {compra.num_factura_proveedor}",
-            monto       = compra.total_pagado,
-            tipo        = 'EGRESO',
-            categoria   = 'Proveedores',
-            metodo_pago = metodo,
+            descripcion=f"Compra Factura {compra.num_factura_proveedor}",
+            monto=compra.total_pagado,
+            tipo='EGRESO',
+            categoria='Proveedores',
+            metodo_pago=metodo,
         )
-
-        try:
-            factura = compra.factura
-            factura.estado_pago = 'Pagada'
-            factura.metodo_pago = metodo
-            factura.save()
-        except Factura.DoesNotExist:
-            pass
 
         messages.success(request, f"Compra {compra.num_factura_proveedor} pagada correctamente.")
         return redirect('app:lista_compras')
+
+
+def productos_por_proveedor(request):
+    proveedor_id = request.GET.get('proveedor_id')
+    if not proveedor_id:
+        return JsonResponse({'productos': []})
+
+    items = ProveedorProducto.objects.filter(
+        proveedor_id=proveedor_id,
+        producto__estado=True
+    ).select_related('producto').values('producto_id', 'producto__nombre', 'precio_proveedor')
+
+    data = [
+        {
+            'id': i['producto_id'],
+            'nombre': i['producto__nombre'],
+            'precio': str(i['precio_proveedor']),
+        }
+        for i in items
+    ]
+    return JsonResponse({'productos': data})

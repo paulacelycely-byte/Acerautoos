@@ -185,8 +185,7 @@ def devolver_stock_cancelacion(sender, instance, **kwargs):
 
 
 # ══════════════════════════════════════════════════════════
-#  4. MANTENIMIENTO — lo maneja generar_notificaciones_automaticas()
-#     en views/Notificacion/views.py, no aquí.
+#  4. MANTENIMIENTO — 
 # ══════════════════════════════════════════════════════════
 @receiver(post_save, sender=OrdenServicio)
 def alerta_mantenimiento_vehiculo(sender, instance, **kwargs):
@@ -194,8 +193,7 @@ def alerta_mantenimiento_vehiculo(sender, instance, **kwargs):
 
 
 # ══════════════════════════════════════════════════════════
-#  5. SEGUIMIENTO — lo crea OrdenServicioCreateView.form_valid()
-#     y OrdenServicioUpdateView.form_valid() en views.py
+#  5. SEGUIMIENTO — 
 # ══════════════════════════════════════════════════════════
 @receiver(post_save, sender=OrdenServicio)
 def crear_seguimiento_mantenimiento(sender, instance, created, **kwargs):

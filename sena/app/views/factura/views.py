@@ -20,6 +20,7 @@ class SoloAdminMixin(UserPassesTestMixin):
         messages.error(self.request, "No tienes permisos de administrador para realizar esta acción.")
         return redirect('app:dashboard')
 
+
 # ── Mixin 2: ADMIN o MECANICO ────────────────────────────────────
 class AdminOMecanicoMixin(UserPassesTestMixin):
     def test_func(self):
@@ -102,6 +103,12 @@ class FacturaDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
 
 # ── PAGAR — Solo Admin ────────────────────────────────────────────
 class PagarFacturaView(LoginRequiredMixin, SoloAdminMixin, View):
+    EXTENSIONES_VALIDAS = ('.pdf', '.jpg', '.jpeg', '.png', '.gif')
+    TAMANO_MAX_MB = 5
+
+    # Métodos de pago que requieren comprobante obligatorio
+    METODOS_CON_COMPROBANTE = ('Nequi', 'Transferencia', 'Daviplata')
+
     def post(self, request, pk):
         factura = get_object_or_404(Factura, pk=pk)
         metodo  = request.POST.get('metodo_pago', '').strip()
@@ -114,6 +121,25 @@ class PagarFacturaView(LoginRequiredMixin, SoloAdminMixin, View):
         if factura.estado_pago == 'Pagada':
             messages.warning(request, "Esta factura ya fue pagada.")
             return redirect('app:listar_factura')
+
+        # ── Validación de comprobante (Nequi, Transferencia, Daviplata) ──
+        comprobante = request.FILES.get('comprobante_pago')
+
+        if metodo in self.METODOS_CON_COMPROBANTE:
+            if not comprobante:
+                messages.error(request, f"Debe adjuntar el comprobante de pago para {metodo}.")
+                return redirect('app:listar_factura')
+
+            nombre = comprobante.name.lower()
+            if not nombre.endswith(self.EXTENSIONES_VALIDAS):
+                messages.error(request, "El comprobante debe ser PDF, JPG, PNG o GIF.")
+                return redirect('app:listar_factura')
+
+            if comprobante.size > self.TAMANO_MAX_MB * 1024 * 1024:
+                messages.error(request, f"El comprobante no puede superar {self.TAMANO_MAX_MB}MB.")
+                return redirect('app:listar_factura')
+
+            factura.comprobante_pago = comprobante
 
         factura.metodo_pago = metodo
         factura.estado_pago = 'Pagada'

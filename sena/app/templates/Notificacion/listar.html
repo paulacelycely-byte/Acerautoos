@@ -92,7 +92,7 @@
         display: flex; align-items: center; gap: 12px;
         transition: .2s; border: 2px solid transparent;
         cursor: pointer; user-select: none;
-        min-width: 0;          /* clave para que el grid pueda comprimir */
+        min-width: 0;
         overflow: hidden;
     }
     .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.12); }
@@ -113,7 +113,7 @@
         margin-bottom: 20px; display: flex;
         flex-wrap: wrap; gap: 10px; align-items: flex-end;
     }
-    .filtro-g { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 120px; }
+    .filtro-g { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 120px; position: relative; }
     .filtro-lbl { font-family: 'DM Sans', sans-serif; font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
     .filtro-ctrl {
     font-family: 'DM Sans', sans-serif; font-size: .82rem;
@@ -124,12 +124,147 @@
 }
     .filtro-ctrl:focus { border-color: var(--rojo); background: white; box-shadow: 0 0 0 3px rgba(211,47,47,.07); }
     .btn-reset {
-        font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 700;
+        font-family: 'DM Sans', sans-serif; font-size: .62rem; font-weight: 700;
         text-transform: uppercase; padding: 8px 14px; border-radius: 8px;
         border: 1.5px solid var(--borde); background: white; color: var(--muted);
         cursor: pointer; transition: .18s; white-space: nowrap; align-self: flex-end;
     }
     .btn-reset:hover { border-color: #ccc; color: var(--carbon); }
+
+    /* ══════════════════════════════════════════
+       DATE PICKER CUSTOM — COMPACTO
+    ══════════════════════════════════════════ */
+    .dp-trigger {
+        border: 1.5px solid #d0cdc8;
+        border-radius: 8px;
+        padding: 7px 11px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .82rem;
+        color: var(--texto);
+        background: var(--gris);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: border-color .2s, box-shadow .2s, background .2s;
+        user-select: none;
+        white-space: nowrap;
+    }
+    .dp-trigger:hover { border-color: #aaa; background: white; }
+    .dp-trigger.active { border-color: var(--rojo); box-shadow: 0 0 0 3px rgba(211,47,47,.12); background: white; }
+    .dp-trigger svg { width: 15px; height: 15px; stroke: var(--rojo); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .dp-trigger .dp-val { flex: 1; }
+    .dp-trigger .dp-clear {
+        width: 18px; height: 18px; border-radius: 50%; background: #ddd;
+        display: none; align-items: center; justify-content: center; cursor: pointer;
+        font-size: .75rem; color: #555; flex-shrink: 0;
+        transition: background .15s;
+    }
+    .dp-trigger .dp-clear:hover { background: #bbb; }
+    .dp-trigger.has-value .dp-clear { display: flex; }
+
+    .dp-popover {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        z-index: 9999;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 8px 40px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.08);
+        border: 1px solid var(--borde);
+        padding: 0;
+        width: 160px;
+        animation: dpFadeIn .15s ease;
+        overflow: hidden;
+    }
+    @keyframes dpFadeIn { from { opacity: 0; transform: translateY(-6px) scale(.97); } to { opacity: 1; transform: none; } }
+
+    .dp-header {
+        background: var(--carbon);
+        padding: 6px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 4px;
+    }
+    .dp-nav-btn {
+        width: 18px; height: 18px; border-radius: 2px; border: none;
+        background: rgba(255,255,255,.12); color: white; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        transition: background .15s;
+        flex-shrink: 0;
+    }
+    .dp-nav-btn:hover { background: rgba(255,255,255,.25); }
+    .dp-nav-btn svg { width: 8px; height: 8px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .dp-month-label {
+        font-family: 'DM Sans', sans-serif; font-size: .62rem; font-weight: 700;
+        color: white; text-align: center; flex: 1; letter-spacing: .2px;
+        cursor: pointer; border-radius: 3px; padding: 1px 2px;
+        transition: background .15s;
+    }
+    .dp-month-label:hover { background: rgba(255,255,255,.12); }
+
+    .dp-body { padding: 4px 6px 6px; }
+    .dp-weekdays {
+        display: grid; grid-template-columns: repeat(7, 1fr);
+        gap: 0px; margin-bottom: 2px;
+    }
+    .dp-weekdays span {
+        font-family: 'DM Sans', sans-serif; font-size: .5rem; font-weight: 700;
+        color: var(--muted); text-align: center; text-transform: uppercase; letter-spacing: .2px;
+        padding: 1px 0;
+    }
+    .dp-days {
+        display: grid; grid-template-columns: repeat(7, 1fr); gap: 0px;
+    }
+    .dp-day {
+        font-family: 'DM Sans', sans-serif; font-size: .55rem; font-weight: 500;
+        text-align: center; padding: 2px 0px; border-radius: 2px;
+        cursor: pointer; color: var(--texto); border: none; background: transparent;
+        transition: background .12s, color .12s;
+        aspect-ratio: 1;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .dp-day:hover:not(.dp-day-other):not(.dp-day-disabled) { background: #f0e8e8; color: var(--rojo); }
+    .dp-day-other { color: #ccc; cursor: default; }
+    .dp-day-disabled { color: #ddd; cursor: not-allowed; text-decoration: line-through; }
+    .dp-day-today { font-weight: 700; color: var(--rojo); position: relative; }
+    .dp-day-today::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--rojo); }
+    .dp-day-selected { background: var(--rojo) !important; color: white !important; font-weight: 700; box-shadow: 0 2px 8px rgba(211,47,47,.35); }
+    .dp-day-selected.dp-day-today::after { background: white; }
+
+    .dp-footer {
+        border-top: 1px solid var(--borde);
+        padding: 6px 8px;
+        display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .dp-btn-hoy {
+        font-family: 'DM Sans', sans-serif; font-size: .6rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .4px;
+        background: transparent; border: 1.5px solid var(--borde); border-radius: 2px;
+        padding: 3px 10px; cursor: pointer; color: var(--muted); transition: .15s;
+    }
+    .dp-btn-hoy:hover { border-color: var(--rojo); color: var(--rojo); }
+    .dp-btn-limpiar-cal {
+        font-family: 'DM Sans', sans-serif; font-size: .6rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .4px;
+        background: transparent; border: none;
+        padding: 3px 6px; cursor: pointer; color: #ccc; transition: .15s;
+    }
+    .dp-btn-limpiar-cal:hover { color: var(--rojo); }
+
+    .dp-grid-my {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+        padding: 4px 6px 6px;
+    }
+    .dp-my-item {
+        font-family: 'DM Sans', sans-serif; font-size: .6rem; font-weight: 600;
+        text-align: center; padding: 5px 1px; border-radius: 2px;
+        cursor: pointer; border: 1.5px solid transparent; transition: .15s;
+        color: var(--texto); background: var(--gris);
+    }
+    .dp-my-item:hover { border-color: var(--rojo); color: var(--rojo); background: white; }
+    .dp-my-item.dp-my-sel { background: var(--rojo); color: white; border-color: var(--rojo); }
 
     /* ── TABLA ── */
     .tabla-wrap {
@@ -156,7 +291,7 @@
 
     /* badges tipo */
     .tipo-badge { font-family: 'DM Sans', sans-serif; font-size: .7rem; font-weight: 700; padding: 4px 10px; border-radius: 100px; text-transform: uppercase; letter-spacing: .4px; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
-    .tipo-badge svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+    .tipo-badge svg { width: 8px; height: 8px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
     .b-urgente { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
     .b-alerta  { background: #fff3f3; color: #d32f2f; border: 1px solid #ffd0d0; }
     .b-mant    { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; }
@@ -254,7 +389,6 @@
         }
         .header-titulo { font-size: 1.5rem; }
 
-        /* Stats: 2x2, sin overflow ni texto cortado */
         .stats-grid {
             grid-template-columns: repeat(2, 1fr);
         }
@@ -269,27 +403,27 @@
         .stat-num { font-size: 1.6rem; }
         .stat-lbl {
             font-size: .5rem;
-            white-space: normal;      /* permite salto de línea */
+            white-space: normal;
             word-break: break-word;
             line-height: 1.3;
         }
 
-        /* Filtros: stack vertical */
         .filtros-card { padding: 12px 14px; }
         .filtro-g { min-width: 100%; }
+        .dp-trigger { width: 100%; }
+        .dp-popover { width: 180px; }
         .btn-reset { width: 100%; }
 
         #tabla_notificaciones { min-width: 560px; }
         #tabla_notificaciones thead th,
         #tabla_notificaciones tbody td { padding: 10px 8px; }
 
-        /* Ocultar Vehículo y Origen en tablet */
         #tabla_notificaciones th:nth-child(4),
         #tabla_notificaciones td:nth-child(4),
         #tabla_notificaciones th:nth-child(5),
         #tabla_notificaciones td:nth-child(5) { display: none; }
 
-        .dataTables_wrapper { padding: 8px 10px; }
+        .dataTables_wrapper { padding: 6px 8px; }
         .dataTables_filter,
         .dataTables_length { float: none !important; text-align: left !important; margin-bottom: 6px; }
         .dataTables_filter input { max-width: 100%; width: 100%; }
@@ -304,7 +438,6 @@
         .stat-icon { width: 28px; height: 28px; }
         .stat-card { padding: 10px 12px; gap: 8px; }
 
-        /* Ocultar también Fecha en móvil muy pequeño */
         #tabla_notificaciones th:nth-child(6),
         #tabla_notificaciones td:nth-child(6) { display: none; }
     }
@@ -392,14 +525,28 @@
 </div>
     <!-- FILTROS -->
     <div class="filtros-card">
-        <div class="filtro-g">
+        <!-- Date picker DESDE -->
+        <div class="filtro-g" id="dp-desde-wrap">
             <span class="filtro-lbl">Desde</span>
-            <input type="date" class="filtro-ctrl" id="f-desde" onchange="aplicarFiltrosExtra()">
+            <div class="dp-trigger" id="dp-desde-trigger" onclick="dpOpen('desde')">
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span class="dp-val" id="dp-desde-val">Seleccionar fecha</span>
+                <span class="dp-clear" title="Limpiar" onclick="dpClear('desde', event)">×</span>
+            </div>
+            <div class="dp-popover" id="dp-desde-pop" style="display:none;"></div>
         </div>
-        <div class="filtro-g">
+
+        <!-- Date picker HASTA -->
+        <div class="filtro-g" id="dp-hasta-wrap">
             <span class="filtro-lbl">Hasta</span>
-            <input type="date" class="filtro-ctrl" id="f-hasta" onchange="aplicarFiltrosExtra()">
+            <div class="dp-trigger" id="dp-hasta-trigger" onclick="dpOpen('hasta')">
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span class="dp-val" id="dp-hasta-val">Seleccionar fecha</span>
+                <span class="dp-clear" title="Limpiar" onclick="dpClear('hasta', event)">×</span>
+            </div>
+            <div class="dp-popover" id="dp-hasta-pop" style="display:none;"></div>
         </div>
+
         <div class="filtro-g">
             <span class="filtro-lbl">Origen</span>
             <select class="filtro-ctrl" id="f-origen" onchange="aplicarFiltrosExtra()">
@@ -508,115 +655,374 @@
 
 {% block js %}
 <script>
-    var tabla;
-    var filtroActivo = '';
-    var filtroDesdeFecha = '';
-    var filtroHastaFecha = '';
-    var filtroOrigen = '';
+/* ══════════════════════════════════════════════════════════════════
+   DATE PICKER CUSTOM — COMPACTO
+══════════════════════════════════════════════════════════════════ */
+(function () {
+    const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                   'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const DIAS_S = ['Do','Lu','Ma','Mi','Ju','Vi','Sá'];
 
-    $(document).ready(function () {
-        tabla = $('#tabla_notificaciones').DataTable({
-            responsive: true,
-            autoWidth: false,
-            order: [[0, "desc"]],
-            pagingType: "full_numbers",
-            columnDefs: [{ orderable: false, targets: 6 }],
-            language: {
-                "sProcessing":     "Procesando...",
-                "sLengthMenu":     "Mostrar _MENU_ registros",
-                "sZeroRecords":    "No se encontraron resultados",
-                "sEmptyTable":     "Ningún dato disponible",
-                "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                "sInfoEmpty":      "Mostrando 0 a 0 de 0 registros",
-                "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
-                "sSearch":         "Buscar:",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": { "sFirst": "«", "sLast": "»", "sNext": "›", "sPrevious": "‹" }
-            }
+    const state = {
+        desde: { value: null, view: 'days', viewYear: null, viewMonth: null },
+        hasta: { value: null, view: 'days', viewYear: null, viewMonth: null }
+    };
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    ['desde','hasta'].forEach(id => {
+        state[id].viewYear  = today.getFullYear();
+        state[id].viewMonth = today.getMonth();
+    });
+
+    function toISO(d) {
+        if (!d) return null;
+        const yy = d.getFullYear(), mm = String(d.getMonth()+1).padStart(2,'0'), dd = String(d.getDate()).padStart(2,'0');
+        return `${yy}-${mm}-${dd}`;
+    }
+    function fmtDisplay(d) {
+        if (!d) return 'Seleccionar fecha';
+        return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+    }
+
+    function render(id) {
+        const s    = state[id];
+        const pop  = document.getElementById(`dp-${id}-pop`);
+        if (pop.style.display === 'none') return;
+
+        if (s.view === 'days')   pop.innerHTML = renderDays(id);
+        if (s.view === 'months') pop.innerHTML = renderMonths(id);
+        if (s.view === 'years')  pop.innerHTML = renderYears(id);
+
+        pop.querySelectorAll('.dp-day:not(.dp-day-other):not(.dp-day-disabled)').forEach(el => {
+            el.addEventListener('click', () => {
+                const d = new Date(Number(el.dataset.y), Number(el.dataset.m), Number(el.dataset.d));
+                selectDate(id, d);
+            });
         });
+        const prev = pop.querySelector('.dp-prev');
+        const next = pop.querySelector('.dp-next');
+        if (prev) prev.addEventListener('click', () => { navMonth(id, -1); render(id); });
+        if (next) next.addEventListener('click', () => { navMonth(id, +1); render(id); });
+        const lbl = pop.querySelector('.dp-month-label');
+        if (lbl) lbl.addEventListener('click', () => { s.view = 'months'; render(id); });
+        pop.querySelectorAll('.dp-my-item[data-month]').forEach(el => {
+            el.addEventListener('click', () => {
+                s.viewMonth = Number(el.dataset.month);
+                s.view = 'days';
+                render(id);
+            });
+        });
+        pop.querySelectorAll('.dp-my-item[data-year]').forEach(el => {
+            el.addEventListener('click', () => {
+                s.viewYear = Number(el.dataset.year);
+                s.view = 'months';
+                render(id);
+            });
+        });
+        const btnHoy = pop.querySelector('.dp-btn-hoy');
+        if (btnHoy) btnHoy.addEventListener('click', () => selectDate(id, new Date(today)));
+        const btnLimpCal = pop.querySelector('.dp-btn-limpiar-cal');
+        if (btnLimpCal) btnLimpCal.addEventListener('click', () => { dpClearInternal(id); });
+        const prevY = pop.querySelector('.dp-prev-y');
+        const nextY = pop.querySelector('.dp-next-y');
+        if (prevY) prevY.addEventListener('click', () => { s._yearBase = (s._yearBase || s.viewYear) - 12; render(id); });
+        if (nextY) nextY.addEventListener('click', () => { s._yearBase = (s._yearBase || s.viewYear) + 12; render(id); });
+    }
 
-        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-            var row = tabla.row(dataIndex).node();
-            var $row = $(row);
-            if (filtroActivo) {
-                if (($row.data('tipo') || '') !== filtroActivo) return false;
+    function renderDays(id) {
+        const s = state[id];
+        const yr = s.viewYear, mo = s.viewMonth;
+        const first = new Date(yr, mo, 1).getDay();
+        const daysInMonth = new Date(yr, mo+1, 0).getDate();
+        const daysInPrev  = new Date(yr, mo, 0).getDate();
+
+        let cells = '';
+        for (let i = first - 1; i >= 0; i--) {
+            cells += `<button class="dp-day dp-day-other" disabled>${daysInPrev - i}</button>`;
+        }
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dt = new Date(yr, mo, d);
+            const iso = toISO(dt);
+            let cls = 'dp-day';
+            if (dt.getTime() === today.getTime()) cls += ' dp-day-today';
+            if (s.value && toISO(s.value) === iso) cls += ' dp-day-selected';
+            const oId = id === 'desde' ? 'hasta' : 'desde';
+            const oVal = state[oId].value;
+            let disabled = false;
+            const minDate = new Date(2025, 0, 1);
+            if (id === 'desde' && oVal && dt > oVal) disabled = true;
+            if (id === 'hasta' && oVal && dt < oVal) disabled = true;
+            if (dt > today) disabled = true;
+            if (dt < minDate) disabled = true;
+            if (disabled) cls += ' dp-day-disabled';
+            cells += `<button class="${cls}" ${disabled?'disabled':''} data-y="${yr}" data-m="${mo}" data-d="${d}">${d}</button>`;
+        }
+        const total = first + daysInMonth;
+        const rem   = total % 7 === 0 ? 0 : 7 - (total % 7);
+        for (let d = 1; d <= rem; d++) {
+            cells += `<button class="dp-day dp-day-other" disabled>${d}</button>`;
+        }
+
+        return `
+        <div class="dp-header">
+            <button class="dp-nav-btn dp-prev" type="button">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <span class="dp-month-label">${MESES[mo]} ${yr}</span>
+            <button class="dp-nav-btn dp-next" type="button">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+        </div>
+        <div class="dp-body">
+            <div class="dp-weekdays">${DIAS_S.map(d=>`<span>${d}</span>`).join('')}</div>
+            <div class="dp-days">${cells}</div>
+        </div>
+        <div class="dp-footer">
+            <button class="dp-btn-hoy" type="button">Hoy</button>
+            <button class="dp-btn-limpiar-cal" type="button">Limpiar</button>
+        </div>`;
+    }
+
+    function renderMonths(id) {
+        const s = state[id];
+        return `
+        <div class="dp-header">
+            <button class="dp-nav-btn dp-prev-y" type="button">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <span class="dp-month-label" style="cursor:default;">${s.viewYear}</span>
+            <button class="dp-nav-btn dp-next-y" type="button">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+        </div>
+        <div class="dp-grid-my">
+            ${MESES.map((m,i) => `<div class="dp-my-item${s.viewMonth===i?' dp-my-sel':''}" data-month="${i}">${m.slice(0,3)}</div>`).join('')}
+        </div>`;
+    }
+
+    function renderYears(id) {
+        const s    = state[id];
+        const base = s._yearBase || s.viewYear;
+        const years = Array.from({length:12}, (_,i) => base - 5 + i);
+        return `
+        <div class="dp-header">
+            <button class="dp-nav-btn dp-prev-y" type="button">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <span class="dp-month-label" style="cursor:default;">${years[0]}–${years[years.length-1]}</span>
+            <button class="dp-nav-btn dp-next-y" type="button">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+        </div>
+        <div class="dp-grid-my">
+            ${years.map(y => `<div class="dp-my-item${s.viewYear===y?' dp-my-sel':''}" data-year="${y}">${y}</div>`).join('')}
+        </div>`;
+    }
+
+    function navMonth(id, dir) {
+        const s = state[id];
+        let m = s.viewMonth + dir, y = s.viewYear;
+        if (m > 11) { m = 0;  y++; }
+        if (m < 0)  { m = 11; y--; }
+        s.viewMonth = m; s.viewYear = y;
+    }
+
+    function selectDate(id, d) {
+        d.setHours(0,0,0,0);
+        state[id].value = d;
+        state[id].viewYear  = d.getFullYear();
+        state[id].viewMonth = d.getMonth();
+        updateTrigger(id);
+        dpClose(id);
+        applyFilter();
+    }
+
+    function updateTrigger(id) {
+        const val = state[id].value;
+        const trigger = document.getElementById(`dp-${id}-trigger`);
+        document.getElementById(`dp-${id}-val`).textContent = fmtDisplay(val);
+        if (val) trigger.classList.add('has-value');
+        else     trigger.classList.remove('has-value');
+    }
+
+    window.dpOpen = function(id) {
+        const pop = document.getElementById(`dp-${id}-pop`);
+        const trigger = document.getElementById(`dp-${id}-trigger`);
+        const isOpen = pop.style.display !== 'none';
+        ['desde','hasta'].forEach(i => {
+            document.getElementById(`dp-${i}-pop`).style.display = 'none';
+            document.getElementById(`dp-${i}-trigger`).classList.remove('active');
+        });
+        if (!isOpen) {
+            state[id].view = 'days';
+            pop.style.display = 'block';
+            trigger.classList.add('active');
+            render(id);
+            pop.addEventListener('mousedown', function(ev) { ev.stopPropagation(); }, true);
+        }
+    };
+
+    function dpClose(id) {
+        document.getElementById(`dp-${id}-pop`).style.display = 'none';
+        document.getElementById(`dp-${id}-trigger`).classList.remove('active');
+    }
+
+    window.dpClear = function(id, e) {
+        if (e) e.stopPropagation();
+        dpClearInternal(id);
+    };
+
+    function dpClearInternal(id) {
+        state[id].value = null;
+        updateTrigger(id);
+        dpClose(id);
+        applyFilter();
+    }
+
+    document.addEventListener('mousedown', function(e) {
+        ['desde','hasta'].forEach(id => {
+            const wrap = document.getElementById('dp-' + id + '-wrap');
+            if (wrap && !wrap.contains(e.target)) {
+                dpClose(id);
             }
-            if (filtroDesdeFecha && ($row.data('fecha') || '') < filtroDesdeFecha) return false;
-            if (filtroHastaFecha && ($row.data('fecha') || '') > filtroHastaFecha) return false;
-            if (filtroOrigen && ($row.data('origen') || '') !== filtroOrigen) return false;
-            return true;
         });
     });
 
-    function filtrarTabla(tipo, card) {
-        document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('activo'));
-        if (filtroActivo === tipo && tipo !== '') { filtroActivo = ''; tabla.draw(); return; }
-        filtroActivo = tipo;
-        if (tipo !== '') card.classList.add('activo');
-        tabla.draw();
+    function applyFilter() {
+        if (window._dtNotif) {
+            window._dtNotif.draw();
+        }
     }
 
-    function aplicarFiltrosExtra() {
-        filtroDesdeFecha = document.getElementById('f-desde').value;
-        filtroHastaFecha = document.getElementById('f-hasta').value;
-        filtroOrigen     = document.getElementById('f-origen').value;
-        tabla.draw();
-    }
+    window.dpGetValue = function(id) { return state[id].value ? toISO(state[id].value) : null; };
 
-    function resetFiltros() {
-        document.getElementById('f-desde').value  = '';
-        document.getElementById('f-hasta').value  = '';
-        document.getElementById('f-origen').value = '';
-        filtroDesdeFecha = ''; filtroHastaFecha = '';
-        filtroOrigen = ''; filtroActivo = '';
-        document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('activo'));
-        tabla.draw();
-    }
+    window.dpReset = function() {
+        ['desde','hasta'].forEach(id => {
+            state[id].value = null;
+            state[id].viewYear  = today.getFullYear();
+            state[id].viewMonth = today.getMonth();
+            state[id]._yearBase = null;
+            updateTrigger(id);
+            dpClose(id);
+        });
+        applyFilter();
+    };
+})();
 
-    function abrirModal(title, msg, onConfirm) {
-        document.getElementById('modalTitle').textContent  = title;
-        document.getElementById('modalMsg').textContent    = msg;
-        document.getElementById('modalConfirmBtn').onclick = () => { cerrarModal(); onConfirm(); };
-        document.getElementById('modalOverlay').classList.add('show');
-    }
-    function cerrarModal() {
-        document.getElementById('modalOverlay').classList.remove('show');
-    }
-    document.getElementById('modalOverlay').addEventListener('click', function(e) {
-        if (e.target === this) cerrarModal();
+/* ══════════════════════════════════════════════════════════════════
+   NOTIFICACIONES LOGIC
+══════════════════════════════════════════════════════════════════ */
+var tabla;
+var filtroActivo = '';
+var filtroOrigen = '';
+
+$(document).ready(function () {
+    tabla = $('#tabla_notificaciones').DataTable({
+        responsive: true,
+        autoWidth: false,
+        order: [[0, "desc"]],
+        pagingType: "full_numbers",
+        columnDefs: [{ orderable: false, targets: 6 }],
+        language: {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible",
+            "sInfo":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando 0 a 0 de 0 registros",
+            "sInfoFiltered":   "(filtrado de _MAX_ registros totales)",
+            "sSearch":         "Buscar:",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": { "sFirst": "«", "sLast": "»", "sNext": "›", "sPrevious": "‹" }
+        }
     });
 
-    function confirmarEliminar1(pk, btn) {
-        abrirModal(
-            'Eliminar notificación',
-            '¿Seguro que quieres eliminar esta notificación? Esta acción no se puede deshacer.',
-            () => {
-                fetch("{% url 'app:eliminar_notificaciones_masivo' %}", {
-                    method: 'POST',
-                    headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ pks: [String(pk)] })
-                }).then(r => r.json()).then(d => {
-                    if (d.ok) tabla.row($(btn).closest('tr')).remove().draw();
-                });
-            }
-        );
-    }
+    window._dtNotif = tabla;
 
-    function confirmarEliminarTodas() {
-        const total = tabla.rows().count();
-        if (!total) return;
-        abrirModal(
-            'Eliminar todas',
-            `¿Eliminar las ${total} notificaciones? Esta acción no se puede deshacer.`,
-            () => {
-                fetch("{% url 'app:eliminar_todas_notificaciones' %}", {
-                    method: 'POST',
-                    headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' }
-                }).then(r => r.json()).then(d => {
-                    if (d.ok) { tabla.clear().draw(); resetFiltros(); }
-                });
-            }
-        );
-    }
+    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+        if (settings.nTable.id !== 'tabla_notificaciones') return true;
+        var row = tabla.row(dataIndex).node();
+        var $row = $(row);
+        var desde = window.dpGetValue('desde');
+        var hasta = window.dpGetValue('hasta');
+        if (filtroActivo) {
+            if (($row.data('tipo') || '') !== filtroActivo) return false;
+        }
+        var fecha = $row.data('fecha') || '';
+        if (desde && fecha < desde) return false;
+        if (hasta && fecha > hasta) return false;
+        if (filtroOrigen && ($row.data('origen') || '') !== filtroOrigen) return false;
+        return true;
+    });
+});
+
+function filtrarTabla(tipo, card) {
+    document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('activo'));
+    if (filtroActivo === tipo && tipo !== '') { filtroActivo = ''; tabla.draw(); return; }
+    filtroActivo = tipo;
+    if (tipo !== '') card.classList.add('activo');
+    tabla.draw();
+}
+
+function aplicarFiltrosExtra() {
+    filtroOrigen = document.getElementById('f-origen').value;
+    tabla.draw();
+}
+
+function resetFiltros() {
+    document.getElementById('f-origen').value = '';
+    window.dpReset();
+    filtroOrigen = ''; filtroActivo = '';
+    document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('activo'));
+    tabla.draw();
+}
+
+function abrirModal(title, msg, onConfirm) {
+    document.getElementById('modalTitle').textContent  = title;
+    document.getElementById('modalMsg').textContent    = msg;
+    document.getElementById('modalConfirmBtn').onclick = () => { cerrarModal(); onConfirm(); };
+    document.getElementById('modalOverlay').classList.add('show');
+}
+function cerrarModal() {
+    document.getElementById('modalOverlay').classList.remove('show');
+}
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) cerrarModal();
+});
+
+function confirmarEliminar1(pk, btn) {
+    abrirModal(
+        'Eliminar notificación',
+        '¿Seguro que quieres eliminar esta notificación? Esta acción no se puede deshacer.',
+        () => {
+            fetch("{% url 'app:eliminar_notificaciones_masivo' %}", {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pks: [String(pk)] })
+            }).then(r => r.json()).then(d => {
+                if (d.ok) tabla.row($(btn).closest('tr')).remove().draw();
+            });
+        }
+    );
+}
+
+function confirmarEliminarTodas() {
+    const total = tabla.rows().count();
+    if (!total) return;
+    abrirModal(
+        'Eliminar todas',
+        `¿Eliminar las ${total} notificaciones? Esta acción no se puede deshacer.`,
+        () => {
+            fetch("{% url 'app:eliminar_todas_notificaciones' %}", {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' }
+            }).then(r => r.json()).then(d => {
+                if (d.ok) { tabla.clear().draw(); resetFiltros(); }
+            });
+        }
+    );
+}
 </script>
 {% endblock %}

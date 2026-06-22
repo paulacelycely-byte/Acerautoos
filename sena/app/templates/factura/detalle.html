@@ -39,7 +39,7 @@
         .top-bar-title {
             font-family: 'Barlow Condensed', sans-serif;
             font-size: 1rem; font-weight: 800;
-            color: white; /* Título cambiado a blanco */
+            color: white;
             text-transform: uppercase; letter-spacing: 2px;
         }
         .top-bar-num {
@@ -86,7 +86,7 @@
         .empresa-sub { font-family: 'DM Sans', sans-serif; font-size: .7rem; color: var(--muted); margin-top: 3px; }
 
         .factura-id { text-align: right; }
-        .factura-label { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 800; color: white; /* Título cambiado a blanco */ text-transform: uppercase; letter-spacing: 3px; line-height: 1; }
+        .factura-label { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 800; color: white; text-transform: uppercase; letter-spacing: 3px; line-height: 1; }
         .factura-num-badge { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; background: var(--carbon); color: white; padding: 4px 14px; border-radius: 100px; display: inline-block; margin-top: 6px; }
 
         /* Info */
@@ -104,6 +104,17 @@
         .meta-col:last-child { border-right: none; }
         .meta-label { font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 5px; }
         .meta-val { font-size: .86rem; font-weight: 600; color: var(--carbon); }
+
+        /* Comprobante de pago */
+        .comprobante-row { border-bottom: 1px solid var(--borde); padding: 18px 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #fffdf5; flex-wrap: wrap; }
+        .comprobante-info { display: flex; align-items: center; gap: 12px; }
+        .comprobante-icon { width: 40px; height: 40px; border-radius: 10px; background: #fff3e0; border: 1px solid #ffe0b2; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .comprobante-icon svg { width: 20px; height: 20px; stroke: #e65100; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+        .comprobante-texto-label { font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 2px; }
+        .comprobante-texto-val { font-size: .85rem; font-weight: 600; color: var(--carbon); }
+        .btn-ver-comprobante { font-family: 'DM Sans', sans-serif; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; padding: 9px 18px; border-radius: 8px; display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid var(--rojo); background: white; color: var(--rojo); cursor: pointer; text-decoration: none; transition: .2s; }
+        .btn-ver-comprobante:hover { background: var(--rojo); color: white; }
+        .btn-ver-comprobante svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
         /* Badges */
         .badge { border-radius: 100px; padding: 3px 11px; font-size: .7rem; font-weight: 700; text-transform: uppercase; display: inline-flex; align-items: center; gap: 4px; font-family: 'DM Sans', sans-serif; }
@@ -151,6 +162,7 @@
             body { background: white !important; padding: 0 !important; display: block !important; }
             .top-bar { display: none !important; }
             .paper { box-shadow: none !important; border-radius: 0 !important; max-width: 100% !important; }
+            .comprobante-row { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
@@ -262,6 +274,25 @@
                 </div>
             </div>
         </div>
+
+        <!-- COMPROBANTE DE PAGO — solo aparece si la factura tiene archivo adjunto -->
+        {% if factura.comprobante_pago %}
+        <div class="comprobante-row">
+            <div class="comprobante-info">
+                <div class="comprobante-icon">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <div>
+                    <div class="comprobante-texto-label">Comprobante de pago ({{ factura.get_metodo_pago_display }})</div>
+                    <div class="comprobante-texto-val">{{ factura.comprobante_pago.name|cut:"facturas_comprobantes/" }}</div>
+                </div>
+            </div>
+            <a href="{{ factura.comprobante_pago.url }}" target="_blank" class="btn-ver-comprobante">
+                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Ver comprobante
+            </a>
+        </div>
+        {% endif %}
 
         <div class="items-section">
             <div class="items-title">Detalle de ítems</div>

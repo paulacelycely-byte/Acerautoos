@@ -38,8 +38,6 @@ class AlertasAutomaticasMiddleware:
 
         request.session['ultima_revision_alertas'] = ahora
 
-        # Llamar directamente a la función que ya existe en la vista
-        # de notificaciones — tiene la lógica completa + envío de correo
         try:
             import threading
             from app.views.Notificacion.views import generar_notificaciones_automaticas

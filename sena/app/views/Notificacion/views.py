@@ -164,9 +164,12 @@ def generar_notificaciones_automaticas():
         fecha_proximo_mantenimiento__isnull=False
     ).select_related('vehiculo', 'vehiculo__marca', 'vehiculo__cliente', 'tipo_servicio')
 
+    print(f"[ACERAUTOS] 📋 Total seguimientos activos: {seguimientos.count()}")
+
     for seg in seguimientos:
         v         = seg.vehiculo
         dias_rest = (seg.fecha_proximo_mantenimiento - hoy).days
+        print(f"[ACERAUTOS] → {v.placa}: {dias_rest} días restantes (fecha: {seg.fecha_proximo_mantenimiento})")
 
         if dias_rest <= 0:
             dias_abs = abs(dias_rest)
@@ -182,6 +185,7 @@ def generar_notificaciones_automaticas():
             tipo    = 'Alerta'
             titulo  = f'Mantenimiento próximo — {v.placa}'
         else:
+            print(f"[ACERAUTOS]   ⏭ Ignorado: {dias_rest} días es >15, fuera de rango")
             continue
 
         ya_existe = Notificacion.objects.filter(
@@ -190,6 +194,7 @@ def generar_notificaciones_automaticas():
             fecha=hoy,
             mensaje=mensaje,
         ).exists()
+        print(f"[ACERAUTOS]   ¿Ya existe notificación hoy?: {ya_existe}")
 
         if not ya_existe:
             Notificacion.objects.filter(
@@ -207,9 +212,15 @@ def generar_notificaciones_automaticas():
                 tipo=tipo, origen='SISTEMA', titulo=titulo,
                 vehiculo=v, mensaje=mensaje, leido=False,
             )
+            print(f"[ACERAUTOS]   ✅ Notificación creada: {titulo}")
 
             if v.cliente:
+                print(f"[ACERAUTOS]   📧 Cliente: {v.cliente} — email: {v.cliente.email}")
                 _enviar_correo_notificacion(v.cliente, v, tipo, mensaje)
+            else:
+                print(f"[ACERAUTOS]   ⚠ Vehículo {v.placa} no tiene cliente asociado, no se envía correo")
+        else:
+            print(f"[ACERAUTOS]   🔁 Ya existe, no se recrea ni se reenvía correo")
 
 
 # ── LISTADO — Mecánico puede ver ─────────────────────────────────

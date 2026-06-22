@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
+from django.db.models import ProtectedError
 
 from app.models import Producto
 from app.forms import ProductoForm
@@ -45,7 +46,7 @@ class ProductoListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
     context_object_name = 'productos'
 
     def get_queryset(self):
-        qs = Producto.objects.select_related('marca', 'proveedor').order_by('-id')
+        qs = Producto.objects.select_related('marca').order_by('-id')
         for p in qs:
             p.stock_status = get_stock_status(p)
             p.stock_minimo_efectivo = p.stock_minimo if p.stock_minimo > 0 else STOCK_MINIMO_DEFAULT
@@ -114,12 +115,51 @@ class ProductoDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
     template_name = 'producto/eliminar.html'
     success_url = reverse_lazy('app:listar_producto')
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, 'Producto eliminado correctamente.')
-        return super().delete(request, *args, **kwargs)
+    def form_valid(self, form):
+        self.object = self.get_object()
+        try:
+            self.object.delete()
+            messages.success(self.request, 'Producto eliminado correctamente.')
+        except ProtectedError:
+            # El producto está referenciado en órdenes de servicio (DetalleOrdenProducto)
+            # y no se puede eliminar sin perder el historial. Avisamos y redirigimos
+            # de vuelta sin tocar la base de datos.
+            messages.error(
+                self.request,
+                f"No se puede eliminar '{self.object.nombre}' porque ya fue usado en una o más "
+                f"órdenes de servicio. Para conservar el historial, desactívalo en su lugar "
+                f"(editar producto → Estado: Inactivo)."
+            )
+        return redirect(self.success_url)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo']     = 'Eliminar Producto'
         context['listar_url'] = reverse_lazy('app:listar_producto')
         return context
+
+
+# ── CAMBIAR ESTADO (toggle rápido activo/inactivo) — Solo Admin ──
+from django.http import JsonResponse
+from django.views import View
+from django.shortcuts import get_object_or_404
+
+
+class ProductoCambiarEstadoView(LoginRequiredMixin, SoloAdminMixin, View):
+    """
+    Alterna el campo `estado` del producto (activo/inactivo) vía AJAX,
+    sin recargar la página. Se usa desde el botón switch en la tabla
+    y en las tarjetas del catálogo.
+    """
+    def post(self, request, pk, *args, **kwargs):
+        producto = get_object_or_404(Producto, pk=pk)
+        producto.estado = not producto.estado
+        producto.save(update_fields=['estado'])
+        return JsonResponse({
+            'ok': True,
+            'estado': producto.estado,
+            'mensaje': f"'{producto.nombre}' ahora está {'activo' if producto.estado else 'inactivo'}.",
+        })
+
+    def handle_no_permission(self):
+        return JsonResponse({'ok': False, 'mensaje': 'No tienes permisos para realizar esta acción.'}, status=403)

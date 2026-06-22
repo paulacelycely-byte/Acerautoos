@@ -484,6 +484,8 @@ const ES_EDITAR  = {% if es_editar %}true{% else %}false{% endif %};
 let marcaVehiculo = null;
 let datosVehiculo = null;
 let contadorFilas = 0;
+let kmDebounceTimer = null;
+let kmRequestSeq = 0;
 
 const SERVICIOS_CATALOG = JSON.parse(document.getElementById('_servicios_data_').textContent);
 
@@ -494,6 +496,35 @@ let srvSeleccionados = [
         {% endfor %}
     {% endif %}
 ];
+
+// Texto por defecto del hint cuando no hay fecha seleccionada
+const HINT_DEFAULT = 'Se calcula automáticamente al escribir el km, o elige una fecha manualmente.';
+
+function iconoRelojHint() {
+    return '<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+}
+
+// CORREGIDO: ahora recibe el origen ("auto" o "manual") para diferenciar el mensaje
+// y siempre refleja exactamente el valor que tiene el campo de fecha en ese momento.
+function actualizarTextoHint(origen) {
+    var hint = document.getElementById('seguimiento-hint');
+    var campoPrx = document.getElementById('id_fecha_proximo_mantenimiento');
+    if (!hint || !campoPrx) return;
+
+    if (!campoPrx.value) {
+        hint.innerHTML = iconoRelojHint() + ' ' + HINT_DEFAULT;
+        return;
+    }
+
+    var fechaTexto = new Date(campoPrx.value + 'T00:00:00').toLocaleDateString('es-CO',
+        { day: 'numeric', month: 'long', year: 'numeric' });
+
+    if (origen === 'manual') {
+        hint.innerHTML = iconoRelojHint() + ' Próximo mantenimiento: ' + fechaTexto + ' (fecha elegida manualmente).';
+    } else {
+        hint.innerHTML = iconoRelojHint() + ' Próximo mantenimiento: ' + fechaTexto + '.';
+    }
+}
 
 function actualizarBloqueSeguimiento() {
     var requiere = srvSeleccionados.some(function(s) { return s.seguimiento; });
@@ -510,24 +541,27 @@ function actualizarBloqueSeguimiento() {
         bloque.classList.remove('visible');
         if (campo)   { campo.required = false;  campo.value  = ''; }
         if (campoKm) { campoKm.required = false; campoKm.value = ''; }
+        actualizarTextoHint('auto');
     }
 }
 
 function calcularFechaPorKm(km) {
     if (!datosVehiculo || !km || isNaN(km)) return;
+    var seq = ++kmRequestSeq;
+
+    var hint = document.getElementById('seguimiento-hint');
+    if (hint) hint.innerHTML = iconoRelojHint() + ' Calculando fecha sugerida…';
+
     var url = URL_KM.replace('VEHICULO_ID', datosVehiculo.id) + '?km=' + km;
     fetch(url)
         .then(function(r){ return r.json(); })
         .then(function(data) {
+            // Si esta respuesta corresponde a un km que ya quedó obsoleto
+            // (el usuario siguió escribiendo), se ignora.
+            if (seq !== kmRequestSeq) return;
             var campoPrx = document.getElementById('id_fecha_proximo_mantenimiento');
             if (campoPrx) campoPrx.value = data.fecha_sugerida;
-            var hint = document.getElementById('seguimiento-hint');
-            if (hint) {
-                hint.innerHTML = '<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
-                    + ' Próximo mantenimiento: '
-                    + new Date(data.fecha_sugerida + 'T00:00:00').toLocaleDateString('es-CO',
-                        { day: 'numeric', month: 'long', year: 'numeric' }) + '.';
-            }
+            actualizarTextoHint('auto');
         })
         .catch(function() {});
 }
@@ -625,7 +659,22 @@ document.addEventListener('DOMContentLoaded', function () {
     if (campoPrxMant) {
         var hoy2 = new Date(), pad2 = function(n){ return String(n).padStart(2,'0'); };
         campoPrxMant.min = hoy2.getFullYear()+'-'+pad2(hoy2.getMonth()+1)+'-'+pad2(hoy2.getDate());
+
+        // Límite máximo: 5 años desde hoy
+        var maxDate = new Date(hoy2);
+        maxDate.setFullYear(maxDate.getFullYear() + 5);
+        campoPrxMant.max = maxDate.getFullYear()+'-'+pad2(maxDate.getMonth()+1)+'-'+pad2(maxDate.getDate());
+
         campoPrxMant.type = 'date';
+
+        // CORREGIDO: si el usuario cambia la fecha manualmente con el calendario,
+        // el texto de abajo se actualiza para reflejar exactamente ese valor.
+        campoPrxMant.addEventListener('input', function () {
+            actualizarTextoHint('manual');
+        });
+
+        // Si ya trae un valor al cargar la página (ej. al editar una orden), sincroniza el hint.
+        if (campoPrxMant.value) actualizarTextoHint('auto');
     }
 
     var selectVehiculo = document.getElementById('id_vehiculo');
@@ -678,8 +727,24 @@ document.addEventListener('DOMContentLoaded', function () {
         campoKm.addEventListener('input', function () {
             if (badgeKm) badgeKm.classList.remove('visible');
             if (kmHint)  kmHint.classList.remove('visible');
-            var km = parseInt(this.value);
-            if (km > 0 && datosVehiculo) calcularFechaPorKm(km);
+
+            // Invalida cualquier cálculo en curso y borra la fecha mientras se recalcula,
+            // así nunca se queda "pegada" con la fecha de un km equivocado o anterior.
+            kmRequestSeq++;
+            var campoPrx = document.getElementById('id_fecha_proximo_mantenimiento');
+            if (campoPrx) campoPrx.value = '';
+            actualizarTextoHint('auto');
+
+            clearTimeout(kmDebounceTimer);
+            var valorActual = this.value;
+            kmDebounceTimer = setTimeout(function () {
+                var km = parseInt(valorActual);
+                if (km > 0 && datosVehiculo) {
+                    calcularFechaPorKm(km);
+                } else {
+                    actualizarTextoHint('auto');
+                }
+            }, 450);
         });
     }
 

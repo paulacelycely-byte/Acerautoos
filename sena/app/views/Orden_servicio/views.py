@@ -34,6 +34,10 @@ CONFIG_MANTENIMIENTO = {
     'CARGA':  (400, 15000),
 }
 
+
+MAX_DIAS_SIN_REVISION = 365
+
+
 def _calcular_fecha_sugerida(vehiculo, km_actual=None):
     config = CONFIG_MANTENIMIENTO.get(vehiculo.tipo_uso, (50, 5000))
     km_diarios, km_por_cambio = config
@@ -45,16 +49,16 @@ def _calcular_fecha_sugerida(vehiculo, km_actual=None):
         km_faltan  = km_por_cambio
         km_proximo = km_por_cambio
     dias = max(1, km_faltan // km_diarios)
-    return date.today() + timedelta(days=dias), km_proximo
+    dias = min(dias, MAX_DIAS_SIN_REVISION)
+    return date.today() + timedelta(days=dias), km_proximo, dias
 
 
 def _info_mantenimiento(vehiculo, km_actual=None):
     config = CONFIG_MANTENIMIENTO.get(vehiculo.tipo_uso, (50, 5000))
     km_diarios, km_por_cambio = config
-    fecha, km_proximo = _calcular_fecha_sugerida(vehiculo, km_actual)
+    fecha, km_proximo, dias = _calcular_fecha_sugerida(vehiculo, km_actual)
     km_base = km_actual if km_actual else 0
     km_faltan = max(0, km_proximo - km_base)
-    dias = max(1, km_faltan // km_diarios)
     return {
         'fecha_sugerida':  fecha.isoformat(),
         'km_proximo':      km_proximo,
@@ -160,20 +164,22 @@ def _crear_seguimientos(request, orden):
     if not servicios_con_seguimiento.exists():
         return
 
+    # Una sola fuente de verdad: fecha, km_proximo y dias salen juntos y
+    # consistentes entre sí (incluyendo el tope por tiempo ya aplicado).
+    fecha_calculada, km_proximo, dias = _calcular_fecha_sugerida(orden.vehiculo, orden.km_actual)
+
     fecha_form = request.POST.get('fecha_proximo_mantenimiento') or None
     if fecha_form:
         try:
             fecha_proximo = date.fromisoformat(fecha_form)
         except ValueError:
-            fecha_proximo, _ = _calcular_fecha_sugerida(orden.vehiculo, orden.km_actual)
+            fecha_proximo = fecha_calculada
     else:
-        fecha_proximo, _ = _calcular_fecha_sugerida(orden.vehiculo, orden.km_actual)
+        fecha_proximo = fecha_calculada
 
-    _, km_proximo = _calcular_fecha_sugerida(orden.vehiculo, orden.km_actual)
     config = CONFIG_MANTENIMIENTO.get(orden.vehiculo.tipo_uso, (50, 5000))
     km_diarios, km_por_cambio = config
     km_faltan = max(0, km_proximo - orden.km_actual)
-    dias = max(1, km_faltan // km_diarios)
 
     SeguimientoMantenimiento.objects.filter(
         vehiculo=orden.vehiculo,

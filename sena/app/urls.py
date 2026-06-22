@@ -70,10 +70,11 @@ urlpatterns = [
     
 
     # ── PRODUCTOS
-    path('producto/listar/',            prod.ProductoListView.as_view(),   name='listar_producto'),
-    path('producto/crear/',             prod.ProductoCreateView.as_view(), name='crear_producto'),
-    path('producto/editar/<int:pk>/',   prod.ProductoUpdateView.as_view(), name='editar_producto'),
-    path('producto/eliminar/<int:pk>/', prod.ProductoDeleteView.as_view(), name='eliminar_producto'),
+    path('producto/listar/',               prod.ProductoListView.as_view(),          name='listar_producto'),
+    path('producto/crear/',                prod.ProductoCreateView.as_view(),        name='crear_producto'),
+    path('producto/editar/<int:pk>/',      prod.ProductoUpdateView.as_view(),        name='editar_producto'),
+    path('producto/eliminar/<int:pk>/',    prod.ProductoDeleteView.as_view(),        name='eliminar_producto'),
+    path('producto/cambiar-estado/<int:pk>/', prod.ProductoCambiarEstadoView.as_view(), name='producto_cambiar_estado'), 
 
     # ── COMPATIBILIDAD
     path('compatibilidad/listar/',            comp.CompatibilidadListView.as_view(),   name='listar_compatibilidad'),
@@ -111,10 +112,11 @@ urlpatterns = [
     path('seguimiento/servicios-orden/',     seguimiento.get_servicios_orden,                name='servicios_orden'),
 
     # ── COMPRAS
-    path('compras/listar/',            compra.CompraListView.as_view(),   name='lista_compras'),
-    path('compras/crear/',             compra.CompraCreateView.as_view(), name='crear_compra'),
-    path('compras/eliminar/<int:pk>/', compra.CompraDeleteView.as_view(), name='eliminar_compra'),
-    path('compras/pagar/<int:pk>/',    compra.PagarCompraView.as_view(),  name='pagar_compra'),
+    path('compras/listar/',                      compra.CompraListView.as_view(),   name='lista_compras'),
+    path('compras/crear/',                       compra.CompraCreateView.as_view(), name='crear_compra'),
+    path('compras/eliminar/<int:pk>/',           compra.CompraDeleteView.as_view(), name='eliminar_compra'),
+    path('compras/pagar/<int:pk>/',              compra.PagarCompraView.as_view(),  name='pagar_compra'),
+    path('compras/productos-por-proveedor/',     compra.productos_por_proveedor,    name='productos_por_proveedor'),
 
     # ── CAJA
     path('caja/listar/', caja.CajaListView.as_view(), name='caja_listar'),
