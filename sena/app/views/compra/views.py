@@ -34,7 +34,6 @@ class CompraListView(LoginRequiredMixin, SoloAdminMixin, ListView):
 
 
 def _get_proveedor_id(request, instance=None):
-    """Obtiene el proveedor_id desde POST o desde la instancia existente."""
     if request.POST.get('proveedor'):
         return request.POST.get('proveedor')
     if instance and instance.pk and instance.proveedor_id:
@@ -71,7 +70,7 @@ class CompraCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
 
         if formset.is_valid():
             self.object = form.save(commit=False)
-            self.object.fecha = timezone.now()  
+            self.object.fecha = timezone.now()
             total = sum(
                 (f.cleaned_data.get('cantidad') or 0) * (f.cleaned_data.get('precio_unitario') or 0)
                 for f in formset
@@ -116,7 +115,7 @@ class CompraUpdateView(LoginRequiredMixin, SoloAdminMixin, UpdateView):
 
         if formset.is_valid():
             self.object = form.save(commit=False)
-            self.object.fecha = timezone.now() 
+            self.object.fecha = timezone.now()
             total = sum(
                 (f.cleaned_data.get('cantidad') or 0) * (f.cleaned_data.get('precio_unitario') or 0)
                 for f in formset
@@ -164,6 +163,11 @@ class PagarCompraView(LoginRequiredMixin, SoloAdminMixin, View):
         compra.metodo_pago = metodo
         compra.fecha_pago = timezone.now()
         compra.save()
+
+        # ── Subir stock al pagar ──
+        for detalle in compra.detalles.select_related('producto').all():
+            detalle.producto.stock += detalle.cantidad
+            detalle.producto.save(update_fields=['stock'])
 
         Caja.objects.create(
             descripcion=f"Compra Factura {compra.num_factura_proveedor}",

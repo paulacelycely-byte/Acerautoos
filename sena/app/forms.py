@@ -837,10 +837,11 @@ class ProductoForm(forms.ModelForm):
         return cleaned
 
 
+import re
+
 # ══════════════════════════════════════════════════════════
 #  COMPRA
 # ══════════════════════════════════════════════════════════
-
 
 class CompraForm(forms.ModelForm):
     class Meta:
@@ -855,6 +856,8 @@ class CompraForm(forms.ModelForm):
             raise forms.ValidationError("El número de factura debe tener al menos 3 caracteres.")
         if len(nf) > 20:
             raise forms.ValidationError("El número de factura no puede superar 20 caracteres.")
+        if not re.match(r'^[a-zA-Z0-9\-]+$', nf):
+            raise forms.ValidationError("El número de factura solo puede contener letras, números y guiones.")
         qs = Compra.objects.filter(num_factura_proveedor=nf)
         if self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
@@ -862,11 +865,9 @@ class CompraForm(forms.ModelForm):
             raise forms.ValidationError("Ya existe una compra registrada con este número de factura.")
         return nf
 
-    
-
 
 # ══════════════════════════════════════════════════════════
-#  COMPRA DETALLE 
+#  COMPRA DETALLE
 # ══════════════════════════════════════════════════════════
 
 class CompraDetalleForm(forms.ModelForm):

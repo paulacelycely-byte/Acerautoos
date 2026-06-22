@@ -397,8 +397,20 @@
                                 </div>
                             </div>
                         </td>
-                        <td style="font-weight:600; color:var(--carbon);">{{ c.producto.nombre }}</td>
-                        <td class="text-center" style="font-weight:700; color:var(--carbon); font-size:1.05rem;">{{ c.cantidad }}</td>
+                        <td style="font-weight:600; color:var(--carbon);">
+    {% for d in c.detalles.all %}
+        {{ d.producto.nombre }}{% if not forloop.last %}, {% endif %}
+    {% empty %}
+        —
+    {% endfor %}
+</td>
+<td class="text-center" style="font-weight:700; color:var(--carbon); font-size:1.05rem;">
+    {% for d in c.detalles.all %}
+        {{ d.cantidad }}{% if not forloop.last %}, {% endif %}
+    {% empty %}
+        —
+    {% endfor %}
+</td>
                         <td><span class="total-valor">$ {{ c.total_pagado }}</span></td>
                         <td class="text-center">
                             {% if c.estado_pago == 'Pagada' %}

@@ -486,10 +486,10 @@ class Compra(models.Model):
 
 
 class CompraDetalle(models.Model):
-    compra              = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name='detalles')
-    producto            = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    cantidad            = models.IntegerField()
-    precio_unitario     = models.DecimalField(max_digits=12, decimal_places=2)
+    compra          = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name='detalles')
+    producto        = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad        = models.IntegerField()
+    precio_unitario = models.DecimalField(max_digits=12, decimal_places=2)
 
     def __str__(self):
         return f"{self.compra.num_factura_proveedor} - {self.producto.nombre}"
@@ -497,30 +497,8 @@ class CompraDetalle(models.Model):
     class Meta:
         db_table = 'compra_detalle'
         unique_together = ('compra', 'producto')
-
-    def save(self, *args, **kwargs):
-        is_new = not self.pk
-        super().save(*args, **kwargs)
         
-       
-        if is_new:
-            self.producto.stock += self.cantidad
-        else:
-            detalle_anterior = CompraDetalle.objects.get(pk=self.pk)
-            diferencia = self.cantidad - detalle_anterior.cantidad
-            self.producto.stock += diferencia
         
-        self.producto.save(update_fields=['stock'])
-
-    def delete(self, *args, **kwargs):
-        # Restar stock al eliminar
-        self.producto.stock -= self.cantidad
-        if self.producto.stock < 0:
-            self.producto.stock = 0
-        self.producto.save(update_fields=['stock'])
-        super().delete(*args, **kwargs)
-
-
 # ══════════════════════════════════════════════════════════
 #  DETALLE PRODUCTO ORDEN DE SERVICIO
 # ══════════════════════════════════════════════════════════
