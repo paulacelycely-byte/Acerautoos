@@ -139,16 +139,22 @@
     .leyenda-obligatorio { font-size:.74rem; color:#888; margin-bottom:16px; display:flex; align-items:center; gap:4px; }
     .leyenda-obligatorio::before { content:'* '; color:#d32f2f; font-weight:800; font-size:.85rem; }
 
-   #chatbot-btn {
+#chatbot-btn {
   position: fixed; bottom: 28px; right: 28px;
   width: 52px; height: 52px;
-  background: transparent; 
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; z-index: 9999;
-  box-shadow: 0 4px 20px rgba(255,255,255,.3);
-  transition: transform .2s, box-shadow .2s;
+  transition: transform .2s;
 }
-    #chatbot-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(211,47,47,.65); }
+#chatbot-btn:hover { 
+  transform: scale(1.08); 
+  box-shadow: none !important;
+  background: transparent !important;
+}
+   
 
     #chatbot-box {
       position: fixed; bottom: 92px; right: 28px;
@@ -163,14 +169,19 @@
     #chatbot-box.abierto { display: flex; }
 
     #chatbot-header {
-      background: linear-gradient(135deg, #1a0000, #110000);
+       background: linear-gradient(135deg, #9d0202, #9d0202);
       border-bottom: 1px solid rgba(211,47,47,.2);
       padding: 14px 16px;
       display: flex; align-items: center; justify-content: space-between;
       flex-shrink: 0;
     }
     #chatbot-header-left { display: flex; align-items: center; gap: 10px; }
-    #chatbot-header-icon { width: 34px; height: 34px; border-radius: 9px; background: rgba(211,47,47,.2); border: 1px solid rgba(211,47,47,.3); display: flex; align-items: center; justify-content: center; }
+    #chatbot-header-icon { 
+  width: 34px; height: 34px; border-radius: 9px; 
+  background: transparent; 
+  border: none; 
+  display: flex; align-items: center; justify-content: center; 
+}
     #chatbot-header-icon svg { width: 16px; height: 16px; stroke: #d32f2f; fill: none; stroke-width: 2; stroke-linecap: round; }
     #chatbot-title { font-family: 'Barlow Condensed', sans-serif; font-size: .95rem; font-weight: 800; color: white; letter-spacing: .5px; text-transform: uppercase; }
     #chatbot-subtitle { font-size: .65rem; color: rgba(255,255,255,.3); margin-top: 1px; }
@@ -696,6 +707,158 @@
       input.addEventListener('blur',   function(){ validarCampo(this); });
     });
   });
+
+
+(function () {
+  var STORE_DRAG = 'acerautos_btn_positions';
+
+  function cargarPosiciones() {
+    try { return JSON.parse(localStorage.getItem(STORE_DRAG) || '{}'); } catch(e) { return {}; }
+  }
+
+  function guardarPosicion(id, bottom, right) {
+    var pos = cargarPosiciones();
+    pos[id] = { bottom: bottom, right: right };
+    try { localStorage.setItem(STORE_DRAG, JSON.stringify(pos)); } catch(e) {}
+  }
+
+  function aplicarPosicionGuardada(el, id) {
+    var pos = cargarPosiciones();
+    if (pos[id]) {
+      el.style.bottom = pos[id].bottom + 'px';
+      el.style.right  = pos[id].right  + 'px';
+    }
+  }
+
+  // Reposiciona el panel según dónde esté el botón
+  function reposicionarPanel(btn, panel) {
+    if (!panel) return;
+    var btnBottom = parseInt(btn.style.bottom || getComputedStyle(btn).bottom) || 0;
+    var btnRight  = parseInt(btn.style.right  || getComputedStyle(btn).right)  || 0;
+    var btnH      = btn.offsetHeight || 52;
+    var panelH    = panel.offsetHeight || 500;
+    var panelW    = panel.offsetWidth  || 340;
+
+    // El panel aparece encima del botón
+    var panelBottom = btnBottom + btnH + 8;
+    var panelRight  = btnRight;
+
+    // Evitar que se salga por arriba
+    if (panelBottom + panelH > window.innerHeight - 8) {
+      panelBottom = window.innerHeight - panelH - 8;
+    }
+    // Evitar que se salga por la izquierda
+    if (panelRight + panelW > window.innerWidth - 8) {
+      panelRight = window.innerWidth - panelW - 8;
+    }
+    if (panelRight < 8) panelRight = 8;
+
+    panel.style.bottom = panelBottom + 'px';
+    panel.style.right  = panelRight  + 'px';
+    panel.style.top    = 'auto';
+    panel.style.left   = 'auto';
+  }
+
+  function hacerArrastrable(el, id, panelId) {
+    if (!el) return;
+    aplicarPosicionGuardada(el, id);
+
+    var panel = panelId ? document.getElementById(panelId) : null;
+
+    // Al cargar, si el panel ya está abierto, reposicionarlo
+    if (panel) reposicionarPanel(el, panel);
+
+    var arrastrandoFlag = false;
+    var startX, startY, startRight, startBottom;
+    var UMBRAL = 5;
+
+    function onDown(e) {
+      var pt = e.touches ? e.touches[0] : e;
+      startX      = pt.clientX;
+      startY      = pt.clientY;
+      startRight  = parseInt(el.style.right  || getComputedStyle(el).right)  || 0;
+      startBottom = parseInt(el.style.bottom || getComputedStyle(el).bottom) || 0;
+      arrastrandoFlag = false;
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup',   onUp);
+      document.addEventListener('touchmove', onMove, { passive: false });
+      document.addEventListener('touchend',  onUp);
+    }
+
+    function onMove(e) {
+      var pt = e.touches ? e.touches[0] : e;
+      var dx = pt.clientX - startX;
+      var dy = pt.clientY - startY;
+
+      if (!arrastrandoFlag && Math.abs(dx) < UMBRAL && Math.abs(dy) < UMBRAL) return;
+      arrastrandoFlag = true;
+      if (e.cancelable) e.preventDefault();
+
+      var nuevoRight  = startRight  - dx;
+      var nuevoBottom = startBottom - dy;
+
+      var maxRight  = window.innerWidth  - el.offsetWidth  - 4;
+      var maxBottom = window.innerHeight - el.offsetHeight - 4;
+      nuevoRight  = Math.max(4, Math.min(maxRight,  nuevoRight));
+      nuevoBottom = Math.max(4, Math.min(maxBottom, nuevoBottom));
+
+      el.style.right  = nuevoRight  + 'px';
+      el.style.bottom = nuevoBottom + 'px';
+
+      // Mover el panel en tiempo real si está abierto
+      if (panel && (panel.classList.contains('abierto') || panel.style.display === 'flex')) {
+        reposicionarPanel(el, panel);
+      }
+    }
+
+    function onUp() {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup',   onUp);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend',  onUp);
+
+      if (arrastrandoFlag) {
+        guardarPosicion(id,
+          parseInt(el.style.bottom),
+          parseInt(el.style.right)
+        );
+        reposicionarPanel(el, panel);
+
+        el.addEventListener('click', function bloquearClick(ev) {
+          ev.stopImmediatePropagation();
+          ev.preventDefault();
+          el.removeEventListener('click', bloquearClick, true);
+        }, true);
+      }
+    }
+
+    el.style.cursor = 'grab';
+    el.addEventListener('mousedown',  onDown);
+    el.addEventListener('touchstart', onDown, { passive: true });
+
+    // Reposicionar el panel cada vez que se abra
+    if (panel) {
+      var observer = new MutationObserver(function() {
+        if (panel.classList.contains('abierto') || panel.style.display === 'flex') {
+          reposicionarPanel(el, panel);
+        }
+      });
+      observer.observe(panel, { attributes: true, attributeFilter: ['class', 'style'] });
+    }
+  }
+
+  function init() {
+    hacerArrastrable(document.getElementById('acc-btn'),     'acc-btn',     'acc-panel');
+    hacerArrastrable(document.getElementById('chatbot-btn'), 'chatbot-btn', 'chatbot-box');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
   </script>
 
 
