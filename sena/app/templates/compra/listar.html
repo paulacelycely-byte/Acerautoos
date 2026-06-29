@@ -161,9 +161,9 @@
     }
 
     .total-valor {
-        font-family: 'Inter', sans-serif;
-        font-size: .95rem; font-weight: 700; color: var(--carbon);
-    }
+    font-family: 'Inter', sans-serif;
+    font-size: .82rem; font-weight: 400; color: #444;
+}
 
     .badge-estado {
         font-family: 'Inter', sans-serif;
@@ -385,7 +385,7 @@
                 <tbody>
                     {% for c in compras %}
                     <tr>
-                        <td class="text-center" style="font-weight:600; color:var(--muted); font-size:.8rem;">{{ c.id }}</td>
+                        <td class="text-center" style="color:#444; font-size:.82rem;">{{ c.id }}</td>
                         <td>
                             <div class="d-flex align-items-center" style="gap:10px;">
                                 <div class="proveedor-avatar">{{ c.proveedor.nombre|first|upper }}</div>
@@ -404,7 +404,7 @@
         —
     {% endfor %}
 </td>
-<td class="text-center" style="font-weight:700; color:var(--carbon); font-size:1.05rem;">
+<td class="text-center" style="color:#444; font-size:.82rem;">
     {% for d in c.detalles.all %}
         {{ d.cantidad }}{% if not forloop.last %}, {% endif %}
     {% empty %}

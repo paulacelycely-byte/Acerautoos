@@ -473,13 +473,13 @@ function aplicarMascara(){if(!overlay||!inputNumero)return;const ejemplo=inputNu
 
 function renderLista(filtro){paisListEl.innerHTML='';const f=(filtro||'').toLowerCase();PAISES.forEach(p=>{if(f&&!p.nombre.toLowerCase().includes(f)&&!p.code.includes(f))return;const div=document.createElement('div');div.className='pais-option';div.dataset.code=p.code;div.innerHTML=`<img src="${flagUrl(p.iso)}" alt="${p.nombre}" loading="lazy"><span class="pais-codigo">${p.code}</span><span class="pais-nombre">${p.nombre}</span>`;div.addEventListener('click',()=>seleccionar(p));paisListEl.appendChild(div);});}
 
-function seleccionar(p){paisSelected.innerHTML=`<img src="${flagUrl(p.iso)}" alt="${p.nombre}" style="width:20px;height:14px;object-fit:cover;border-radius:2px;"><span class="pais-label">${p.code} ${p.nombre}</span><svg style="width:11px;height:11px;stroke:#888;fill:none;stroke-width:2;margin-left:auto;" viewBox="0 0 24 24" class="pais-chevron"><polyline points="6 9 12 15 18 9"/></svg>`;hiddenInput.value=p.code;if(inputNumero){inputNumero.setAttribute('data-ejemplo',p.ejemplo||'');inputNumero.value='';aplicarMascara();}document.querySelectorAll('.pais-option').forEach(el=>el.classList.toggle('selected',el.dataset.code===p.code));paisDropdown.classList.remove('open');paisBuscar.value='';renderLista('');actualizarTelefono();mostrarErrorTel(null);}
+function seleccionar(p, precargar=false){paisSelected.innerHTML=`<img src="${flagUrl(p.iso)}" alt="${p.nombre}" style="width:20px;height:14px;object-fit:cover;border-radius:2px;"><span class="pais-label">${p.code} ${p.nombre}</span><svg style="width:11px;height:11px;stroke:#888;fill:none;stroke-width:2;margin-left:auto;" viewBox="0 0 24 24" class="pais-chevron"><polyline points="6 9 12 15 18 9"/></svg>`;hiddenInput.value=p.code;if(inputNumero){inputNumero.setAttribute('data-ejemplo',p.ejemplo||'');if(!precargar)inputNumero.value='';aplicarMascara();}document.querySelectorAll('.pais-option').forEach(el=>el.classList.toggle('selected',el.dataset.code===p.code));paisDropdown.classList.remove('open');paisBuscar.value='';renderLista('');actualizarTelefono();mostrarErrorTel(null);}
 
 paisSelected.addEventListener('click',()=>{paisDropdown.classList.toggle('open');if(paisDropdown.classList.contains('open'))setTimeout(()=>paisBuscar.focus(),50);});
 paisBuscar.addEventListener('input',()=>renderLista(paisBuscar.value));
 document.addEventListener('click',e=>{if(!paisDropdown.contains(e.target)){paisDropdown.classList.remove('open');paisBuscar.value='';renderLista('');}});
 renderLista('');
-(function preseleccionar(){const v=hiddenInput.value;if(v){const p=PAISES.find(x=>x.code===v);if(p)seleccionar(p);}})();
+(function preseleccionar(){const v=hiddenInput.value;if(v){const p=PAISES.find(x=>x.code===v);if(p)seleccionar(p, true);}})();
 
 if(inputNumero){
     inputNumero.addEventListener('input',()=>{const soloDigitos=inputNumero.value.replace(/\D/g,'');if(inputNumero.value!==soloDigitos)inputNumero.value=soloDigitos;aplicarMascara();actualizarTelefono();const num=inputNumero.value.trim();if(num)mostrarErrorTel(validarTelefonoPorPais(hiddenInput.value,num));else mostrarErrorTel(null);});

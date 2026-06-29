@@ -17,7 +17,7 @@ from .views.CompatibilidadProducto import views as comp
 from .views.factura                import views as factura
 from .views.backup                 import views as backup
 from .views.seguimiento            import views as seguimiento
-from .views.ayuda                  import views as ayuda   # ← NUEVO
+from .views.ayuda                  import views as ayuda   
 from app                           import reportes as rep
 from .views.chatbot                import views as chatbot
 
@@ -29,8 +29,10 @@ urlpatterns = [
     # ── DASHBOARD
     path('dashboard/', dash.DashboardView.as_view(), name='dashboard'),
 
-    # ── AYUDA  ← NUEVO
+    # ── AYUDA  
     path('ayuda/', ayuda.AyudaView.as_view(), name='ayuda'),
+    path('ayuda/',                        ayuda.AyudaView.as_view(),   name='ayuda'),
+    path('ayuda/manual/<str:nombre>/',    ayuda.descargar_manual,      name='descargar_manual'),
 
     # ── USUARIOS
     path('usuarios/perfil/',                  usr.PerfilView.as_view(),              name='mi_perfil'),
@@ -164,4 +166,5 @@ urlpatterns = [
 
     # ── CHATBOT
     path('chatbot/', chatbot.chatbot_responder, name='chatbot'),
+    
 ]

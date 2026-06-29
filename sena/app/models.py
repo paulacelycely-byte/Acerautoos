@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
+from django.db.models import Sum, F, DecimalField
 
 
 # ══════════════════════════════════════════════════════════
@@ -377,12 +378,12 @@ class OrdenServicioDetalle(models.Model):
     tipo_servicio    = models.ForeignKey(
         TipoServicio, on_delete=models.PROTECT
     )
-    # Snapshot del precio en el momento de crear la orden
+  
     precio_mano_obra = models.DecimalField(max_digits=12, decimal_places=2)
 
     def save(self, *args, **kwargs):
-        # Si es nuevo y no se pasó precio explícito, tomarlo del TipoServicio
-        if not self.pk and not self.precio_mano_obra:
+        
+        if not self.pk and (self.precio_mano_obra is None or self.precio_mano_obra == 0):
             self.precio_mano_obra = self.tipo_servicio.precio_mano_obra
         super().save(*args, **kwargs)
 
@@ -515,7 +516,7 @@ class DetalleOrdenProducto(models.Model):
 
     def save(self, *args, **kwargs):
         if self.producto.stock < self.cantidad:
-            raise ValidationError(f"Stock insuficiente para '{self.producto.nombre}'.")
+            raise ValueError(f"Stock insuficiente para '{self.producto.nombre}'.")
         if not self.pk:
             self.precio_unitario = self.producto.precio  # snapshot
             self.producto.stock -= self.cantidad
@@ -566,13 +567,13 @@ class Factura(models.Model):
     fecha_pago     = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        if self.tipo == 'SERVICIO' and self.orden_servicio:
-          
+        if self.tipo == 'SERVICIO':
+            if not self.orden_servicio:
+                raise ValueError("Una factura de tipo SERVICIO requiere una orden de servicio.")
             servicios = sum(
                 d.precio_mano_obra
                 for d in self.orden_servicio.servicios_detalle.all()
             )
-           
             productos = sum(
                 dp.cantidad * dp.precio_unitario
                 for dp in self.orden_servicio.productos_usados.all()
@@ -580,11 +581,16 @@ class Factura(models.Model):
             self.subtotal = servicios + productos
             self.total    = self.subtotal
 
-        elif self.tipo == 'PRODUCTO' and self.producto:
+
+        elif self.tipo == 'PRODUCTO':
+            if not self.producto:
+                raise ValueError("Una factura de tipo PRODUCTO requiere un producto.")
             self.subtotal = self.producto.precio * self.cantidad
             self.total    = self.subtotal
 
-        elif self.tipo == 'COMPRA' and self.compra:
+        elif self.tipo == 'COMPRA':
+            if not self.compra:
+                raise ValueError("Una factura de tipo COMPRA requiere una compra.")
             self.subtotal = self.compra.total_pagado
             self.total    = self.subtotal
 

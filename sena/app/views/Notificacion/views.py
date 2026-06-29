@@ -76,7 +76,7 @@ def _enviar_correo_notificacion(cliente, vehiculo, tipo, mensaje):
             <p style="margin:0 0 8px;font-size:13px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.5px;">⚠ Detalle del aviso</p>
             <p style="margin:0;font-size:15px;color:#333;line-height:1.7;">{mensaje}</p>
         </div>
-       <p style="margin:0 0 28px;font-size:14px;color:#444;line-height:1.7;">Acércate a nuestro taller cuando lo desees, estaremos listos para atenderte.</p>
+        <p style="margin:0 0 28px;font-size:14px;color:#444;line-height:1.7;">Acércate a nuestro taller cuando lo desees, estaremos listos para atenderte.</p>
         <div style="background:#1a1a1a;border-radius:8px;padding:20px 24px;text-align:center;">
             <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:1px;">Contáctanos</p>
             <p style="margin:0;font-size:13px;color:#aaa;line-height:1.9;">📞 +57 (8) 632-5678<br>💬 WhatsApp: +57 320 123 4567<br>📍 Yopal, Casanare — Colombia</p>
@@ -155,6 +155,75 @@ def _enviar_correo_informacion(cliente, titulo, mensaje):
         print(f"[ACERAUTOS] ❌ Error enviando info a {cliente.email}: {e}")
 
 
+
+def _enviar_correo_orden_terminada(cliente, vehiculo, orden):
+    if not cliente or not cliente.email:
+        return
+
+    asunto = f"✅ Tu vehículo está listo — {vehiculo.placa} | ACERAUTOS"
+    nombre_cliente = cliente.nombre
+
+    html = f"""<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f4f4f4;font-family:'Segoe UI',Arial,sans-serif;">
+<div style="max-width:600px;margin:32px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
+
+    <div style="background:#1a1a1a;padding:28px 32px;text-align:center;border-bottom:4px solid #2e7d32;">
+        <h1 style="margin:0;color:#fff;font-size:28px;font-weight:800;letter-spacing:3px;">ACERAUTOS</h1>
+        <p style="margin:6px 0 0;color:#888;font-size:12px;letter-spacing:1px;text-transform:uppercase;">Centro Integral Automotriz</p>
+    </div>
+
+    <div style="padding:36px 32px;">
+        <p style="margin:0 0 6px;font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;">Estimado/a</p>
+        <p style="margin:0 0 24px;font-size:22px;font-weight:700;color:#1a1a1a;">{nombre_cliente}</p>
+
+        <div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:24px;margin-bottom:28px;text-align:center;">
+            <p style="margin:0 0 8px;font-size:40px;">✅</p>
+            <p style="margin:0;font-size:20px;font-weight:700;color:#2e7d32;">¡Tu vehículo ha finalizado su mantenimiento!</p>
+            <p style="margin:10px 0 0;font-size:14px;color:#555;">Nuestro equipo ha completado el servicio satisfactoriamente.</p>
+        </div>
+
+        <div style="background:#1a1a1a;border-radius:8px;padding:20px 24px;text-align:center;">
+            <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:1px;">¿Tienes alguna pregunta?</p>
+            <p style="margin:0;font-size:13px;color:#aaa;line-height:1.9;">
+                📞 +57 (8) 632-5678<br>
+                💬 WhatsApp: +57 320 123 4567<br>
+                📍 Yopal, Casanare — Colombia
+            </p>
+        </div>
+    </div>
+
+    <div style="background:#111;padding:20px 32px;text-align:center;border-top:1px solid #222;">
+        <p style="margin:0 0 4px;font-size:12px;color:#555;">
+            <span style="color:#2e7d32;font-weight:700;">ACERAUTOS</span> — Tu Confianza, Nuestro Compromiso
+        </p>
+        <p style="margin:0;font-size:11px;color:#444;">© 2026 ACERAUTOS. Todos los derechos reservados.</p>
+    </div>
+</div>
+</body>
+</html>"""
+
+    texto = (
+        f"Estimado/a {nombre_cliente},\n\n"
+        f"Tu vehículo ha finalizado su mantenimiento satisfactoriamente.\n\n"
+        f"ACERAUTOS — Tu Confianza, Nuestro Compromiso"
+    )
+
+    try:
+        correo = EmailMultiAlternatives(
+            subject=asunto,
+            body=texto,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[cliente.email],
+        )
+        correo.attach_alternative(html, "text/html")
+        correo.send()
+        print(f"[ACERAUTOS] ✅ Correo orden terminada enviado a: {cliente.email}")
+    except Exception as e:
+        print(f"[ACERAUTOS] ❌ Error enviando correo orden terminada: {e}")
+
+
 # ── GENERAR NOTIFICACIONES AUTOMÁTICAS ────────────────────────────
 def generar_notificaciones_automaticas():
     hoy = timezone.now().date()
@@ -223,12 +292,11 @@ def generar_notificaciones_automaticas():
             print(f"[ACERAUTOS]   🔁 Ya existe, no se recrea ni se reenvía correo")
 
 
-# ── LISTADO — Mecánico puede ver ─────────────────────────────────
+# ── LISTADO ───────────────────────────────────────────────────────
 class NotificacionListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
     model = Notificacion
     template_name = 'Notificacion/listar.html'
     context_object_name = 'object_list'
-    # ✅ Sin paginate_by — DataTables maneja toda la paginación en el frontend
 
     def get(self, request, *args, **kwargs):
         def _generar_en_background():
@@ -282,7 +350,7 @@ class NotificacionListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
         return context
 
 
-# ── CREAR — Solo Admin ────────────────────────────────────────────
+# ── CREAR ─────────────────────────────────────────────────────────
 class NotificacionCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
     model = Notificacion
     form_class = NotificacionForm
@@ -323,7 +391,7 @@ class NotificacionCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
         return redirect(self.success_url)
 
 
-# ── EDITAR — Solo Admin ───────────────────────────────────────────
+# ── EDITAR ────────────────────────────────────────────────────────
 class NotificacionUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageMixin, UpdateView):
     model = Notificacion
     form_class = NotificacionForm
@@ -339,7 +407,7 @@ class NotificacionUpdateView(LoginRequiredMixin, SoloAdminMixin, SuccessMessageM
         return context
 
 
-# ── ELIMINAR — Solo Admin ─────────────────────────────────────────
+# ── ELIMINAR ──────────────────────────────────────────────────────
 class NotificacionDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
     model = Notificacion
     template_name = 'Notificacion/eliminar.html'
@@ -350,7 +418,7 @@ class NotificacionDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
         return super().form_valid(form)
 
 
-# ── MARCAR UNA COMO LEÍDA — Mecánico puede ────────────────────────
+# ── MARCAR UNA COMO LEÍDA ─────────────────────────────────────────
 class MarcarLeidaView(LoginRequiredMixin, AdminOMecanicoMixin, View):
     def post(self, request, pk):
         try:
@@ -362,7 +430,7 @@ class MarcarLeidaView(LoginRequiredMixin, AdminOMecanicoMixin, View):
             return JsonResponse({'ok': False, 'mensaje': str(e)}, status=400)
 
 
-# ── MARCAR TODAS COMO LEÍDAS — Mecánico puede ─────────────────────
+# ── MARCAR TODAS COMO LEÍDAS ──────────────────────────────────────
 class MarcarTodasLeidasView(LoginRequiredMixin, AdminOMecanicoMixin, View):
     def post(self, request):
         try:
@@ -372,7 +440,7 @@ class MarcarTodasLeidasView(LoginRequiredMixin, AdminOMecanicoMixin, View):
             return JsonResponse({'ok': False, 'mensaje': str(e)}, status=400)
 
 
-# ── LIMPIAR ANTIGUAS — Solo Admin ─────────────────────────────────
+# ── LIMPIAR ANTIGUAS ──────────────────────────────────────────────
 class LimpiarNotificacionesAntiguasView(LoginRequiredMixin, SoloAdminMixin, View):
     def post(self, request):
         hoy = timezone.now().date()
@@ -385,7 +453,7 @@ class LimpiarNotificacionesAntiguasView(LoginRequiredMixin, SoloAdminMixin, View
         return redirect('app:listar_notificacion')
 
 
-# ── API NAVBAR — Mecánico puede ───────────────────────────────────
+# ── API NAVBAR ────────────────────────────────────────────────────
 @login_required(login_url='login:login')
 def notificaciones_no_leidas(request):
     if request.user.cargo not in ('ADMIN', 'MECANICO') and not request.user.is_superuser:
@@ -421,7 +489,7 @@ def notificaciones_no_leidas(request):
     })
 
 
-# ── ELIMINACIÓN MASIVA — Solo Admin ───────────────────────────────
+# ── ELIMINACIÓN MASIVA ────────────────────────────────────────────
 class EliminarNotificacionesMasivoView(LoginRequiredMixin, SoloAdminMixin, View):
     def post(self, request):
         try:
@@ -432,7 +500,7 @@ class EliminarNotificacionesMasivoView(LoginRequiredMixin, SoloAdminMixin, View)
             return JsonResponse({'ok': False, 'mensaje': str(e)}, status=400)
 
 
-# ── ELIMINAR TODAS — Solo Admin ───────────────────────────────────
+# ── ELIMINAR TODAS ────────────────────────────────────────────────
 class EliminarTodasNotificacionesView(LoginRequiredMixin, SoloAdminMixin, View):
     def post(self, request):
         try:

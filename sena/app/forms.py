@@ -1,6 +1,7 @@
 from django import forms
 import re
 from datetime import date
+from django.db import transaction
 from django.db.models import Q
 from django.forms.models import inlineformset_factory
 from django.utils import timezone
@@ -1211,7 +1212,7 @@ class OrdenServicioForm(forms.ModelForm):
                 pk=self.instance.pk if self.instance and self.instance.pk else None
             ).order_by('-km_actual').first()
 
-            if ultima_orden and km < ultima_orden.km_actual:
+            if ultima_orden and ultima_orden.km_actual is not None and km < ultima_orden.km_actual:
                 raise forms.ValidationError(
                     f"El km ingresado ({km:,}) no puede ser menor al registrado "
                     f"en la última orden (#{ultima_orden.pk}: {ultima_orden.km_actual:,} km)."
@@ -1559,11 +1560,13 @@ class FacturaForm(forms.ModelForm):
         if self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
         if qs.exists():
-            base = Factura.objects.order_by('-id').first()
-            sig  = (base.id + 1) if base else 1
-            while Factura.objects.filter(numero_factura=f'FAC-{sig:04d}').exists():
-                sig += 1
-            cleaned['numero_factura'] = f'FAC-{sig:04d}'
+            from django.db import transaction
+            with transaction.atomic():
+                base = Factura.objects.select_for_update().order_by('-id').first()
+                sig  = (base.id + 1) if base else 1
+                while Factura.objects.filter(numero_factura=f'FAC-{sig:04d}').exists():
+                    sig += 1
+                cleaned['numero_factura'] = f'FAC-{sig:04d}'
 
         return cleaned
 

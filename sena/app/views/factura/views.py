@@ -1,3 +1,5 @@
+import threading
+
 from django.views.generic import ListView, CreateView, DetailView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -7,8 +9,9 @@ from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from decimal import Decimal
 
-from app.models import Factura, OrdenServicio, Producto, Caja
+from app.models import Factura, OrdenServicio, Producto, Caja, Notificacion
 from app.forms import FacturaForm
+from app.views.Notificacion.views import _enviar_correo_orden_terminada
 
 
 # ── Mixin 1: Solo ADMIN ──────────────────────────────────────────
@@ -31,7 +34,7 @@ class AdminOMecanicoMixin(UserPassesTestMixin):
         return redirect('app:dashboard')
 
 
-# ── LISTAR — Mecánico puede ver ──────────────────────────────────
+# ── LISTAR ────────────────────────────────────────────────────────
 class FacturaListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
     model = Factura
     template_name = 'factura/listar.html'
@@ -43,7 +46,7 @@ class FacturaListView(LoginRequiredMixin, AdminOMecanicoMixin, ListView):
         return context
 
 
-# ── CREAR — Solo Admin ────────────────────────────────────────────
+# ── CREAR ─────────────────────────────────────────────────────────
 class FacturaCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
     model = Factura
     form_class = FacturaForm
@@ -78,14 +81,14 @@ class FacturaCreateView(LoginRequiredMixin, SoloAdminMixin, CreateView):
         return redirect(self.success_url)
 
 
-# ── DETALLE — Mecánico puede ver ─────────────────────────────────
+# ── DETALLE ───────────────────────────────────────────────────────
 class FacturaDetailView(LoginRequiredMixin, AdminOMecanicoMixin, DetailView):
     model = Factura
     template_name = 'factura/detalle.html'
     context_object_name = 'factura'
 
 
-# ── ELIMINAR — Solo Admin ─────────────────────────────────────────
+# ── ELIMINAR ──────────────────────────────────────────────────────
 class FacturaDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
     model = Factura
     template_name = 'factura/eliminar.html'
@@ -101,12 +104,10 @@ class FacturaDeleteView(LoginRequiredMixin, SoloAdminMixin, DeleteView):
         return super().form_valid(form)
 
 
-# ── PAGAR — Solo Admin ────────────────────────────────────────────
+# ── PAGAR ─────────────────────────────────────────────────────────
 class PagarFacturaView(LoginRequiredMixin, SoloAdminMixin, View):
     EXTENSIONES_VALIDAS = ('.pdf', '.jpg', '.jpeg', '.png', '.gif')
     TAMANO_MAX_MB = 5
-
-    # Métodos de pago que requieren comprobante obligatorio
     METODOS_CON_COMPROBANTE = ('Nequi', 'Transferencia', 'Daviplata')
 
     def post(self, request, pk):
@@ -122,7 +123,7 @@ class PagarFacturaView(LoginRequiredMixin, SoloAdminMixin, View):
             messages.warning(request, "Esta factura ya fue pagada.")
             return redirect('app:listar_factura')
 
-        # ── Validación de comprobante (Nequi, Transferencia, Daviplata) ──
+        # ── Validación de comprobante ──────────────────────────
         comprobante = request.FILES.get('comprobante_pago')
 
         if metodo in self.METODOS_CON_COMPROBANTE:
@@ -146,6 +147,7 @@ class PagarFacturaView(LoginRequiredMixin, SoloAdminMixin, View):
         factura.fecha_pago  = timezone.now()
         factura.save()
 
+        # ── Registro en caja ───────────────────────────────────
         ya_existe = Caja.objects.filter(
             descripcion__icontains=factura.numero_factura,
             tipo='INGRESO'
@@ -160,11 +162,37 @@ class PagarFacturaView(LoginRequiredMixin, SoloAdminMixin, View):
                 metodo_pago = metodo,
             )
 
+        # ── Orden de servicio: pasar a Terminado + notificar ──
         if factura.tipo == 'SERVICIO' and factura.orden_servicio:
             orden = factura.orden_servicio
             if orden.estado != 'Terminado':
                 orden.estado = 'Terminado'
                 orden.save()
+
+                vehiculo = orden.vehiculo
+                cliente  = vehiculo.cliente
+
+                # Notificación interna en el sistema
+                Notificacion.objects.create(
+                    tipo='Mantenimiento',
+                    origen='SISTEMA',
+                    titulo=f'Servicio completado — {vehiculo.placa}',
+                    vehiculo=vehiculo,
+                    mensaje=(
+                        f'El servicio de la orden #{orden.pk} ha sido completado '
+                        f'y el pago registrado. El vehículo {vehiculo.placa} '
+                        f'({vehiculo.marca.nombre} {vehiculo.modelo}) ya puede ser retirado.'
+                    ),
+                    leido=False,
+                )
+
+                # Correo al cliente en background para no bloquear la respuesta
+                def _enviar():
+                    _enviar_correo_orden_terminada(cliente, vehiculo, orden)
+
+                t = threading.Thread(target=_enviar)
+                t.daemon = True
+                t.start()
 
         messages.success(request, "Pago registrado correctamente.")
         return redirect('app:listar_factura')

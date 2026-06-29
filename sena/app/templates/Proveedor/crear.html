@@ -175,24 +175,105 @@
     .catalogo-titulo {
         font-family: 'Barlow Condensed', sans-serif; font-size: .85rem; font-weight: 800;
         letter-spacing: 2px; text-transform: uppercase; color: var(--primario); margin-bottom: 16px;
+        display: flex; align-items: center; gap: 8px;
     }
-    .catalogo-row select, .catalogo-row input[type="number"] {
+    .catalogo-titulo i { font-size: 1rem; }
+
+    /* Cabecera de columnas */
+    .catalogo-header-cols {
+        display: flex; align-items: center; gap: 10px;
+        padding: 0 0 8px 0; border-bottom: 2px solid var(--borde); margin-bottom: 10px;
+    }
+    .catalogo-header-cols .col-lbl {
+        font-family: 'DM Sans', sans-serif; font-size: .68rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .8px; color: var(--muted);
+    }
+    .catalogo-header-cols .col-lbl.lbl-producto { flex: 1; }
+    .catalogo-header-cols .col-lbl.lbl-precio   { width: 210px; flex-shrink: 0; }
+    .catalogo-header-cols .col-lbl.lbl-accion   { width: 34px; flex-shrink: 0; }
+
+    /* Fila de producto mejorada */
+    .catalogo-row {
+        display: flex; align-items: center; gap: 10px;
+        background: transparent; border: none; border-radius: 0;
+        padding: 10px 0; margin-bottom: 0;
+        border-bottom: 1px solid var(--borde);
+    }
+    .catalogo-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .catalogo-row:hover { box-shadow: none; }
+
+    .catalogo-row .col-producto { flex: 1; min-width: 0; }
+    .catalogo-row .col-precio   { width: 210px; flex-shrink: 0; }
+    .catalogo-row .col-accion   { flex-shrink: 0; }
+
+    .catalogo-row select,
+    .catalogo-row input[type="number"] {
         width: 100%; padding: 9px 12px; border: 1.5px solid var(--borde); border-radius: 8px;
         font-family: 'DM Sans', sans-serif; font-size: .85rem; color: var(--texto);
-        background: var(--gris); outline: none; transition: border-color .2s;
-        box-sizing: border-box; appearance: none;
+        background: var(--gris); outline: none; transition: border-color .2s, box-shadow .2s;
+        box-sizing: border-box; appearance: none; -webkit-appearance: none;
     }
-    .catalogo-row select:focus, .catalogo-row input[type="number"]:focus {
+    .catalogo-row select {
+        padding-right: 32px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+    }
+    .catalogo-row select:focus,
+    .catalogo-row input[type="number"]:focus {
         border-color: var(--primario); background: white;
+        box-shadow: 0 0 0 3px var(--primario-glow);
     }
-    .catalogo-row .delete-label {
-        font-size: .75rem; color: #d32f2f; cursor: pointer;
-        display: flex; align-items: center; gap: 4px;
+
+    /* Input precio con símbolo $ */
+    .precio-wrap { position: relative; }
+    .precio-wrap::before {
+        content: '$'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+        font-family: 'DM Sans', sans-serif; font-size: .82rem; color: var(--muted); pointer-events: none;
+        z-index: 1;
     }
+    .precio-wrap input[type="number"] { padding-left: 22px !important; }
+
+    /* Botón quitar */
+    .btn-quitar {
+        width: 34px; height: 34px; border-radius: 8px; border: 1.5px solid #fca5a5;
+        background: #fff5f5; color: #d32f2f; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        font-size: .8rem; transition: background .2s, color .2s, border-color .2s; flex-shrink: 0;
+    }
+    .btn-quitar:hover { background: #d32f2f; color: white; border-color: #d32f2f; }
+
+    /* Ocultar checkbox DELETE de Django */
+    .catalogo-row input[type="checkbox"][name*="DELETE"] { display: none !important; }
+
+    /* Fila marcada para borrar */
+    .catalogo-row.marcada-borrar {
+        opacity: .42; border-bottom-color: #fca5a5 !important;
+    }
+    .catalogo-row.marcada-borrar select,
+    .catalogo-row.marcada-borrar input[type="number"] {
+        pointer-events: none; background: #fff5f5 !important;
+    }
+    .catalogo-row.marcada-borrar .btn-quitar {
+        background: white; color: #d32f2f; border-color: #fca5a5;
+    }
+    .catalogo-row.marcada-borrar .btn-quitar:hover {
+        background: #d32f2f; color: white;
+    }
+
+    /* Estado vacío */
+    .catalogo-empty {
+        text-align: center; padding: 22px 16px; color: var(--muted);
+        font-family: 'DM Sans', sans-serif; font-size: .82rem;
+        border: 1.5px dashed var(--borde); border-radius: 12px; margin-bottom: 8px;
+    }
+    .catalogo-empty i { display: block; font-size: 1.4rem; margin-bottom: 6px; opacity: .4; }
+
     .btn-agregar-producto {
-        margin-top: 10px; font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 700;
-        padding: 8px 16px; border-radius: 8px; border: 1.5px dashed var(--primario);
+        margin-top: 4px; font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 700;
+        padding: 9px 18px; border-radius: 8px; border: 1.5px dashed var(--primario);
         background: transparent; color: var(--primario); cursor: pointer; transition: .2s;
+        display: inline-flex; align-items: center; gap: 6px;
     }
     .btn-agregar-producto:hover { background: var(--primario-glow); }
 
@@ -225,6 +306,9 @@
         .pais-dropdown { width: 100%; }
         .form-card-footer { flex-direction: column; align-items: stretch; }
         .btn-cancelar, .btn-guardar { width: 100%; justify-content: center; }
+        .catalogo-header-cols { display: none; }
+        .catalogo-row { flex-wrap: wrap; }
+        .catalogo-row .col-precio { width: calc(100% - 44px); }
     }
 </style>
 {% endblock %}
@@ -352,33 +436,50 @@
 
                 {{ formset.management_form }}
 
+                <!-- Cabecera de columnas -->
+                <div class="catalogo-header-cols">
+                    <span class="col-lbl lbl-producto">Producto</span>
+                    <span class="col-lbl lbl-precio">Precio proveedor</span>
+                    <span class="col-lbl lbl-accion"></span>
+                </div>
+
                 <div id="catalogoFormset">
                     {% for fform in formset %}
-                    <div class="catalogo-row row g-2 align-items-center mb-2">
+                    <div class="catalogo-row{% if fform.DELETE.value %} marcada-borrar{% endif %}"
+                         data-guardada="{% if fform.instance.pk %}1{% else %}0{% endif %}">
                         {{ fform.id }}
-                        <div class="col-md-6">
+                        <div class="col-producto">
                             {{ fform.producto }}
                         </div>
-                        <div class="col-md-4">
-                            {{ fform.precio_proveedor }}
+                        <div class="col-precio">
+                            <div class="precio-wrap">
+                                {{ fform.precio_proveedor }}
+                            </div>
                         </div>
-                        <div class="col-md-2 d-flex align-items-center">
-                            <label class="delete-label">
-                                {{ fform.DELETE }}
-                                <i class="fas fa-trash-alt"></i> Quitar
-                            </label>
+                        <div class="col-accion">
+                            <button type="button" class="btn-quitar" title="Quitar producto"
+                                    data-guardada="{% if fform.instance.pk %}1{% else %}0{% endif %}">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            {# Oculto pero necesario para Django formset #}
+                            {{ fform.DELETE }}
                         </div>
                         {% if fform.errors %}
-                            <div class="col-12">
-                                {% for field, errors in fform.errors.items %}
-                                    {% for error in errors %}
-                                        <div class="field-error-js"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
-                                    {% endfor %}
+                        <div style="width:100%; margin-top:4px;">
+                            {% for field, errors in fform.errors.items %}
+                                {% for error in errors %}
+                                    <div class="field-error-js"><i class="fas fa-circle-exclamation"></i><span>{{ error }}</span></div>
                                 {% endfor %}
-                            </div>
+                            {% endfor %}
+                        </div>
                         {% endif %}
                     </div>
                     {% endfor %}
+                </div>
+
+                <div class="catalogo-empty" id="catalogoEmpty" style="display:none;">
+                    <i class="fas fa-box-open"></i>
+                    Aún no hay productos. Agrega uno con el botón de abajo.
                 </div>
 
                 <button type="button" id="btnAgregarProducto" class="btn-agregar-producto">
@@ -483,10 +584,10 @@ const REGLAS_TEL = {
     '+966': { min:9,  max:9,  prefijos:['01','02','03','05'], errLen:'Arabia Saudita: exactamente 9 dígitos (ej: 0512345678).', errPref:'Arabia Saudita: móvil empieza por 05, fijo por 01/02/03.' },
 };
 
-// ── Agregar fila al formset ──
-// ── Agregar fila al formset ──
+// ── Catálogo formset ──
 (function() {
     const container  = document.getElementById('catalogoFormset');
+    const emptyMsg   = document.getElementById('catalogoEmpty');
     const btnAgregar = document.getElementById('btnAgregarProducto');
     const totalForms = document.getElementById('id_catalogo-TOTAL_FORMS');
     if (!btnAgregar || !container || !totalForms) return;
@@ -499,57 +600,105 @@ const REGLAS_TEL = {
           ).join('')
         : '<option value="">---------</option>';
 
-    // Oculta filas extra vacías al cargar la página
+    function actualizarEmpty() {
+        const visibles = container.querySelectorAll('.catalogo-row:not([style*="display: none"])');
+        if (emptyMsg) emptyMsg.style.display = visibles.length === 0 ? 'block' : 'none';
+    }
+
+    // Ocultar filas vacías al cargar y activar botones quitar
     container.querySelectorAll('.catalogo-row').forEach(row => {
         const sel    = row.querySelector('select[name*="producto"]');
         const precio = row.querySelector('input[name*="precio_proveedor"]');
-        if (sel && !sel.value && precio && !precio.value) {
+        const esGuardada = row.dataset.guardada === '1';
+
+        if (!esGuardada && sel && !sel.value && precio && !precio.value) {
             row.style.display = 'none';
             const chk = row.querySelector('input[name*="DELETE"]');
             if (chk) chk.checked = true;
         }
+
+        // Botón quitar
+        const btnQuitar = row.querySelector('.btn-quitar');
+        if (btnQuitar) {
+            btnQuitar.addEventListener('click', function() {
+                const chk = row.querySelector('input[name*="DELETE"]');
+                if (esGuardada) {
+                    // Fila guardada: marcar para borrar o desmarcar
+                    if (row.classList.contains('marcada-borrar')) {
+                        row.classList.remove('marcada-borrar');
+                        if (chk) chk.checked = false;
+                        btnQuitar.title = 'Quitar producto';
+                    } else {
+                        row.classList.add('marcada-borrar');
+                        if (chk) chk.checked = true;
+                        btnQuitar.title = 'Deshacer';
+                    }
+                } else {
+                    // Fila nueva: ocultar directamente
+                    row.style.display = 'none';
+                    if (chk) chk.checked = true;
+                    actualizarEmpty();
+                }
+            });
+        }
     });
 
+    actualizarEmpty();
+
     btnAgregar.addEventListener('click', function() {
-        // Primero intenta mostrar una fila oculta vacía si existe
+        // Reusar fila oculta si existe
         const filaOculta = Array.from(container.querySelectorAll('.catalogo-row'))
             .find(r => r.style.display === 'none');
         if (filaOculta) {
             filaOculta.style.display = '';
             const chk = filaOculta.querySelector('input[name*="DELETE"]');
             if (chk) chk.checked = false;
+            actualizarEmpty();
             return;
         }
 
+        // Crear nueva fila
         const formCount = parseInt(totalForms.value);
         const newRow = document.createElement('div');
-        newRow.className = 'catalogo-row row g-2 align-items-center mb-2';
+        newRow.className = 'catalogo-row';
+        newRow.dataset.guardada = '0';
         newRow.innerHTML = `
             <input type="hidden" name="catalogo-${formCount}-id" value="">
-            <div class="col-md-6">
+            <div class="col-producto">
                 <select name="catalogo-${formCount}-producto" class="form-field-styled">
                     ${opcionesHtml}
                 </select>
             </div>
-            <div class="col-md-4">
-                <input type="number"
-                       name="catalogo-${formCount}-precio_proveedor"
-                       class="form-field-styled"
-                       step="0.01" min="0"
-                       placeholder="Precio del proveedor">
+            <div class="col-precio">
+                <div class="precio-wrap">
+                    <input type="number"
+                           name="catalogo-${formCount}-precio_proveedor"
+                           step="0.01" min="0"
+                           placeholder="0.00">
+                </div>
             </div>
-            <div class="col-md-2 d-flex align-items-center">
-                <label class="delete-label">
-                    <input type="checkbox" name="catalogo-${formCount}-DELETE" style="display:none;">
-                    <i class="fas fa-trash-alt"></i> Quitar
-                </label>
+            <div class="col-accion">
+                <button type="button" class="btn-quitar" title="Quitar producto" data-guardada="0">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                <input type="checkbox" name="catalogo-${formCount}-DELETE" style="display:none;">
             </div>`;
+
+        // Evento quitar para la fila nueva
+        newRow.querySelector('.btn-quitar').addEventListener('click', function() {
+            newRow.style.display = 'none';
+            const chk = newRow.querySelector('input[name*="DELETE"]');
+            if (chk) chk.checked = true;
+            actualizarEmpty();
+        });
 
         container.appendChild(newRow);
         totalForms.value = formCount + 1;
+        actualizarEmpty();
     });
 })();
-// ── Phone dropdown ──
+
+// ── Helpers ──
 function setFieldError(inputEl, msg) {
     const wrap = inputEl.closest('.field-group') || inputEl.parentElement;
     let errorEl = wrap.querySelector('.field-error-js');
@@ -616,6 +765,7 @@ function setFieldError(inputEl, msg) {
     });
 })();
 
+// ── Phone dropdown ──
 function flagUrl(iso) { return `https://flagcdn.com/w40/${iso}.png`; }
 
 const paisListEl   = document.getElementById('paisList');
@@ -769,7 +919,6 @@ $(function () {
         e.preventDefault();
         actualizarTelefono();
 
-        
         const erroresJS = document.querySelectorAll('.field-group .field-error-js');
         if (erroresJS.length > 0) {
             erroresJS[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -795,13 +944,14 @@ $(function () {
         }).then(r => { if (r.isConfirmed) { $(f).off('submit').submit(); } });
     });
 });
+
 function confirmarCancelacion(url) {
     Swal.fire({
         title: '¿Cancelar?', text: 'Los cambios no se guardarán.',
         icon: 'warning', showCancelButton: true,
         confirmButtonText: 'Sí, salir', cancelButtonText: 'Seguir aquí',
         confirmButtonColor: '#d32f2f', cancelButtonColor: '#888',
-    }).then(r => { if (r.isConfirmed) window.location.href = url; });
+    }).then(r => { if (r.isConfirmed) { window.location.href = url; } });
 }
 </script>
 {% endblock %}
