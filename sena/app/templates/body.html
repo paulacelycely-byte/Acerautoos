@@ -368,56 +368,47 @@
     const footer = document.getElementById('footer-acerautos');
     const mainContent = document.querySelector('main.app-main-bg');
     
-    // Ajustar footer según estado del sidebar
     function ajustarFooter() {
         const body = document.body;
         let marginLeft = '260px';
-        
-        // En móvil siempre margin-left 0
         if (window.innerWidth <= 768) {
             marginLeft = '0px';
         } else {
-            // En desktop, seguir los estados del sidebar
             if (body.classList.contains('sidebar-mini')) marginLeft = '72px';
             if (body.classList.contains('sidebar-hidden')) marginLeft = '0px';
         }
-        
         footer.style.marginLeft = marginLeft;
     }
-    
-    // Mostrar/ocultar según scroll
-    window.addEventListener('scroll', () => {
+
+    function checkFooterVisibility() {
         const scrollHeight = document.documentElement.scrollHeight;
         const clientHeight = window.innerHeight;
         const scrollTop = window.scrollY;
+
+        // Solo mostrar si hay scroll real Y si estamos cerca del fondo
+        const hayScroll = scrollHeight > clientHeight + 50;
         const distanciaAlFinal = scrollHeight - clientHeight - scrollTop;
-        
-        if (distanciaAlFinal < 300) {
+        const cercaDelFondo = distanciaAlFinal < 150;
+
+        if (hayScroll && cercaDelFondo) {
             footer.style.opacity = '1';
             footer.style.transform = 'translateY(0)';
-            // Agregar padding al contenido principal
-            if (mainContent) {
-                mainContent.classList.add('footer-visible');
-            }
+            if (mainContent) mainContent.classList.add('footer-visible');
         } else {
             footer.style.opacity = '0';
             footer.style.transform = 'translateY(100%)';
-            // Remover padding cuando se oculta
-            if (mainContent) {
-                mainContent.classList.remove('footer-visible');
-            }
+            if (mainContent) mainContent.classList.remove('footer-visible');
         }
-    });
-    
-    // Observar cambios del sidebar
+    }
+
+    window.addEventListener('scroll', checkFooterVisibility);
+    window.addEventListener('resize', () => { ajustarFooter(); checkFooterVisibility(); });
+
     const observer = new MutationObserver(ajustarFooter);
     observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-    
-    // Al redimensionar ventana
-    window.addEventListener('resize', ajustarFooter);
-    
-    // Inicial
+
     ajustarFooter();
+    checkFooterVisibility();
 </script>
 {% endif %}
         <div class="d-flex align-items-center gap-2">
