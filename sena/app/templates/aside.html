@@ -85,7 +85,6 @@
 .sb-step { font-family: 'Barlow Condensed', sans-serif; font-size: .6rem; font-weight: 800; letter-spacing: .5px; background: rgba(211,47,47,.15); color: rgba(211,47,47,.7); border: 1px solid rgba(211,47,47,.2); padding: 1px 6px; border-radius: 5px; flex-shrink: 0; transition: opacity .3s; }
 .sb-item.active .sb-step { background: rgba(211,47,47,.3); color: #fca5a5; border-color: rgba(211,47,47,.4); }
 
-/* ── ÍCONO SVG inline (para ayuda) ── */
 .sb-svg-icon { min-width: 20px; width: 20px; height: 20px; flex-shrink: 0; opacity: .55; transition: opacity .2s, transform .2s; }
 .sb-item:hover .sb-svg-icon, .sb-item.active .sb-svg-icon { opacity: 1; transform: scale(1.1); }
 
@@ -101,7 +100,6 @@
 .sb-logout-btn:hover { background: #d32f2f; color: white; border-color: #d32f2f; box-shadow: 0 0 12px rgba(211,47,47,.4); }
 .sb-logout-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-/* ── MODO MINI desktop ── */
 body.sidebar-mini .sb-brand-name,
 body.sidebar-mini .sb-brand-sub,
 body.sidebar-mini .sb-item-text,
@@ -122,7 +120,6 @@ body.sidebar-mini .sb-item::after {
 }
 body.sidebar-mini .sb-item:hover::after { opacity: 1; }
 
-/* ── RESPONSIVO MÓVIL ── */
 @media (max-width: 768px) {
   .sidebar-overlay { display: none !important; pointer-events: none !important; }
 
@@ -268,7 +265,7 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
     </div>
     <a href="{% url 'app:detalle_orden_list' %}" class="sb-item {% if request.resolver_match.url_name == 'detalle_orden_list' %}active{% endif %}" data-tip="Análisis de consumo" title="Análisis de consumo">
       <img src="{% static 'imagenes/analisis.jpeg' %}" class="sb-img-icon" alt="Análisis de consumo">
-      <span class="sb-item-text">Análisis De Consumo</span>
+      <span class="sb-item-text">Análisis de Consumo</span>
       <span class="sb-step">P5</span>
     </a>
     <a href="{% url 'app:listar_producto' %}" class="sb-item {% if request.resolver_match.url_name == 'listar_producto' %}active{% endif %}" data-tip="Productos" title="Productos">
@@ -341,7 +338,6 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
       <span class="sb-step">P14</span>
     </a>
 
-  <!-- ✅ AYUDA — ADMIN -->
 <a href="{% url 'app:ayuda' %}" class="sb-item {% if request.resolver_match.url_name == 'ayuda' %}active{% endif %}" data-tip="Ayuda" title="Ayuda">
   <img src="{% static 'imagenes/ayuda.jpeg' %}" class="sb-img-icon" alt="Ayuda">
   <span class="sb-item-text">Ayuda</span>
@@ -387,7 +383,6 @@ body.sidebar-mini .sb-item:hover::after { opacity: 1; }
       <span class="sb-step">M9</span>
     </a>
 
-    <!-- ✅ AYUDA — MECÁNICO -->
 <a href="{% url 'app:ayuda' %}" class="sb-item {% if request.resolver_match.url_name == 'ayuda' %}active{% endif %}" data-tip="Ayuda" title="Ayuda">
   <img src="{% static 'imagenes/ayuda.jpeg' %}" class="sb-img-icon" alt="Ayuda">
   <span class="sb-item-text">Ayuda</span>

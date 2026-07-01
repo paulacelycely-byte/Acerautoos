@@ -55,6 +55,29 @@
         margin: 0;
     }
 
+    /* Breadcrumb centrado en la barra negra */
+    .breadcrumb-taller {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-family: 'DM Sans', sans-serif;
+        font-size: .95rem;
+        font-weight: 500;
+        color: rgba(255,255,255,.55);
+        letter-spacing: .3px;
+        white-space: nowrap;
+        pointer-events: none;
+    }
+    .breadcrumb-taller .sep {
+        margin: 0 6px;
+        color: rgba(255,255,255,.25);
+    }
+    .breadcrumb-taller .activo {
+        color: var(--rojo);
+        font-weight: 700;
+    }
+
     .header-sub {
         font-family: 'DM Sans', sans-serif;
         font-size: .78rem; color: rgba(255,255,255,.45);
@@ -237,6 +260,11 @@
 
         .header-titulo { font-size: 1.5rem; }
 
+        /* En móvil el breadcrumb centrado absoluto estorba, se oculta */
+        .breadcrumb-taller {
+            display: none;
+        }
+
         #tabla_clientes { min-width: 540px; }
 
         #tabla_clientes thead th,
@@ -288,6 +316,14 @@
             </div>
         </div>
 
+        <div class="breadcrumb-taller">
+            <span>Inicio</span>
+            <span class="sep">/</span>
+            <span class="activo">Clientes</span>
+            <span class="sep">/</span>
+            <span class="activo">Listar</span>
+        </div>
+
         <div class="header-actions">
             <a href="{% url 'app:reporte_clientes_pdf' %}" class="btn-accion btn-pdf">
                 <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><polyline points="9 9 10 9"/></svg>
@@ -314,7 +350,7 @@
                         <th>Tipo Doc</th>
                         <th>N° Documento</th>
                         <th>Teléfono</th>
-                        <th>Email</th>
+                        <th>Correo Electrónico</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>

@@ -428,13 +428,13 @@
                 <thead>
                     <tr>
                         <th class="text-center">#</th>
-                        <th>Factura / Tipo</th>
-                        <th>Descripción</th>
-                        <th class="text-center">Estado</th>
-                        <th>Método de pago</th>
-                        <th>Total</th>
-                        <th>Fecha</th>
-                        <th class="text-center">Acciones</th>
+                        <th>FACTURA / TIPO</th>
+                        <th>DESCRIPCION</th>
+                        <th class="text-center">ESTADO</th>
+                        <th>METODO DE PAGO</th>
+                        <th>TOTAL</th>
+                        <th>FECHA</th>
+                        <th class="text-center">ACCIONES</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -621,9 +621,7 @@
 
 {% block js %}
 <script>
-/* ══════════════════════════════════════════════════════════════════
-   DATE PICKER CUSTOM — sin dependencias, sin bugs de navegador
-══════════════════════════════════════════════════════════════════ */
+
 (function () {
     const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -638,13 +636,13 @@
     const today = new Date();
     today.setHours(0,0,0,0);
 
-    // Inicializar estado de vista al mes actual
+
     ['desde','hasta'].forEach(id => {
         state[id].viewYear  = today.getFullYear();
         state[id].viewMonth = today.getMonth();
     });
 
-    // ── helpers ───────────────────────────────────────────────────
+   
     function toISO(d) {
         if (!d) return null;
         const yy = d.getFullYear(), mm = String(d.getMonth()+1).padStart(2,'0'), dd = String(d.getDate()).padStart(2,'0');
@@ -662,7 +660,6 @@
         return dt;
     }
 
-    // ── render ────────────────────────────────────────────────────
     function render(id) {
         const s    = state[id];
         const pop  = document.getElementById(`dp-${id}-pop`);
@@ -679,15 +676,15 @@
                 selectDate(id, d);
             });
         });
-        // Navegación mes prev/next
+      
         const prev = pop.querySelector('.dp-prev');
         const next = pop.querySelector('.dp-next');
         if (prev) prev.addEventListener('click', () => { navMonth(id, -1); render(id); });
         if (next) next.addEventListener('click', () => { navMonth(id, +1); render(id); });
-        // Click en label → vista meses
+       
         const lbl = pop.querySelector('.dp-month-label');
         if (lbl) lbl.addEventListener('click', () => { s.view = 'months'; render(id); });
-        // Meses
+      
         pop.querySelectorAll('.dp-my-item[data-month]').forEach(el => {
             el.addEventListener('click', () => {
                 s.viewMonth = Number(el.dataset.month);
@@ -695,7 +692,7 @@
                 render(id);
             });
         });
-        // Años
+       
         pop.querySelectorAll('.dp-my-item[data-year]').forEach(el => {
             el.addEventListener('click', () => {
                 s.viewYear = Number(el.dataset.year);
@@ -703,13 +700,13 @@
                 render(id);
             });
         });
-        // Botón hoy
+     
         const btnHoy = pop.querySelector('.dp-btn-hoy');
         if (btnHoy) btnHoy.addEventListener('click', () => selectDate(id, new Date(today)));
-        // Botón limpiar dentro del popover
+     
         const btnLimpCal = pop.querySelector('.dp-btn-limpiar-cal');
         if (btnLimpCal) btnLimpCal.addEventListener('click', () => { dpClearInternal(id); });
-        // Prev/next año en vista años
+       
         const prevY = pop.querySelector('.dp-prev-y');
         const nextY = pop.querySelector('.dp-next-y');
         if (prevY) prevY.addEventListener('click', () => { s._yearBase = (s._yearBase || s.viewYear) - 12; render(id); });
@@ -739,7 +736,7 @@
             const oId = id === 'desde' ? 'hasta' : 'desde';
             const oVal = state[oId].value;
             let disabled = false;
-            const minDate = new Date(2025, 0, 1); // 1 enero 2025
+            const minDate = new Date(2025, 0, 1); 
             if (id === 'desde' && oVal && dt > oVal) disabled = true;
             if (id === 'hasta' && oVal && dt < oVal) disabled = true;
             if (dt > today) disabled = true;
@@ -836,7 +833,7 @@
         else     trigger.classList.remove('has-value');
     }
 
-    // ── open / close ──────────────────────────────────────────────
+   
     window.dpOpen = function(id) {
         const pop = document.getElementById(`dp-${id}-pop`);
         const trigger = document.getElementById(`dp-${id}-trigger`);
@@ -851,7 +848,7 @@
             pop.style.display = 'block';
             trigger.classList.add('active');
             render(id);
-            // Evitar que clicks dentro del popover disparen el cierre
+        
             pop.addEventListener('mousedown', function(ev) { ev.stopPropagation(); }, true);
         }
     };
@@ -873,7 +870,7 @@
         applyFilter();
     }
 
-    // Cerrar al click fuera — ignorar clicks dentro del wrap o el popover
+    
     document.addEventListener('mousedown', function(e) {
         ['desde','hasta'].forEach(id => {
             const wrap = document.getElementById('dp-' + id + '-wrap');
@@ -883,7 +880,7 @@
         });
     });
 
-    // ── filtro DataTables ─────────────────────────────────────────
+    
     function applyFilter() {
         if (window._dt) {
             window._dt.draw();
@@ -891,10 +888,10 @@
         }
     }
 
-    // Exponer valores para el filtro DT
+
     window.dpGetValue = function(id) { return state[id].value ? toISO(state[id].value) : null; };
 
-    // Reset desde fuera
+   
     window.dpReset = function() {
         ['desde','hasta'].forEach(id => {
             state[id].value = null;

@@ -274,7 +274,7 @@
         
         <div class="sena-text-info">
             <p style="margin: 0; font-weight: 700; font-size: 11px;">SENA</p>
-            <p style="margin: 1px 0 0; font-size: 8px;">Centro Minero</p>
+            <p style="margin: 1px 0 0; font-size: 8px;">Centro Minero Sogamoso-Boyaca</p>
         </div>
     </div>
 </footer>
@@ -564,9 +564,9 @@
     var HIDDEN  = 'sidebar-hidden';
     var OPEN    = 'sidebar-open';
 
-    // ── INICIALIZAR ESTADO DEL SIDEBAR ──
+
     function initSidebarState() {
-      // En móvil: cerrado por defecto
+    
       if (window.innerWidth <= 768) {
         body.classList.remove(MINI, HIDDEN, OPEN);
       } else {
@@ -579,10 +579,10 @@
       }
     }
 
-    // Inicializar al cargar la página
+
     initSidebarState();
 
-    // ── TOGGLE DEL SIDEBAR ──
+  
     if (trigger) {
       trigger.addEventListener('click', function () {
         if (window.innerWidth <= 768) {
