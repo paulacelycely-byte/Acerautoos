@@ -54,6 +54,29 @@
         text-transform: uppercase; line-height: 1; margin: 0;
     }
 
+    /* Breadcrumb centrado en la barra negra */
+    .breadcrumb-taller {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-family: 'DM Sans', sans-serif;
+        font-size: .95rem;
+        font-weight: 500;
+        color: rgba(255,255,255,.55);
+        letter-spacing: .3px;
+        white-space: nowrap;
+        pointer-events: none;
+    }
+    .breadcrumb-taller .sep {
+        margin: 0 6px;
+        color: rgba(255,255,255,.25);
+    }
+    .breadcrumb-taller .activo {
+        color: var(--rojo);
+        font-weight: 700;
+    }
+
     .header-sub {
         font-family: 'DM Sans', sans-serif;
         font-size: .78rem; color: rgba(255,255,255,.45);
@@ -224,6 +247,11 @@
 
         .header-titulo { font-size: 1.5rem; }
 
+        /* En móvil el breadcrumb centrado absoluto estorba, se oculta */
+        .breadcrumb-taller {
+            display: none;
+        }
+
         #tabla_vehiculos { min-width: 560px; }
 
         #tabla_vehiculos thead th,
@@ -277,6 +305,14 @@
                     {% endif %}
                 </div>
             </div>
+        </div>
+
+        <div class="breadcrumb-taller">
+            <span>Inicio</span>
+            <span class="sep">/</span>
+            <span class="activo">Vehículos</span>
+            <span class="sep">/</span>
+            <span class="activo">Listar</span>
         </div>
 
         <div class="header-actions">
