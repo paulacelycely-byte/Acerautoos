@@ -21,7 +21,7 @@
         position: relative;
         background: var(--carbon);
         border-radius: 10px;
-        padding: 20px 20px;
+        padding: 20px 24px;
         margin-bottom: 28px;
         overflow: hidden;
         display: flex;
@@ -55,6 +55,7 @@
         margin-top: 6px; letter-spacing: .5px;
     }
 
+<<<<<<< HEAD
     /* ── URLS / BREADCRUMBS (Añadido según image_0d607b.jpg) ── */
     .header-breadcrumbs {
         font-family: 'Inter', sans-serif;
@@ -78,6 +79,37 @@
     .header-breadcrumbs .activo {
         color: var(--rojo);
     }
+=======
+    /* ── BREADCRUMB CENTRAL ── */
+    .header-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: .88rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .header-breadcrumb a {
+        color: rgba(255,255,255,.85);
+        text-decoration: none;
+        transition: color .15s;
+    }
+    .header-breadcrumb a:hover { color: white; }
+    .header-breadcrumb .bc-activo {
+        color: var(--rojo);
+    }
+    .header-breadcrumb .bc-link-rojo {
+        color: var(--rojo);
+        text-decoration: none;
+        transition: color .15s;
+    }
+    .header-breadcrumb .bc-link-rojo:hover { color: #ff6659; }
+    .header-breadcrumb .bc-sep {
+        color: rgba(255,255,255,.35);
+        font-weight: 400;
+    }
+>>>>>>> Paula
 
     .header-actions {
         display: flex;
@@ -295,6 +327,10 @@
     }
 
     /* ── BREAKPOINTS RESPONSIVOS ── */
+    @media (max-width: 991px) {
+        .header-breadcrumb { display: none; }
+    }
+
     @media (max-width: 767px) {
         .taller-header {
             padding: 16px;
