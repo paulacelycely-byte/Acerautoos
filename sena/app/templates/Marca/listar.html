@@ -22,25 +22,24 @@
 }
 
 .taller-header{
-    position:relative;
-    background:var(--carbon);
-    border-radius:10px;
-    padding:20px 20px;
-    margin-bottom:20px;
-    overflow:hidden;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:16px;
+    position: relative;
+    background: var(--carbon);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    overflow: hidden;
+
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 20px;
 }
 
 .header-left{
     display:flex;
     align-items:center;
     gap:18px;
-    flex:1;
-    min-width:0;
+    justify-self:start;
 }
 
 .header-titulo{
@@ -61,11 +60,45 @@
     margin-top:6px;
 }
 
+/* ── BREADCRUMB CENTRAL ── */
+.header-breadcrumb{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    gap:8px;
+
+    font-family:'DM Sans',sans-serif;
+    font-size:.88rem;
+    font-weight:600;
+    white-space:nowrap;
+
+    justify-self:center;
+}
+.header-breadcrumb a {
+    color: rgba(255,255,255,.85);
+    text-decoration: none;
+    transition: color .15s;
+}
+.header-breadcrumb a:hover { color: white; }
+.header-breadcrumb .bc-activo {
+    color: var(--rojo);
+}
+.header-breadcrumb .bc-link-rojo {
+    color: var(--rojo);
+    text-decoration: none;
+    transition: color .15s;
+}
+.header-breadcrumb .bc-link-rojo:hover { color: #ff6659; }
+.header-breadcrumb .bc-sep {
+    color: rgba(255,255,255,.35);
+    font-weight: 400;
+}
+
 .header-actions{
     display:flex;
     align-items:center;
-    gap:8px;
-    flex-wrap:wrap;
+    justify-self:end;
 }
 
 .btn-accion{
@@ -292,6 +325,20 @@
 .dataTables_paginate{ display:block !important; }
 
 /* ── Breakpoints responsivos ── */
+@media (max-width:991px){
+
+    .taller-header{
+        display:flex;
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .header-breadcrumb{
+        display:none;
+    }
+
+}
+
 @media (max-width: 767px) {
     .taller-header {
         padding: 16px;
@@ -356,6 +403,14 @@
                 <div class="header-sub">Gestión de marcas de vehículos y repuestos</div>
             </div>
         </div>
+
+        <nav class="header-breadcrumb">
+            <a href="/principal/dashboard/">Inicio</a>
+            <span class="bc-sep">/</span>
+            <a href="{{ request.path }}" class="bc-link-rojo">Marcas</a>
+            <span class="bc-sep">/</span>
+            <span class="bc-activo">Listar</span>
+        </nav>
 
         <div class="header-actions">
             {% if request.user.cargo != 'MECANICO' %}
