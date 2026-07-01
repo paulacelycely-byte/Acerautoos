@@ -21,7 +21,7 @@
         position: relative;
         background: var(--carbon);
         border-radius: 10px;
-        padding: 20px 20px;
+        padding: 20px 24px;
         margin-bottom: 28px;
         overflow: hidden;
         display: flex;
@@ -53,6 +53,36 @@
         font-family: 'DM Sans', sans-serif;
         font-size: .78rem; color: rgba(255,255,255,.45);
         margin-top: 6px; letter-spacing: .5px;
+    }
+
+    /* ── BREADCRUMB CENTRAL ── */
+    .header-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: .88rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .header-breadcrumb a {
+        color: rgba(255,255,255,.85);
+        text-decoration: none;
+        transition: color .15s;
+    }
+    .header-breadcrumb a:hover { color: white; }
+    .header-breadcrumb .bc-activo {
+        color: var(--rojo);
+    }
+    .header-breadcrumb .bc-link-rojo {
+        color: var(--rojo);
+        text-decoration: none;
+        transition: color .15s;
+    }
+    .header-breadcrumb .bc-link-rojo:hover { color: #ff6659; }
+    .header-breadcrumb .bc-sep {
+        color: rgba(255,255,255,.35);
+        font-weight: 400;
     }
 
     .header-actions {
@@ -271,6 +301,10 @@
     }
 
     /* ── BREAKPOINTS RESPONSIVOS ── */
+    @media (max-width: 991px) {
+        .header-breadcrumb { display: none; }
+    }
+
     @media (max-width: 767px) {
         .taller-header {
             padding: 16px;
@@ -339,6 +373,14 @@
                 <div class="header-sub">Registro de compras y entradas de productos</div>
             </div>
         </div>
+
+        <nav class="header-breadcrumb">
+            <a href="/principal/dashboard/">Inicio</a>
+            <span class="bc-sep">/</span>
+            <a href="/principal/compras/listar/" class="bc-link-rojo">Compras</a>
+            <span class="bc-sep">/</span>
+            <span class="bc-activo">Listar</span>
+        </nav>
 
         <div class="header-actions">
             <a href="{% url 'app:reporte_compras_pdf' %}" class="btn-accion btn-pdf">

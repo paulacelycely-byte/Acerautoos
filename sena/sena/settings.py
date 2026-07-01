@@ -62,9 +62,9 @@ WSGI_APPLICATION = 'sena.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.mysql',
-        'NAME':     'acerautos_proyecto',
+        'NAME':     'proyectooooo',
         'USER':     'root',
-        'PASSWORD': 'Acerautos2026*',
+        'PASSWORD': '12345678',
         'HOST':     'localhost',
         'PORT':     '3306',
         'OPTIONS': {
