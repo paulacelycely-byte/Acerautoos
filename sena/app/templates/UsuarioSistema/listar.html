@@ -32,6 +32,30 @@
         font-family: "DM Sans", sans-serif; font-size: .78rem;
         color: rgba(255,255,255,.45); margin-top: 6px; letter-spacing: .5px;
     }
+
+    /* ── Breadcrumb centrado en la barra negra ── */
+    .breadcrumb-taller {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-family: 'DM Sans', sans-serif;
+        font-size: .95rem;
+        font-weight: 500;
+        color: rgba(255,255,255,.55);
+        letter-spacing: .3px;
+        white-space: nowrap;
+        pointer-events: none;
+    }
+    .breadcrumb-taller .sep {
+        margin: 0 6px;
+        color: rgba(255,255,255,.25);
+    }
+    .breadcrumb-taller .activo {
+        color: var(--rojo);
+        font-weight: 700;
+    }
+
     .header-actions {
         display: flex; align-items: center; gap: 8px;
         position: relative; flex-wrap: wrap;
@@ -147,6 +171,11 @@
         }
         .header-titulo { font-size: 1.5rem; }
 
+        /* En móvil el breadcrumb centrado absoluto estorba, se oculta */
+        .breadcrumb-taller {
+            display: none;
+        }
+
         #tabla_usuarios { min-width: 560px; }
         #tabla_usuarios thead th,
         #tabla_usuarios tbody td { padding: 10px 8px; }
@@ -186,6 +215,15 @@
                 <div class="header-sub">Administradores con acceso al software</div>
             </div>
         </div>
+
+        <div class="breadcrumb-taller">
+            <span>Inicio</span>
+            <span class="sep">/</span>
+            <span class="activo">Usuarios</span>
+            <span class="sep">/</span>
+            <span class="activo">Listar</span>
+        </div>
+
         <div class="header-actions">
             <a href="{% url 'app:crear_usuario' %}" class="btn-accion btn-nuevo">
                 <svg viewBox="0 0 24 24">

@@ -60,6 +60,29 @@
         margin-top: 6px; letter-spacing: .5px;
     }
 
+    /* Breadcrumb centrado en la barra negra */
+    .breadcrumb-taller {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-family: 'DM Sans', sans-serif;
+        font-size: .95rem;
+        font-weight: 500;
+        color: rgba(255,255,255,.55);
+        letter-spacing: .3px;
+        white-space: nowrap;
+        pointer-events: none;
+    }
+    .breadcrumb-taller .sep {
+        margin: 0 6px;
+        color: rgba(255,255,255,.25);
+    }
+    .breadcrumb-taller .activo {
+        color: var(--rojo);
+        font-weight: 700;
+    }
+
     .header-actions {
         display: flex; align-items: center; gap: 8px;
         position: relative; flex-wrap: wrap;
@@ -204,6 +227,11 @@
 
         .header-titulo { font-size: 1.5rem; }
 
+        /* En móvil el breadcrumb centrado absoluto estorba, se oculta */
+        .breadcrumb-taller {
+            display: none;
+        }
+
         #tabla_servicios { min-width: 480px; }
 
         #tabla_servicios thead th,
@@ -245,6 +273,14 @@
                 <h1 class="header-titulo">{{ titulo|default:"Servicios" }}</h1>
                 <div class="header-sub">Registro de servicios del taller</div>
             </div>
+        </div>
+
+        <div class="breadcrumb-taller">
+            <span>Inicio</span>
+            <span class="sep">/</span>
+            <span class="activo">Servicios</span>
+            <span class="sep">/</span>
+            <span class="activo">Listar</span>
         </div>
 
         <div class="header-actions">

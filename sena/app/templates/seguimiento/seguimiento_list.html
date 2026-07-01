@@ -22,14 +22,14 @@
         position: relative;
         background: var(--carbon);
         border-radius: 10px;
-        padding: 28px 32px;
+        padding: 20px 20px;
         margin-bottom: 28px;
         overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 15px;
+        gap: 16px;
     }
 
     .header-left {
@@ -47,6 +47,8 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
+        background: transparent;
+        box-shadow: none;
     }
 
     .header-titulo {
@@ -60,11 +62,31 @@
         margin: 0;
     }
 
+    /* Breadcrumb a la derecha de la barra negra (sin overlap con el título) */
+    .breadcrumb-taller {
+        margin-left: auto;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .95rem;
+        font-weight: 500;
+        color: rgba(255,255,255,.55);
+        letter-spacing: .3px;
+        white-space: nowrap;
+        pointer-events: none;
+    }
+    .breadcrumb-taller .sep {
+        margin: 0 6px;
+        color: rgba(255,255,255,.25);
+    }
+    .breadcrumb-taller .activo {
+        color: var(--rojo);
+        font-weight: 700;
+    }
+
     .header-sub {
         font-family: 'DM Sans', sans-serif;
         font-size: .78rem;
         color: rgba(255,255,255,.45);
-        margin-top: 15px;
+        margin-top: 6px;
         letter-spacing: .5px;
     }
 
@@ -73,6 +95,7 @@
         align-items: center;
         gap: 10px;
         position: relative;
+        flex-wrap: wrap;
     }
 
     .btn-accion {
@@ -90,6 +113,7 @@
         cursor: pointer;
         text-decoration: none;
         transition: transform .2s, box-shadow .2s;
+        white-space: nowrap;
     }
 
     .btn-accion:hover {
@@ -104,6 +128,7 @@
         stroke-width: 2;
         stroke-linecap: round;
         stroke-linejoin: round;
+        flex-shrink: 0;
     }
 
     .btn-pdf {
@@ -132,12 +157,6 @@
         grid-template-columns: repeat(3,1fr);
         gap: 14px;
         margin-bottom: 20px;
-    }
-
-    @media(max-width:768px){
-        .stats-grid {
-            grid-template-columns: repeat(1,1fr);
-        }
     }
 
     .stat-card {
@@ -183,17 +202,9 @@
         font-weight: 800;
     }
 
-    .stat-num.verde {
-        color: #4ade80;
-    }
-
-    .stat-num.naranja {
-        color: #fbbf24;
-    }
-
-    .stat-num.rojo {
-        color: #f87171;
-    }
+    .stat-num.verde { color: #4ade80; }
+    .stat-num.naranja { color: #fbbf24; }
+    .stat-num.rojo { color: #f87171; }
 
     .stat-label {
         font-family: 'DM Sans', sans-serif;
@@ -212,11 +223,18 @@
         overflow: hidden;
     }
 
+    /* Scroll horizontal para la tabla en pantallas pequeñas */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
     #tabla_seg {
         font-family: 'DM Sans', sans-serif;
         font-size: .875rem;
         border-collapse: collapse;
         width: 100%;
+        min-width: 700px;
     }
 
     #tabla_seg thead tr {
@@ -240,13 +258,8 @@
         transition: background .15s;
     }
 
-    #tabla_seg tbody tr:hover {
-        background: #fafaf8;
-    }
-
-    #tabla_seg tbody tr:last-child {
-        border-bottom: none;
-    }
+    #tabla_seg tbody tr:hover { background: #fafaf8; }
+    #tabla_seg tbody tr:last-child { border-bottom: none; }
 
     #tabla_seg tbody td {
         padding: 13px 16px;
@@ -283,15 +296,8 @@
         border-radius: 6px;
     }
 
-    .ba-si {
-        background: #dcfce7;
-        color: #15803d;
-    }
-
-    .ba-no {
-        background: var(--gris);
-        color: var(--muted);
-    }
+    .ba-si { background: #dcfce7; color: #15803d; }
+    .ba-no { background: var(--gris); color: var(--muted); }
 
     .obs-txt {
         font-size: .78rem;
@@ -328,23 +334,12 @@
         pointer-events: none;
     }
 
-    .btn-fila:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0,0,0,.2);
-    }
+    .btn-fila:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,.2); }
 
-    .btn-edit {
-        background: var(--azul);
-        margin-right: 4px;
-    }
+    .btn-edit { background: var(--azul); margin-right: 4px; }
+    .btn-delete { background: var(--rojo); }
 
-    .btn-delete {
-        background: var(--rojo);
-    }
-
-    .dataTables_wrapper {
-        padding: 16px 20px;
-    }
+    .dataTables_wrapper { padding: 12px 16px; }
 
     .dataTables_filter input {
         border: 1.5px solid var(--borde) !important;
@@ -354,12 +349,10 @@
         font-size: .85rem !important;
         outline: none !important;
         transition: border-color .2s;
+        max-width: 160px;
     }
 
-    .dataTables_filter input:focus {
-        border-color: var(--rojo) !important;
-    }
-
+    .dataTables_filter input:focus { border-color: var(--rojo) !important; }
     .dataTables_filter label,
     .dataTables_length label,
     .dataTables_info {
@@ -372,43 +365,69 @@
         border: 1.5px solid var(--borde) !important;
         border-radius: 8px !important;
         padding: 4px 8px !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
         appearance: none !important;
         background: white !important;
     }
 
-    .page-item.active .page-link {
-        background: var(--rojo) !important;
-        border-color: var(--rojo) !important;
-        color: white !important;
-        font-weight: 700 !important;
+    .page-item.active .page-link { background: var(--rojo) !important; border-color: var(--rojo) !important; color: white !important; font-weight: 700 !important; }
+    .page-link { color: var(--rojo) !important; font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 600; }
+    .paginate_button.current a, .paginate_button.current a:hover { color: white !important; }
+    .paginate_button { border-radius: 7px !important; font-family: 'DM Sans', sans-serif !important; font-size: .82rem !important; font-weight: 600 !important; }
+    .paginate_button.disabled { display: inline-block !important; opacity: .4; }
+    .dataTables_paginate { display: block !important; }
+
+    /* ── Breakpoints responsivos (igual que Clientes) ── */
+    @media (max-width: 767px) {
+        .taller-header {
+            padding: 16px;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header-actions { width: 100%; }
+
+        .btn-accion {
+            flex: 1;
+            justify-content: center;
+            font-size: .7rem;
+            padding: 9px 10px;
+        }
+
+        .header-titulo { font-size: 1.5rem; }
+
+        .breadcrumb-taller { display: none; }
+
+        .stats-grid { grid-template-columns: repeat(1,1fr); }
+
+        #tabla_seg { min-width: 620px; }
+
+        #tabla_seg thead th,
+        #tabla_seg tbody td { padding: 10px 8px; }
+
+        /* Ocultar columna Observaciones en móvil */
+        #tabla_seg th:nth-child(6),
+        #tabla_seg td:nth-child(6) { display: none; }
+
+        .dataTables_wrapper { padding: 8px 10px; }
+
+        .dataTables_filter,
+        .dataTables_length {
+            float: none !important;
+            text-align: left !important;
+            margin-bottom: 6px;
+        }
+
+        .dataTables_filter input { max-width: 100%; width: 100%; }
     }
 
-    .page-link {
-        color: var(--rojo) !important;
-        font-family: 'DM Sans', sans-serif;
-        font-size: .85rem;
-        font-weight: 600;
-    }
+    @media (max-width: 480px) {
+        .header-titulo { font-size: 1.3rem; }
 
-    .paginate_button.current a,
-    .paginate_button.current a:hover {
-        color: white !important;
-    }
-
-    .paginate_button {
-        border-radius: 7px !important;
-        font-family: 'DM Sans', sans-serif !important;
-        font-size: .82rem !important;
-        font-weight: 600 !important;
-    }
-
-    .paginate_button.disabled {
-        display: inline-block !important;
-        opacity: .4;
-    }
-
-    .dataTables_paginate {
-        display: block !important;
+        /* En pantallas muy pequeñas, también ocultar Km actual */
+        #tabla_seg th:nth-child(4),
+        #tabla_seg td:nth-child(4) { display: none; }
     }
 </style>
 {% endblock %}
@@ -420,7 +439,6 @@
     <div class="taller-header">
 
         <div class="header-left">
-
             <div class="header-icon-wrap">
                 <img src="{% static 'imagenes/segui.jpeg' %}"
                      style="width:56px;height:56px;object-fit:contain;border-radius:12px;">
@@ -428,14 +446,17 @@
 
             <div>
                 <h1 class="header-titulo">{{ titulo }}</h1>
-                <div class="header-sub">
-                    Historial de seguimientos por vehículo
-                </div>
+                <div class="header-sub">Historial de seguimientos por vehículo</div>
             </div>
-
         </div>
 
-        
+        <div class="breadcrumb-taller">
+            <span>Inicio</span>
+            <span class="sep">/</span>
+            <span class="activo">Seguimientos</span>
+            <span class="sep">/</span>
+            <span class="activo">Listar</span>
+        </div>
 
     </div>
 
@@ -447,8 +468,6 @@
                 <img src="{% static 'imagenes/bien.jpeg' %}"
                      style="width:56px;height:56px;object-fit:contain;border-radius:12px;">
             </div>
-
-
             <div>
                 <div class="stat-num verde">{{ total_ok }}</div>
                 <div class="stat-label">Al día</div>
@@ -460,8 +479,6 @@
                 <img src="{% static 'imagenes/reloj.jpeg' %}"
                      style="width:56px;height:56px;object-fit:contain;border-radius:12px;">
             </div>
-
-
             <div>
                 <div class="stat-num naranja">{{ total_alertas }}</div>
                 <div class="stat-label">En alerta</div>
@@ -473,8 +490,6 @@
                 <img src="{% static 'imagenes/alertaa.jpeg' %}"
                      style="width:56px;height:56px;object-fit:contain;border-radius:12px;">
             </div>
-
-
             <div>
                 <div class="stat-num rojo">{{ total_vencidos }}</div>
                 <div class="stat-label">Vencidos</div>
@@ -485,9 +500,7 @@
 
     <!-- TABLA -->
     <div class="tabla-wrap">
-
         <div class="table-responsive">
-
             <table id="tabla_seg" style="width:100%">
 
                 <thead>
@@ -504,23 +517,16 @@
                 </thead>
 
                 <tbody>
-
                     {% for s in seguimientos %}
                     <tr>
 
-                        <td class="text-center"
-                            style="font-weight:700;color:var(--muted);font-size:.8rem;">
+                        <td class="text-center" style="font-weight:700;color:var(--muted);font-size:.8rem;">
                             {{ s.pk }}
                         </td>
 
                         <td>
-                            <span class="placa-box">
-                                {{ s.vehiculo.placa }}
-                            </span>
-
-                            <div class="cliente-mini">
-                                {{ s.vehiculo.cliente.nombre }}
-                            </div>
+                            <span class="placa-box">{{ s.vehiculo.placa }}</span>
+                            <div class="cliente-mini">{{ s.vehiculo.cliente.nombre }}</div>
                         </td>
 
                         <td style="font-size:.82rem;">
@@ -537,8 +543,7 @@
 
                         <td>
                             {% if s.observaciones %}
-                                <span class="obs-txt"
-                                      title="{{ s.observaciones }}">
+                                <span class="obs-txt" title="{{ s.observaciones }}">
                                     {{ s.observaciones }}
                                 </span>
                             {% else %}
@@ -547,30 +552,19 @@
                         </td>
 
                         <td class="text-center">
-
                             {% if s.activo %}
-                                <span class="badge-activo ba-si">
-                                    Activo
-                                </span>
+                                <span class="badge-activo ba-si">Activo</span>
                             {% else %}
-                                <span class="badge-activo ba-no">
-                                    Inactivo
-                                </span>
+                                <span class="badge-activo ba-no">Inactivo</span>
                             {% endif %}
-
                         </td>
 
                         <td class="text-center">
-
-                        
-
                             {% if request.user.cargo != 'MECANICO' %}
                             <button type="button"
-                            class="btn-fila btn-delete"
-                            title="Eliminar"
-                            onclick="confirmarEliminar({{ s.pk }}, '{{ s.vehiculo.placa }}')">
-
-
+                                    class="btn-fila btn-delete"
+                                    title="Eliminar"
+                                    onclick="confirmarEliminar({{ s.pk }}, '{{ s.vehiculo.placa }}')">
                                 <svg viewBox="0 0 24 24">
                                     <polyline points="3 6 5 6 21 6"/>
                                     <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
@@ -578,23 +572,16 @@
                                     <path d="M14 11v6"/>
                                     <path d="M9 6V4h6v2"/>
                                 </svg>
-
                             </button>
                             {% endif %}
                         </td>
 
                     </tr>
-
-                    
-
                     {% endfor %}
-
                 </tbody>
 
             </table>
-
         </div>
-
     </div>
 
     <!-- FORM ELIMINAR -->
@@ -618,10 +605,7 @@ $(document).ready(function () {
         pagingType: 'full_numbers',
 
         columnDefs: [
-            {
-                orderable: false,
-                targets: [5,6,7]
-            }
+            { orderable: false, targets: [5,6,7] }
         ],
 
         language: {
@@ -632,9 +616,7 @@ $(document).ready(function () {
             "sInfo":         "Mostrando _START_ a _END_ de _TOTAL_ registros",
             "sInfoEmpty":    "0 registros",
             "sInfoFiltered": "(de _MAX_)",
-
             "sSearch": "Buscar:",
-
             "oPaginate": {
                 "sFirst":    "«",
                 "sLast":     "»",
@@ -647,7 +629,6 @@ $(document).ready(function () {
 });
 
 function confirmarEliminar(pk, placa) {
-
     Swal.fire({
         title: '¿Eliminar seguimiento?',
         text: `Se eliminará el seguimiento del vehículo ${placa}.`,
@@ -657,22 +638,13 @@ function confirmarEliminar(pk, placa) {
         cancelButtonText: 'Cancelar',
         confirmButtonColor: '#d32f2f',
         cancelButtonColor: '#888',
-    })
-
-    .then(function(result) {
-
+    }).then(function(result) {
         if (result.isConfirmed) {
-
             var form = document.getElementById('form-eliminar');
-
             form.action = '/principal/seguimiento/eliminar/' + pk + '/';
-
             form.submit();
-
         }
-
     });
-
 }
 
 </script>

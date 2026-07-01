@@ -29,7 +29,31 @@
     .badge-stat span { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
     .badge-total span   { background: #d32f2f; }
     .badge-activos span { background: #16a34a; }
-    .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    /* Breadcrumb centrado en la barra negra */
+    .breadcrumb-taller {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-family: 'DM Sans', sans-serif;
+        font-size: .95rem;
+        font-weight: 500;
+        color: rgba(255,255,255,.55);
+        letter-spacing: .3px;
+        white-space: nowrap;
+        pointer-events: none;
+    }
+    .breadcrumb-taller .sep {
+        margin: 0 6px;
+        color: rgba(255,255,255,.25);
+    }
+    .breadcrumb-taller .activo {
+        color: var(--rojo);
+        font-weight: 700;
+    }
+
+    .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; position: relative; }
     .btn-accion { font-family: 'DM Sans', sans-serif; font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; padding: 9px 16px; border-radius: 10px; display: inline-flex; align-items: center; gap: 7px; border: none; cursor: pointer; text-decoration: none; transition: transform .2s, box-shadow .2s; white-space: nowrap; }
     .btn-accion svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
     .btn-accion:hover { transform: translateY(-2px); }
@@ -89,6 +113,8 @@
         .header-titulo { font-size: 1.5rem; }
         .header-icon-wrap { width: 44px; height: 44px; }
         .header-icon-wrap img { width: 44px; height: 44px; }
+        /* En móvil el breadcrumb centrado absoluto estorba, se oculta */
+        .breadcrumb-taller { display: none; }
         /* ocultar columna productos en tablet */
         #tabla_servicios thead th:nth-child(6),
         #tabla_servicios tbody td:nth-child(6) { display: none; }
@@ -159,6 +185,15 @@
                 </div>
             </div>
         </div>
+
+        <div class="breadcrumb-taller">
+            <span>Inicio</span>
+            <span class="sep">/</span>
+            <span class="activo">Servicios</span>
+            <span class="sep">/</span>
+            <span class="activo">Listar</span>
+        </div>
+
         <div class="header-actions">
             {% if request.user.is_superuser or request.user.cargo == 'ADMIN' %}
             <a href="{% url 'app:create_servico' %}" class="btn-accion btn-nuevo">

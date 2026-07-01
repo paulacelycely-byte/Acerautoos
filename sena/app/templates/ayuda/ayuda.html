@@ -15,6 +15,7 @@
 
 /* ══ HERO ══ */
 .ayuda-hero {
+    position: relative;
     background: var(--carbon);
     border-radius: 14px;
     padding: 28px 28px;
@@ -56,6 +57,29 @@
     font-size: .62rem; font-weight: 600;
     text-transform: uppercase; letter-spacing: .8px;
     color: rgba(255,255,255,.3); margin-top: 2px;
+}
+
+/* ══ Breadcrumb centrado en la barra negra ══ */
+.breadcrumb-taller {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'DM Sans', sans-serif;
+    font-size: .95rem;
+    font-weight: 500;
+    color: rgba(255,255,255,.55);
+    letter-spacing: .3px;
+    white-space: nowrap;
+    pointer-events: none;
+}
+.breadcrumb-taller .sep {
+    margin: 0 6px;
+    color: rgba(255,255,255,.25);
+}
+.breadcrumb-taller .activo {
+    color: var(--rojo);
+    font-weight: 700;
 }
 
 /* ══ VERSION ══ */
@@ -283,6 +307,11 @@
     .ayuda-hero { padding: 20px 18px; }
     .a-card-body { padding: 14px; }
     .version-card { padding: 12px 16px; }
+
+    /* En móvil el breadcrumb centrado absoluto estorba, se oculta */
+    .breadcrumb-taller {
+        display: none;
+    }
 }
 @media (max-width: 480px) {
     .hero-stat { display: none; }
@@ -311,6 +340,13 @@
                 <div class="hero-sub">Todo lo que necesitas saber para usar ACERAUTOS</div>
             </div>
         </div>
+
+        <div class="breadcrumb-taller">
+            <span>Inicio</span>
+            <span class="sep">/</span>
+            <span class="activo">Ayuda</span>
+        </div>
+
         <div class="hero-stat">
             <div class="hero-stat-num">15</div>
             <div class="hero-stat-lbl">Módulos</div>
