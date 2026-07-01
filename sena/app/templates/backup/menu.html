@@ -22,6 +22,7 @@
         margin-bottom: 24px;
         display: flex; align-items: center; justify-content: space-between;
         position: relative; overflow: hidden;
+        flex-wrap: wrap; gap: 14px;
     }
 
     .bk-header-left { display: flex; align-items: center; gap: 18px; position: relative; }
@@ -40,6 +41,22 @@
     }
     .bk-titulo span { color: var(--rojo); }
     .bk-sub { font-family: 'DM Sans', sans-serif; font-size: .75rem; color: rgba(255,255,255,.4); margin: 5px 0 0; }
+
+    /* ── BREADCRUMB (estilo Clientes) ── */
+    .bk-breadcrumb {
+        display: flex; align-items: center; gap: 8px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .85rem; font-weight: 500;
+        flex-wrap: wrap;
+    }
+    .bk-breadcrumb a {
+        color: rgba(255,255,255,.55);
+        text-decoration: none;
+        transition: color .15s;
+    }
+    .bk-breadcrumb a:hover { color: #fff; }
+    .bk-breadcrumb .sep { color: rgba(255,255,255,.25); }
+    .bk-breadcrumb .activo { color: var(--rojo); font-weight: 600; }
 
     /* ── STATUS ── */
     .bk-status {
@@ -181,12 +198,19 @@
     <!-- Header -->
     <div class="bk-header">
         <div class="bk-header-left">
-                        <img src="{% static 'imagenes/backups.jpeg' %}" style="width:56px;height:56px;object-fit:contain;border-radius:12px;">
+            <img src="{% static 'imagenes/backups.jpeg' %}" style="width:56px;height:56px;object-fit:contain;border-radius:12px;">
             <div>
                 <h1 class="bk-titulo">{{ titulo }}</h1>
                 <div class="bk-sub">Base de datos MySQL · respaldo y restauración</div>
             </div>
         </div>
+
+        <!-- Breadcrumb estilo Clientes -->
+        <nav class="bk-breadcrumb">
+            <a href="/principal/dashboard/">Inicio</a>
+            <span class="sep">/</span>
+            <span class="activo">Backups</span>
+        </nav>
     </div>
 
     <!-- Estado conexión -->

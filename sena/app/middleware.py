@@ -1,6 +1,6 @@
 from django.utils import timezone
 
-INTERVALO_MINUTOS = 30
+INTERVALO_MINUTOS = 180
 
 
 class AlertasAutomaticasMiddleware:

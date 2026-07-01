@@ -26,6 +26,7 @@
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 16px;
+        position: relative; /* NUEVO: Necesario para centrar las rutas */
     }
 
     .header-left {
@@ -65,6 +66,34 @@
         font-size: .78rem;
         color: rgba(255,255,255,.45);
         margin-top: 6px;
+    }
+
+    /* NUEVO: Estilos para las rutas (migas de pan) centradas */
+    .header-center {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--muted); 
+    }
+    
+    .header-center a {
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+    
+    .header-center a:hover {
+        color: white;
+    }
+    
+    .header-center .active {
+        color: var(--rojo); /* El color rojo característico de la imagen */
     }
 
     .header-actions {
@@ -221,16 +250,27 @@
     .dataTables_paginate { display: block !important; }
 
     /* ── Breakpoints responsivos ── */
-    @media (max-width: 767px) {
+    
+    /* MODIFICADO: Ajuste para pantallas medianas (evitar que la ruta se encime con los botones) */
+    @media (max-width: 992px) {
         .taller-header {
-            padding: 16px;
             flex-direction: column;
             align-items: flex-start;
         }
-
-        .header-actions {
+        .header-center {
+            position: static;
+            transform: none;
+            margin: 12px 0;
             width: 100%;
         }
+        .header-actions {
+            width: 100%;
+            justify-content: flex-start;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .taller-header { padding: 16px; }
 
         .btn-accion {
             flex: 1;
@@ -284,6 +324,14 @@
                 <h1 class="header-titulo">{{ titulo|default:"Proveedores" }}</h1>
                 <div class="header-sub">Directorio de proveedores del taller</div>
             </div>
+        </div>
+
+        <div class="header-center">
+            <a href="#">Inicio</a> 
+            <span>/</span>
+            <span class="active">Proveedores</span> 
+            <span>/</span>
+            <span class="active">Listar</span>
         </div>
 
         <div class="header-actions">
