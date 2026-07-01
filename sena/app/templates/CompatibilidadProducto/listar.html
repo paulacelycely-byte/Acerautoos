@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block css %}
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
     :root {
         --rojo:   #d32f2f;
@@ -46,6 +46,31 @@
         margin-top: 5px; display: flex; align-items: center;
         flex-wrap: wrap; gap: 8px;
     }
+
+    /* ── URLS / BREADCRUMBS ── */
+    .header-breadcrumbs {
+        font-family: 'Inter', sans-serif;
+        font-size: .85rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .header-breadcrumbs a {
+        color: white;
+        text-decoration: none;
+        transition: opacity 0.2s;
+    }
+    .header-breadcrumbs a:hover {
+        opacity: 0.8;
+    }
+    .header-breadcrumbs .separador {
+        color: rgba(255,255,255,.3);
+    }
+    .header-breadcrumbs .activo {
+        color: var(--rojo);
+    }
+
     .badge-stat {
         display: inline-flex; align-items: center; gap: 6px;
         background: rgba(255,255,255,.1); color: rgba(255,255,255,.8);
@@ -173,6 +198,8 @@
         .header-titulo { font-size: 1.5rem; }
         .header-icon-wrap { width: 44px; height: 44px; }
         .header-icon-wrap img { width: 44px; height: 44px; }
+        
+        .header-breadcrumbs { margin: 4px 0; }
 
         /* Ocultar columna Stock en tablet */
         #tabla_compatibilidad thead th:nth-child(5),
@@ -247,6 +274,15 @@
                 </div>
             </div>
         </div>
+
+        <div class="header-breadcrumbs">
+            <a href="#">Inicio</a>
+            <span class="separador">/</span>
+            <a href="#" class="activo">Compatibilidad</a>
+            <span class="separador">/</span>
+            <span class="activo">Listar</span>
+        </div>
+
         <div class="header-actions">
             <a href="{% url 'app:crear_compatibilidad' %}" class="btn-accion btn-nuevo">
                 <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>

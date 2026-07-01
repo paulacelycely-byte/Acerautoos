@@ -35,6 +35,31 @@
         display: none;
     }
 
+    .perfil-header-top {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin-bottom: 24px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ── BREADCRUMB (estilo Backups) ── */
+    .perfil-breadcrumb {
+        display: flex; align-items: center; gap: 8px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: .85rem; font-weight: 500;
+        flex-wrap: wrap;
+    }
+    .perfil-breadcrumb a {
+        color: rgba(255,255,255,.55);
+        text-decoration: none;
+        transition: color .15s;
+    }
+    .perfil-breadcrumb a:hover { color: #fff; }
+    .perfil-breadcrumb .sep { color: rgba(255,255,255,.25); }
+    .perfil-breadcrumb .activo { color: var(--rojo); font-weight: 600; }
+
     .perfil-header-content {
         display: flex;
         align-items: center;
@@ -141,6 +166,7 @@
         .perfil-grid { grid-template-columns: 1fr; }
         .perfil-header-content { flex-direction: column; text-align: center; }
         .perfil-header-text h1 { font-size: 1.8rem; }
+        .perfil-header-top { justify-content: center; }
     }
 
     /* CARD LATERAL */
@@ -449,6 +475,18 @@
 
     <!-- HEADER PRINCIPAL -->
     <div class="perfil-header">
+
+        <!-- Breadcrumb estilo Clientes/Backups -->
+        <div class="perfil-header-top">
+            <nav class="perfil-breadcrumb">
+                <a href="/principal/dashboard/">Inicio</a>
+                <span class="sep">/</span>
+                <a href="/principal/usuarios/">Usuarios</a>
+                <span class="sep">/</span>
+                <span class="activo">Perfil</span>
+            </nav>
+        </div>
+
         <div class="perfil-header-content">
             <div class="perfil-avatar">
                 {% if usuario.foto %}
