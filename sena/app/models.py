@@ -24,7 +24,11 @@ class UsuarioSistema(AbstractUser):
     cargo          = models.CharField(max_length=20, choices=CARGOS, default='ADMIN')
     activo         = models.BooleanField(default=True)
     foto           = models.ImageField(upload_to='usuarios/fotos/', blank=True, null=True)
-
+    debe_cambiar_password = models.BooleanField(
+        default=False,
+        help_text="Si está activo, el usuario deberá cambiar su contraseña al iniciar sesión."
+    )
+    
     @property
     def nombre_completo(self):
         return f"{self.first_name} {self.last_name}".strip() or self.username

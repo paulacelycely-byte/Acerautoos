@@ -1,11 +1,16 @@
 import os
 from pathlib import Path
 from django.contrib.messages import constants as messages
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'django-insecure-(1x7w0^_8zvx$7z$@4z!j+31!r0@=13vs0@qby2-ac8xuj#c=u'
-DEBUG = True
-ALLOWED_HOSTS = []
+
+# ========== CARGA DE VARIABLES DE ENTORNO (.env) ==========
+load_dotenv(BASE_DIR / '.env')
+
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-(1x7w0^_8zvx$7z$@4z!j+31!r0@=13vs0@qby2-ac8xuj#c=u')
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -62,11 +67,11 @@ WSGI_APPLICATION = 'sena.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.mysql',
-        'NAME':     'acerautos_proyecto',
-        'USER':     'root',
-        'PASSWORD': 'Acerautos2026*',
-        'HOST':     'localhost',
-        'PORT':     '3306',
+        'NAME':     os.environ.get('DB_NAME', 'acerautos_proyecto'),
+        'USER':     os.environ.get('DB_USER', 'root'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'Acerautos2026*'),
+        'HOST':     os.environ.get('DB_HOST', 'localhost'),
+        'PORT':     os.environ.get('DB_PORT', '3306'),
         'OPTIONS': {
             'charset': 'utf8mb4',
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
@@ -114,7 +119,6 @@ EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST          = 'smtp.gmail.com'
 EMAIL_PORT          = 587
 EMAIL_USE_TLS       = True
-EMAIL_HOST_USER     = 'acerautos09@gmail.com'
-EMAIL_HOST_PASSWORD = 'ydvbowswvxangcxs'
+EMAIL_HOST_USER     = os.environ.get('EMAIL_HOST_USER', 'acerautos09@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'ydvbowswvxangcxs')
 DEFAULT_FROM_EMAIL  = 'ACERAUTOS <acerautos09@gmail.com>'
-
